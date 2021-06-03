@@ -45,7 +45,7 @@
                     </svg>
                 </div>
 
-                <h1>PEÑATE SOY TU TATA</h1>
+                <h1>Pelon SOY TU TATA</h1>
 
                 <div class="flex justify-center mt-4 sm:items-center sm:justify-between">
                     <div class="text-center text-sm text-gray-500 sm:text-left">
