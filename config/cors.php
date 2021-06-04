@@ -19,7 +19,7 @@ return [
 
     'allowed_methods' => ['*'],
 
-    'allowed_origins' => ['localhost:3000', 'https://gestion-contratos.vercel.app'],
+    'allowed_origins' => ['http://localhost:3000', 'https://gestion-contratos.vercel.app'],
 
     'allowed_origins_patterns' => [],
 
