@@ -34,11 +34,11 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::delete('/escalafones/{id}', [EscalafonController::class, 'destroy']);
 
     //Rutas que maneja el catalogo de facultades
-    Route::post('/faculty', [FacultyController::class, 'store']);
-    Route::get('/faculty', [FacultyController::class, 'all']);
-    Route::get('/faculty/{id}', [FacultyController::class, 'show']);
-    Route::put('/faculty/{id}', [FacultyController::class, 'update']);
-    Route::delete('/faculty/{id}', [FacultyController::class, 'destroy']);
+    Route::post('/faculties', [FacultyController::class, 'store']);
+    Route::get('/faculties', [FacultyController::class, 'all']);
+    Route::get('/faculties/{id}', [FacultyController::class, 'show']);
+    Route::put('/faculties/{id}', [FacultyController::class, 'update']);
+    Route::delete('/faculties/{id}', [FacultyController::class, 'destroy']);
 });
 
 Route::middleware('auth:api')->get('/user', function (Request $request) {
