@@ -3,6 +3,7 @@
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\EscalafonController;
 use App\Http\Controllers\FacultyController;
+use App\Http\Controllers\SchoolController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -34,11 +35,15 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::delete('/escalafones/{id}', [EscalafonController::class, 'destroy']);
 
     //Rutas que maneja el catalogo de facultades
-    Route::post('/faculties', [FacultyController::class, 'store']);
-    Route::get('/faculties', [FacultyController::class, 'all']);
-    Route::get('/faculties/{id}', [FacultyController::class, 'show']);
-    Route::put('/faculties/{id}', [FacultyController::class, 'update']);
-    Route::delete('/faculties/{id}', [FacultyController::class, 'destroy']);
+    Route::post('/faculties/{id}/schools', [SchoolController::class, 'store']);
+    Route::get('/faculties/{id}/schools', [SchoolController::class, 'all']);
+    Route::get('/schools/{id}', [SchoolController::class, 'show']);
+    Route::put('/schools/{id}', [SchoolController::class, 'update']);
+    Route::delete('/schools/{id}', [SchoolController::class, 'destroy']);
+
+    //Rutas que maneja el catalogo de escuelas pertenecientes a facultades
+
+    
 });
 
 Route::middleware('auth:api')->get('/user', function (Request $request) {
