@@ -15,9 +15,9 @@ class CreateFacultiesTable extends Migration
     {
         Schema::create('faculties', function (Blueprint $table) {
             $table->id();
-            $table->string('name',120);
-            $table->string('dean',200);
-            $table->string('viceDean',200);
+            $table->string('name', 120);
+            $table->string('dean', 200);
+            $table->string('viceDean', 200);
             $table->softDeletes();
             $table->timestamps();
         });

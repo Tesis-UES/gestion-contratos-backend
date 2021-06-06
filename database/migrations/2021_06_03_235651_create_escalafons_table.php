@@ -15,8 +15,8 @@ class CreateEscalafonsTable extends Migration
     {
         Schema::create('escalafons', function (Blueprint $table) {
             $table->id();
-            $table->string('code',10);
-            $table->string('name',120);
+            $table->string('code', 10);
+            $table->string('name', 120);
             $table->integer('salary');
             $table->softDeletes();
             $table->timestamps();

@@ -7,15 +7,12 @@ use Illuminate\Http\Request;
 
 class FacultyController extends Controller
 {
-   
     public function all()
     {
-        $Faculties = Faculty::all();
-        $response = [
-            'faculty' => $Faculties,
-        ];
-        return response($response, 200);
+        $faculties = Faculty::all();
+        return response($faculties, 200);
     }
+
     /**
      * Store a newly created resource in storage.
      *
@@ -25,21 +22,20 @@ class FacultyController extends Controller
     public function store(Request $request)
     {
         $fields = $request->validate([
-            'name'      => 'required|string',
-            'dean'      => 'required|string',
-            'viceDean'  => 'required|string',
+            'name'     => 'required|string|max:120',
+            'dean'     => 'required|string|max:200',
+            'viceDean' => 'required|string|max:200',
         ]);
 
         $newFaculty = Faculty::create([
-            'name'       => $fields['name'],
-            'dean'       => $fields['dean'],
-            'viceDean'   => $fields['viceDean'],
+            'name'     => $fields['name'],
+            'dean'     => $fields['dean'],
+            'viceDean' => $fields['viceDean'],
         ]);
 
-        $response = [
+        return response([
             'faculty' => $newFaculty,
-        ];
-        return response($response, 201);
+        ], 201);
     }
 
     /**
@@ -49,14 +45,8 @@ class FacultyController extends Controller
      */
     public function show($id)
     {
-        $faculty = Faculty::find($id);
-        if($faculty == null){
-            return response(['mensaje' => "Facultad no encontrada"], 404);
-        }else{
-            
-            $response = ['faculty' => $faculty];
-            return response($response, 200);
-        }
+        $faculty = Faculty::findorFail($id);
+        return response(['faculty' => $faculty], 200);
     }
 
 
@@ -69,23 +59,16 @@ class FacultyController extends Controller
      */
     public function update(Request $request, $id)
     {
-
-        $fields = $request->validate([
-            'name'      => 'required|string',
-            'dean'      => 'required|string',
-            'viceDean'  => 'required|string',
+        $request->validate([
+            'name'     => 'required|string|max:120',
+            'dean'     => 'required|string|max:200',
+            'viceDean' => 'required|string|max:200',
         ]);
-            $faculty = Faculty::find($id);
-            if ($faculty == null) {
-                return response(['mensaje' => "Facultad no encontrada"], 404);
-            }else{
-                $faculty->update($request->all());
-                $response = ['faculty' => $faculty];
-                return response($response, 200);
-            }
-            
 
-       
+        $faculty = Faculty::findOrFail($id);
+        $faculty->update($request->all());
+
+        return response(['faculty' => $faculty], 200);
     }
 
     /**
@@ -93,17 +76,8 @@ class FacultyController extends Controller
      */
     public function destroy($id)
     {
-
-            $faculty = Faculty::find($id);
-            if ($faculty == null) {
-                return response(['mensaje' => "Facultad no encontrada"], 404);
-            }else{
-                $faculty->delete();
-                return response(null, 200);
-            }
+        $faculty = Faculty::findOrFail($id);
+        $faculty->delete();
+        return response(null, 204);
     }
-
-
-
-
 }

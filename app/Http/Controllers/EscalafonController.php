@@ -7,15 +7,12 @@ use Illuminate\Http\Request;
 
 class EscalafonController extends Controller
 {
-
     public function all()
     {
-        $Escalafons = Escalafon::all();
-        $response = [
-            'escalafon' => $Escalafons,
-        ];
-        return response($response, 200);
+        $escalafons = Escalafon::all();
+        return response($escalafons, 200);
     }
+
     /**
      * Store a newly created resource in storage.
      *
@@ -25,21 +22,20 @@ class EscalafonController extends Controller
     public function store(Request $request)
     {
         $fields = $request->validate([
-            'code'            => 'required|string',
-            'name'   => 'required|string|unique:escalafons,name',
-            'salary'  => 'required|integer',
+            'code'   => 'required|string|max:10',
+            'name'   => 'required|string|unique:escalafons,name|max:120',
+            'salary' => 'required|integer',
         ]);
 
         $newEscalafon = Escalafon::create([
-            'code'            => $fields['code'],
+            'code'   => $fields['code'],
             'name'   => $fields['name'],
-            'salary'  => $fields['salary'],
+            'salary' => $fields['salary'],
         ]);
 
-        $response = [
+        return response([
             'escalafon' => $newEscalafon,
-        ];
-        return response($response, 201);
+        ], 201);
     }
 
     /**
@@ -50,15 +46,8 @@ class EscalafonController extends Controller
      */
     public function show($id)
     {
-        $escalafon = Escalafon::find($id);
-        if($escalafon == null){
-            return response(['mensaje' => "Escalafon no encontrado"], 404);
-        }else{
-            $response = [
-                'escalafon' => $escalafon,
-            ];
-            return response($response, 200);
-        }
+        $escalafon = Escalafon::findOrFail($id);
+        return response(['escalafon' => $escalafon,], 200);
     }
 
 
@@ -72,21 +61,16 @@ class EscalafonController extends Controller
      */
     public function update(Request $request, $id)
     {
-
-        $fields = $request->validate([
-            'code'      => 'required|string',
-            'name'      => 'required|string',
-            'salary'    => 'required|integer',
+        $request->validate([
+            'code'   => 'required|string|max:10',
+            'name'   => 'required|string|unique:escalafons,name|max:120',
+            'salary' => 'required|integer',
         ]);
 
-        $escalafon = Escalafon::find($id);
-        if($escalafon == null){
-            return response(['mensaje' => "Escalafon no encontrado"], 404);
-        }else{
-            $escalafon->update($request->all());
-            $response = ['escalafon' => $escalafon];
-            return response($response, 200);
-        }
+        $escalafon = Escalafon::findOrFail($id);
+        $escalafon->update($request->all());
+
+        return response(['escalafon' => $escalafon], 200);
     }
 
     /**
@@ -97,12 +81,8 @@ class EscalafonController extends Controller
      */
     public function destroy($id)
     {
-        $escalafon = Escalafon::find($id);
-        if($escalafon == null){
-            return response(['mensaje' => "Escalafon no encontrado"], 404);
-        }else{
-            $escalafon->delete();
-            return response(null, 200);
-        }
+        $escalafon = Escalafon::findOrFail($id);
+        $escalafon->delete();
+        return response(null, 204);
     }
 }
