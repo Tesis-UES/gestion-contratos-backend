@@ -1,6 +1,8 @@
 <?php
 
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\EscalafonController;
+use App\Http\Controllers\FacultyController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -23,6 +25,20 @@ Route::post('/auth/login', [AuthController::class, 'login']);
 // Protected Routes 
 Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::post('/auth/logout', [AuthController::class, 'logout']);
+
+    //Rutas que maneja el catalogo de escalafones
+    Route::post('/escalafones', [EscalafonController::class, 'store']);
+    Route::get('/escalafones', [EscalafonController::class, 'all']);
+    Route::get('/escalafones/{id}', [EscalafonController::class, 'show']);
+    Route::put('/escalafones/{id}', [EscalafonController::class, 'update']);
+    Route::delete('/escalafones/{id}', [EscalafonController::class, 'destroy']);
+
+    //Rutas que maneja el catalogo de facultades
+    Route::post('/faculties', [FacultyController::class, 'store']);
+    Route::get('/faculties', [FacultyController::class, 'all']);
+    Route::get('/faculties/{id}', [FacultyController::class, 'show']);
+    Route::put('/faculties/{id}', [FacultyController::class, 'update']);
+    Route::delete('/faculties/{id}', [FacultyController::class, 'destroy']);
 });
 
 Route::middleware('auth:api')->get('/user', function (Request $request) {
