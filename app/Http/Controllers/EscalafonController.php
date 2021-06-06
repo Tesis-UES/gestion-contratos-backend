@@ -50,13 +50,14 @@ class EscalafonController extends Controller
      */
     public function show($id)
     {
-        try {
+        $escalafon = Escalafon::find($id);
+        if($escalafon == null){
+            return response(['mensaje' => "Escalafon no encontrado"], 404);
+        }else{
             $response = [
-                'escalafon' => Escalafon::find($id)->get(),
+                'escalafon' => $escalafon,
             ];
             return response($response, 200);
-        } catch (\Throwable $th) {
-            return response(['mensaje' => "Escalafon no encontrado"], 404);
         }
     }
 
@@ -78,13 +79,13 @@ class EscalafonController extends Controller
             'salary'    => 'required|integer',
         ]);
 
-        try {
-            $escalafon = Escalafon::find($id);
+        $escalafon = Escalafon::find($id);
+        if($escalafon == null){
+            return response(['mensaje' => "Escalafon no encontrado"], 404);
+        }else{
             $escalafon->update($request->all());
             $response = ['escalafon' => $escalafon];
             return response($response, 200);
-        } catch (\Throwable $th) {
-            return response(['mensaje' => "Escalafon no encontrado"], 404);
         }
     }
 
@@ -96,12 +97,12 @@ class EscalafonController extends Controller
      */
     public function destroy($id)
     {
-        try {
-            $escalafon = Escalafon::find($id);
+        $escalafon = Escalafon::find($id);
+        if($escalafon == null){
+            return response(['mensaje' => "Escalafon no encontrado"], 404);
+        }else{
             $escalafon->delete();
             return response(null, 200);
-        } catch (\Throwable $th) {
-            return response(['mensaje' => "Escalafon no encontrado"], 404);
         }
     }
 }
