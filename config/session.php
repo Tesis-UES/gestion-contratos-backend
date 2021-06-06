@@ -155,7 +155,7 @@ return [
     |
     */
 
-    'domain' => env('SESSION_DOMAIN', null),
+    'domain' => explode(',', env('SESSION_DOMAIN')),
 
     /*
     |--------------------------------------------------------------------------
