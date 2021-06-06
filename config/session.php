@@ -155,7 +155,7 @@ return [
     |
     */
 
-    'domain' => ['localhost:3000', 'gestion-contratos.vercel.app'],
+    'domain' => env('SESSION_DOMAIN'),
 
     /*
     |--------------------------------------------------------------------------
