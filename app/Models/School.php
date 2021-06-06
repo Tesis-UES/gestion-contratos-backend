@@ -17,6 +17,5 @@ class School extends Model
         'faculty_id',
         'name',
         'director'
-];
-
+    ];
 }

@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Faculty;
 use App\Models\School;
 use Illuminate\Http\Request;
 
@@ -9,8 +10,10 @@ class SchoolController extends Controller
 {
     public function all($id)
     {
-        $Schools = School::where('faculty_id',$id)->get();
-        return response($Schools, 200);
+        Faculty::findOrFail($id);
+
+        $schools = School::where('faculty_id', $id)->get();
+        return response($schools, 200);
     }
 
     /**
@@ -19,21 +22,22 @@ class SchoolController extends Controller
      * @param  \Illuminate\Http\Request  $request
      * @return \Illuminate\Http\Response
      */
-    public function store(Request $request,$id)
+    public function store(Request $request, $id)
     {
         $fields = $request->validate([
             'name'     => 'required|string|max:200',
             'director' => 'required|string|max:200',
         ]);
+        Faculty::findOrFail($id);
 
         $newSchool = School::create([
-            'faculty_id'     => $id,
-            'name'     => $fields['name'],
-            'director' => $fields['director'],
+            'faculty_id' => $id,
+            'name'       => $fields['name'],
+            'director'   => $fields['director'],
         ]);
 
         return response([
-            'School' => $newSchool,
+            'school' => $newSchool,
         ], 201);
     }
 
@@ -44,8 +48,8 @@ class SchoolController extends Controller
      */
     public function show($id)
     {
-        $School = School::findorFail($id);
-        return response(['School' => $School], 200);
+        $school = School::findorFail($id);
+        return response(['school' => $school], 200);
     }
 
 
@@ -63,10 +67,10 @@ class SchoolController extends Controller
             'director' => 'required|string|max:200',
         ]);
 
-        $School = School::findOrFail($id);
-        $School->update($request->all());
+        $school = School::findOrFail($id);
+        $school->update($request->all());
 
-        return response(['School' => $School], 200);
+        return response(['School' => $school], 200);
     }
 
     /**
@@ -74,8 +78,8 @@ class SchoolController extends Controller
      */
     public function destroy($id)
     {
-        $School = School::findOrFail($id);
-        $School->delete();
+        $school = School::findOrFail($id);
+        $school->delete();
         return response(null, 204);
     }
 }

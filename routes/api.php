@@ -35,7 +35,6 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::delete('/escalafones/{id}', [EscalafonController::class, 'destroy']);
 
     //Rutas que maneja el catalogo de facultades
-
     Route::post('/faculties', [FacultyController::class, 'store']);
     Route::get('/faculties', [FacultyController::class, 'all']);
     Route::get('/faculties/{id}', [FacultyController::class, 'show']);
@@ -48,8 +47,6 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::get('/schools/{id}', [SchoolController::class, 'show']);
     Route::put('/schools/{id}', [SchoolController::class, 'update']);
     Route::delete('/schools/{id}', [SchoolController::class, 'destroy']);
-
-    
 });
 
 Route::middleware('auth:api')->get('/user', function (Request $request) {
