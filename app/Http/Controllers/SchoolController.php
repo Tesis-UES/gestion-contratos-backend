@@ -5,14 +5,16 @@ namespace App\Http\Controllers;
 use App\Models\Faculty;
 use App\Models\School;
 use Illuminate\Http\Request;
+use App\Http\Traits\WorklogTrait;
 
 class SchoolController extends Controller
 {
+    use WorklogTrait;
     public function all($id)
     {
         Faculty::findOrFail($id);
-
         $schools = School::where('faculty_id', $id)->get();
+        $this->RegisterAction("El usuario ha consultado el catalogo de Escuelas");
         return response($schools, 200);
     }
 
@@ -35,7 +37,7 @@ class SchoolController extends Controller
             'name'       => $fields['name'],
             'director'   => $fields['director'],
         ]);
-
+        $this->RegisterAction("El usuario ha Ingresado un nuevo registro en el catalogo de escuelas");
         return response([
             'school' => $newSchool,
         ], 201);
@@ -69,7 +71,7 @@ class SchoolController extends Controller
 
         $school = School::findOrFail($id);
         $school->update($request->all());
-
+        $this->RegisterAction("El usuario ha actualizado el registro de ".$request['name']." en el catalogo de escuelas por facultad");
         return response(['School' => $school], 200);
     }
 
@@ -80,6 +82,7 @@ class SchoolController extends Controller
     {
         $school = School::findOrFail($id);
         $school->delete();
+        $this->RegisterAction("El usuario ha eliminado el registro de la escuela ".$school->name." en el catalogo de Escuelas");
         return response(null, 204);
     }
 }
