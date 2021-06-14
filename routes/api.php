@@ -4,6 +4,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\EscalafonController;
 use App\Http\Controllers\FacultyController;
 use App\Http\Controllers\SchoolController;
+use App\Http\Controllers\CourseController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -47,6 +48,15 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::get('/schools/{id}', [SchoolController::class, 'show']);
     Route::put('/schools/{id}', [SchoolController::class, 'update']);
     Route::delete('/schools/{id}', [SchoolController::class, 'destroy']);
+
+    //Rutas que maneja el catalogo de materias pertenecientes a escuelas
+    Route::post('/schools/{id}/courses', [CourseController::class, 'store']);
+    Route::get('/schools/{id}/courses', [CourseController::class, 'all']);
+    Route::get('/courses/{id}', [CourseController::class, 'show']);
+    Route::put('/courses/{id}', [CourseController::class, 'update']);
+    Route::delete('/courses/{id}', [CourseController::class, 'destroy']);
+
+
 });
 
 Route::middleware('auth:api')->get('/user', function (Request $request) {
