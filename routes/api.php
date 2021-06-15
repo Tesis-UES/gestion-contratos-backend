@@ -5,6 +5,7 @@ use App\Http\Controllers\EscalafonController;
 use App\Http\Controllers\FacultyController;
 use App\Http\Controllers\SchoolController;
 use App\Http\Controllers\CourseController;
+use App\Http\Controllers\ContractTypeController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -55,6 +56,13 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::get('/courses/{id}', [CourseController::class, 'show']);
     Route::put('/courses/{id}', [CourseController::class, 'update']);
     Route::delete('/courses/{id}', [CourseController::class, 'destroy']);
+
+    //Rutas que maneja el catalogo de escalafones
+    Route::post('/contracts', [ContractTypeController::class, 'store']);
+    Route::get('/contracts', [ContractTypeController::class, 'all']);
+    Route::get('/contracts/{id}', [ContractTypeController::class, 'show']);
+    Route::put('/contracts/{id}', [ContractTypeController::class, 'update']);
+    Route::delete('/contracts/{id}', [ContractTypeController::class, 'destroy']);
 
 
 });
