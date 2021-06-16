@@ -3,7 +3,7 @@
 namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
-
+use App\Models\ContractType;
 class ContractTypeSeeder extends Seeder
 {
     /**
@@ -13,6 +13,8 @@ class ContractTypeSeeder extends Seeder
      */
     public function run()
     {
-        //
+        ContractType::create(['name'=>'Contrato de Tiempo Adicional','description'=>'----']);
+        ContractType::create(['name'=>'Contrato de Tiempo Integral','description'=>'']);
+        ContractType::create(['name'=>'Contrato por Servicios Profesionales','description'=>'---']);
     }
 }
