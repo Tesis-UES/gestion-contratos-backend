@@ -1,5 +1,6 @@
 <?php
 
+use App\Http\Controllers\ActivityController;
 use App\Http\Controllers\AuthController;
 use App\Http\Controllers\EscalafonController;
 use App\Http\Controllers\FacultyController;
@@ -47,6 +48,14 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::get('/schools/{id}', [SchoolController::class, 'show']);
     Route::put('/schools/{id}', [SchoolController::class, 'update']);
     Route::delete('/schools/{id}', [SchoolController::class, 'destroy']);
+
+    // Rutas que manejan el catalogo de actividades de docentes
+    Route::post('/activities', [ActivityController::class, 'store']);
+    Route::get('/activities', [ActivityController::class, 'all']);
+    Route::get('/activities/recommended', [ActivityController::class, 'recommended']);
+    Route::get('/activities/{id}', [ActivityController::class, 'show']);
+    Route::put('/activities/{id}', [ActivityController::class, 'update']);
+    Route::delete('/activities/{id}', [ActivityController::class, 'destroy']);
 });
 
 Route::middleware('auth:api')->get('/user', function (Request $request) {
