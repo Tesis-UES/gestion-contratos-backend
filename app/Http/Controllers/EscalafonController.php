@@ -23,7 +23,7 @@ class EscalafonController extends Controller
     {
         $fields = $request->validate([
             'code'   => 'required|string|max:10',
-            'name'   => 'required|string|unique:escalafons,name|max:120',
+            'name'   => 'required|string|max:120',
             'salary' => 'required|integer',
         ]);
 
@@ -63,7 +63,7 @@ class EscalafonController extends Controller
     {
         $request->validate([
             'code'   => 'required|string|max:10',
-            'name'   => 'required|string|unique:escalafons,name|max:120',
+            'name'   => 'required|string|max:120',
             'salary' => 'required|integer',
         ]);
 
