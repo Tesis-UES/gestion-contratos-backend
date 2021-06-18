@@ -58,11 +58,11 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::delete('/courses/{id}', [CourseController::class, 'destroy']);
 
     //Rutas que maneja el catalogo de escalafones
-    Route::post('/contracts', [ContractTypeController::class, 'store']);
-    Route::get('/contracts', [ContractTypeController::class, 'all']);
-    Route::get('/contracts/{id}', [ContractTypeController::class, 'show']);
-    Route::put('/contracts/{id}', [ContractTypeController::class, 'update']);
-    Route::delete('/contracts/{id}', [ContractTypeController::class, 'destroy']);
+    Route::post('/contract-types', [ContractTypeController::class, 'store']);
+    Route::get('/contract-types', [ContractTypeController::class, 'all']);
+    Route::get('/contract-types/{id}', [ContractTypeController::class, 'show']);
+    Route::put('/contract-types/{id}', [ContractTypeController::class, 'update']);
+    Route::delete('/contract-types/{id}', [ContractTypeController::class, 'destroy']);
 
 
 });
