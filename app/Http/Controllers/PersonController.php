@@ -14,6 +14,7 @@ class PersonController extends Controller
 
     public function store(Request $request)
     {
+        
         $fields = $request->validate([
             'first_name'    => 'required|string|max:120',
             'middle_name'   => 'required|string|max:120',
@@ -32,28 +33,11 @@ class PersonController extends Controller
 
         ]);
 
-
         $usuario = Auth::user();
+        $newPerson = new Person ($request->all());
+        $newPerson->user_id = $usuario->id;
+        $newPerson->save();
 
-        $newPerson = Person::create([
-            'user_id'                   => $usuario->id,
-            'first_name'                => $request['first_name'],
-            'middle_name'               => $request['middle_name'],
-            'last_name'                 => $request['last_name'],
-            'know_as'                   => $request['know_as'],
-            'civil_status'              => $request['civil_status'],
-            'married_name'              => $request['married_name'],
-            'birth_date'                => $request['birth_date'],
-            'gender'                    => $request['gender'],
-            'telephone'                 => $request['telephone'],
-            'email'                     => $request['email'],
-            'address'                   => $request['address'],
-            'professional_title'        => $request['professional_title'],
-            'dui_number'                => $request['dui_number'],
-            'dui_expiration_date'       => $request['dui_expiration_date'],
-            'nit_number'                => $request['nit_number'],
-            'bank_account_number'       => $request['bank_account_number'],
-        ]);
         $this->RegisterAction("El usuario he registrado sus datos personales generales");
         return response([
             'person' => $newPerson,
