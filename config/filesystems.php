@@ -42,6 +42,13 @@ return [
             'visibility' => 'public',
         ],
 
+         /* Driver que contiene la ubicacion de los archivos personales de los candidatos*/
+         'personalFiles'=>[
+            'driver'    =>  'local',
+            'root'      =>  public_path().'/personalFiles',
+
+        ],
+
         's3' => [
             'driver' => 's3',
             'key' => env('AWS_ACCESS_KEY_ID'),

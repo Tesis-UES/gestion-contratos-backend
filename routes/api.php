@@ -8,6 +8,7 @@ use App\Http\Controllers\FacultyController;
 use App\Http\Controllers\SchoolController;
 use App\Http\Controllers\CourseController;
 use App\Http\Controllers\ContractTypeController;
+use App\Http\Controllers\PersonController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -80,6 +81,24 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::get('/central-authorities/{id}', [CentralAuthorityController::class, 'show']);
     Route::put('/central-authorities/{id}', [CentralAuthorityController::class, 'update']);
     Route::delete('/central-authorities/{id}', [CentralAuthorityController::class, 'destroy']);
+
+    //Rutas de informacion de persona a contratar
+    Route::post('/persons', [PersonController::class, 'store']);
+    Route::get('/persons/{id}', [PersonController::class, 'show']);
+
+    Route::post('/persons/{id}/files/dui', [PersonController::class, 'storeDui']);
+    Route::post('/persons/{id}/files/nit', [PersonController::class, 'storeNit']);
+    Route::post('/persons/{id}/files/bank-account', [PersonController::class, 'storeBank']);
+    Route::post('/persons/{id}/files/title', [PersonController::class, 'storeTitle']);
+    Route::post('/persons/{id}/files/curriculum', [PersonController::class, 'storeCurriculum']);
+    Route::put('/persons/{id}/files/dui', [PersonController::class, 'updateDui']);
+    Route::put('/persons/{id}/files/nit', [PersonController::class, 'updateNit']);
+    Route::put('/persons/{id}/files/bank-account', [PersonController::class, 'updateBank']);
+    Route::put('/persons/{id}/files/title', [PersonController::class, 'updateTitle']);
+    Route::put('/persons/{id}/files/curriculum', [PersonController::class, 'updateCurriculum']);
+
+    Route::put('/persons/{id}', [PersonController::class, 'update']);
+    Route::delete('/persons/{id}', [PersonController::class, 'destroy']);
 });
 
 Route::middleware('auth:api')->get('/user', function (Request $request) {
