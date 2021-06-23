@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ActivityController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\CentralAuthorityController;
 use App\Http\Controllers\EscalafonController;
 use App\Http\Controllers\FacultyController;
 use App\Http\Controllers\SchoolController;
@@ -31,21 +32,21 @@ Route::post('/auth/login', [AuthController::class, 'login']);
 Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::post('/auth/logout', [AuthController::class, 'logout']);
 
-    //Rutas que maneja el catalogo de escalafones
+    // Rutas que maneja el catalogo de escalafones
     Route::post('/escalafones', [EscalafonController::class, 'store']);
     Route::get('/escalafones', [EscalafonController::class, 'all']);
     Route::get('/escalafones/{id}', [EscalafonController::class, 'show']);
     Route::put('/escalafones/{id}', [EscalafonController::class, 'update']);
     Route::delete('/escalafones/{id}', [EscalafonController::class, 'destroy']);
 
-    //Rutas que maneja el catalogo de facultades
+    // Rutas que maneja el catalogo de facultades
     Route::post('/faculties', [FacultyController::class, 'store']);
     Route::get('/faculties', [FacultyController::class, 'all']);
     Route::get('/faculties/{id}', [FacultyController::class, 'show']);
     Route::put('/faculties/{id}', [FacultyController::class, 'update']);
     Route::delete('/faculties/{id}', [FacultyController::class, 'destroy']);
 
-    //Rutas que maneja el catalogo de escuelas pertenecientes a facultades
+    // Rutas que maneja el catalogo de escuelas pertenecientes a facultades
     Route::post('/faculties/{id}/schools', [SchoolController::class, 'store']);
     Route::get('/faculties/{id}/schools', [SchoolController::class, 'all']);
     Route::get('/schools/{id}', [SchoolController::class, 'show']);
@@ -59,19 +60,27 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::get('/activities/{id}', [ActivityController::class, 'show']);
     Route::put('/activities/{id}', [ActivityController::class, 'update']);
     Route::delete('/activities/{id}', [ActivityController::class, 'destroy']);
-    //Rutas que maneja el catalogo de materias pertenecientes a escuelas
+
+    // Rutas que maneja el catalogo de materias pertenecientes a escuelas
     Route::post('/schools/{id}/courses', [CourseController::class, 'store']);
     Route::get('/schools/{id}/courses', [CourseController::class, 'all']);
     Route::get('/courses/{id}', [CourseController::class, 'show']);
     Route::put('/courses/{id}', [CourseController::class, 'update']);
     Route::delete('/courses/{id}', [CourseController::class, 'destroy']);
 
-    //Rutas que maneja el catalogo de escalafones
+    // Rutas que maneja el catalogo de escalafones
     Route::post('/contract-types', [ContractTypeController::class, 'store']);
     Route::get('/contract-types', [ContractTypeController::class, 'all']);
     Route::get('/contract-types/{id}', [ContractTypeController::class, 'show']);
     Route::put('/contract-types/{id}', [ContractTypeController::class, 'update']);
     Route::delete('/contract-types/{id}', [ContractTypeController::class, 'destroy']);
+
+    // Rutas que manejan el catalogo de autoridades centrales
+    Route::post('/central-authorities', [CentralAuthorityController::class, 'store']);
+    Route::get('/central-authorities', [CentralAuthorityController::class, 'all']);
+    Route::get('/central-authorities/{id}', [CentralAuthorityController::class, 'show']);
+    Route::put('/central-authorities/{id}', [CentralAuthorityController::class, 'update']);
+    Route::delete('/central-authorities/{id}', [CentralAuthorityController::class, 'destroy']);
 
     //Rutas de informacion de persona a contratar
     Route::post('/persons', [PersonController::class, 'store']);
@@ -90,7 +99,6 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
 
     Route::put('/persons/{id}', [PersonController::class, 'update']);
     Route::delete('/persons/{id}', [PersonController::class, 'destroy']);
-
 });
 
 Route::middleware('auth:api')->get('/user', function (Request $request) {
