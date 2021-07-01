@@ -9,6 +9,7 @@ use App\Http\Controllers\SchoolController;
 use App\Http\Controllers\CourseController;
 use App\Http\Controllers\ContractTypeController;
 use App\Http\Controllers\PersonController;
+use App\Http\Controllers\SemesterController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -85,7 +86,6 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     //Rutas de informacion de persona a contratar
     Route::post('/persons', [PersonController::class, 'store']);
     Route::get('/persons/{id}', [PersonController::class, 'show']);
-
     Route::post('/persons/{id}/files/dui', [PersonController::class, 'storeDui']);
     Route::post('/persons/{id}/files/nit', [PersonController::class, 'storeNit']);
     Route::post('/persons/{id}/files/bank-account', [PersonController::class, 'storeBank']);
@@ -96,9 +96,17 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::put('/persons/{id}/files/bank-account', [PersonController::class, 'updateBank']);
     Route::put('/persons/{id}/files/title', [PersonController::class, 'updateTitle']);
     Route::put('/persons/{id}/files/curriculum', [PersonController::class, 'updateCurriculum']);
-
     Route::put('/persons/{id}', [PersonController::class, 'update']);
     Route::delete('/persons/{id}', [PersonController::class, 'destroy']);
+
+
+    //Rutas del manejo de la información de los ciclos academicos
+    Route::post('/semesters', [SemesterController::class, 'store']);
+    Route::get('/semesters', [SemesterController::class, 'all']);
+    Route::get('/semesters/actives', [SemesterController::class, 'allActives']);
+    Route::get('/semesters/{id}', [SemesterController::class, 'show']);
+    Route::put('/semesters/{id}', [SemesterController::class, 'update']);
+    Route::delete('/semesters/{id}', [SemesterController::class, 'destroy']);
 });
 
 Route::middleware('auth:api')->get('/user', function (Request $request) {
