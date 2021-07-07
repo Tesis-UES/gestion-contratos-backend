@@ -26,13 +26,16 @@ Route::post('/auth/login', [AuthController::class, 'login']);
 // Protected Routes 
 Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::post('/auth/logout', [AuthController::class, 'logout']);
-
-    //Rutas que maneja el catalogo de escalafones
-    Route::post('/escalafones', [EscalafonController::class, 'store']);
-    Route::get('/escalafones', [EscalafonController::class, 'all']);
-    Route::get('/escalafones/{id}', [EscalafonController::class, 'show']);
-    Route::put('/escalafones/{id}', [EscalafonController::class, 'update']);
-    Route::delete('/escalafones/{id}', [EscalafonController::class, 'destroy']);
+   //Rutas que maneja el catalogo de escalafones 
+    Route::group(['middleware' => ['can:write_escalafones']], function () {
+        Route::post('/escalafones', [EscalafonController::class, 'store']);
+        Route::put('/escalafones/{id}', [EscalafonController::class, 'update']);
+        Route::delete('/escalafones/{id}', [EscalafonController::class, 'destroy']);
+    });
+    Route::group(['middleware' => ['can:read_escalafones']], function () {
+        Route::get('/escalafones', [EscalafonController::class, 'all']);
+        Route::get('/escalafones/{id}', [EscalafonController::class, 'show']);
+    });
 
     //Rutas que maneja el catalogo de facultades
     Route::post('/faculties', [FacultyController::class, 'store']);
