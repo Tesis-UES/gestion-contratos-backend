@@ -29,14 +29,28 @@ class SemesterController extends Controller
         $fields = $request->validate([
             'name'          => 'required|string|max:120',
             'start_date'    => 'required|unique:semesters',
-            'end_date'      => 'required|unique:semesters',
+            'end_date'      => 'required|unique:semesters|after:start_date',     
         ]);
 
-        $newSemester = Semester::create($request->all());
-        $this->RegisterAction("El usuario ha Ingresado un nuevo registro de ciclo academico");
-        return response([
+        $lastSemester = Semester::latest()->first();
+        
+        $baseDate   = new \DateTime($lastSemester->end_date); 
+        $startDate  = new \DateTime($request->start_date);
+        
+        if ($baseDate < $startDate) {
+            
+            $newSemester = Semester::create($request->all());
+            $this->RegisterAction("El usuario ha Ingresado un nuevo registro de ciclo academico");
+            return response([
             'Semester' => $newSemester,
-        ], 201);
+            ], 201);
+
+        } else {
+            return response([
+                'message' => "No se puede Crear el ciclo academico con fechas que traslapen un ciclo anterior",
+            ], 422);
+        }
+   
     }
 
     public function show($id)
@@ -56,8 +70,8 @@ class SemesterController extends Controller
         $semester = Semester::findOrFail($id);
         $semester->update($request->all());
         $this->RegisterAction("El usuario ha actualizado el registro del ciclo  ".$request['name']." en el catalogo de ciclos activos");
-
         return response(['semester' => $semester], 200);
+        
     }
 
     public function destroy($id)
