@@ -15,6 +15,11 @@ class CreateAcademicLoadsTable extends Migration
     {
         Schema::create('academic_loads', function (Blueprint $table) {
             $table->id();
+            $table->bigInteger('course_id')->unsigned()->nonullable();
+            $table->foreign('course_id')->references('id')->on('courses')->onDelete('cascade')->nonullable();
+            $table->bigInteger('semester_id')->unsigned()->nonullable();
+            $table->foreign('semester_id')->references('id')->on('semesters')->onDelete('cascade')->nonullable();
+            $table->softDeletes();
             $table->timestamps();
         });
     }

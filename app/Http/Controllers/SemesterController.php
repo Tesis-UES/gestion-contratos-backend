@@ -33,23 +33,35 @@ class SemesterController extends Controller
         ]);
 
         $lastSemester = Semester::latest()->first();
-        
-        $baseDate   = new \DateTime($lastSemester->end_date); 
-        $startDate  = new \DateTime($request->start_date);
-        
-        if ($baseDate < $startDate) {
-            
+
+        if ($lastSemester == null ) {
             $newSemester = Semester::create($request->all());
             $this->RegisterAction("El usuario ha Ingresado un nuevo registro de ciclo academico");
             return response([
             'Semester' => $newSemester,
             ], 201);
-
+        
         } else {
-            return response([
-                'message' => "No se puede Crear el ciclo academico con fechas que traslapen un ciclo anterior",
-            ], 422);
+            $baseDate   = new \DateTime($lastSemester->end_date); 
+            $startDate  = new \DateTime($request->start_date);
+        
+            if ($baseDate < $startDate) {
+            
+                $newSemester = Semester::create($request->all());
+                $this->RegisterAction("El usuario ha Ingresado un nuevo registro de ciclo academico");
+                return response([
+                    'Semester' => $newSemester,
+                    ], 201);
+
+            } else {
+                return response([
+                    'message' => "No se puede Crear el ciclo academico con fechas que traslapen un ciclo anterior",
+                ], 422);
+            }
         }
+        
+        
+        
    
     }
 

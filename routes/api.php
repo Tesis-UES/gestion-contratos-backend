@@ -10,6 +10,7 @@ use App\Http\Controllers\CourseController;
 use App\Http\Controllers\ContractTypeController;
 use App\Http\Controllers\PersonController;
 use App\Http\Controllers\SemesterController;
+use App\Http\Controllers\AcademicLoadController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -107,6 +108,11 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::get('/semesters/{id}', [SemesterController::class, 'show']);
     Route::put('/semesters/{id}', [SemesterController::class, 'update']);
     Route::delete('/semesters/{id}', [SemesterController::class, 'destroy']);
+
+    //Rutas de la gestion de carga academica.
+    Route::post('/academicLoad', [AcademicLoadController::class, 'store']);
+    Route::get('/academicLoad/{id}', [AcademicLoadController::class, 'show']);
+
 });
 
 Route::middleware('auth:api')->get('/user', function (Request $request) {
