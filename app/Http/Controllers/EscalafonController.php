@@ -4,12 +4,15 @@ namespace App\Http\Controllers;
 
 use App\Models\Escalafon;
 use Illuminate\Http\Request;
+use App\Http\Traits\WorklogTrait;
 
 class EscalafonController extends Controller
 {
+    use WorklogTrait;
     public function all()
     {
         $escalafons = Escalafon::all();
+        $this->RegisterAction("El usuario ha consultado el catalogo de Escalafones");
         return response($escalafons, 200);
     }
 
@@ -32,7 +35,7 @@ class EscalafonController extends Controller
             'name'   => $fields['name'],
             'salary' => $fields['salary'],
         ]);
-
+        $this->RegisterAction("El usuario ha Ingresado un nuevo registro en el catalogo de Escalafones");
         return response([
             'escalafon' => $newEscalafon,
         ], 201);
@@ -69,6 +72,7 @@ class EscalafonController extends Controller
 
         $escalafon = Escalafon::findOrFail($id);
         $escalafon->update($request->all());
+        $this->RegisterAction("El usuario ha actualizado el registro del escalafon ".$request['name']." en el catalogo de escalafones");
 
         return response(['escalafon' => $escalafon], 200);
     }
@@ -83,6 +87,7 @@ class EscalafonController extends Controller
     {
         $escalafon = Escalafon::findOrFail($id);
         $escalafon->delete();
+        $this->RegisterAction("El usuario ha eliminado el registro del escalafon ".$escalafon->name." en el catalogo de Escalafones");
         return response(null, 204);
     }
 }

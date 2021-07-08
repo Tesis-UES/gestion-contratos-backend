@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use App\Models\worklog;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
 
@@ -67,5 +68,15 @@ class AuthController extends Controller
         return response([
             'message' => 'logged out'
         ], 200);
+    }
+
+    public function worklog()
+    {
+        $worklog  = worklog::all()->sortByDesc('created_at');
+        $response = [
+            'worklog' => $worklog,
+        ];
+
+        return response($response, 200);
     }
 }

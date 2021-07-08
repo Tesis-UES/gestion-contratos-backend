@@ -4,12 +4,15 @@ namespace App\Http\Controllers;
 
 use App\Models\Faculty;
 use Illuminate\Http\Request;
+use App\Http\Traits\WorklogTrait;
 
 class FacultyController extends Controller
 {
+    use WorklogTrait;
     public function all()
     {
         $faculties = Faculty::all();
+        $this->RegisterAction("El usuario ha consultado el catalogo de facultades");
         return response($faculties, 200);
     }
 
@@ -32,7 +35,7 @@ class FacultyController extends Controller
             'dean'     => $fields['dean'],
             'viceDean' => $fields['viceDean'],
         ]);
-
+        $this->RegisterAction("El usuario ha Ingresado un nuevo registro en el catalogo de facultades");
         return response([
             'faculty' => $newFaculty,
         ], 201);
@@ -67,7 +70,7 @@ class FacultyController extends Controller
 
         $faculty = Faculty::findOrFail($id);
         $faculty->update($request->all());
-
+        $this->RegisterAction("El usuario ha actualizado el registro de la ".$request['name']." en el catalogo de facultades");
         return response(['faculty' => $faculty], 200);
     }
 
@@ -78,6 +81,7 @@ class FacultyController extends Controller
     {
         $faculty = Faculty::findOrFail($id);
         $faculty->delete();
+        $this->RegisterAction("El usuario ha eliminado el registro de la ".$faculty->name." en el catalogo de facultades");
         return response(null, 204);
     }
 }
