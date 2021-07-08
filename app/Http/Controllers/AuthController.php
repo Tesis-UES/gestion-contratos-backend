@@ -70,13 +70,13 @@ class AuthController extends Controller
         ], 200);
     }
 
-    public function worklog(){
-        $worklog  = worklog::all();
+    public function worklog()
+    {
+        $worklog  = worklog::all()->sortByDesc('created_at');
         $response = [
             'worklog' => $worklog,
         ];
 
         return response($response, 200);
-
     }
 }
