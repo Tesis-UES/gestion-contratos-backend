@@ -118,6 +118,26 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
         Route::get('/central-authorities/{id}', [CentralAuthorityController::class, 'show']);
     });
 
+    Route::group(['middleware' => ['can:write_persons']], function () {
+        Route::post('/persons', [PersonController::class, 'store']);
+        Route::post('/persons/{id}/files/dui', [PersonController::class, 'storeDui']);
+        Route::post('/persons/{id}/files/nit', [PersonController::class, 'storeNit']);
+        Route::post('/persons/{id}/files/bank-account', [PersonController::class, 'storeBank']);
+        Route::post('/persons/{id}/files/title', [PersonController::class, 'storeTitle']);
+        Route::post('/persons/{id}/files/curriculum', [PersonController::class, 'storeCurriculum']);
+        Route::put('/persons/{id}/files/dui', [PersonController::class, 'updateDui']);
+        Route::put('/persons/{id}/files/nit', [PersonController::class, 'updateNit']);
+        Route::put('/persons/{id}/files/bank-account', [PersonController::class, 'updateBank']);
+        Route::put('/persons/{id}/files/title', [PersonController::class, 'updateTitle']);
+        Route::put('/persons/{id}/files/curriculum', [PersonController::class, 'updateCurriculum']);
+        Route::put('/persons/{id}', [PersonController::class, 'update']);
+        Route::delete('/persons/{id}', [PersonController::class, 'destroy']);
+    });
+    Route::group(['middleware' => ['can:read_persons']], function () {
+        Route::get('/persons/{id}', [PersonController::class, 'show']);
+    });
+    
+            /* RUTAS DEL MANEJO DE CARGA ACADEMICA*/
     //Rutas del manejo de la información de los ciclos academicos
     Route::post('/semesters', [SemesterController::class, 'store']);
     Route::get('/semesters', [SemesterController::class, 'all']);
@@ -137,24 +157,6 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::put('/groupTypes/{id}', [GroupTypeController::class, 'update']);
     Route::delete('/groupTypes/{id}', [GroupTypeController::class, 'destroy']);
 
-    Route::group(['middleware' => ['can:write_persons']], function () {
-        Route::post('/persons', [PersonController::class, 'store']);
-        Route::post('/persons/{id}/files/dui', [PersonController::class, 'storeDui']);
-        Route::post('/persons/{id}/files/nit', [PersonController::class, 'storeNit']);
-        Route::post('/persons/{id}/files/bank-account', [PersonController::class, 'storeBank']);
-        Route::post('/persons/{id}/files/title', [PersonController::class, 'storeTitle']);
-        Route::post('/persons/{id}/files/curriculum', [PersonController::class, 'storeCurriculum']);
-        Route::put('/persons/{id}/files/dui', [PersonController::class, 'updateDui']);
-        Route::put('/persons/{id}/files/nit', [PersonController::class, 'updateNit']);
-        Route::put('/persons/{id}/files/bank-account', [PersonController::class, 'updateBank']);
-        Route::put('/persons/{id}/files/title', [PersonController::class, 'updateTitle']);
-        Route::put('/persons/{id}/files/curriculum', [PersonController::class, 'updateCurriculum']);
-        Route::put('/persons/{id}', [PersonController::class, 'update']);
-        Route::delete('/persons/{id}', [PersonController::class, 'destroy']);
-    });
-    Route::group(['middleware' => ['can:read_persons']], function () {
-        Route::get('/persons/{id}', [PersonController::class, 'show']);
-    });
 });
 
 Route::middleware('auth:api')->get('/user', function (Request $request) {
