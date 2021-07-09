@@ -11,6 +11,7 @@ use App\Http\Controllers\ContractTypeController;
 use App\Http\Controllers\PersonController;
 use App\Http\Controllers\SemesterController;
 use App\Http\Controllers\AcademicLoadController;
+use App\Http\Controllers\GroupTypeController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 
@@ -112,6 +113,13 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     //Rutas de la gestion de carga academica.
     Route::post('/academicLoad', [AcademicLoadController::class, 'store']);
     Route::get('/academicLoad/{id}', [AcademicLoadController::class, 'show']);
+
+    //Rutas que maneja el catalogo de tipos de clase
+    Route::post('/groupTypes', [GroupTypeController::class, 'store']);
+    Route::get('/groupTypes', [GroupTypeController::class, 'all']);
+    Route::get('/groupTypes/{id}', [GroupTypeController::class, 'show']);
+    Route::put('/groupTypes/{id}', [GroupTypeController::class, 'update']);
+    Route::delete('/groupTypes/{id}', [GroupTypeController::class, 'destroy']);
 
 });
 

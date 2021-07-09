@@ -41,13 +41,11 @@ class AcademicLoadController extends Controller
             'id'            => $result->id,
             'semester_id'   => $result->semester_id,
             'course_id'     => $result->course_id,
-            'semesterName'  => $result->semester->name,
-            'start_date'    => $result->semester->start_date,
-            'end_date'      => $result->semester->end_date,
-            'courseName'    => $result->course->name,
-            'courseCode'    => $result->course->code,
+            'semester'      => $result->semester,
+            'course'        => $result->course,
+            
         ];
-        return response(['academicLoad' =>   $academicLoad,], 200);
+        return response(['academicLoad' =>  $academicLoad,], 200);
     }
 
     
