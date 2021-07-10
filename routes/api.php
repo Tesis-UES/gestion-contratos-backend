@@ -11,6 +11,7 @@ use App\Http\Controllers\ContractTypeController;
 use App\Http\Controllers\PersonController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Auth;
 
 /*
 |--------------------------------------------------------------------------
@@ -134,8 +135,10 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::group(['middleware' => ['can:read_persons']], function () {
         Route::get('/persons/{id}', [PersonController::class, 'show']);
     });
+
+    
 });
 
 Route::middleware('auth:api')->get('/user', function (Request $request) {
-    return $request->user();
+    return $user = Auth::user();
 });
