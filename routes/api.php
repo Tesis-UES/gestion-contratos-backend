@@ -139,6 +139,6 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     
 });
 
-Route::middleware('auth:api')->get('/user', function (Request $request) {
+Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $user = Auth::user();
 });
