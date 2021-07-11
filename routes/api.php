@@ -138,6 +138,13 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
 
     Route::get('/roles', [AuthController::class, 'AllRoles']);
 
+    //Rutas para creacion de usuario
+    Route::post('/admin/users',[AuthController::class, 'createUser']);
+    Route::get('/users',[AuthController::class, 'allUsers']);
+    Route::get('/users/{id}',[AuthController::class, 'getUser']);
+    Route::put('/users/me/password',[AuthController::class, 'changePassword']);
+    Route::put('/users/{id}',[AuthController::class, 'updateUser']);
+    
     
 });
 
