@@ -6,6 +6,7 @@ use App\Models\User;
 use App\Models\worklog;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
+use Spatie\Permission\Models\Role;
 
 class AuthController extends Controller
 {
@@ -72,11 +73,21 @@ class AuthController extends Controller
 
     public function worklog()
     {
-        $worklog  = worklog::all()->sortByDesc('created_at');
+        $worklog  = worklog::paginate(15);
         $response = [
             'worklog' => $worklog,
         ];
 
         return response($response, 200);
+    }
+
+    public function AllRoles(){
+        $sismtemRoles = Role::all();
+        $response = [
+            'sismtemRoles' => $sismtemRoles,
+        ];
+
+        return response($response, 200);
+
     }
 }

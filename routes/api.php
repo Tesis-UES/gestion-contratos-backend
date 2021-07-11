@@ -136,6 +136,8 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
         Route::get('/persons/{id}', [PersonController::class, 'show']);
     });
 
+    Route::get('/roles', [AuthController::class, 'AllRoles']);
+
     
 });
 
