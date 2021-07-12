@@ -73,7 +73,7 @@ class AuthController extends Controller
 
     public function worklog()
     {
-        $worklog  = worklog::paginate(15);
+        $worklog  = worklog::orderBy('created_at', 'desc')->paginate(15);
         $response = [
             'worklog' => $worklog,
         ];
