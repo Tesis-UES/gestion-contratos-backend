@@ -71,9 +71,11 @@ class AuthController extends Controller
         ], 200);
     }
 
-    public function worklog()
+    public function worklog(Request $request)
     {
-        $worklog  = worklog::orderBy('created_at', 'desc')->paginate(15);
+        $worklog  = worklog::where('username','LIKE','%'.$request->query('name').'%')
+        ->orWhereBetween('created_at', [$request->query('date_after'), $request->query('date_before')])
+        ->orderBy('created_at',$request->query('order','desc'))->paginate(15);
         $response = [
             'worklog' => $worklog,
         ];
