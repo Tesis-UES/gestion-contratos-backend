@@ -78,20 +78,20 @@ class RolesPermissionsSeeder extends Seeder
             'write_contractTypes',
             'read_centralAuthorities',
             'write_centralAuthorities',
-            'read_persons',
-            'write_persons',
-            'write_users',
             'read_users',
+            'write_users',
         ]);
 
         $profesor->givePermissionTo([
             'read_escalafones',
-            'write_faculties',
+            'read_faculties',
+            'read_schools',
             'read_activities',
             'write_activities',
             'read_courses',
             'read_contractTypes',
             'read_persons',
+            'write_persons',
         ]);
 
         $directorEscuela->givePermissionTo([
@@ -106,11 +106,9 @@ class RolesPermissionsSeeder extends Seeder
             'write_courses',
             'read_contractTypes',
             'read_persons',
-            'write_persons',
         ]);
 
         $asistenteAdmin->givePermissionTo([
-            'read_worklog',
             'read_escalafones',
             'write_escalafones',
             'read_faculties',
