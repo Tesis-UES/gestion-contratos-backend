@@ -48,6 +48,10 @@ class RolesPermissionsSeeder extends Seeder
         Permission::create(['name' => 'read_persons']);
         Permission::create(['name' => 'write_persons']);
 
+
+        Permission::create(['name' => 'write_users']);
+        Permission::create(['name' => 'read_users']);
+
         //CREACION DE ROLES
         $admin = Role::create(['name' => 'Administrador']);
         $profesor = Role::create(['name' => 'Profesor']);
@@ -75,6 +79,8 @@ class RolesPermissionsSeeder extends Seeder
             'write_centralAuthorities',
             'read_persons',
             'write_persons',
+            'write_users',
+            'read_users',
         ]);
 
         $profesor->givePermissionTo([
