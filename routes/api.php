@@ -40,6 +40,11 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     // Ruta para obtener los permisos del logged in user 
     Route::get('/users/me/permissions', [AuthController::class, 'getPermissions']);
 
+    // Ruta para obtener todos los roles 
+    Route::group(['middleware' => ['can:read_roles']], function () {
+        Route::get('/roles', [AuthController::class, 'AllRoles']);
+    });
+
     // Ruta que maneja la bitacora de uso 
     Route::group(['middleware' => ['can:read_worklog']], function () {
         Route::get('/worklog', [AuthController::class, 'worklog']);
@@ -142,8 +147,6 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::group(['middleware' => ['can:read_persons']], function () {
         Route::get('/persons/{id}', [PersonController::class, 'show']);
     });
-
-    Route::get('/roles', [AuthController::class, 'AllRoles']);
 
     //Rutas para creacion de usuario
     Route::group(['middleware' => ['can:write_users']], function () {

@@ -73,9 +73,20 @@ class AuthController extends Controller
         ], 200);
     }
 
-    public function worklog()
+    public function worklog(Request $request)
     {
-        $worklog  = worklog::paginate(15);
+        $worklog  = worklog::where('username', 'LIKE', '%' . $request->query('name') . '%');
+        if ($request->query('date_after')) {
+            $dayafter = new \DateTime($request->query('date_after'));
+            $worklog = $worklog->whereDate('created_at', '>=', $dayafter);
+        }
+        if ($request->query('date_before')) {
+            $daybefore = new \DateTime($request->query('date_before'));
+            $worklog = $worklog->whereDate('created_at', '<=', $daybefore);
+        }
+
+        $worklog = $worklog->orderBy('created_at', $request->query('order', 'desc'))->paginate(15);
+
         $response = [
             'worklog' => $worklog,
         ];
@@ -85,9 +96,9 @@ class AuthController extends Controller
 
     public function AllRoles()
     {
-        $sismtemRoles = Role::all();
+        $systemRoles = Role::all();
         $response = [
-            'sismtemRoles' => $sismtemRoles,
+            'systemRoles' => $systemRoles,
         ];
         $this->RegisterAction('El usuario ha consultado el catalogo de roles');
         return response($response, 200);
