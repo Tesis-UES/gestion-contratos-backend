@@ -31,7 +31,22 @@ Route::post('/auth/login', [AuthController::class, 'login']);
 
 // Protected Routes 
 Route::group(['middleware' => ['auth:sanctum']], function () {
+    // Ruta para cerrar sesion
     Route::post('/auth/logout', [AuthController::class, 'logout']);
+
+    // Ruta para cambiar contraseña
+    Route::put('/users/me/password', [AuthController::class, 'changePassword']);
+
+    // Ruta para obtener los permisos del logged in user 
+    Route::get('/users/me/permissions', [AuthController::class, 'getPermissions']);
+
+    // Ruta para obtener todos los roles 
+    Route::group(['middleware' => ['can:read_roles']], function () {
+        Route::get('/roles', [AuthController::class, 'AllRoles']);
+    });
+
+    // Ruta para verificar si el profesor ya ingreso sus datos personales
+    Route::get('/users/me/has-registered', [PersonController::class, 'hasRegistered']);
 
     // Ruta que maneja la bitacora de uso 
     Route::group(['middleware' => ['can:read_worklog']], function () {
@@ -136,17 +151,14 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
         Route::get('/persons/{id}', [PersonController::class, 'show']);
     });
 
-    Route::get('/roles', [AuthController::class, 'AllRoles']);
+    //Rutas para creacion de usuario
+    Route::group(['middleware' => ['can:write_users']], function () {
+        Route::post('/admin/users', [AuthController::class, 'createUser']);
+        Route::put('/users/{id}', [AuthController::class, 'updateUser']);
+    });
 
-    
-});
-
-Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
-    $usuario =  Auth::user();
-    $permisos = $usuario->getAllPermissions();
-    $permissions = [];
-    foreach ($permisos as $permi) {
-        $permissions[] = $permi->name;
-    }
-    return $permissions;
+    Route::group(['middleware' => ['can:read_users']], function () {
+        Route::get('/users', [AuthController::class, 'allUsers']);
+        Route::get('/users/{id}', [AuthController::class, 'getUser']);
+    });
 });

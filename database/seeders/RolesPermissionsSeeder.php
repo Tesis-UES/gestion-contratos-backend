@@ -23,6 +23,7 @@ class RolesPermissionsSeeder extends Seeder
 
         // CREACION DE PERMISOS 
         Permission::create(['name' => 'read_worklog']);
+        Permission::create(['name' => 'read_roles']);
 
         Permission::create(['name' => 'read_escalafones']);
         Permission::create(['name' => 'write_escalafones']);
@@ -48,16 +49,21 @@ class RolesPermissionsSeeder extends Seeder
         Permission::create(['name' => 'read_persons']);
         Permission::create(['name' => 'write_persons']);
 
+        Permission::create(['name' => 'write_users']);
+        Permission::create(['name' => 'read_users']);
+
         //CREACION DE ROLES
         $admin = Role::create(['name' => 'Administrador']);
         $profesor = Role::create(['name' => 'Profesor']);
         $directorEscuela = Role::create(['name' => 'Director Escuela']);
         $asistenteAdmin = Role::create(['name' => 'Asistente Administrativo']);
+        $financiero =   Role::create(['name' => 'Asistente Financiero']);
 
 
 
         $admin->givePermissionTo([
             'read_worklog',
+            'read_roles',
             'read_escalafones',
             'write_escalafones',
             'read_faculties',
@@ -72,18 +78,20 @@ class RolesPermissionsSeeder extends Seeder
             'write_contractTypes',
             'read_centralAuthorities',
             'write_centralAuthorities',
-            'read_persons',
-            'write_persons',
+            'read_users',
+            'write_users',
         ]);
 
         $profesor->givePermissionTo([
             'read_escalafones',
-            'write_faculties',
+            'read_faculties',
+            'read_schools',
             'read_activities',
             'write_activities',
             'read_courses',
             'read_contractTypes',
             'read_persons',
+            'write_persons',
         ]);
 
         $directorEscuela->givePermissionTo([
@@ -98,11 +106,9 @@ class RolesPermissionsSeeder extends Seeder
             'write_courses',
             'read_contractTypes',
             'read_persons',
-            'write_persons',
         ]);
 
         $asistenteAdmin->givePermissionTo([
-            'read_worklog',
             'read_escalafones',
             'write_escalafones',
             'read_faculties',
