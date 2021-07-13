@@ -44,14 +44,21 @@ class PersonController extends Controller
         ], 201);
     }
 
-
     public function show($id)
     {
         $person = Person::findOrFail($id);
         return response(['person' => $person,], 200);
     }
 
-
+    public function hasRegistered()
+    {
+        $user = Auth::user();
+        $person = Person::where('user_id', $user->id)->first();
+        if($person) {
+            return response(['has_registered' => true], 200);
+        }
+        return response(['has_registered' => false], 200);
+    }
 
     public function update(Request $request, $id)
     {
@@ -203,7 +210,4 @@ class PersonController extends Controller
         return response(['person' => $person,], 200);
 
     }
-
-    
-
 }

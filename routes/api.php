@@ -45,6 +45,9 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
         Route::get('/roles', [AuthController::class, 'AllRoles']);
     });
 
+    // Ruta para verificar si el profesor ya ingreso sus datos personales
+    Route::get('/users/me/has-registered', [PersonController::class, 'hasRegistered']);
+
     // Ruta que maneja la bitacora de uso 
     Route::group(['middleware' => ['can:read_worklog']], function () {
         Route::get('/worklog', [AuthController::class, 'worklog']);
