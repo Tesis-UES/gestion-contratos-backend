@@ -28,6 +28,7 @@ class AuthController extends Controller
             'password' => bcrypt($fields['password']),
         ]);
 
+        $user->getRoleNames();
         $token = $user->createToken('myappToken')->plainTextToken;
 
         $response = [
@@ -55,6 +56,7 @@ class AuthController extends Controller
             );
         }
 
+        $user->getRoleNames();
         $token = $user->createToken('myappToken')->plainTextToken;
         $response = [
             'user' => $user,
