@@ -154,7 +154,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
 
     //Rutas para creacion de usuario
     Route::group(['middleware' => ['can:write_users']], function () {
-        Route::post('/admin/users', [AuthController::class, 'createUser']);
+        Route::post('/users', [AuthController::class, 'createUser']);
         Route::put('/users/{id}', [AuthController::class, 'updateUser']);
     });
 
