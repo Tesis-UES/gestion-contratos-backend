@@ -15,11 +15,42 @@ class RolesPermissionsSeeder extends Seeder
     use  HasRoles;
     public function run()
     {
-        $usuario = User::create([
+        $usuario1 = User::create([
             'name'      => 'Admin',
-            'email'     => 'amin@ues.edu.sv',
+            'email'     => 'admin@ues.edu.sv',
             'password'  => bcrypt('foobar'),
         ]);
+        $usuario2 = User::create([
+            'name'      => 'Guillermo Alexander Cornejo Argueta',
+            'email'     => 'admin2@ues.edu.sv',
+            'password'  => bcrypt('foobar'),
+        ]);
+        $usuario3 = User::create([
+            'name'      => 'Paola Renee Aguilar Quevedo',
+            'email'     => 'paola@ues.edu.sv',
+            'password'  => bcrypt('foobar'),
+            'school_id' => 11,
+        ]);
+        $usuario4 = User::create([
+            'name'      => 'Oscar Emmanuel Cordero Hernandez',
+            'email'     => 'oscar@ues.edu.sv',
+            'password'  => bcrypt('foobar'),
+            'school_id' => 11,
+        ]);
+        $usuario5 = User::create([
+            'name'      => 'Walter Baudilio Luna Peñate',
+            'email'     => 'walter@ues.edu.sv',
+            'password'  => bcrypt('foobar'),
+        ]);
+        $usuario6 = User::create([
+            'name'      => 'Juan Perez sosa',
+            'email'     => 'juan@ues.edu.sv',
+            'password'  => bcrypt('foobar'),
+        ]);
+
+
+
+
 
         // CREACION DE PERMISOS 
         Permission::create(['name' => 'read_worklog']);
@@ -127,6 +158,12 @@ class RolesPermissionsSeeder extends Seeder
             'write_persons',
         ]);
 
-        $usuario->assignRole('Administrador');
+        $usuario1->assignRole('Administrador');
+        $usuario2->assignRole('Administrador');
+        $usuario3->assignRole('Profesor');
+        $usuario4->assignRole('Director Escuela');
+        $usuario5->assignRole('Asistente Administrativo');
+        $usuario6->assignRole('Asistente Financiero');
+
     }
 }
