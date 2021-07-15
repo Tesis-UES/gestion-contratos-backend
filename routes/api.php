@@ -149,6 +149,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     });
     Route::group(['middleware' => ['can:read_persons']], function () {
         Route::get('/persons/{id}', [PersonController::class, 'show']);
+        Route::get('/persons/{id}/me', [PersonController::class, 'showMyInfo']);
     });
 
     //Rutas para creacion de usuario
