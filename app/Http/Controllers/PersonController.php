@@ -62,7 +62,22 @@ class PersonController extends Controller
 
     public function update(Request $request, $id)
     {
-        $request->validate([]);
+        $request->validate([
+            'first_name'    => 'required|string|max:120',
+            'middle_name'   => 'required|string|max:120',
+            'last_name'     => 'required|string|max:120',
+            'civil_status'  => 'required|string|max:120',
+            'birth_date'    => 'required|date',
+            'gender'        => 'required|string|max:120',
+            'telephone'     => 'required|string|max:120',
+            'email'         => 'required|string|max:120',
+            'address'     => 'required|string|max:120',
+            'professional_title'     => 'required|string|max:120',
+            'dui_number'            => 'required|string|max:120',
+            'dui_expiration_date'   => 'required|date',
+            'nit_number'                   => 'required|string|max:120',
+            'bank_account_number'   => 'required|string|max:120',
+        ]);
 
         $person = Person::findOrFail($id);
         $person->update($request->all());
