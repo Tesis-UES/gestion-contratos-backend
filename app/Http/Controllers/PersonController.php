@@ -50,10 +50,11 @@ class PersonController extends Controller
         return response(['person' => $person,], 200);
     }
 
-    public function showMyInfo($id)
+    public function showMyInfo()
     {
-        $person = Person::where('user_id',$id)->get();
-        return response(['person' => $person,], 200);
+        $user = Auth::user();
+        $person = Person::where('user_id',$user->id)->firstOrFail();
+        return response($person, 200);
     }
 
     public function hasRegistered()

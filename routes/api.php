@@ -148,8 +148,8 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
         Route::delete('/persons/{id}', [PersonController::class, 'destroy']);
     });
     Route::group(['middleware' => ['can:read_persons']], function () {
+        Route::get('/persons/me', [PersonController::class, 'showMyInfo']);
         Route::get('/persons/{id}', [PersonController::class, 'show']);
-        Route::get('/persons/{id}/me', [PersonController::class, 'showMyInfo']);
     });
 
     //Rutas para creacion de usuario
