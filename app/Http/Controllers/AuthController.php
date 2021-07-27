@@ -88,7 +88,6 @@ class AuthController extends Controller
         }
         if($request->query('relevance')) {
             $relevance = $request->query('relevance');
-            // dd($relevance);
             $worklog = $worklog->whereIn('relevance', explode(',', $relevance));
         }
 
