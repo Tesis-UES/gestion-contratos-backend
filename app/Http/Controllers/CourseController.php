@@ -18,6 +18,16 @@ class CourseController extends Controller
         return response($courses, 200);
     }
 
+    public function studyPlanCourses($id,$plan)
+    {
+        School::findOrFail($id);
+        $courses = Course::where('school_id', $id)->where('study_plan_id',$plan)->get();
+        $this->RegisterAction("El usuario ha consultado el catalogo de materias por Escuela y plan de estudio");
+        return response($courses, 200);
+    }
+
+    
+
     /**
      * Store a newly created resource in storage.
      *
@@ -27,15 +37,17 @@ class CourseController extends Controller
     public function store(Request $request, $id)
     {
         $fields = $request->validate([
-            'name'      => 'required|string|max:200',
-            'code'      => 'required|string|max:200',
+            'name'          => 'required|string|max:200',
+            'code'          => 'required|string|max:200',
+            'study_plan_id' => 'required'
         ]);
         School::findOrFail($id);
 
         $newCourse = Course::create([
-            'school_id'  => $id,
-            'name'       => $fields['name'],
-            'code'       => $fields['code'],
+            'school_id'     => $id,
+            'study_plan_id' => $fields['study_plan_id'],
+            'name'          => $fields['name'],
+            'code'          => $fields['code'],
         ]);
         $this->RegisterAction("El usuario ha Ingresado un nuevo registro en el catalogo de materias por escuela");
         return response([
@@ -65,8 +77,9 @@ class CourseController extends Controller
     public function update(Request $request, $id)
     {
         $request->validate([
-            'name'     => 'required|string|max:200',
-            'code' => 'required|string|max:200',
+            'name'          => 'required|string|max:200',
+            'code'          => 'required|string|max:200',
+            'study_plan_id' => 'required',
         ]);
 
         $course = Course::findOrFail($id);

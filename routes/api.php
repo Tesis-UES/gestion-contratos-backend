@@ -9,6 +9,7 @@ use App\Http\Controllers\SchoolController;
 use App\Http\Controllers\CourseController;
 use App\Http\Controllers\ContractTypeController;
 use App\Http\Controllers\PersonController;
+use App\Http\Controllers\StudyPlanController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
@@ -106,6 +107,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     });
     Route::group(['middleware' => ['can:read_courses']], function () {
         Route::get('/schools/{id}/courses', [CourseController::class, 'all']);
+        Route::get('/schools/{id}/courses/Studyplan/{plan}', [CourseController::class, 'studyPlanCourses']);
         Route::get('/courses/{id}', [CourseController::class, 'show']);
     });
 
@@ -162,4 +164,17 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
         Route::get('/users', [AuthController::class, 'allUsers']);
         Route::get('/users/{id}', [AuthController::class, 'getUser']);
     });
+
+     // Rutas que maneja el catalogo de planes de estudio de las carreras que maneja el sistema
+     Route::group(['middleware' => ['can:write_plans']], function () {
+        Route::post('/study-plans', [StudyPlanController::class, 'store']);
+        Route::put('/study-plans/{id}', [StudyPlanController::class, 'update']);
+        Route::delete('/study-plans/{id}', [StudyPlanController::class, 'destroy']);
+    });
+    Route::group(['middleware' => ['can:read_plans']], function () {
+        Route::get('/study-plans/', [StudyPlanController::class, 'all']);
+        Route::get('/study-plans/{id}', [StudyPlanController::class, 'show']);
+        Route::get('/study-plans/school/{id}', [StudyPlanController::class, 'showPlanSchool']);
+    });
+
 });
