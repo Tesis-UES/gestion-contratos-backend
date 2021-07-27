@@ -37,7 +37,7 @@ class SchoolController extends Controller
             'name'       => $fields['name'],
             'director'   => $fields['director'],
         ]);
-        $this->RegisterAction("El usuario ha Ingresado un nuevo registro en el catalogo de escuelas");
+        $this->RegisterAction("El usuario ha Ingresado un nuevo registro en el catalogo de escuelas", "medium");
         return response([
             'school' => $newSchool,
         ], 201);
@@ -71,7 +71,7 @@ class SchoolController extends Controller
 
         $school = School::findOrFail($id);
         $school->update($request->all());
-        $this->RegisterAction("El usuario ha actualizado el registro de ".$request['name']." en el catalogo de escuelas por facultad");
+        $this->RegisterAction("El usuario ha actualizado el registro de ".$request['name']." en el catalogo de escuelas por facultad", "medium");
         return response(['School' => $school], 200);
     }
 
@@ -82,7 +82,7 @@ class SchoolController extends Controller
     {
         $school = School::findOrFail($id);
         $school->delete();
-        $this->RegisterAction("El usuario ha eliminado el registro de la escuela ".$school->name." en el catalogo de Escuelas");
+        $this->RegisterAction("El usuario ha eliminado el registro de la escuela ".$school->name." en el catalogo de Escuelas", "medium");
         return response(null, 204);
     }
 }

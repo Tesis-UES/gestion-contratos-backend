@@ -37,7 +37,7 @@ class CourseController extends Controller
             'name'       => $fields['name'],
             'code'       => $fields['code'],
         ]);
-        $this->RegisterAction("El usuario ha Ingresado un nuevo registro en el catalogo de materias por escuela");
+        $this->RegisterAction("El usuario ha Ingresado un nuevo registro en el catalogo de materias por escuela", "medium");
         return response([
             'course' => $newCourse,
         ], 201);
@@ -71,7 +71,7 @@ class CourseController extends Controller
 
         $course = Course::findOrFail($id);
         $course->update($request->all());
-        $this->RegisterAction("El usuario ha actualizado el registro de " . $request['name'] . " en el catalogo de materias por escuela");
+        $this->RegisterAction("El usuario ha actualizado el registro de " . $request['name'] . " en el catalogo de materias por escuela", "medium");
         return response(['course' => $course], 200);
     }
 
@@ -82,7 +82,7 @@ class CourseController extends Controller
     {
         $course = Course::findOrFail($id);
         $course->delete();
-        $this->RegisterAction("El usuario ha eliminado el registro de la materia " . $course->name . " en el catalogo de Materias");
+        $this->RegisterAction("El usuario ha eliminado el registro de la materia " . $course->name . " en el catalogo de Materias", "medium");
         return response(null, 204);
     }
 }
