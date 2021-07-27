@@ -17,6 +17,7 @@ class CreateWorklogsTable extends Migration
             $table->id();
             $table->string('username');
             $table->string('actionLog');
+            $table->string('relevance')->default('low');
             $table->timestamps();
         });
     }

@@ -34,7 +34,7 @@ class ContractTypeController extends Controller
             'description'   => $fields['description'],
             
         ]);
-        $this->RegisterAction("El usuario ha Ingresado un nuevo registro en el catalogo de Contratos");
+        $this->RegisterAction("El usuario ha Ingresado un nuevo registro en el catalogo de Contratos", "medium");
         return response([
             'contractType' => $newContractType,
         ], 201);
@@ -71,7 +71,7 @@ class ContractTypeController extends Controller
 
         $contractType = ContractType::findOrFail($id);
         $contractType->update($request->all());
-        $this->RegisterAction("El usuario ha actualizado el registro del Contrato " . $request['name'] . " en el catalogo de Contratos");
+        $this->RegisterAction("El usuario ha actualizado el registro del Contrato " . $request['name'] . " en el catalogo de Contratos", "medium");
 
         return response(['contractType' => $contractType], 200);
     }
@@ -86,7 +86,7 @@ class ContractTypeController extends Controller
     {
         $contractType = ContractType::findOrFail($id);
         $contractType->delete();
-        $this->RegisterAction("El usuario ha eliminado el registro del ContractType " . $contractType->name . " en el catalogo de ContractTypees");
+        $this->RegisterAction("El usuario ha eliminado el registro del ContractType " . $contractType->name . " en el catalogo de ContractTypees", "medium");
         return response(null, 204);
     }
 }

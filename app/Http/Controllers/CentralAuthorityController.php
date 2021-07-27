@@ -42,7 +42,7 @@ class CentralAuthorityController extends Controller
         ]);
         $newAuthority = CentralAuthority::create($request->all());
 
-        $this->RegisterAction('El usuario ha creado la autoridad central con ID: ' . $newAuthority['id']);
+        $this->RegisterAction('El usuario ha creado la autoridad central con ID: ' . $newAuthority['id'],  "high");
         return response($newAuthority, 201);
     }
 
@@ -81,7 +81,7 @@ class CentralAuthorityController extends Controller
 
         $authority = CentralAuthority::findOrFail($id);
         $authority->update($request->all());
-        $this->RegisterAction('El usuario ha actualizado la autoridad central con ID : ' . $id);
+        $this->RegisterAction('El usuario ha actualizado la autoridad central con ID : ' . $id, "high");
         return response($authority, 200);
     }
 
@@ -96,7 +96,7 @@ class CentralAuthorityController extends Controller
         $authority = CentralAuthority::findOrFail($id);
         $authority->delete();
 
-        $this->RegisterAction('El usuario ha borrado la autoridad central con ID: ' . $id);
+        $this->RegisterAction('El usuario ha borrado la autoridad central con ID: ' . $id, "high");
         return response(null, 204);
     }
 }
