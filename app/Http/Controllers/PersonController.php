@@ -37,7 +37,7 @@ class PersonController extends Controller
         $newPerson->user_id = $usuario->id;
         $newPerson->save();
 
-        $this->RegisterAction("El usuario he registrado sus datos personales generales");
+        $this->RegisterAction("El usuario he registrado sus datos personales generales", "medium");
         return response([
             'person' => $newPerson,
         ], 201);
@@ -88,7 +88,7 @@ class PersonController extends Controller
 
         $person = Person::findOrFail($id);
         $person->update($request->all());
-        $this->RegisterAction("El usuario ha actualizado sus datos personales genrales");
+        $this->RegisterAction("El usuario ha actualizado sus datos personales genrales", "medium");
         return response(['person' => $person], 200);
     }
 
@@ -102,7 +102,7 @@ class PersonController extends Controller
     {
         $person = Person::findOrFail($id);
         $person->delete();
-        $this->RegisterAction("Se ha eleminado la informacion general del usuario");
+        $this->RegisterAction("Se ha eleminado la informacion general del usuario", "medium");
         return response(null, 204);
     }
 
@@ -113,7 +113,7 @@ class PersonController extends Controller
         $person->dui = $nombre_archivo;
         $person->save();
         \Storage::disk('personalFiles')->put($nombre_archivo, \File::get($file));
-        $this->RegisterAction("El usuario ha guardado el archivo pdf que contiene la imagen del DUI"); 
+        $this->RegisterAction("El usuario ha guardado el archivo pdf que contiene la imagen del DUI", "medium"); 
         return response(['person' => $person,], 200);
     }
 
@@ -124,7 +124,7 @@ class PersonController extends Controller
         $person->nit = $nombre_archivo;
         $person->save();
         \Storage::disk('personalFiles')->put($nombre_archivo, \File::get($file)); 
-        $this->RegisterAction("El usuario ha guardado el archivo pdf que contiene la imagen del NIT"); 
+        $this->RegisterAction("El usuario ha guardado el archivo pdf que contiene la imagen del NIT", "medium"); 
         return response(['person' => $person,], 200);
     }
 
@@ -135,7 +135,7 @@ class PersonController extends Controller
         $person->bank_account = $nombre_archivo;
         $person->save();
         \Storage::disk('personalFiles')->put($nombre_archivo, \File::get($file)); 
-        $this->RegisterAction("El usuario ha guardado el archivo pdf que contiene la imagen de su cuenta de banco"); 
+        $this->RegisterAction("El usuario ha guardado el archivo pdf que contiene la imagen de su cuenta de banco", "medium"); 
         return response(['person' => $person,], 200);
 
     }
@@ -148,7 +148,7 @@ class PersonController extends Controller
         $person->professional_title_scan = $nombre_archivo;
         $person->save();
         \Storage::disk('personalFiles')->put($nombre_archivo, \File::get($file)); 
-        $this->RegisterAction("El usuario ha guardado el archivo pdf que contiene la imagen de su titulo Universitario"); 
+        $this->RegisterAction("El usuario ha guardado el archivo pdf que contiene la imagen de su titulo Universitario", "medium"); 
         return response(['person' => $person,], 200);
     }
 
@@ -160,7 +160,7 @@ class PersonController extends Controller
         $person->curriculum = $nombre_archivo;
         $person->save();
         \Storage::disk('personalFiles')->put($nombre_archivo, \File::get($file)); 
-        $this->RegisterAction("El usuario ha guardado el  archivo pdf que contiene su curriculum"); 
+        $this->RegisterAction("El usuario ha guardado el  archivo pdf que contiene su curriculum", "medium"); 
         return response(['person' => $person,], 200);
     }
 
@@ -174,7 +174,7 @@ class PersonController extends Controller
         $person->dui = $nombre_archivo;
         $person->save();
         \Storage::disk('personalFiles')->put($nombre_archivo, \File::get($file)); 
-        $this->RegisterAction("El usuario ha actualizado el archivo pdf que contiene la imagen del DUI"); 
+        $this->RegisterAction("El usuario ha actualizado el archivo pdf que contiene la imagen del DUI", "medium"); 
         return response(['person' => $person,], 200);
     }
 
@@ -188,7 +188,7 @@ class PersonController extends Controller
         $person->nit = $nombre_archivo;
         $person->save();
         \Storage::disk('personalFiles')->put($nombre_archivo, \File::get($file)); 
-        $this->RegisterAction("El usuario ha actualizado el archivo pdf que contiene la imagen del NIT");
+        $this->RegisterAction("El usuario ha actualizado el archivo pdf que contiene la imagen del NIT", "medium");
         return response(['person' => $person,], 200);
     }
 
@@ -201,7 +201,7 @@ class PersonController extends Controller
         $person->bank_account = $nombre_archivo;
         $person->save();
         \Storage::disk('personalFiles')->put($nombre_archivo, \File::get($file)); 
-        $this->RegisterAction("El usuario ha actualizado el  archivo pdf que contiene la imagen de su cuenta de banco"); 
+        $this->RegisterAction("El usuario ha actualizado el  archivo pdf que contiene la imagen de su cuenta de banco", "medium"); 
         return response(['person' => $person,], 200);
     }
 
@@ -215,7 +215,7 @@ class PersonController extends Controller
         $person->professional_title_scan = $nombre_archivo;
         $person->save();
         \Storage::disk('personalFiles')->put($nombre_archivo, \File::get($file)); 
-        $this->RegisterAction("El usuario ha actualizado el  archivo pdf que contiene la imagen de su titulo Universitario"); 
+        $this->RegisterAction("El usuario ha actualizado el  archivo pdf que contiene la imagen de su titulo Universitario", "medium"); 
         return response(['person' => $person,], 200);
     }
 
@@ -228,7 +228,7 @@ class PersonController extends Controller
         $person->curriculum = $nombre_archivo;
         $person->save();
         \Storage::disk('personalFiles')->put($nombre_archivo, \File::get($file)); 
-        $this->RegisterAction("El usuario ha actualizado el archivo pdf que contiene su curriculum"); 
+        $this->RegisterAction("El usuario ha actualizado el archivo pdf que contiene su curriculum", "medium"); 
         return response(['person' => $person,], 200);
 
     }
