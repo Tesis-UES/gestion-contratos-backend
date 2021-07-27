@@ -16,6 +16,8 @@ class CentralAuthority extends Model
         'middleName',
         'lastName',
         'dui',
-        'nit'
+        'nit',
+        'startPeriod',
+        'endPeriod',
     ];
 }

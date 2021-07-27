@@ -31,12 +31,14 @@ class CentralAuthorityController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'position'    => 'required|string|max:120',
-            'firstName'   => 'required|string|max:60',
-            'middleName'  => 'string|max:60',
-            'lastName'    => 'required|string|max:120',
-            'dui'         => 'required|string|max:20',
-            'nit'         => 'required|string|max:20'
+            'position'      => 'required|string|max:120',
+            'firstName'     => 'required|string|max:60',
+            'middleName'    => 'string|max:60',
+            'lastName'      => 'required|string|max:120',
+            'dui'           => 'required|string|max:20',
+            'nit'           => 'required|string|max:20',
+            'startPeriod'   => 'required',
+            'endPeriod'     => 'required|after:startPeriod',
         ]);
         $newAuthority = CentralAuthority::create($request->all());
 
@@ -72,7 +74,9 @@ class CentralAuthorityController extends Controller
             'middleName'  => 'string|max:60',
             'lastName'    => 'required|string|max:120',
             'dui'         => 'required|string|max:20',
-            'nit'         => 'required|string|max:20'
+            'nit'         => 'required|string|max:20',
+            'startPeriod'   => 'required',
+            'endPeriod'     => 'required|after:startPeriod',
         ]);
 
         $authority = CentralAuthority::findOrFail($id);

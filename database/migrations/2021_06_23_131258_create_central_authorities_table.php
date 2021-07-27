@@ -21,6 +21,9 @@ class CreateCentralAuthoritiesTable extends Migration
             $table->string('lastName', 120);
             $table->string('dui', 20);
             $table->string('nit', 20);
+            $table->date('startPeriod');
+            $table->date('endPeriod');
+            $table->boolean('status')->default(1);
             $table->softDeletes();
             $table->timestamps();
         });
