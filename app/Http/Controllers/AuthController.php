@@ -86,6 +86,11 @@ class AuthController extends Controller
             $daybefore = new \DateTime($request->query('date_before'));
             $worklog = $worklog->whereDate('created_at', '<=', $daybefore);
         }
+        if($request->query('relevance')) {
+            $relevance = $request->query('relevance');
+            // dd($relevance);
+            $worklog = $worklog->whereIn('relevance', explode(',', $relevance));
+        }
 
         $worklog = $worklog->orderBy('created_at', $request->query('order', 'desc'))->paginate(15);
 
