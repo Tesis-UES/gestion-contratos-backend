@@ -11,7 +11,11 @@ class FacultyController extends Controller
     use WorklogTrait;
     public function all()
     {
-        $faculties = Faculty::all();
+        $faculties = Faculty::select('faculties.id AS facultyId','faculties.name AS nameFaculty','faculty_authorities.name AS deanName')
+        ->join('faculty_authorities','faculties.id','=','faculty_authorities.faculty_id')
+        ->where('faculty_authorities.status','=',1)
+        ->where('faculty_authorities.position','=','DECANO')
+        ->get();
         $this->RegisterAction("El usuario ha consultado el catalogo de facultades");
         return response($faculties, 200);
     }
@@ -26,14 +30,10 @@ class FacultyController extends Controller
     {
         $fields = $request->validate([
             'name'     => 'required|string|max:120',
-            'dean'     => 'required|string|max:200',
-            'viceDean' => 'required|string|max:200',
         ]);
 
         $newFaculty = Faculty::create([
             'name'     => $fields['name'],
-            'dean'     => $fields['dean'],
-            'viceDean' => $fields['viceDean'],
         ]);
         $this->RegisterAction("El usuario ha Ingresado un nuevo registro en el catalogo de facultades", "medium");
         return response([
@@ -64,8 +64,6 @@ class FacultyController extends Controller
     {
         $request->validate([
             'name'     => 'required|string|max:120',
-            'dean'     => 'required|string|max:200',
-            'viceDean' => 'required|string|max:200',
         ]);
 
         $faculty = Faculty::findOrFail($id);

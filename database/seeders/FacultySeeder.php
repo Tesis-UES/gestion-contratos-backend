@@ -15,7 +15,7 @@ class FacultySeeder extends Seeder
     public function run()
     {
         /* Faculty::create(['name'=>'Facultad de Ciencias Agronómicas', 'dean' =>'Dr. Francisco Lara Ascencio', 'viceDean'=>'Ing. Ludwing Leyton' ]); */
-        Faculty::create(['name'=>'Facultad de Ingeniería y Arquitectura', 'dean' =>'Dr. Edgar Peña', 'viceDean'=>'Ing. José María Sánchez' ]);
+        Faculty::create(['name'=>'Facultad de Ingeniería y Arquitectura']);
         /* Faculty::create(['name'=>'Facultad de Ciencias Naturales y Matemática', 'dean' =>'Msc. Mauricio Lovo', 'viceDean'=>'Msc. Zoila Guerrero' ]);
         Faculty::create(['name'=>'Facultad de Ciencias Económicas', 'dean' =>'Msc. Nixón Hernández', 'viceDean'=>'Msc. Mario Crespín' ]);
         Faculty::create(['name'=>'Facultad de Odontología', 'dean' =>'Dr. Guillermo Aguirre', 'viceDean'=>'Dr. Osmín Rivera' ]);

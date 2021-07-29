@@ -28,14 +28,12 @@ class SchoolController extends Controller
     {
         $fields = $request->validate([
             'name'     => 'required|string|max:200',
-            'director' => 'required|string|max:200',
         ]);
         Faculty::findOrFail($id);
 
         $newSchool = School::create([
             'faculty_id' => $id,
             'name'       => $fields['name'],
-            'director'   => $fields['director'],
         ]);
         $this->RegisterAction("El usuario ha Ingresado un nuevo registro en el catalogo de escuelas", "medium");
         return response([
@@ -66,7 +64,6 @@ class SchoolController extends Controller
     {
         $request->validate([
             'name'     => 'required|string|max:200',
-            'director' => 'required|string|max:200',
         ]);
 
         $school = School::findOrFail($id);

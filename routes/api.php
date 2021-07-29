@@ -10,6 +10,8 @@ use App\Http\Controllers\CourseController;
 use App\Http\Controllers\ContractTypeController;
 use App\Http\Controllers\PersonController;
 use App\Http\Controllers\StudyPlanController;
+use App\Http\Controllers\FacultyAuthorityController;
+use App\Http\Controllers\SchoolAuthorityController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
@@ -176,5 +178,36 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
         Route::get('/study-plans/{id}', [StudyPlanController::class, 'show']);
         Route::get('/study-plans/school/{id}', [StudyPlanController::class, 'showPlanSchool']);
     });
+
+    Route::group(['middleware' => ['can:write_facultyAuth']], function () {
+        Route::post('/faculties/authorities', [FacultyAuthorityController::class, 'store']);
+        Route::put('/faculties/authority/{id}/info', [FacultyAuthorityController::class, 'update']);
+        Route::delete('/faculties/authority/{id}/info', [FacultyAuthorityController::class, 'destroy']);
+    });
+
+    Route::group(['middleware' => ['can:read_facultyAuth']], function () {
+        Route::get('/faculties/all/authorities', [FacultyAuthorityController::class, 'all']);
+        Route::get('/faculties/{id}/authorities', [FacultyAuthorityController::class, 'authoritiesByFaculty']);
+        Route::get('/faculties/authority/{id}/info', [FacultyAuthorityController::class, 'show']);
+    });
+
+    Route::group(['middleware' => ['can:write_schoolAuth']], function () {
+        Route::post('/schools/authorities', [SchoolAuthorityController::class, 'store']);
+        Route::put('/schools/authority/{id}/info', [SchoolAuthorityController::class, 'update']);
+        Route::delete('/schools/authority/{id}/info', [SchoolAuthorityController::class, 'destroy']);
+    });
+
+    Route::group(['middleware' => ['can:read_schoolAuth']], function () {   
+        Route::get('/schools/all/authorities', [SchoolAuthorityController::class, 'all']);
+        Route::get('/schools/{id}/authorities', [SchoolAuthorityController::class, 'authoritiesBySchool']);
+        Route::get('/schools/authority/{id}/info', [SchoolAuthorityController::class, 'show']);
+    });
+
+
+    
+    
+
+
+    
 
 });

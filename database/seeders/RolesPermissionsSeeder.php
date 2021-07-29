@@ -86,7 +86,12 @@ class RolesPermissionsSeeder extends Seeder
         Permission::create(['name' => 'write_plans']);
         Permission::create(['name' => 'read_plans']);
 
+        Permission::create(['name' => 'write_facultyAuth']);
+        Permission::create(['name' => 'read_facultyAuth']);
 
+        Permission::create(['name' => 'write_schoolAuth']);
+        Permission::create(['name' => 'read_schoolAuth']);
+        
         //CREACION DE ROLES
         $admin = Role::create(['name' => 'Administrador']);
         $profesor = Role::create(['name' => 'Profesor']);
@@ -116,7 +121,11 @@ class RolesPermissionsSeeder extends Seeder
             'read_users',
             'write_users',
             'write_plans',
-            'read_plans'
+            'read_plans',
+            'write_facultyAuth',
+            'read_facultyAuth',
+            'write_schoolAuth',
+            'read_schoolAuth',
         ]);
 
         $profesor->givePermissionTo([
@@ -129,6 +138,9 @@ class RolesPermissionsSeeder extends Seeder
             'read_contractTypes',
             'read_persons',
             'write_persons',
+            'read_plans',
+            'read_facultyAuth',   
+            'read_schoolAuth',
         ]);
 
         $directorEscuela->givePermissionTo([
@@ -143,6 +155,9 @@ class RolesPermissionsSeeder extends Seeder
             'write_courses',
             'read_contractTypes',
             'read_persons',
+            'read_plans',  
+            'read_facultyAuth',
+            'read_schoolAuth',
         ]);
 
         $asistenteAdmin->givePermissionTo([
@@ -162,6 +177,9 @@ class RolesPermissionsSeeder extends Seeder
             'write_centralAuthorities',
             'read_persons',
             'write_persons',
+            'read_plans',
+            'read_facultyAuth',
+            'read_schoolAuth',
         ]);
 
         $usuario1->assignRole('Administrador');
