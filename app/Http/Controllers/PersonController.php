@@ -232,4 +232,34 @@ class PersonController extends Controller
         return response(['person' => $person,], 200);
 
     }
+
+    public function getDui($id){
+        $person = Person::findOrFail($id);
+        $pdf = base64_encode(\Storage::disk('personalFiles')->get($person->dui));
+        return response(['pdfDui' => $pdf], 200);
+    }
+
+    public function getNit($id){
+        $person = Person::findOrFail($id);
+        $pdf = base64_encode(\Storage::disk('personalFiles')->get($person->nit));
+        return response(['pdfNit' => $pdf], 200);
+    }
+
+    public function getBank($id){
+        $person = Person::findOrFail($id);
+        $pdf = base64_encode(\Storage::disk('personalFiles')->get($person->bank_account));
+        return response(['pdfBank' => $pdf], 200);
+    }
+
+    public function getTitle($id){
+        $person = Person::findOrFail($id);
+        $pdf = base64_encode(\Storage::disk('personalFiles')->get($person->professional_title_scan));
+        return response(['pdfTitle' => $pdf], 200);
+    }
+
+    public function getCurriculum($id){
+        $person = Person::findOrFail($id);
+        $pdf = base64_encode(\Storage::disk('personalFiles')->get($person->curriculum));
+        return response(['pdfCurriculum' => $pdf], 200);
+    }
 }

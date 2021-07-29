@@ -154,6 +154,11 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::group(['middleware' => ['can:read_persons']], function () {
         Route::get('/persons/me', [PersonController::class, 'showMyInfo']);
         Route::get('/persons/{id}', [PersonController::class, 'show']);
+        Route::get('/persons/{id}/files/dui/view', [PersonController::class, 'getDui']);
+        Route::get('/persons/{id}/files/nit/view', [PersonController::class, 'getNit']);
+        Route::get('/persons/{id}/files/bank-account/view', [PersonController::class, 'getBank']);
+        Route::get('/persons/{id}/files/title/view', [PersonController::class, 'getTitle']);
+        Route::get('/persons/{id}/files/curriculum/view', [PersonController::class, 'getCurriculum']);
     });
 
     //Rutas para creacion de usuario
