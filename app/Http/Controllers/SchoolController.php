@@ -13,7 +13,11 @@ class SchoolController extends Controller
     public function all($id)
     {
         Faculty::findOrFail($id);
-        $schools = School::where('faculty_id', $id)->get();
+        $schools = School::select('schools.id AS schoolId','schools.name AS nameSchool','school_authorities.name AS directorName')
+        ->leftjoin('school_authorities','schools.id','=','school_authorities.school_id')
+        ->where('school_authorities.status','=',1)
+        ->where('school_authorities.position','=','DIRECTOR')
+        ->where('schools.faculty_id', $id)->get();
         $this->RegisterAction("El usuario ha consultado el catalogo de Escuelas");
         return response($schools, 200);
     }

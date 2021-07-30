@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use App\Models\Faculty;
+use App\Models\FacultyAuthority;
 
 class FacultySeeder extends Seeder
 {
@@ -16,6 +17,9 @@ class FacultySeeder extends Seeder
     {
         /* Faculty::create(['name'=>'Facultad de Ciencias Agronómicas', 'dean' =>'Dr. Francisco Lara Ascencio', 'viceDean'=>'Ing. Ludwing Leyton' ]); */
         Faculty::create(['name'=>'Facultad de Ingeniería y Arquitectura']);
+        FacultyAuthority::create(['name'=>'PRUEVA  DECANO','position'=>'DECANO','startPeriod'=>'2021-02-02','endPeriod'=>'2021-12-02','faculty_id'=>1]);
+        FacultyAuthority::create(['name'=>'PRUEVA  VICEDECANO','position'=>'VICEDECANO','startPeriod'=>'2021-02-02','endPeriod'=>'2021-12-02','faculty_id'=>1]);
+        FacultyAuthority::create(['name'=>'PRUEVA  SECRETARIO','position'=>'SECRETARIO','startPeriod'=>'2021-02-02','endPeriod'=>'2021-12-02','faculty_id'=>1]);
         /* Faculty::create(['name'=>'Facultad de Ciencias Naturales y Matemática', 'dean' =>'Msc. Mauricio Lovo', 'viceDean'=>'Msc. Zoila Guerrero' ]);
         Faculty::create(['name'=>'Facultad de Ciencias Económicas', 'dean' =>'Msc. Nixón Hernández', 'viceDean'=>'Msc. Mario Crespín' ]);
         Faculty::create(['name'=>'Facultad de Odontología', 'dean' =>'Dr. Guillermo Aguirre', 'viceDean'=>'Dr. Osmín Rivera' ]);
