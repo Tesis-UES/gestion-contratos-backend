@@ -13,7 +13,7 @@ class CourseController extends Controller
     public function all($id)
     {
         School::findOrFail($id);
-        $courses = Course::where('school_id', $id)->get();
+        $courses = Course::where('school_id', $id)->with('studyPlan')->get();
         $this->RegisterAction("El usuario ha consultado el catalogo de materias por Escuela");
         return response($courses, 200);
     }
