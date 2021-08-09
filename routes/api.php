@@ -139,6 +139,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
         Route::post('/persons/{id}/files/bank-account', [PersonController::class, 'storeBank']);
         Route::post('/persons/{id}/files/title', [PersonController::class, 'storeTitle']);
         Route::post('/persons/{id}/files/curriculum', [PersonController::class, 'storeCurriculum']);
+        Route::post('/persons/{id}/files/permission', [PersonController::class, 'storePermission']);
         Route::put('/persons/{id}/files/dui', [PersonController::class, 'updateDui']);
         Route::put('/persons/{id}/files/nit', [PersonController::class, 'updateNit']);
         Route::put('/persons/{id}/files/bank-account', [PersonController::class, 'updateBank']);

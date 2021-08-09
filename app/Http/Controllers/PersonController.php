@@ -166,6 +166,18 @@ class PersonController extends Controller
         return response(['person' => $person,], 200);
     }
 
+    public function storePermission(Request $request, $id)
+    {
+        $person = Person::findOrFail($id);
+        $file = $request->file('work_permission');
+        $nombre_archivo = $person->first_name." ".$person->middle_name." ".$person->last_name."-permission.pdf";
+        $person->curriculum = $nombre_archivo;
+        $person->save();
+        \Storage::disk('personalFiles')->put($nombre_archivo, \File::get($file)); 
+        $this->RegisterAction("El usuario ha guardado el  archivo pdf que contiene su permiso de trabajo"); 
+        return response(['person' => $person,], 200);
+    }
+
     public function updateDui(Request $request, $id){
             
         $person = Person::findOrFail($id);
