@@ -6,18 +6,19 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class CentralAuthority extends Model
+class StudyPlan extends Model
 {
     use HasFactory, SoftDeletes;
-
     protected $fillable = [
-        'position',
-        'firstName',
-        'middleName',
-        'lastName',
-        'dui',
-        'nit',
-        'startPeriod',
-        'endPeriod',
+        'school_id',
+        'name',
     ];
+
+    public function school()
+    {
+        return $this->belongsTo(School::class);
+    }
+
+
 }
+

@@ -12,8 +12,12 @@ use App\Http\Controllers\PersonController;
 use App\Http\Controllers\SemesterController;
 use App\Http\Controllers\AcademicLoadController;
 use App\Http\Controllers\GroupTypeController;
+use App\Http\Controllers\StudyPlanController;
+use App\Http\Controllers\FacultyAuthorityController;
+use App\Http\Controllers\SchoolAuthorityController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
+use Illuminate\Support\Facades\Auth;
 
 /*
 |--------------------------------------------------------------------------
@@ -33,7 +37,22 @@ Route::post('/auth/login', [AuthController::class, 'login']);
 
 // Protected Routes 
 Route::group(['middleware' => ['auth:sanctum']], function () {
+    // Ruta para cerrar sesion
     Route::post('/auth/logout', [AuthController::class, 'logout']);
+
+    // Ruta para cambiar contraseña
+    Route::put('/users/me/password', [AuthController::class, 'changePassword']);
+
+    // Ruta para obtener los permisos del logged in user 
+    Route::get('/users/me/permissions', [AuthController::class, 'getPermissions']);
+
+    // Ruta para obtener todos los roles 
+    Route::group(['middleware' => ['can:read_roles']], function () {
+        Route::get('/roles', [AuthController::class, 'AllRoles']);
+    });
+
+    // Ruta para verificar si el profesor ya ingreso sus datos personales
+    Route::get('/users/me/has-registered', [PersonController::class, 'hasRegistered']);
 
     // Ruta que maneja la bitacora de uso 
     Route::group(['middleware' => ['can:read_worklog']], function () {
@@ -93,6 +112,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     });
     Route::group(['middleware' => ['can:read_courses']], function () {
         Route::get('/schools/{id}/courses', [CourseController::class, 'all']);
+        Route::get('/schools/{id}/courses/Studyplan/{plan}', [CourseController::class, 'studyPlanCourses']);
         Route::get('/courses/{id}', [CourseController::class, 'show']);
     });
 
@@ -134,9 +154,63 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
         Route::delete('/persons/{id}', [PersonController::class, 'destroy']);
     });
     Route::group(['middleware' => ['can:read_persons']], function () {
+        Route::get('/persons/me', [PersonController::class, 'showMyInfo']);
         Route::get('/persons/{id}', [PersonController::class, 'show']);
+        Route::get('/persons/{id}/files/dui/view', [PersonController::class, 'getDui']);
+        Route::get('/persons/{id}/files/nit/view', [PersonController::class, 'getNit']);
+        Route::get('/persons/{id}/files/bank-account/view', [PersonController::class, 'getBank']);
+        Route::get('/persons/{id}/files/title/view', [PersonController::class, 'getTitle']);
+        Route::get('/persons/{id}/files/curriculum/view', [PersonController::class, 'getCurriculum']);
     });
     
+    //Rutas para creacion de usuario
+    Route::group(['middleware' => ['can:write_users']], function () {
+        Route::post('/users', [AuthController::class, 'createUser']);
+        Route::put('/users/{id}', [AuthController::class, 'updateUser']);
+    });
+
+    Route::group(['middleware' => ['can:read_users']], function () {
+        Route::get('/users', [AuthController::class, 'allUsers']);
+        Route::get('/users/{id}', [AuthController::class, 'getUser']);
+    });
+
+     // Rutas que maneja el catalogo de planes de estudio de las carreras que maneja el sistema
+     Route::group(['middleware' => ['can:write_plans']], function () {
+        Route::post('/study-plans', [StudyPlanController::class, 'store']);
+        Route::put('/study-plans/{id}', [StudyPlanController::class, 'update']);
+        Route::delete('/study-plans/{id}', [StudyPlanController::class, 'destroy']);
+    });
+    Route::group(['middleware' => ['can:read_plans']], function () {
+        Route::get('/study-plans/', [StudyPlanController::class, 'all']);
+        Route::get('/study-plans/{id}', [StudyPlanController::class, 'show']);
+        Route::get('/study-plans/school/{id}', [StudyPlanController::class, 'showPlanSchool']);
+    });
+
+    Route::group(['middleware' => ['can:write_facultyAuth']], function () {
+        Route::post('/faculties/authorities', [FacultyAuthorityController::class, 'store']);
+        Route::put('/faculties/authority/{id}/info', [FacultyAuthorityController::class, 'update']);
+        Route::delete('/faculties/authority/{id}/info', [FacultyAuthorityController::class, 'destroy']);
+    });
+
+    Route::group(['middleware' => ['can:read_facultyAuth']], function () {
+        Route::get('/faculties/all/authorities', [FacultyAuthorityController::class, 'all']);
+        Route::get('/faculties/{id}/authorities', [FacultyAuthorityController::class, 'authoritiesByFaculty']);
+        Route::get('/faculties/authority/{id}/info', [FacultyAuthorityController::class, 'show']);
+    });
+
+    Route::group(['middleware' => ['can:write_schoolAuth']], function () {
+        Route::post('/schools/authorities', [SchoolAuthorityController::class, 'store']);
+        Route::put('/schools/authority/{id}/info', [SchoolAuthorityController::class, 'update']);
+        Route::delete('/schools/authority/{id}/info', [SchoolAuthorityController::class, 'destroy']);
+    });
+
+    Route::group(['middleware' => ['can:read_schoolAuth']], function () {   
+        Route::get('/schools/all/authorities', [SchoolAuthorityController::class, 'all']);
+        Route::get('/schools/{id}/authorities', [SchoolAuthorityController::class, 'authoritiesBySchool']);
+        Route::get('/schools/authority/{id}/info', [SchoolAuthorityController::class, 'show']);
+    });
+
+
             /* RUTAS DEL MANEJO DE CARGA ACADEMICA*/
     //Rutas del manejo de la información de los ciclos academicos
     Route::post('/semesters', [SemesterController::class, 'store']);
@@ -156,9 +230,10 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::get('/groupTypes/{id}', [GroupTypeController::class, 'show']);
     Route::put('/groupTypes/{id}', [GroupTypeController::class, 'update']);
     Route::delete('/groupTypes/{id}', [GroupTypeController::class, 'destroy']);
+    
+    
 
-});
 
-Route::middleware('auth:api')->get('/user', function (Request $request) {
-    return $request->user();
+    
+
 });

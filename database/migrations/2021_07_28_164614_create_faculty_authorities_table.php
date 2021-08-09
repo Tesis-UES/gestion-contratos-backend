@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateCentralAuthoritiesTable extends Migration
+class CreateFacultyAuthoritiesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,16 +13,14 @@ class CreateCentralAuthoritiesTable extends Migration
      */
     public function up()
     {
-        Schema::create('central_authorities', function (Blueprint $table) {
+        Schema::create('faculty_authorities', function (Blueprint $table) {
             $table->id();
-            $table->string('position', 120);
-            $table->string('firstName', 60);
-            $table->string('middleName', 60)->nullable();
-            $table->string('lastName', 120);
-            $table->string('dui', 20);
-            $table->string('nit', 20);
+            $table->string('name');
+            $table->string('position');
             $table->date('startPeriod');
             $table->date('endPeriod');
+            $table->bigInteger('faculty_id')->unsigned()->nonullable();
+            $table->foreign('faculty_id')->references('id')->on('faculties')->onDelete('cascade')->nonullable();
             $table->boolean('status')->default(1);
             $table->softDeletes();
             $table->timestamps();
@@ -36,6 +34,6 @@ class CreateCentralAuthoritiesTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('central_authorities');
+        Schema::dropIfExists('faculty_authorities');
     }
 }

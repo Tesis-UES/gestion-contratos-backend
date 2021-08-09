@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateWorklogsTable extends Migration
+class CreateFacultiesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,11 +13,10 @@ class CreateWorklogsTable extends Migration
      */
     public function up()
     {
-        Schema::create('worklogs', function (Blueprint $table) {
+        Schema::create('faculties', function (Blueprint $table) {
             $table->id();
-            $table->string('username');
-            $table->string('actionLog');
-            $table->string('relevance')->default('low');
+            $table->string('name', 120);
+            $table->softDeletes();
             $table->timestamps();
         });
     }
@@ -29,6 +28,6 @@ class CreateWorklogsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('worklogs');
+        Schema::dropIfExists('faculties');
     }
 }

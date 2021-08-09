@@ -13,7 +13,11 @@ class SchoolController extends Controller
     public function all($id)
     {
         Faculty::findOrFail($id);
-        $schools = School::where('faculty_id', $id)->get();
+        $schools = School::select('schools.id AS schoolId','schools.name AS nameSchool','school_authorities.name AS directorName')
+        ->leftjoin('school_authorities','schools.id','=','school_authorities.school_id')
+        ->where('school_authorities.status','=',1)
+        ->where('school_authorities.position','=','DIRECTOR')
+        ->where('schools.faculty_id', $id)->get();
         $this->RegisterAction("El usuario ha consultado el catalogo de Escuelas");
         return response($schools, 200);
     }
@@ -28,16 +32,14 @@ class SchoolController extends Controller
     {
         $fields = $request->validate([
             'name'     => 'required|string|max:200',
-            'director' => 'required|string|max:200',
         ]);
         Faculty::findOrFail($id);
 
         $newSchool = School::create([
             'faculty_id' => $id,
             'name'       => $fields['name'],
-            'director'   => $fields['director'],
         ]);
-        $this->RegisterAction("El usuario ha Ingresado un nuevo registro en el catalogo de escuelas");
+        $this->RegisterAction("El usuario ha Ingresado un nuevo registro en el catalogo de escuelas", "medium");
         return response([
             'school' => $newSchool,
         ], 201);
@@ -66,12 +68,11 @@ class SchoolController extends Controller
     {
         $request->validate([
             'name'     => 'required|string|max:200',
-            'director' => 'required|string|max:200',
         ]);
 
         $school = School::findOrFail($id);
         $school->update($request->all());
-        $this->RegisterAction("El usuario ha actualizado el registro de ".$request['name']." en el catalogo de escuelas por facultad");
+        $this->RegisterAction("El usuario ha actualizado el registro de ".$request['name']." en el catalogo de escuelas por facultad", "medium");
         return response(['School' => $school], 200);
     }
 
@@ -82,7 +83,7 @@ class SchoolController extends Controller
     {
         $school = School::findOrFail($id);
         $school->delete();
-        $this->RegisterAction("El usuario ha eliminado el registro de la escuela ".$school->name." en el catalogo de Escuelas");
+        $this->RegisterAction("El usuario ha eliminado el registro de la escuela ".$school->name." en el catalogo de Escuelas", "medium");
         return response(null, 204);
     }
 }
