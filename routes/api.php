@@ -143,6 +143,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
         Route::post('/persons/{id}/files/bank-account', [PersonController::class, 'storeBank']);
         Route::post('/persons/{id}/files/title', [PersonController::class, 'storeTitle']);
         Route::post('/persons/{id}/files/curriculum', [PersonController::class, 'storeCurriculum']);
+        Route::post('/persons/{id}/files/permission', [PersonController::class, 'storePermission']);
         Route::put('/persons/{id}/files/dui', [PersonController::class, 'updateDui']);
         Route::put('/persons/{id}/files/nit', [PersonController::class, 'updateNit']);
         Route::put('/persons/{id}/files/bank-account', [PersonController::class, 'updateBank']);
@@ -159,6 +160,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
         Route::get('/persons/{id}/files/bank-account/view', [PersonController::class, 'getBank']);
         Route::get('/persons/{id}/files/title/view', [PersonController::class, 'getTitle']);
         Route::get('/persons/{id}/files/curriculum/view', [PersonController::class, 'getCurriculum']);
+        Route::get('/persons/{id}/files/permission/view', [PersonController::class, 'getPermission']);
     });
 
     //Rutas para creacion de usuario

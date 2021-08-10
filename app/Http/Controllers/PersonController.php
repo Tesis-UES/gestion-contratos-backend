@@ -25,6 +25,11 @@ class PersonController extends Controller
             'gender'        => 'required|string|max:120',
             'telephone'     => 'required|string|max:120',
             'address'       => 'required|string|max:120',
+            'nationality'   => 'required|string|max:120',
+            'is_employee'   => 'required|boolean',
+            'employee_type' => 'string|max:120',
+            'journey_type'  => 'string|max:120',
+            'request_to_same_faculty'=> 'boolean',
             'professional_title'    => 'required|string|max:120',
             'dui_number'            => 'required|string|max:120',
             'dui_expiration_date'   => 'required|date',
@@ -164,6 +169,18 @@ class PersonController extends Controller
         return response(['person' => $person,], 200);
     }
 
+    public function storePermission(Request $request, $id)
+    {
+        $person = Person::findOrFail($id);
+        $file = $request->file('work_permission');
+        $nombre_archivo = $person->first_name." ".$person->middle_name." ".$person->last_name."-permission.pdf";
+        $person->curriculum = $nombre_archivo;
+        $person->save();
+        \Storage::disk('personalFiles')->put($nombre_archivo, \File::get($file)); 
+        $this->RegisterAction("El usuario ha guardado el  archivo pdf que contiene su permiso de trabajo"); 
+        return response(['person' => $person,], 200);
+    }
+
     public function updateDui(Request $request, $id){
             
         $person = Person::findOrFail($id);
@@ -261,5 +278,11 @@ class PersonController extends Controller
         $person = Person::findOrFail($id);
         $pdf = base64_encode(\Storage::disk('personalFiles')->get($person->curriculum));
         return response(['pdfCurriculum' => $pdf], 200);
+    }
+
+    public function getPermission($id) {
+        $person = Person::findOrFail($id);
+        $pdf = base64_encode(\Storage::disk('personalFiles')->get($person->work_permission));
+        return response(['pdfPermission' => $pdf], 200);
     }
 }

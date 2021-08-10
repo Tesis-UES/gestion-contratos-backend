@@ -11,5 +11,6 @@ class worklog extends Model
     public $fillable = [
         'username',
         'actionLog',
+        'relevance'
     ];
 }

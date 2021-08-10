@@ -27,6 +27,12 @@ class CreatePeopleTable extends Migration
             $table->string('gender',120);
             $table->string('telephone',120);
             $table->string('address',250);
+            $table->string('nationality', 120);
+            $table->boolean('is_employee');
+            $table->string('employee_type',120);
+            $table->string('journey_type', 120);
+            $table->boolean('request_to_same_faculty');
+            $table->string('work_permission', 250)->nullable();
             $table->string('professional_title',250);
             $table->string('dui_number',120);
             $table->date('dui_expiration_date');
