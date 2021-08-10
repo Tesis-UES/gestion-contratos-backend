@@ -274,4 +274,10 @@ class PersonController extends Controller
         $pdf = base64_encode(\Storage::disk('personalFiles')->get($person->curriculum));
         return response(['pdfCurriculum' => $pdf], 200);
     }
+
+    public function getPermission($id) {
+        $person = Person::findOrFail($id);
+        $pdf = base64_encode(\Storage::disk('personalFiles')->get($person->work_permission));
+        return response(['pdfPermission' => $pdf], 200);
+    }
 }

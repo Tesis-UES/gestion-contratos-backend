@@ -160,6 +160,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
         Route::get('/persons/{id}/files/bank-account/view', [PersonController::class, 'getBank']);
         Route::get('/persons/{id}/files/title/view', [PersonController::class, 'getTitle']);
         Route::get('/persons/{id}/files/curriculum/view', [PersonController::class, 'getCurriculum']);
+        Route::get('/persons/{id}/files/permission/view', [PersonController::class, 'getPermission']);
     });
 
     //Rutas para creacion de usuario
