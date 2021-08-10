@@ -86,6 +86,10 @@ class AuthController extends Controller
             $daybefore = new \DateTime($request->query('date_before'));
             $worklog = $worklog->whereDate('created_at', '<=', $daybefore);
         }
+        if($request->query('relevance')) {
+            $relevance = $request->query('relevance');
+            $worklog = $worklog->whereIn('relevance', explode(',', $relevance));
+        }
 
         $worklog = $worklog->orderBy('created_at', $request->query('order', 'desc'))->paginate(15);
 
@@ -154,7 +158,7 @@ class AuthController extends Controller
                 $response = [
                     'user' => $user,
                 ];
-                $this->RegisterAction('El administrador ha registrado al usuario ' . $user->name . ' como administrador.');
+                $this->RegisterAction('El administrador ha registrado al usuario ' . $user->name . ' como administrador', "medium");
                 return response($response, 201);
                 break;
 
@@ -169,7 +173,7 @@ class AuthController extends Controller
                 $response = [
                     'user' => $user,
                 ];
-                $this->RegisterAction('El administrador ha registrado al usuario ' . $user->name . ' como Profesor.');
+                $this->RegisterAction('El administrador ha registrado al usuario ' . $user->name . ' como Profesor', "medium");
                 return response($response, 201);
                 break;
 
@@ -184,7 +188,7 @@ class AuthController extends Controller
                 $response = [
                     'user' => $user,
                 ];
-                $this->RegisterAction('El administrador ha registrado al usuario ' . $user->name . ' como Director de Escuela');
+                $this->RegisterAction('El administrador ha registrado al usuario ' . $user->name . ' como Director de Escuela', "medium");
                 return response($response, 201);
                 break;
 
@@ -198,7 +202,7 @@ class AuthController extends Controller
                 $response = [
                     'user' => $user,
                 ];
-                $this->RegisterAction('El administrador ha registrado al usuario ' . $user->name . ' como Asistente Administrativo');
+                $this->RegisterAction('El administrador ha registrado al usuario ' . $user->name . ' como Asistente Administrativo', "medium");
                 return response($response, 201);
 
                 break;
@@ -213,7 +217,7 @@ class AuthController extends Controller
                 $response = [
                     'user' => $user,
                 ];
-                $this->RegisterAction('El administrador ha registrado al usuario ' . $user->name . ' como Asistente Financiero');
+                $this->RegisterAction('El administrador ha registrado al usuario ' . $user->name . ' como Asistente Financiero', "medium");
                 return response($response, 201);
 
                 break;
@@ -266,7 +270,7 @@ class AuthController extends Controller
                 $response = [
                     'user' => $user,
                 ];
-                $this->RegisterAction('El administrador ha actualizado al usuario ' . $user->name . ' como administrador.');
+                $this->RegisterAction('El administrador ha actualizado al usuario ' . $user->name . ' como administrador', "medium");
                 return response($response, 201);
                 break;
 
@@ -280,7 +284,7 @@ class AuthController extends Controller
                 $response = [
                     'user' => $user,
                 ];
-                $this->RegisterAction('El administrador ha Actualizado al usuario ' . $user->name . ' como Profesor.');
+                $this->RegisterAction('El administrador ha Actualizado al usuario ' . $user->name . ' como Profesor', "medium");
                 return response($response, 201);
                 break;
 
@@ -294,7 +298,7 @@ class AuthController extends Controller
                 $response = [
                     'user' => $user,
                 ];
-                $this->RegisterAction('El administrador ha Actualizado al usuario ' . $user->name . ' como Director de Escuela');
+                $this->RegisterAction('El administrador ha Actualizado al usuario ' . $user->name . ' como Director de Escuela', "medium");
                 return response($response, 201);
                 break;
 
@@ -307,7 +311,7 @@ class AuthController extends Controller
                 $response = [
                     'user' => $user,
                 ];
-                $this->RegisterAction('El administrador ha Actualizado al usuario ' . $user->name . ' como Asistente Administrativo');
+                $this->RegisterAction('El administrador ha Actualizado al usuario ' . $user->name . ' como Asistente Administrativo', "medium");
                 return response($response, 201);
 
                 break;
@@ -321,7 +325,7 @@ class AuthController extends Controller
                 $response = [
                     'user' => $user,
                 ];
-                $this->RegisterAction('El administrador ha Actualizado al usuario ' . $user->name . ' como Asistente Financiero');
+                $this->RegisterAction('El administrador ha Actualizado al usuario ' . $user->name . ' como Asistente Financiero', "medium");
                 return response($response, 201);
 
                 break;

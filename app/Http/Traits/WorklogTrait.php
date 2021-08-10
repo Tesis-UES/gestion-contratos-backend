@@ -6,12 +6,13 @@ use Illuminate\Support\Facades\Auth;
 
 
 trait WorklogTrait {
-    public function RegisterAction($action) {
+    public function RegisterAction($action, $relevance = 'low') {
         $usuario = Auth::user();
         
         $bitacora = worklog::create([
             'username'     =>$usuario->name,
             'actionLog'    =>$action,
+            'relevance'    =>$relevance,
         ]);
         
     }

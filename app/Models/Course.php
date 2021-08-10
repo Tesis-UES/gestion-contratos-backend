@@ -14,5 +14,11 @@ class Course extends Model
         'code',
         'name',
         'school_id',
+        'study_plan_id'
 ];
+
+    public function studyPlan()
+    {
+        return $this->belongsTo(StudyPlan::class);
+    }
 }

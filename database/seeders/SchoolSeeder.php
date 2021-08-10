@@ -4,6 +4,7 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use App\Models\School;
+use App\Models\SchoolAuthority;
 class SchoolSeeder extends Seeder
 {
     /**
@@ -13,20 +14,40 @@ class SchoolSeeder extends Seeder
      */
     public function run()
     {
-        School::create(['faculty_id'=>'1', 'name' =>'Ingeniería Agronómica', 'director'=>'Pendiete']);
+        /* School::create(['faculty_id'=>'1', 'name' =>'Ingeniería Agronómica', 'director'=>'Pendiete']);
         School::create(['faculty_id'=>'1', 'name' =>'Licenciatura en Medicina Veterinaria y Zootecnia', 'director'=>'Pendiete']);
-        School::create(['faculty_id'=>'1', 'name' =>'Maestría en Gestión Integral del Agua', 'director'=>'Pendiete']);
-        School::create(['faculty_id'=>'2', 'name' =>'Arquitectura', 'director'=>'Pendiete']);
-        School::create(['faculty_id'=>'2', 'name' =>'Ingeniería Civil', 'director'=>'Pendiete']);
-        School::create(['faculty_id'=>'2', 'name' =>'Ingeniería Industrial', 'director'=>'Pendiete']);
-        School::create(['faculty_id'=>'2', 'name' =>'Ingeniería Mecánica', 'director'=>'Pendiete']);
-        School::create(['faculty_id'=>'2', 'name' =>'Ingeniería Eléctrica', 'director'=>'Pendiete']);
-        School::create(['faculty_id'=>'2', 'name' =>'Ingeniería Química', 'director'=>'Pendiete']);
-        School::create(['faculty_id'=>'2', 'name' =>'Ingeniería de Alimentos', 'director'=>'Pendiete']);
-        School::create(['faculty_id'=>'2', 'name' =>'Ingeniería en Sistemas Informáticos', 'director'=>'Pendiete']);
-        School::create(['faculty_id'=>'2', 'name' =>'Unidad de Ciencias Basicas', 'director'=>'Pendiete']);
-        School::create(['faculty_id'=>'2', 'name' =>'Maestría en Gestión de Recursos Hidrológicos', 'director'=>'Pendiete']);
-        School::create(['faculty_id'=>'3', 'name' =>'Licenciatura en Geofísica', 'director'=>'Pendiete']);
+        School::create(['faculty_id'=>'1', 'name' =>'Maestría en Gestión Integral del Agua', 'director'=>'Pendiete']); */
+        School::create(['faculty_id'=>'1', 'name' =>'Arquitectura']);
+        SchoolAuthority::create(['name'=>'PRUEVA  DIRECTOR','position'=>'DIRECTOR','startPeriod'=>'2021-02-02','endPeriod'=>'2021-12-02','school_id'=>1]);
+        SchoolAuthority::create(['name'=>'PRUEVA  SECRETARIO','position'=>'SECRETARIO','startPeriod'=>'2021-02-02','endPeriod'=>'2021-12-02','school_id'=>1]);
+        School::create(['faculty_id'=>'1', 'name' =>'Ingeniería Civil']);
+        SchoolAuthority::create(['name'=>'PRUEVA  DIRECTOR','position'=>'DIRECTOR','startPeriod'=>'2021-02-02','endPeriod'=>'2021-12-02','school_id'=>2]);
+        SchoolAuthority::create(['name'=>'PRUEVA  SECRETARIO','position'=>'SECRETARIO','startPeriod'=>'2021-02-02','endPeriod'=>'2021-12-02','school_id'=>2]);
+        School::create(['faculty_id'=>'1', 'name' =>'Ingeniería Industrial']);
+        SchoolAuthority::create(['name'=>'PRUEVA  DIRECTOR','position'=>'DIRECTOR','startPeriod'=>'2021-02-02','endPeriod'=>'2021-12-02','school_id'=>3]);
+        SchoolAuthority::create(['name'=>'PRUEVA  SECRETARIO','position'=>'SECRETARIO','startPeriod'=>'2021-02-02','endPeriod'=>'2021-12-02','school_id'=>3]);
+        School::create(['faculty_id'=>'1', 'name' =>'Ingeniería Mecánica']);
+        SchoolAuthority::create(['name'=>'PRUEVA  DIRECTOR','position'=>'DIRECTOR','startPeriod'=>'2021-02-02','endPeriod'=>'2021-12-02','school_id'=>4]);
+        SchoolAuthority::create(['name'=>'PRUEVA  SECRETARIO','position'=>'SECRETARIO','startPeriod'=>'2021-02-02','endPeriod'=>'2021-12-02','school_id'=>4]);
+        School::create(['faculty_id'=>'1', 'name' =>'Ingeniería Eléctrica']);
+        SchoolAuthority::create(['name'=>'PRUEVA  DIRECTOR','position'=>'DIRECTOR','startPeriod'=>'2021-02-02','endPeriod'=>'2021-12-02','school_id'=>5]);
+        SchoolAuthority::create(['name'=>'PRUEVA  SECRETARIO','position'=>'SECRETARIO','startPeriod'=>'2021-02-02','endPeriod'=>'2021-12-02','school_id'=>5]);
+        School::create(['faculty_id'=>'1', 'name' =>'Ingeniería Química']);
+        SchoolAuthority::create(['name'=>'PRUEVA  DIRECTOR','position'=>'DIRECTOR','startPeriod'=>'2021-02-02','endPeriod'=>'2021-12-02','school_id'=>6]);
+        SchoolAuthority::create(['name'=>'PRUEVA  SECRETARIO','position'=>'SECRETARIO','startPeriod'=>'2021-02-02','endPeriod'=>'2021-12-02','school_id'=>6]);
+        School::create(['faculty_id'=>'1', 'name' =>'Ingeniería de Alimentos']);
+        SchoolAuthority::create(['name'=>'PRUEVA  DIRECTOR','position'=>'DIRECTOR','startPeriod'=>'2021-02-02','endPeriod'=>'2021-12-02','school_id'=>7]);
+        SchoolAuthority::create(['name'=>'PRUEVA  SECRETARIO','position'=>'SECRETARIO','startPeriod'=>'2021-02-02','endPeriod'=>'2021-12-02','school_id'=>7]);
+        School::create(['faculty_id'=>'1', 'name' =>'Ingeniería en Sistemas Informáticos']);
+        SchoolAuthority::create(['name'=>'PRUEVA  DIRECTOR','position'=>'DIRECTOR','startPeriod'=>'2021-02-02','endPeriod'=>'2021-12-02','school_id'=>8]);
+        SchoolAuthority::create(['name'=>'PRUEVA  SECRETARIO','position'=>'SECRETARIO','startPeriod'=>'2021-02-02','endPeriod'=>'2021-12-02','school_id'=>8]);
+        School::create(['faculty_id'=>'1', 'name' =>'Unidad de Ciencias Basicas']);
+        SchoolAuthority::create(['name'=>'PRUEVA  DIRECTOR','position'=>'DIRECTOR','startPeriod'=>'2021-02-02','endPeriod'=>'2021-12-02','school_id'=>9]);
+        SchoolAuthority::create(['name'=>'PRUEVA  SECRETARIO','position'=>'SECRETARIO','startPeriod'=>'2021-02-02','endPeriod'=>'2021-12-02','school_id'=>9]);
+        School::create(['faculty_id'=>'1', 'name' =>'Maestría en Gestión de Recursos Hidrológicos']);
+        SchoolAuthority::create(['name'=>'PRUEVA  DIRECTOR','position'=>'DIRECTOR','startPeriod'=>'2021-02-02','endPeriod'=>'2021-12-02','school_id'=>10]);
+        SchoolAuthority::create(['name'=>'PRUEVA  SECRETARIO','position'=>'SECRETARIO','startPeriod'=>'2021-02-02','endPeriod'=>'2021-12-02','school_id'=>10]);
+        /* School::create(['faculty_id'=>'3', 'name' =>'Licenciatura en Geofísica', 'director'=>'Pendiete']);
         School::create(['faculty_id'=>'3', 'name' =>'Licenciatura en Biología', 'director'=>'Pendiete']);
         School::create(['faculty_id'=>'3', 'name' =>'Licenciatura en Física', 'director'=>'Pendiete']);
         School::create(['faculty_id'=>'3', 'name' =>'Licenciatura en Matemática', 'director'=>'Pendiete']);
@@ -183,6 +204,6 @@ class SchoolSeeder extends Seeder
         School::create(['faculty_id'=>'12', 'name' =>'Profesorado en Idioma Inglés (tercer ciclo)', 'director'=>'Pendiete']);
         School::create(['faculty_id'=>'12', 'name' =>'Profesorado en Ciencias Sociales (tercer ciclo)', 'director'=>'Pendiete']);
         School::create(['faculty_id'=>'12', 'name' =>'Técnico en Bibliotecología', 'director'=>'Pendiete']);
-
+ */
     }
 }

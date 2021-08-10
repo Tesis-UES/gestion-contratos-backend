@@ -31,16 +31,18 @@ class CentralAuthorityController extends Controller
     public function store(Request $request)
     {
         $request->validate([
-            'position'    => 'required|string|max:120',
-            'firstName'   => 'required|string|max:60',
-            'middleName'  => 'string|max:60',
-            'lastName'    => 'required|string|max:120',
-            'dui'         => 'required|string|max:20',
-            'nit'         => 'required|string|max:20'
+            'position'      => 'required|string|max:120',
+            'firstName'     => 'required|string|max:60',
+            'middleName'    => 'string|max:60',
+            'lastName'      => 'required|string|max:120',
+            'dui'           => 'required|string|max:20',
+            'nit'           => 'required|string|max:20',
+            'startPeriod'   => 'required',
+            'endPeriod'     => 'required|after:startPeriod',
         ]);
         $newAuthority = CentralAuthority::create($request->all());
 
-        $this->RegisterAction('El usuario ha creado la autoridad central con ID: ' . $newAuthority['id']);
+        $this->RegisterAction('El usuario ha creado la autoridad central con ID: ' . $newAuthority['id'],  "high");
         return response($newAuthority, 201);
     }
 
@@ -72,12 +74,14 @@ class CentralAuthorityController extends Controller
             'middleName'  => 'string|max:60',
             'lastName'    => 'required|string|max:120',
             'dui'         => 'required|string|max:20',
-            'nit'         => 'required|string|max:20'
+            'nit'         => 'required|string|max:20',
+            'startPeriod'   => 'required',
+            'endPeriod'     => 'required|after:startPeriod',
         ]);
 
         $authority = CentralAuthority::findOrFail($id);
         $authority->update($request->all());
-        $this->RegisterAction('El usuario ha actualizado la autoridad central con ID : ' . $id);
+        $this->RegisterAction('El usuario ha actualizado la autoridad central con ID : ' . $id, "high");
         return response($authority, 200);
     }
 
@@ -92,7 +96,7 @@ class CentralAuthorityController extends Controller
         $authority = CentralAuthority::findOrFail($id);
         $authority->delete();
 
-        $this->RegisterAction('El usuario ha borrado la autoridad central con ID: ' . $id);
+        $this->RegisterAction('El usuario ha borrado la autoridad central con ID: ' . $id, "high");
         return response(null, 204);
     }
 }

@@ -29,13 +29,13 @@ class RolesPermissionsSeeder extends Seeder
             'name'      => 'Paola Renee Aguilar Quevedo',
             'email'     => 'paola@ues.edu.sv',
             'password'  => bcrypt('foobar'),
-            'school_id' => 11,
+            'school_id' => 8,
         ]);
         $usuario4 = User::create([
             'name'      => 'Oscar Emmanuel Cordero Hernandez',
             'email'     => 'oscar@ues.edu.sv',
             'password'  => bcrypt('foobar'),
-            'school_id' => 11,
+            'school_id' => 8,
         ]);
         $usuario5 = User::create([
             'name'      => 'Walter Baudilio Luna Peñate',
@@ -83,6 +83,15 @@ class RolesPermissionsSeeder extends Seeder
         Permission::create(['name' => 'write_users']);
         Permission::create(['name' => 'read_users']);
 
+        Permission::create(['name' => 'write_plans']);
+        Permission::create(['name' => 'read_plans']);
+
+        Permission::create(['name' => 'write_facultyAuth']);
+        Permission::create(['name' => 'read_facultyAuth']);
+
+        Permission::create(['name' => 'write_schoolAuth']);
+        Permission::create(['name' => 'read_schoolAuth']);
+        
         //CREACION DE ROLES
         $admin = Role::create(['name' => 'Administrador']);
         $profesor = Role::create(['name' => 'Profesor']);
@@ -111,6 +120,12 @@ class RolesPermissionsSeeder extends Seeder
             'write_centralAuthorities',
             'read_users',
             'write_users',
+            'write_plans',
+            'read_plans',
+            'write_facultyAuth',
+            'read_facultyAuth',
+            'write_schoolAuth',
+            'read_schoolAuth',
         ]);
 
         $profesor->givePermissionTo([
@@ -123,6 +138,9 @@ class RolesPermissionsSeeder extends Seeder
             'read_contractTypes',
             'read_persons',
             'write_persons',
+            'read_plans',
+            'read_facultyAuth',   
+            'read_schoolAuth',
         ]);
 
         $directorEscuela->givePermissionTo([
@@ -137,6 +155,9 @@ class RolesPermissionsSeeder extends Seeder
             'write_courses',
             'read_contractTypes',
             'read_persons',
+            'read_plans',  
+            'read_facultyAuth',
+            'read_schoolAuth',
         ]);
 
         $asistenteAdmin->givePermissionTo([
@@ -156,6 +177,9 @@ class RolesPermissionsSeeder extends Seeder
             'write_centralAuthorities',
             'read_persons',
             'write_persons',
+            'read_plans',
+            'read_facultyAuth',
+            'read_schoolAuth',
         ]);
 
         $usuario1->assignRole('Administrador');

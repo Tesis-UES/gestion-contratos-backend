@@ -35,7 +35,7 @@ class EscalafonController extends Controller
             'name'   => $fields['name'],
             'salary' => $fields['salary'],
         ]);
-        $this->RegisterAction("El usuario ha Ingresado un nuevo registro en el catalogo de Escalafones");
+        $this->RegisterAction("El usuario ha Ingresado un nuevo registro en el catalogo de Escalafones", "medium");
         return response([
             'escalafon' => $newEscalafon,
         ], 201);
@@ -72,7 +72,7 @@ class EscalafonController extends Controller
 
         $escalafon = Escalafon::findOrFail($id);
         $escalafon->update($request->all());
-        $this->RegisterAction("El usuario ha actualizado el registro del escalafon ".$request['name']." en el catalogo de escalafones");
+        $this->RegisterAction("El usuario ha actualizado el registro del escalafon ".$request['name']." en el catalogo de escalafones", "medium");
 
         return response(['escalafon' => $escalafon], 200);
     }
@@ -87,7 +87,7 @@ class EscalafonController extends Controller
     {
         $escalafon = Escalafon::findOrFail($id);
         $escalafon->delete();
-        $this->RegisterAction("El usuario ha eliminado el registro del escalafon ".$escalafon->name." en el catalogo de Escalafones");
+        $this->RegisterAction("El usuario ha eliminado el registro del escalafon ".$escalafon->name." en el catalogo de Escalafones" , "medium");
         return response(null, 204);
     }
 }

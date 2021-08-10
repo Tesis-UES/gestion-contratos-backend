@@ -19,6 +19,8 @@ class CreateCoursesTable extends Migration
             $table->string('name', 120);
             $table->bigInteger('school_id')->unsigned()->nonullable();
             $table->foreign('school_id')->references('id')->on('schools')->onDelete('cascade')->nonullable();
+            $table->bigInteger('study_plan_id')->unsigned()->nonullable();
+            $table->foreign('study_plan_id')->references('id')->on('study_plans')->onDelete('cascade')->nonullable();
             $table->softDeletes();
             $table->timestamps();
         });
