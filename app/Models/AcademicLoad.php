@@ -12,12 +12,12 @@ class AcademicLoad extends Model
     protected $fillable = [
         'id',
         'semester_id',
-        'course_id'
+        'school_id'
     ];
     
-    public function course()
+    public function school()
     {
-        return $this->belongsTo(Course::class);
+        return $this->belongsTo(School::class);
     }
 
     public function semester()

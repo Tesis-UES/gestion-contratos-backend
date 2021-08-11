@@ -14,20 +14,20 @@ class AcademicLoadController extends Controller
     public function store(Request $request)
     {
         $fields = $request->validate([
-            'course_id'     => 'required',
+            'school_id'     => 'required',
             'semester_id'   => 'required',
         ]);
 
-        $result = AcademicLoad::where(['course_id'=>$request->course_id,'semester_id'=>$request->semester_id])->first();
+        $result = AcademicLoad::where(['school_id'=>$request->school_id,'semester_id'=>$request->semester_id])->first();
         if ($result == null) {
             $newAcademicLoad = AcademicLoad::create($request->all());
-            $this->RegisterAction("El usuario ha registrado una nueva carga acacdemica para la materia ".$newAcademicLoad->course->name."");
+            $this->RegisterAction("El usuario ha registrado una nueva carga academica para la escuela.");
              return response([
                 'academicLoad' => $newAcademicLoad,
                ], 201);
         } else {
             return response([
-                'message' => "No se puede Registra carga academica de esta materia por que ya tiene una activa en el ciclo.",
+                'message' => "No se puede Registrar carga academica de esta escuela ya que esta ya posee una creada.",
             ], 422);
         }
         
@@ -40,9 +40,9 @@ class AcademicLoadController extends Controller
         $academicLoad = [
             'id'            => $result->id,
             'semester_id'   => $result->semester_id,
-            'course_id'     => $result->course_id,
+            'school_id'     => $result->school_id,
             'semester'      => $result->semester->name,
-            'course'        => $result->course->name,
+            'school'        => $result->school->name,
             
         ];
         return response(['academicLoad' =>  $academicLoad,], 200);
