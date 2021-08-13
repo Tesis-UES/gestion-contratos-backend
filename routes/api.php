@@ -223,6 +223,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     //Rutas de la gestion de carga academica.
     Route::post('/academicLoad', [AcademicLoadController::class, 'store']);
     Route::get('/academicLoad/{id}', [AcademicLoadController::class, 'show']);
+    Route::get('/academicLoad/all/bySchool', [AcademicLoadController::class, 'academicLoadsSchool']);
 
     //Rutas que maneja el catalogo de tipos de clase
     Route::post('/groupTypes', [GroupTypeController::class, 'store']);

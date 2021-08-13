@@ -5,7 +5,7 @@ namespace App\Http\Controllers;
 use App\Models\AcademicLoad;
 use Illuminate\Http\Request;
 use App\Http\Traits\WorklogTrait;
-
+use Illuminate\Support\Facades\Auth;
 class AcademicLoadController extends Controller
 {
    
@@ -50,14 +50,12 @@ class AcademicLoadController extends Controller
 
     
     
-    public function update(Request $request, AcademicLoad $academicLoad)
+    public function academicLoadsSchool()
     {
-        //
+        $user = Auth::user();
+        $result = AcademicLoad::where(['school_id'=>$user->school_id])->with('semester')->get();
+        return response(['academicLoad' =>  $result,], 200);
     }
 
     
-    public function destroy(AcademicLoad $academicLoad)
-    {
-        //
-    }
 }
