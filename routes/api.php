@@ -144,11 +144,11 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
         Route::post('/persons/{id}/files/title', [PersonController::class, 'storeTitle']);
         Route::post('/persons/{id}/files/curriculum', [PersonController::class, 'storeCurriculum']);
         Route::post('/persons/{id}/files/permission', [PersonController::class, 'storePermission']);
-        Route::put('/persons/{id}/files/dui', [PersonController::class, 'updateDui']);
-        Route::put('/persons/{id}/files/nit', [PersonController::class, 'updateNit']);
-        Route::put('/persons/{id}/files/bank-account', [PersonController::class, 'updateBank']);
-        Route::put('/persons/{id}/files/title', [PersonController::class, 'updateTitle']);
-        Route::put('/persons/{id}/files/curriculum', [PersonController::class, 'updateCurriculum']);
+        Route::post('/persons/{id}/files/dui/update', [PersonController::class, 'updateDui']);
+        Route::post('/persons/{id}/files/nit/update', [PersonController::class, 'updateNit']);
+        Route::post('/persons/{id}/files/bank-account/update', [PersonController::class, 'updateBank']);
+        Route::post('/persons/{id}/files/title/update', [PersonController::class, 'updateTitle']);
+        Route::post('/persons/{id}/files/curriculum/update', [PersonController::class, 'updateCurriculum']);
         Route::put('/persons/{id}', [PersonController::class, 'update']);
         Route::delete('/persons/{id}', [PersonController::class, 'destroy']);
     });
