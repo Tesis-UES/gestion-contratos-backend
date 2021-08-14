@@ -235,7 +235,9 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     
     //Rutas que controlan los grupos
     Route::post('/group', [GroupController::class, 'store']);
-    
+    Route::get('/group/{id}', [GroupController::class, 'show']);
+    Route::get('/group/academicLoad/{id}', [GroupController::class, 'showByAcademicLoad']);
+    Route::put('/group/{id}', [GroupController::class, 'update']);
     
 
 

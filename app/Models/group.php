@@ -32,4 +32,9 @@ class Group extends Model
     {
         return $this->belongsTo(Course::class);
     }
+
+    public function schedule()
+    {
+        return $this->hasMany(Schedule::class);
+    }
 }
