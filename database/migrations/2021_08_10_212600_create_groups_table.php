@@ -15,6 +15,15 @@ class CreateGroupsTable extends Migration
     {
         Schema::create('groups', function (Blueprint $table) {
             $table->id();
+            $table->bigInteger('number');
+            $table->bigInteger('group_type_id')->unsigned()->nonullable();
+            $table->foreign('group_type_id')->references('id')->on('group_types')->onDelete('cascade')->nonullable();
+            $table->bigInteger('academic_load_id')->unsigned()->nonullable();
+            $table->foreign('academic_load_id')->references('id')->on('academic_loads')->onDelete('cascade')->nonullable();
+            $table->bigInteger('course_id')->unsigned()->nonullable();
+            $table->foreign('course_id')->references('id')->on('courses')->onDelete('cascade')->nonullable();
+            $table->bigInteger('professor_id')->unsigned()->nonullable();
+            $table->softDeletes();
             $table->timestamps();
         });
     }

@@ -15,6 +15,7 @@ use App\Http\Controllers\GroupTypeController;
 use App\Http\Controllers\StudyPlanController;
 use App\Http\Controllers\FacultyAuthorityController;
 use App\Http\Controllers\SchoolAuthorityController;
+use App\Http\Controllers\GroupController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
@@ -231,6 +232,9 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::get('/groupTypes/{id}', [GroupTypeController::class, 'show']);
     Route::put('/groupTypes/{id}', [GroupTypeController::class, 'update']);
     Route::delete('/groupTypes/{id}', [GroupTypeController::class, 'destroy']);
+    
+    //Rutas que controlan los grupos
+    Route::post('/group', [GroupController::class, 'store']);
     
     
 

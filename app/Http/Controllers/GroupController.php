@@ -2,83 +2,58 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\group;
+use App\Models\Group;
 use Illuminate\Http\Request;
 
 class GroupController extends Controller
 {
-    /**
-     * Display a listing of the resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function index()
-    {
-        //
-    }
-
-    /**
-     * Show the form for creating a new resource.
-     *
-     * @return \Illuminate\Http\Response
-     */
-    public function create()
-    {
-        //
-    }
-
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
+  
+    
+    
     public function store(Request $request)
     {
-        //
+        $fields = $request->validate([ 
+            'number'            =>'required|integer',
+            'group_type_id'     =>'required|integer',
+            'academic_load_id'  =>'required|integer',
+            'course_id'         =>'required|integer',
+            'professor_id'      =>'required|integer',
+        ]);
+        $Group = Group::create($fields);
+        $newGroup = [
+            'id'                =>  $Group->id,
+            'number'            =>  $Group->number,          
+            'group_type_id'     =>  $Group->group_type_id,
+            'type_group'        =>  $Group->grupo->name,  
+            'academic_load_id'  =>  $Group->academic_load_id, 
+            'course_id'         =>  $Group->course_id,
+            'nombre_curso'      =>  $Group->course->name,                   
+            'professor_id'      =>  $Group->professor_id,  
+        ];
+        return response(['newGroup' =>  $newGroup], 200);
+        
     }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\group  $group
-     * @return \Illuminate\Http\Response
-     */
-    public function show(group $group)
+   
+    public function show(Group $group)
     {
         //
     }
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\group  $group
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(group $group)
+    
+    public function edit(Group $group)
     {
         //
     }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\group  $group
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, group $group)
+    
+    public function update(Request $request, Group $group)
     {
         //
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\group  $group
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(group $group)
+  
+    public function destroy(Group $group)
     {
         //
     }
