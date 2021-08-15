@@ -19,7 +19,7 @@ class StudyPlanController extends Controller
     {
         $request->validate([
             'name'      => 'required|string|max:100',
-            'school_id' => 'required'
+            'school_id' => 'required|integer'
         ]);
         $newStudyPlan = StudyPlan::create($request->all());
         return response($newStudyPlan, 201);

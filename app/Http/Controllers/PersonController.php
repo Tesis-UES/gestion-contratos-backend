@@ -174,7 +174,7 @@ class PersonController extends Controller
         $person = Person::findOrFail($id);
         $file = $request->file('work_permission');
         $nombre_archivo = $person->first_name." ".$person->middle_name." ".$person->last_name."-permission.pdf";
-        $person->curriculum = $nombre_archivo;
+        $person->work_permission = $nombre_archivo;
         $person->save();
         \Storage::disk('personalFiles')->put($nombre_archivo, \File::get($file)); 
         $this->RegisterAction("El usuario ha guardado el  archivo pdf que contiene su permiso de trabajo"); 
@@ -247,7 +247,19 @@ class PersonController extends Controller
         \Storage::disk('personalFiles')->put($nombre_archivo, \File::get($file)); 
         $this->RegisterAction("El usuario ha actualizado el archivo pdf que contiene su curriculum", "medium"); 
         return response(['person' => $person,], 200);
+    }
 
+    public function updatePermisssion(Request $request, $id) {
+        $person = Person::findOrFail($id);
+        $file = $request->file('work_permission');
+        $nombre_archivo = $person->first_name." ".$person->middle_name." ".$person->last_name."-permission.pdf";
+        //Se elimina el archivo antiguo
+        \File::delete($person->work_permission);
+        $person->work_permission = $nombre_archivo;
+        $person->save();
+        \Storage::disk('personalFiles')->put($nombre_archivo, \File::get($file)); 
+        $this->RegisterAction("El usuario ha guardado el  archivo pdf que contiene su permiso de trabajo"); 
+        return response(['person' => $person,], 200);
     }
 
     public function getDui($id){

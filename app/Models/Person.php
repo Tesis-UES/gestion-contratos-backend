@@ -38,5 +38,6 @@ class Person extends Model
         'professional_title_scan',
         'bank_account',
         'bank_account_number',
+        'work_permission',
     ];
 }
