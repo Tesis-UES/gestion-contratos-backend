@@ -37,4 +37,5 @@ class Group extends Model
     {
         return $this->hasMany(Schedule::class);
     }
+    
 }
