@@ -58,5 +58,9 @@ class AcademicLoadController extends Controller
         return response(['academicLoad' =>  $result,], 200);
     }
 
+    public function indexAdmin(){
+        $result = AcademicLoad::with('semester')->with('school')->get();
+        return response(['academicLoad' =>  $result,], 200);
+    }
     
 }

@@ -211,33 +211,55 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
         Route::get('/schools/authority/{id}/info', [SchoolAuthorityController::class, 'show']);
     });
 
+    Route::group(['middleware' => ['can:write_semesters']], function () {   
+        Route::post('/semesters', [SemesterController::class, 'store']);
+        Route::put('/semesters/{id}', [SemesterController::class, 'update']);
+        Route::delete('/semesters/{id}', [SemesterController::class, 'destroy']);
+    });
 
-            /* RUTAS DEL MANEJO DE CARGA ACADEMICA*/
-    //Rutas del manejo de la información de los ciclos academicos
-    Route::post('/semesters', [SemesterController::class, 'store']);
-    Route::get('/semesters', [SemesterController::class, 'all']);
-    Route::get('/semesters/actives', [SemesterController::class, 'allActives']);
-    Route::get('/semesters/{id}', [SemesterController::class, 'show']);
-    Route::put('/semesters/{id}', [SemesterController::class, 'update']);
-    Route::delete('/semesters/{id}', [SemesterController::class, 'destroy']);
-
-    //Rutas de la gestion de carga academica.
-    Route::post('/academicLoad', [AcademicLoadController::class, 'store']);
-    Route::get('/academicLoad/{id}', [AcademicLoadController::class, 'show']);
-    Route::get('/academicLoad/all/bySchool', [AcademicLoadController::class, 'academicLoadsSchool']);
-
-    //Rutas que maneja el catalogo de tipos de clase
-    Route::post('/groupTypes', [GroupTypeController::class, 'store']);
-    Route::get('/groupTypes', [GroupTypeController::class, 'all']);
-    Route::get('/groupTypes/{id}', [GroupTypeController::class, 'show']);
-    Route::put('/groupTypes/{id}', [GroupTypeController::class, 'update']);
-    Route::delete('/groupTypes/{id}', [GroupTypeController::class, 'destroy']);
+    Route::group(['middleware' => ['can:read_semesters']], function () {   
+        Route::get('/semesters', [SemesterController::class, 'all']);
+        Route::get('/semesters/actives', [SemesterController::class, 'allActives']);
+        Route::get('/semesters/{id}', [SemesterController::class, 'show']);
+    });
     
-    //Rutas que controlan los grupos
-    Route::post('/group', [GroupController::class, 'store']);
-    Route::get('/group/{id}', [GroupController::class, 'show']);
-    Route::get('/group/academicLoad/{id}', [GroupController::class, 'showByAcademicLoad']);
-    Route::put('/group/{id}', [GroupController::class, 'update']);
+    Route::group(['middleware' => ['can:write_groupsType']], function () {   
+        Route::post('/groupTypes', [GroupTypeController::class, 'store']);
+        Route::put('/groupTypes/{id}', [GroupTypeController::class, 'update']);
+        Route::delete('/groupTypes/{id}', [GroupTypeController::class, 'destroy']);
+    });
+
+    Route::group(['middleware' => ['can:read_groupsType']], function () {   
+        Route::get('/groupTypes', [GroupTypeController::class, 'all']);
+        Route::get('/groupTypes/{id}', [GroupTypeController::class, 'show']);
+    });
+
+    Route::group(['middleware' => ['can:write_academicLoad']], function () {   
+        Route::post('/academicLoad', [AcademicLoadController::class, 'store']);
+    });
+    
+    Route::group(['middleware' => ['can:read_academicLoad']], function () {   
+        Route::get('/academicLoad', [AcademicLoadController::class, 'indexAdmin']);
+        Route::get('/academicLoad/{id}', [AcademicLoadController::class, 'show']);
+        Route::get('/academicLoad/all/bySchool', [AcademicLoadController::class, 'academicLoadsSchool']);
+    });
+
+    Route::group(['middleware' => ['can:write_groups']], function () {  
+        Route::post('/group', [GroupController::class, 'store']);
+        Route::put('/group/{id}', [GroupController::class, 'update']);
+    });
+
+    Route::group(['middleware' => ['can:read_groups']], function () {   
+        Route::get('/group/{id}', [GroupController::class, 'show']);
+        Route::get('/group/academicLoad/{id}', [GroupController::class, 'showByAcademicLoad']);
+    });
+   
+    
+    
+    
+   
+   
+  
     
 
 
