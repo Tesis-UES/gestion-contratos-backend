@@ -14,12 +14,12 @@ class AcademicLoadSeeder extends Seeder
     public function run()
     {
         //Creamos un conjunto de ciclos unos no activos y uno solo activo
-        Semester::Create(['name'=>'Ciclo 1-2019','start_date'=>'2019-12-02','end_date'=>'2019-12-07','status'=>false]);
-        Semester::Create(['name'=>'Ciclo 2-2019','start_date'=>'2019-13-07','end_date'=>'2019-12-12','status'=>false]);
-        Semester::Create(['name'=>'Ciclo 1-2020','start_date'=>'2020-12-02','end_date'=>'2020-12-07','status'=>false]);
-        Semester::Create(['name'=>'Ciclo 2-2020','start_date'=>'2020-13-07','end_date'=>'2020-12-12','status'=>false]);
-        Semester::Create(['name'=>'Ciclo 1-2021','start_date'=>'2021-12-02','end_date'=>'2021-12-07','status'=>false]);
-        Semester::Create(['name'=>'Ciclo 2-2021','start_date'=>'2021-13-07','end_date'=>'2021-12-12','status'=>true]);
+        Semester::Create(['name'=>'Ciclo 1-2019','start_date'=>'2019-02-12','end_date'=>'2019-07-12','status'=>false]);
+        Semester::Create(['name'=>'Ciclo 2-2019','start_date'=>'2019-07-13','end_date'=>'2019-12-12','status'=>false]);
+        Semester::Create(['name'=>'Ciclo 1-2020','start_date'=>'2020-02-12','end_date'=>'2020-07-12','status'=>false]);
+        Semester::Create(['name'=>'Ciclo 2-2020','start_date'=>'2020-07-13','end_date'=>'2020-12-12','status'=>false]);
+        Semester::Create(['name'=>'Ciclo 1-2021','start_date'=>'2021-02-12','end_date'=>'2021-07-12','status'=>false]);
+        Semester::Create(['name'=>'Ciclo 2-2021','start_date'=>'2021-07-13','end_date'=>'2021-12-12','status'=>true]);
 
         //creacmos las cargas academicas para los ciclos anteriormente creados
         AcademicLoad::create(['semester_id'=>1,'school_id'=>8]);
