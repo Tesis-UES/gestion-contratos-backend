@@ -43,6 +43,7 @@ class AcademicLoadController extends Controller
             'school_id'     => $result->school_id,
             'semester'      => $result->semester->name,
             'school'        => $result->school->name,
+            'semesterActive'=> $result->semester->status
             
         ];
         return response(['academicLoad' =>  $academicLoad,], 200);
