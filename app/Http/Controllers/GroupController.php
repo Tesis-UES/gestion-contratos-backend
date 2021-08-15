@@ -19,6 +19,12 @@ class GroupController extends Controller
             'academic_load_id'  =>'required|integer',
             'course_id'         =>'required|integer',
             'professor_id'      =>'required|integer',
+            'days'              =>'required|array|min:1',
+            'days.*'            =>'required|string',
+            'start_hours'       =>'required|array|min:1',
+            'start_hours.*'     =>'required|string',
+            'finish_hours'      =>'required|array|min:1',
+            'finish_hours.*'    =>'required|string',
         ]);
        
         $days = $request->days;
