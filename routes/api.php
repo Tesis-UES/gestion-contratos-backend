@@ -9,9 +9,13 @@ use App\Http\Controllers\SchoolController;
 use App\Http\Controllers\CourseController;
 use App\Http\Controllers\ContractTypeController;
 use App\Http\Controllers\PersonController;
+use App\Http\Controllers\SemesterController;
+use App\Http\Controllers\AcademicLoadController;
+use App\Http\Controllers\GroupTypeController;
 use App\Http\Controllers\StudyPlanController;
 use App\Http\Controllers\FacultyAuthorityController;
 use App\Http\Controllers\SchoolAuthorityController;
+use App\Http\Controllers\GroupController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
@@ -135,7 +139,6 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
         Route::get('/central-authorities/{id}', [CentralAuthorityController::class, 'show']);
     });
 
-    //Rutas de informacion de persona a contratar
     Route::group(['middleware' => ['can:write_persons']], function () {
         Route::post('/persons', [PersonController::class, 'store']);
         Route::post('/persons/{id}/files/dui', [PersonController::class, 'storeDui']);
@@ -162,7 +165,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
         Route::get('/persons/{id}/files/curriculum/view', [PersonController::class, 'getCurriculum']);
         Route::get('/persons/{id}/files/permission/view', [PersonController::class, 'getPermission']);
     });
-
+    
     //Rutas para creacion de usuario
     Route::group(['middleware' => ['can:write_users']], function () {
         Route::post('/users', [AuthController::class, 'createUser']);
@@ -210,8 +213,55 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
         Route::get('/schools/authority/{id}/info', [SchoolAuthorityController::class, 'show']);
     });
 
+    Route::group(['middleware' => ['can:write_semesters']], function () {   
+        Route::post('/semesters', [SemesterController::class, 'store']);
+        Route::put('/semesters/{id}', [SemesterController::class, 'update']);
+        Route::delete('/semesters/{id}', [SemesterController::class, 'destroy']);
+    });
 
+    Route::group(['middleware' => ['can:read_semesters']], function () {   
+        Route::get('/semesters', [SemesterController::class, 'all']);
+        Route::get('/semesters/actives', [SemesterController::class, 'allActives']);
+        Route::get('/semesters/{id}', [SemesterController::class, 'show']);
+    });
     
+    Route::group(['middleware' => ['can:write_groupsType']], function () {   
+        Route::post('/groupTypes', [GroupTypeController::class, 'store']);
+        Route::put('/groupTypes/{id}', [GroupTypeController::class, 'update']);
+        Route::delete('/groupTypes/{id}', [GroupTypeController::class, 'destroy']);
+    });
+
+    Route::group(['middleware' => ['can:read_groupsType']], function () {   
+        Route::get('/groupTypes', [GroupTypeController::class, 'all']);
+        Route::get('/groupTypes/{id}', [GroupTypeController::class, 'show']);
+    });
+
+    Route::group(['middleware' => ['can:write_academicLoad']], function () {   
+        Route::post('/academicLoad', [AcademicLoadController::class, 'store']);
+    });
+    
+    Route::group(['middleware' => ['can:read_academicLoad']], function () {   
+        Route::get('/academicLoad', [AcademicLoadController::class, 'indexAdmin']);
+        Route::get('/academicLoad/{id}', [AcademicLoadController::class, 'show']);
+        Route::get('/academicLoad/all/bySchool', [AcademicLoadController::class, 'academicLoadsSchool']);
+    });
+
+    Route::group(['middleware' => ['can:write_groups']], function () {  
+        Route::post('/group', [GroupController::class, 'store']);
+        Route::put('/group/{id}', [GroupController::class, 'update']);
+    });
+
+    Route::group(['middleware' => ['can:read_groups']], function () {   
+        Route::get('/group/{id}', [GroupController::class, 'show']);
+        Route::get('/group/academicLoad/{id}', [GroupController::class, 'showByAcademicLoad']);
+    });
+   
+    
+    
+    
+   
+   
+  
     
 
 

@@ -91,6 +91,18 @@ class RolesPermissionsSeeder extends Seeder
 
         Permission::create(['name' => 'write_schoolAuth']);
         Permission::create(['name' => 'read_schoolAuth']);
+
+        Permission::create(['name' => 'write_semesters']);
+        Permission::create(['name' => 'read_semesters']);
+
+        Permission::create(['name' => 'write_academicLoad']);
+        Permission::create(['name' => 'read_academicLoad']);
+
+        Permission::create(['name' => 'write_groups']);
+        Permission::create(['name' => 'read_groups']);
+
+        Permission::create(['name' => 'write_groupsType']);
+        Permission::create(['name' => 'read_groupsType']);
         
         //CREACION DE ROLES
         $admin = Role::create(['name' => 'Administrador']);
@@ -126,6 +138,14 @@ class RolesPermissionsSeeder extends Seeder
             'read_facultyAuth',
             'write_schoolAuth',
             'read_schoolAuth',
+            'write_semesters',
+            'read_semesters',
+            'write_groupsType',
+            'read_groupsType',
+            'read_academicLoad',
+            'read_groups',
+
+
         ]);
 
         $profesor->givePermissionTo([
@@ -141,6 +161,10 @@ class RolesPermissionsSeeder extends Seeder
             'read_plans',
             'read_facultyAuth',   
             'read_schoolAuth',
+            'read_semesters',
+            'read_groupsType',
+            'read_academicLoad',
+            'read_groups',
         ]);
 
         $directorEscuela->givePermissionTo([
@@ -158,6 +182,12 @@ class RolesPermissionsSeeder extends Seeder
             'read_plans',  
             'read_facultyAuth',
             'read_schoolAuth',
+            'read_semesters',
+            'read_groupsType',
+            'write_academicLoad',
+            'read_academicLoad',
+            'write_groups',
+            'read_groups',
         ]);
 
         $asistenteAdmin->givePermissionTo([
@@ -180,6 +210,10 @@ class RolesPermissionsSeeder extends Seeder
             'read_plans',
             'read_facultyAuth',
             'read_schoolAuth',
+            'read_semesters',
+            'read_groupsType',
+            'read_academicLoad',
+            'read_groups',
         ]);
 
         $usuario1->assignRole('Administrador');
