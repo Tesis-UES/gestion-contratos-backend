@@ -35,6 +35,7 @@ class PersonValidationController extends Controller
             'profesional_title_readable'    => 'required|boolean',
             'profesional_title_validated'   => 'required|boolean',
             'bank_account_readable'         => 'required|boolean',
+            'work_permission_readable'      => 'boolean',
         ]);
 
         $personValidation = Person::where('id', $personId)->firstOrFail()->personValidations;
