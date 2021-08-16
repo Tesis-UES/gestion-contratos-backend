@@ -103,6 +103,9 @@ class RolesPermissionsSeeder extends Seeder
 
         Permission::create(['name' => 'write_groupsType']);
         Permission::create(['name' => 'read_groupsType']);
+
+        Permission::create(['name' => 'write_personValidations']);
+        Permission::create(['name' => 'read_personValidations']);
         
         //CREACION DE ROLES
         $admin = Role::create(['name' => 'Administrador']);
@@ -144,8 +147,8 @@ class RolesPermissionsSeeder extends Seeder
             'read_groupsType',
             'read_academicLoad',
             'read_groups',
-
-
+            'write_personValidations',
+            'read_personValidations',
         ]);
 
         $profesor->givePermissionTo([
@@ -165,6 +168,7 @@ class RolesPermissionsSeeder extends Seeder
             'read_groupsType',
             'read_academicLoad',
             'read_groups',
+            'read_personValidations',
         ]);
 
         $directorEscuela->givePermissionTo([
@@ -214,6 +218,8 @@ class RolesPermissionsSeeder extends Seeder
             'read_groupsType',
             'read_academicLoad',
             'read_groups',
+            'write_personValidations',
+            'read_personValidations',
         ]);
 
         $usuario1->assignRole('Administrador');

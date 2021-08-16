@@ -9,6 +9,7 @@ use App\Http\Controllers\SchoolController;
 use App\Http\Controllers\CourseController;
 use App\Http\Controllers\ContractTypeController;
 use App\Http\Controllers\PersonController;
+use App\Http\Controllers\PersonValidationController;
 use App\Http\Controllers\SemesterController;
 use App\Http\Controllers\AcademicLoadController;
 use App\Http\Controllers\GroupTypeController;
@@ -158,6 +159,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
         Route::delete('/persons/{id}', [PersonController::class, 'destroy']);
     });
     Route::group(['middleware' => ['can:read_persons']], function () {
+        Route::get('/persons', [PersonController::class, 'all']);
         Route::get('/persons/me', [PersonController::class, 'showMyInfo']);
         Route::get('/persons/{id}', [PersonController::class, 'show']);
         Route::get('/persons/{id}/files/dui/view', [PersonController::class, 'getDui']);
@@ -166,6 +168,15 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
         Route::get('/persons/{id}/files/title/view', [PersonController::class, 'getTitle']);
         Route::get('/persons/{id}/files/curriculum/view', [PersonController::class, 'getCurriculum']);
         Route::get('/persons/{id}/files/permission/view', [PersonController::class, 'getPermission']);
+    });
+
+    // Rutas que manejan las validaciones de personas
+    Route::group(['middleware' => ['can:read_personValidations']], function () {
+        Route::get('/persons/me/validations', [PersonValidationController::class, 'showMe']);
+        Route::get('/persons/{id}/validations', [PersonValidationController::class, 'show']);
+    });
+    Route::group(['middleware' => ['can:write_personValidations']], function () {
+        Route::put('/persons/{id}/validations', [PersonValidationController::class, 'update']);
     });
     
     // Rutas que manejan el catalogo de usuarios
