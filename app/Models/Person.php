@@ -40,4 +40,9 @@ class Person extends Model
         'bank_account_number',
         'work_permission',
     ];
+
+    public function personValidations()
+    {
+        return $this->hasOne(PersonValidation::class);
+    }
 }

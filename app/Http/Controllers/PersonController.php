@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Person;
+use App\Models\PersonValidation;
 use Illuminate\Http\Request;
 use App\Http\Traits\WorklogTrait;
 use Illuminate\Support\Facades\Auth;
@@ -11,6 +12,13 @@ use Illuminate\Support\Facades\Auth;
 class PersonController extends Controller
 {
     use WorklogTrait;
+
+    public function all()
+    {
+        $people = Person::all();
+        $this->RegisterAction('El usuario ha consultado el catalogo de personas');
+        return response($people, 200);
+    }
 
     public function store(Request $request)
     {
@@ -41,6 +49,8 @@ class PersonController extends Controller
         $newPerson = new Person ($request->all());
         $newPerson->user_id = $usuario->id;
         $newPerson->save();
+        $personValidation = new PersonValidation(['person_id' => $newPerson->id]);
+        $personValidation->save();
 
         $this->RegisterAction("El usuario he registrado sus datos personales generales", "medium");
         return response([
@@ -146,7 +156,6 @@ class PersonController extends Controller
     }
 
     public function storeTitle(Request $request, $id){
-
         $person = Person::findOrFail($id);
         $file = $request->file('title');
         $nombre_archivo = $person->first_name." ".$person->middle_name." ".$person->last_name."-Titulo.pdf";
@@ -158,7 +167,6 @@ class PersonController extends Controller
     }
 
     public function storeCurriculum(Request $request, $id){
-
         $person = Person::findOrFail($id);
         $file = $request->file('curriculum');
         $nombre_archivo = $person->first_name." ".$person->middle_name." ".$person->last_name."-Curriculum.pdf";
@@ -182,7 +190,6 @@ class PersonController extends Controller
     }
 
     public function updateDui(Request $request, $id){
-            
         $person = Person::findOrFail($id);
         $file = $request->file('dui');
         $nombre_archivo = $person->first_name." ".$person->middle_name." ".$person->last_name."-DUI.pdf";
@@ -190,13 +197,19 @@ class PersonController extends Controller
         \File::delete($person->dui);
         $person->dui = $nombre_archivo;
         $person->save();
-        \Storage::disk('personalFiles')->put($nombre_archivo, \File::get($file)); 
+        \Storage::disk('personalFiles')->put($nombre_archivo, \File::get($file));
+        $personValidations = $person->personValidations;
+        $personValidations->update([
+            'dui_readable'      => false,
+            'name_correct'      => false,
+            'address_correct'   => false,
+            'dui_current'       => false,
+        ]);
         $this->RegisterAction("El usuario ha actualizado el archivo pdf que contiene la imagen del DUI", "medium"); 
         return response(['person' => $person,], 200);
     }
 
     public function updateNit(Request $request, $id){
-
         $person = Person::findOrFail($id);
         $file = $request->file('nit');
         $nombre_archivo = $person->first_name." ".$person->middle_name." ".$person->last_name."-NIT.pdf";
@@ -205,6 +218,10 @@ class PersonController extends Controller
         $person->nit = $nombre_archivo;
         $person->save();
         \Storage::disk('personalFiles')->put($nombre_archivo, \File::get($file)); 
+        $personValidations = $person->personValidations;
+        $personValidations->update([
+            'nit_readable' => false,
+        ]);
         $this->RegisterAction("El usuario ha actualizado el archivo pdf que contiene la imagen del NIT", "medium");
         return response(['person' => $person,], 200);
     }
@@ -218,12 +235,15 @@ class PersonController extends Controller
         $person->bank_account = $nombre_archivo;
         $person->save();
         \Storage::disk('personalFiles')->put($nombre_archivo, \File::get($file)); 
+        $personValidations = $person->personValidations;
+        $personValidations->update([
+            'bank_account_readable' => false,
+        ]);
         $this->RegisterAction("El usuario ha actualizado el  archivo pdf que contiene la imagen de su cuenta de banco", "medium"); 
         return response(['person' => $person,], 200);
     }
 
     public function updateTitle(Request $request, $id){
-
         $person = Person::findOrFail($id);
         $file = $request->file('title');
         $nombre_archivo = $person->first_name." ".$person->middle_name." ".$person->last_name."-Titulo.pdf";
@@ -232,6 +252,11 @@ class PersonController extends Controller
         $person->professional_title_scan = $nombre_archivo;
         $person->save();
         \Storage::disk('personalFiles')->put($nombre_archivo, \File::get($file)); 
+        $personValidations = $person->personValidations;
+        $personValidations->update([
+            'profesional_title_readable' => false,
+            'profesional_title_validated' => false,
+        ]);
         $this->RegisterAction("El usuario ha actualizado el  archivo pdf que contiene la imagen de su titulo Universitario", "medium"); 
         return response(['person' => $person,], 200);
     }
@@ -245,6 +270,10 @@ class PersonController extends Controller
         $person->curriculum = $nombre_archivo;
         $person->save();
         \Storage::disk('personalFiles')->put($nombre_archivo, \File::get($file)); 
+        $personValidations = $person->personValidations;
+        $personValidations->update([
+            'curriculum_readable'  => false,
+        ]);
         $this->RegisterAction("El usuario ha actualizado el archivo pdf que contiene su curriculum", "medium"); 
         return response(['person' => $person,], 200);
     }
@@ -258,6 +287,10 @@ class PersonController extends Controller
         $person->work_permission = $nombre_archivo;
         $person->save();
         \Storage::disk('personalFiles')->put($nombre_archivo, \File::get($file)); 
+        $personValidations = $person->personValidations;
+        $personValidations->update([
+            'work_permission_readable'  => false,
+        ]);
         $this->RegisterAction("El usuario ha guardado el  archivo pdf que contiene su permiso de trabajo"); 
         return response(['person' => $person,], 200);
     }
