@@ -45,9 +45,13 @@ class PersonController extends Controller
             'bank_account_number'   => 'required|string|max:120',
         ]);
 
-        $usuario = Auth::user();
+        $user = Auth::user();
+        $person = Person::where('user_id', $user->id)->first();
+        if($person){
+            return response(['message' => "El usuario ya ha registrado sus datos personales",], 400);        
+        }
         $newPerson = new Person ($request->all());
-        $newPerson->user_id = $usuario->id;
+        $newPerson->user_id = $user->id;
         $newPerson->save();
         $personValidation = new PersonValidation(['person_id' => $newPerson->id]);
         $personValidation->save();
@@ -81,8 +85,9 @@ class PersonController extends Controller
         return response(['has_registered' => false], 200);
     }
 
-    public function update(Request $request, $id)
+    public function update(Request $request)
     {
+        $user = Auth::user();
         $request->validate([
             'first_name'    => 'required|string|max:120',
             'middle_name'   => 'required|string|max:120',
@@ -101,7 +106,7 @@ class PersonController extends Controller
             'bank_account_number'   => 'required|string|max:120',
         ]);
 
-        $person = Person::findOrFail($id);
+        $person = Person::where('user_id', $user->id)->firstOrFail();
         $person->update($request->all());
         $this->RegisterAction("El usuario ha actualizado sus datos personales genrales", "medium");
         return response(['person' => $person], 200);
@@ -115,7 +120,8 @@ class PersonController extends Controller
      */
     public function destroy($id)
     {
-        $person = Person::findOrFail($id);
+        $user = Auth::user();
+        $person = Person::where('user_id', $user->id)->firstOrFail();
         $person->delete();
         $this->RegisterAction("Se ha eleminado la informacion general del usuario", "medium");
         return response(null, 204);
