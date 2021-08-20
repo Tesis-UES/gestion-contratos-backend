@@ -143,6 +143,8 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     // Rutas que manejan el catalogo de personas
     Route::group(['middleware' => ['can:write_persons']], function () {
         Route::post('/persons', [PersonController::class, 'store']);
+        Route::put('/persons/me', [PersonController::class, 'update']);
+        Route::delete('/persons/me', [PersonController::class, 'destroy']);
         Route::post('/persons/{id}/files/dui', [PersonController::class, 'storeDui']);
         Route::post('/persons/{id}/files/nit', [PersonController::class, 'storeNit']);
         Route::post('/persons/{id}/files/bank-account', [PersonController::class, 'storeBank']);
@@ -155,8 +157,6 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
         Route::post('/persons/{id}/files/title/update', [PersonController::class, 'updateTitle']);
         Route::post('/persons/{id}/files/curriculum/update', [PersonController::class, 'updateCurriculum']);
         Route::post('/persons/{id}/files/permission/update', [PersonController::class, 'updatePermisssion']);
-        Route::put('/persons/{id}', [PersonController::class, 'update']);
-        Route::delete('/persons/{id}', [PersonController::class, 'destroy']);
     });
     Route::group(['middleware' => ['can:read_persons']], function () {
         Route::get('/persons', [PersonController::class, 'all']);
