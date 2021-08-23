@@ -106,6 +106,25 @@ class RolesPermissionsSeeder extends Seeder
 
         Permission::create(['name' => 'write_personValidations']);
         Permission::create(['name' => 'read_personValidations']);
+
+        //Permisos visuales
+        Permission::create(['name' => 'view_users']);
+        Permission::create(['name' => 'view_worklog']);
+        Permission::create(['name' => 'view_centralAuthorities']);
+        Permission::create(['name' => 'view_catalogs']);
+
+        Permission::create(['name' => 'view_myInfo']);
+        Permission::create(['name' => 'view_uploadDoc']);
+        Permission::create(['name' => 'view_updateDocs']);
+
+        Permission::create(['name' => 'view_solicitudeDirector']);
+        Permission::create(['name' => 'view_academicLoadDirector']);
+        Permission::create(['name' => 'view_academicLoad']);
+
+        Permission::create(['name' => 'view_personInfo']);
+        Permission::create(['name' => 'view_contracSolicitude']);
+     
+
         
         //CREACION DE ROLES
         $admin = Role::create(['name' => 'Administrador']);
@@ -149,6 +168,11 @@ class RolesPermissionsSeeder extends Seeder
             'read_groups',
             'write_personValidations',
             'read_personValidations',
+            'view_users',
+            'view_worklog',
+            'view_centralAuthorities',
+            'view_catalogs',
+            'view_academicLoad'
         ]);
 
         $profesor->givePermissionTo([
@@ -169,6 +193,9 @@ class RolesPermissionsSeeder extends Seeder
             'read_academicLoad',
             'read_groups',
             'read_personValidations',
+            'view_myInfo',
+            'view_uploadDoc',
+            'view_updateDocs',
         ]);
 
         $directorEscuela->givePermissionTo([
@@ -192,6 +219,8 @@ class RolesPermissionsSeeder extends Seeder
             'read_academicLoad',
             'write_groups',
             'read_groups',
+            'view_solicitudeDirector',
+            'view_academicLoadDirector',
         ]);
 
         $asistenteAdmin->givePermissionTo([
@@ -220,6 +249,8 @@ class RolesPermissionsSeeder extends Seeder
             'read_groups',
             'write_personValidations',
             'read_personValidations',
+            'view_personInfo',
+            'view_contracSolicitude',
         ]);
 
         $usuario1->assignRole('Administrador');
