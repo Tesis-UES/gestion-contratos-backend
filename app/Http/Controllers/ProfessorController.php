@@ -34,4 +34,13 @@ class ProfessorController extends Controller
         $this->RegisterAction("El usuario se ha registrado como profesor");
         return response([$newProfessor], 201);
     }
+
+    public function hasRegistered()
+    {
+        $professor = Auth::user()->person->professor;
+        if($professor) {
+            return response(['has_registered' => true], 200);
+        }
+        return response(['has_registered' => false], 200);
+    }
 }
