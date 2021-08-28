@@ -106,6 +106,9 @@ class RolesPermissionsSeeder extends Seeder
 
         Permission::create(['name' => 'write_personValidations']);
         Permission::create(['name' => 'read_personValidations']);
+        
+        Permission::create(['name' => 'write_Professors']);
+
 
         //Permisos visuales
         Permission::create(['name' => 'view_users']);
@@ -196,6 +199,7 @@ class RolesPermissionsSeeder extends Seeder
             'view_myInfo',
             'view_uploadDoc',
             'view_updateDocs',
+            'write_Professors',
         ]);
 
         $directorEscuela->givePermissionTo([
