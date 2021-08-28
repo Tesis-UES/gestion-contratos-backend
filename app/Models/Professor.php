@@ -13,4 +13,8 @@ class Professor extends Model
         'person_id',
         'escalafon_id',
     ];
+
+    public function staySchedules() {
+        return $this->hasMany(StaySchedule::class);
+    }
 }
