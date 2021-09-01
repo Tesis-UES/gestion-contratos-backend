@@ -7,7 +7,7 @@ use App\Models\PersonValidation;
 use Illuminate\Http\Request;
 use App\Http\Traits\WorklogTrait;
 use Illuminate\Support\Facades\Auth;
-
+use Luecano\NumeroALetras\NumeroALetras;
 
 class PersonController extends Controller
 {
@@ -335,5 +335,46 @@ class PersonController extends Controller
         $person = Person::findOrFail($id);
         $pdf = base64_encode(\Storage::disk('personalFiles')->get($person->work_permission));
         return response(['pdfPermission' => $pdf], 200);
+    }
+
+    public function duiToText($dui){
+        $formatter = new NumeroALetras();
+        if (substr($dui,0,-9) == 0 && substr($dui,1,-8) == !0) {
+          return  $textDui = "CERO ".$formatter->toString(substr($dui,0,-2))."GUION ".$formatter->toString(substr($dui,-1))."";
+        } if(substr($dui,1,-8) == 0 && substr($dui,2,-7) == !0) {
+            return $textDui = "CERO CERO ".$formatter->toString(substr($dui,0,-2))."GUION ".$formatter->toString(substr($dui,-1))."";
+        }if(substr($dui,2,-7) == 0){
+            return $textDui = "CERO CERO CERO ".$formatter->toString(substr($dui,0,-2))."GUION ".$formatter->toString(substr($dui,-1))."";
+        }
+    }
+
+    public function nitToText($nit){
+        $formatter = new NumeroALetras();
+        $nitParts = explode("-",$nit);
+        
+         if (substr($nitParts[0],0,-3) == 0 && substr($nitParts[0],1,-2) == !0) {
+            $part1 ="CERO ".$formatter->toString($nitParts[0])."";
+        } else {
+            $part1 ="CERO CERO ".$formatter->toString($nitParts[0])."";
+        }
+        
+        if (substr($nitParts[1],0,-5) == 0 && substr($nitParts[1],1,-4) == !0) {
+             $part2 ="CERO ".$formatter->toString($nitParts[1])."";
+        } if(substr($nitParts[1],1,-4) == 0){
+             $part2 ="CERO CERO ".$formatter->toString($nitParts[1])."";
+        }else{
+             $part2 = $formatter->toString($nitParts[1]);
+        }
+
+        if (substr($nitParts[2],0,-2) == 0 && substr($nitParts[2],1,-1) == !0) {
+             $part3 ="CERO ".$formatter->toString($nitParts[2])."";
+        } if(substr($nitParts[2],1,-1) == 0){
+             $part3 ="CERO CERO ".$formatter->toString($nitParts[2])."";
+        }else{
+             $part3 = $formatter->toString($nitParts[2]);
+        }
+        $part4 =  $formatter->toString($nitParts[3]);
+        return $textNIt = "".$part1." GUION ".$part2." GUION ".$part3." GUION ".$part4."";
+        
     }
 }

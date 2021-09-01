@@ -13,6 +13,7 @@
         "laravel/sanctum": "^2.11",
         "laravel/tinker": "^2.5",
         "laraveles/spanish": "^1.5",
+        "luecano/numero-a-letras": "^3.0",
         "spatie/laravel-permission": "^4.2"
     },
     "require-dev": {
