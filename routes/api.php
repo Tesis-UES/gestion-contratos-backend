@@ -183,9 +183,11 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
 
     // Rutas que manejan el catalogo de profesores
     Route::group(['middleware' => ['can:write_Professors']], function() {
-        Route::get('/professors/me/has-registered',[ProfessorController::class, 'hasRegistered']);
         Route::post('/professors/me', [ProfessorController::class, 'store']);
     }); 
+    Route::group(['middleware' => ['can:read_Professors']], function() {
+        Route::get('/professors/me/has-registered',[ProfessorController::class, 'hasRegistered']);
+    });  
 
     // Rutas que manejan el catalogo de horario de permanencia 
     Route::group(['middleware' => ['can:write_StaySchedule']], function() {

@@ -31,7 +31,7 @@ class ProfessorController extends Controller
             'escalafon_id'  => $fields['escalafon_id'],
         ]);
 
-        $this->RegisterAction("El usuario se ha registrado como profesor");
+        $this->RegisterAction('El usuario se ha registrado como profesor', 'medium');
         return response([$newProfessor], 201);
     }
 

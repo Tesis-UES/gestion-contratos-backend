@@ -29,14 +29,19 @@ class StayScheduleController extends Controller
         return response($staySchedules, 200);
     }
 
-    public function registerForActiveSemester(Request $request)
+    public function registerForActiveSemester()
     {
         $semester = Semester::firstWhere('status',1);
         if(!$semester) {
             return response(['message' => 'No existe ciclo activo, comuniquese con el administrador del sistema', 400]);
         }
         
-        $professor = Auth::user()->person->professor;
+        $person = Auth::user()->person;
+        if(!$person) {
+            return response(['message' => 'Registre sus datos personales primero'], 400);
+        }
+
+        $professor = $person->professor;
         if(!$professor) {
             return response(['message' => 'Registrese como profesor primero', 400]);
         }
