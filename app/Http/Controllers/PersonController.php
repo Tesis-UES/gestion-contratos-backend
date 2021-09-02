@@ -43,6 +43,7 @@ class PersonController extends Controller
             'dui_expiration_date'   => 'required|date',
             'nit_number'            => 'required|string|max:120',
             'bank_account_number'   => 'required|string|max:120',
+            'reading_signature'     => 'required|string',
         ]);
 
         $user = Auth::user();
@@ -52,6 +53,8 @@ class PersonController extends Controller
         }
         $newPerson = new Person ($request->all());
         $newPerson->user_id = $user->id;
+        $newPerson->dui_text = $this->duiToText($newPerson->dui_number);
+        $newPerson->nit_text = $this->nitToText($newPerson->nit_number);
         $newPerson->save();
         $personValidation = new PersonValidation(['person_id' => $newPerson->id]);
         $personValidation->save();
@@ -104,10 +107,15 @@ class PersonController extends Controller
             'dui_expiration_date'   => 'required|date',
             'nit_number'            => 'required|string|max:120',
             'bank_account_number'   => 'required|string|max:120',
+            'reading_signature'     => 'required|string',
         ]);
 
         $person = Person::where('user_id', $user->id)->firstOrFail();
         $person->update($request->all());
+        $person->dui_text = $this->duiToText($person->dui_number);
+        $person->nit_text = $this->nitToText($person->nit_number);
+        $person->save();
+                                             
         $this->RegisterAction("El usuario ha actualizado sus datos personales genrales", "medium");
         return response(['person' => $person], 200);
     }
@@ -343,8 +351,10 @@ class PersonController extends Controller
           return  $textDui = "CERO ".$formatter->toString(substr($dui,0,-2))."GUION ".$formatter->toString(substr($dui,-1))."";
         } if(substr($dui,1,-8) == 0 && substr($dui,2,-7) == !0) {
             return $textDui = "CERO CERO ".$formatter->toString(substr($dui,0,-2))."GUION ".$formatter->toString(substr($dui,-1))."";
-        }if(substr($dui,2,-7) == 0){
+        }if(substr($dui,2,-7) == 0 && substr($dui,3,-6) == !0){
             return $textDui = "CERO CERO CERO ".$formatter->toString(substr($dui,0,-2))."GUION ".$formatter->toString(substr($dui,-1))."";
+        }else{
+            return $textDui = "CERO CERO CERO CERO ".$formatter->toString(substr($dui,0,-2))."GUION ".$formatter->toString(substr($dui,-1))."";
         }
     }
 

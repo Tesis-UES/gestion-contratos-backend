@@ -39,6 +39,9 @@ class Person extends Model
         'bank_account',
         'bank_account_number',
         'work_permission',
+        'reading_signature',
+        'dui_text',
+        'nit_text',
     ];
 
     public function personValidations()

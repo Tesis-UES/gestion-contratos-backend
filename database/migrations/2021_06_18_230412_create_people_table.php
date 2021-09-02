@@ -35,9 +35,12 @@ class CreatePeopleTable extends Migration
             $table->string('work_permission', 250)->nullable();
             $table->string('professional_title',250);
             $table->string('dui_number',120);
+            $table->string('dui_text');
+            $table->string('reading_signature');
             $table->date('dui_expiration_date');
             $table->string('dui',250)->nullable();
             $table->string('nit_number',120);
+            $table->string('nit_text',120);
             $table->string('nit',250)->nullable();
             $table->string('curriculum',250)->nullable();
             $table->string('professional_title_scan',250)->nullable();
