@@ -19,5 +19,7 @@ class CentralAuthority extends Model
         'nit',
         'startPeriod',
         'endPeriod',
+        'text_dui',
+        'text_nit'
     ];
 }

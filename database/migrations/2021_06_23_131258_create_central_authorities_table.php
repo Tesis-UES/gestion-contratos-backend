@@ -20,7 +20,9 @@ class CreateCentralAuthoritiesTable extends Migration
             $table->string('middleName', 60)->nullable();
             $table->string('lastName', 120);
             $table->string('dui', 20);
+            $table->string('text_dui');
             $table->string('nit', 20);
+            $table->string('text_nit');
             $table->date('startPeriod');
             $table->date('endPeriod');
             $table->boolean('status')->default(1);

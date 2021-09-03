@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Traits\WorklogTrait;
 use App\Models\CentralAuthority;
 use Illuminate\Http\Request;
+use Luecano\NumeroALetras\NumeroALetras;
 
 class CentralAuthorityController extends Controller
 {
@@ -40,7 +41,10 @@ class CentralAuthorityController extends Controller
             'startPeriod'   => 'required',
             'endPeriod'     => 'required|after:startPeriod',
         ]);
-        $newAuthority = CentralAuthority::create($request->all());
+        $newAuthority = new  CentralAuthority ($request->all());
+        $newAuthority->text_dui = $this->duiToText($newAuthority->dui);
+        $newAuthority->text_nit = $this->nitToText($newAuthority->nit);
+        $newAuthority->save();
 
         $this->RegisterAction('El usuario ha creado la autoridad central con ID: ' . $newAuthority['id'],  "high");
         return response($newAuthority, 201);
@@ -81,6 +85,9 @@ class CentralAuthorityController extends Controller
 
         $authority = CentralAuthority::findOrFail($id);
         $authority->update($request->all());
+        $authority->text_dui = $this->duiToText($authority->dui);
+        $authority->text_nit = $this->nitToText($authority->nit);
+        $authority->save();
         $this->RegisterAction('El usuario ha actualizado la autoridad central con ID : ' . $id, "high");
         return response($authority, 200);
     }
@@ -98,5 +105,48 @@ class CentralAuthorityController extends Controller
 
         $this->RegisterAction('El usuario ha borrado la autoridad central con ID: ' . $id, "high");
         return response(null, 204);
+    }
+
+    public function duiToText($dui){
+        $formatter = new NumeroALetras();
+        if (substr($dui,0,-9) == 0 && substr($dui,1,-8) == !0) {
+          return  $textDui = "CERO ".$formatter->toString(substr($dui,0,-2))."GUION ".$formatter->toString(substr($dui,-1))."";
+        } if(substr($dui,1,-8) == 0 && substr($dui,2,-7) == !0) {
+            return $textDui = "CERO CERO ".$formatter->toString(substr($dui,0,-2))."GUION ".$formatter->toString(substr($dui,-1))."";
+        }if(substr($dui,2,-7) == 0 && substr($dui,3,-6) == !0){
+            return $textDui = "CERO CERO CERO ".$formatter->toString(substr($dui,0,-2))."GUION ".$formatter->toString(substr($dui,-1))."";
+        }else{
+            return $textDui = "CERO CERO CERO CERO ".$formatter->toString(substr($dui,0,-2))."GUION ".$formatter->toString(substr($dui,-1))."";
+        }
+    }
+
+    public function nitToText($nit){
+        $formatter = new NumeroALetras();
+        $nitParts = explode("-",$nit);
+        
+         if (substr($nitParts[0],0,-3) == 0 && substr($nitParts[0],1,-2) == !0) {
+            $part1 ="CERO ".$formatter->toString($nitParts[0])."";
+        } else {
+            $part1 ="CERO CERO ".$formatter->toString($nitParts[0])."";
+        }
+        
+        if (substr($nitParts[1],0,-5) == 0 && substr($nitParts[1],1,-4) == !0) {
+             $part2 ="CERO ".$formatter->toString($nitParts[1])."";
+        } if(substr($nitParts[1],1,-4) == 0){
+             $part2 ="CERO CERO ".$formatter->toString($nitParts[1])."";
+        }else{
+             $part2 = $formatter->toString($nitParts[1]);
+        }
+
+        if (substr($nitParts[2],0,-2) == 0 && substr($nitParts[2],1,-1) == !0) {
+             $part3 ="CERO ".$formatter->toString($nitParts[2])."";
+        } if(substr($nitParts[2],1,-1) == 0){
+             $part3 ="CERO CERO ".$formatter->toString($nitParts[2])."";
+        }else{
+             $part3 = $formatter->toString($nitParts[2]);
+        }
+        $part4 =  $formatter->toString($nitParts[3]);
+        return $textNIt = "".$part1." GUION ".$part2." GUION ".$part3." GUION ".$part4."";
+        
     }
 }
