@@ -27,6 +27,8 @@ class CreatePeopleTable extends Migration
             $table->string('gender',120);
             $table->string('telephone',120);
             $table->string('address',250);
+            $table->string('city',250);
+            $table->string('department',250);
             $table->string('nationality', 120);
             $table->boolean('is_employee');
             $table->string('employee_type',120)->nullable();

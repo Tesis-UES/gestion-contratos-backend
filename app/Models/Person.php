@@ -27,6 +27,8 @@ class Person extends Model
         'employee_type',
         'journey_type',
         'request_to_same_faculty',
+        'city',
+        'department',
         'address',
         'dui',
         'dui_number',

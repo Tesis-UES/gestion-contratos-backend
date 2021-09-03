@@ -33,6 +33,8 @@ class PersonController extends Controller
             'gender'        => 'required|string|max:120',
             'telephone'     => 'required|string|max:120',
             'address'       => 'required|string|max:120',
+            'city'       => 'required|string|max:120',
+            'department'       => 'required|string|max:120',
             'nationality'   => 'required|string|max:120',
             'is_employee'   => 'required|boolean',
             'employee_type' => 'string|max:120',
