@@ -13,4 +13,14 @@ class StaySchedule extends Model
         'semester_id',
         'professor_id',
     ];
+
+    public function semester()
+    {
+        return $this->belongsTo(Semester::class);
+    }
+
+    public function details() 
+    {
+        return $this->hasMany(StayScheduleDetail::class);
+    }
 }

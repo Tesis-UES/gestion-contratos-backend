@@ -13,6 +13,7 @@ use App\Http\Controllers\PersonValidationController;
 use App\Http\Controllers\ProfessorController;
 use App\Http\Controllers\SemesterController;
 use App\Http\Controllers\StayScheduleController;
+use App\Http\Controllers\StayScheduleDetailController;
 use App\Http\Controllers\AcademicLoadController;
 use App\Http\Controllers\GroupTypeController;
 use App\Http\Controllers\StudyPlanController;
@@ -191,10 +192,17 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
 
     // Rutas que manejan el catalogo de horario de permanencia 
     Route::group(['middleware' => ['can:write_StaySchedule']], function() {
-        Route::post('/professors/me/stay-schedule', [StayScheduleController::class, 'registerForActiveSemester']);
+        Route::post('/professors/me/stay-schedules', [StayScheduleController::class, 'registerForActiveSemester']);
     });  
     Route::group(['middleware' => ['can:read_StaySchedule']], function() {
-        Route::get('/professors/me/stay-schedule', [StayScheduleController::class, 'allMine']);
+        Route::get('/professors/me/stay-schedules', [StayScheduleController::class, 'allMine']);
+    });
+
+    // Rutas que manejan el catalogo de horario de permanencia 
+    Route::group(['middleware' => ['can:write_StaySchedule']], function() {
+        Route::post('/professors/me/stay-schedules/details', [StayScheduleDetailController::class, 'store']);
+    });  
+    Route::group(['middleware' => ['can:read_StaySchedule']], function() {
     });
     
     // Rutas que manejan el catalogo de usuarios
