@@ -196,6 +196,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     });  
     Route::group(['middleware' => ['can:read_StaySchedule']], function() {
         Route::get('/professors/me/stay-schedules', [StayScheduleController::class, 'allMine']);
+        Route::get('/professors/me/stay-schedules/{id}', [StayScheduleController::class, 'show']);
     });
 
     // Rutas que manejan el catalogo de horario de permanencia 
