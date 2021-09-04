@@ -16,6 +16,8 @@ class StayScheduleDetail extends Model
         'stay_schedule_id',
     ];
 
+    protected $touches = ['staySchedule'];
+
     public function staySchedule() 
     {
         return $this->belongsTo(StaySchedule::class);

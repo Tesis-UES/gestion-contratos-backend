@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Http\Traits\WorklogTrait;
 use App\Models\StaySchedule;
 use App\Models\StayScheduleDetail;
 use Illuminate\Http\Request;
@@ -10,22 +11,16 @@ use Illuminate\Support\Facades\Auth;
 
 class StayScheduleDetailController extends Controller
 {
-    /**
-     * Store a newly created resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @return \Illuminate\Http\Response
-     */
-    public function store(Request $request)
+    use WorklogTrait;
+
+    public function store(Request $request, $stayScheduleId)
     {
         $fields = $request->validate([
-            'stay_schedule_id'      => 'required|integer|gte:1',
             'details'               => 'required|array|min:1',
             'details.*.day'         => 'required|string',
-            'details.*.start_time'  => 'required|date_format:H:i',
-            'details.*.finish_time' => 'required|date_format:H:i|after:details.*.start_time',
+            'details.*.start_time'  => 'required|date_format:H:i:s',
+            'details.*.finish_time' => 'required|date_format:H:i:s|after:details.*.start_time',
         ]);
-
         $person = Auth::user()->person;
         if(!$person) {
             return response(['message' => 'Registre sus datos personales primero'], 400);
@@ -36,56 +31,29 @@ class StayScheduleDetailController extends Controller
         }
 
         $staySchedule = StaySchedule::where([
-            'id'            => $fields['stay_schedule_id'], 
+            'id'            => $stayScheduleId, 
             'professor_id'  => $professor->id,
-        ])->with('semester')->first();
-        if(!$staySchedule->semester->status){
+        ])->with('semester')->firstOrFail();
+        if($staySchedule->semester->status = false){
             return response(['message' => 'No se puede editar horario de permanencia de ciclos inactivos'], 422);
         }
-    }
 
-    /**
-     * Display the specified resource.
-     *
-     * @param  \App\Models\stayScheduleDetail  $stayScheduleDetail
-     * @return \Illuminate\Http\Response
-     */
-    public function show(stayScheduleDetail $stayScheduleDetail)
-    {
-        //
-    }
+        foreach($fields['details'] as $detail) {
+            $conflictingDetails = array_filter($fields['details'], function($i) use($detail){
+                return $detail['day'] == $i['day'] 
+                && strtotime($detail['finish_time']) > strtotime($i['start_time'])
+                && strtotime($detail['start_time']) < strtotime($i['finish_time']);
+            });
 
-    /**
-     * Show the form for editing the specified resource.
-     *
-     * @param  \App\Models\stayScheduleDetail  $stayScheduleDetail
-     * @return \Illuminate\Http\Response
-     */
-    public function edit(stayScheduleDetail $stayScheduleDetail)
-    {
-        //
-    }
+            if(count($conflictingDetails) > 1) {
+                return response(['message' => 'Hay conflictos en los horarios seleccionados'], 422);
+            }
+        }
 
-    /**
-     * Update the specified resource in storage.
-     *
-     * @param  \Illuminate\Http\Request  $request
-     * @param  \App\Models\stayScheduleDetail  $stayScheduleDetail
-     * @return \Illuminate\Http\Response
-     */
-    public function update(Request $request, stayScheduleDetail $stayScheduleDetail)
-    {
-        //
-    }
-
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\stayScheduleDetail  $stayScheduleDetail
-     * @return \Illuminate\Http\Response
-     */
-    public function destroy(stayScheduleDetail $stayScheduleDetail)
-    {
-        //
+        StayScheduleDetail::where('stay_schedule_id', $staySchedule->id)->delete();
+        $savedDetails =$staySchedule->details()->createMany($fields['details']);
+        
+        $this->RegisterAction('El usuario ha registrado su horario de permanencia para el ciclo activo', 'medium');
+        return response($savedDetails, 200);
     }
 }

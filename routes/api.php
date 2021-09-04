@@ -200,7 +200,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
 
     // Rutas que manejan el catalogo de horario de permanencia 
     Route::group(['middleware' => ['can:write_StaySchedule']], function() {
-        Route::post('/professors/me/stay-schedules/details', [StayScheduleDetailController::class, 'store']);
+        Route::put('/professors/me/stay-schedules/{id}/details', [StayScheduleDetailController::class, 'store']);
     });  
     Route::group(['middleware' => ['can:read_StaySchedule']], function() {
     });
