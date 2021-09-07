@@ -211,9 +211,7 @@ class RolesPermissionsSeeder extends Seeder
         $directorEscuela->givePermissionTo([
             'read_escalafones',
             'read_faculties',
-            'write_faculties',
             'read_schools',
-            'write_schools',
             'read_activities',
             'write_activities',
             'read_courses',
