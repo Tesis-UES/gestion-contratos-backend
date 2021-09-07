@@ -10,7 +10,10 @@ use App\Http\Controllers\CourseController;
 use App\Http\Controllers\ContractTypeController;
 use App\Http\Controllers\PersonController;
 use App\Http\Controllers\PersonValidationController;
+use App\Http\Controllers\ProfessorController;
 use App\Http\Controllers\SemesterController;
+use App\Http\Controllers\StayScheduleController;
+use App\Http\Controllers\StayScheduleDetailController;
 use App\Http\Controllers\AcademicLoadController;
 use App\Http\Controllers\GroupTypeController;
 use App\Http\Controllers\StudyPlanController;
@@ -177,6 +180,30 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     });
     Route::group(['middleware' => ['can:write_personValidations']], function () {
         Route::put('/persons/{id}/validations', [PersonValidationController::class, 'update']);
+    });
+
+    // Rutas que manejan el catalogo de profesores
+    Route::group(['middleware' => ['can:write_Professors']], function() {
+        Route::post('/professors/me', [ProfessorController::class, 'store']);
+    }); 
+    Route::group(['middleware' => ['can:read_Professors']], function() {
+        Route::get('/professors/me/has-registered',[ProfessorController::class, 'hasRegistered']);
+    });  
+
+    // Rutas que manejan el catalogo de horario de permanencia 
+    Route::group(['middleware' => ['can:write_StaySchedule']], function() {
+        Route::post('/professors/me/stay-schedules', [StayScheduleController::class, 'registerForActiveSemester']);
+    });  
+    Route::group(['middleware' => ['can:read_StaySchedule']], function() {
+        Route::get('/professors/me/stay-schedules', [StayScheduleController::class, 'allMine']);
+        Route::get('/professors/me/stay-schedules/{id}', [StayScheduleController::class, 'show']);
+    });
+
+    // Rutas que manejan el catalogo de horario de permanencia 
+    Route::group(['middleware' => ['can:write_StaySchedule']], function() {
+        Route::put('/professors/me/stay-schedules/{id}/details', [StayScheduleDetailController::class, 'store']);
+    });  
+    Route::group(['middleware' => ['can:read_StaySchedule']], function() {
     });
     
     // Rutas que manejan el catalogo de usuarios

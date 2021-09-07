@@ -106,6 +106,12 @@ class RolesPermissionsSeeder extends Seeder
 
         Permission::create(['name' => 'write_personValidations']);
         Permission::create(['name' => 'read_personValidations']);
+        
+        Permission::create(['name' => 'write_Professors']);
+        Permission::create(['name' => 'read_Professors']);
+
+        Permission::create(['name' => 'write_StaySchedule']);
+        Permission::create(['name' => 'read_StaySchedule']);
 
         //Permisos visuales
         Permission::create(['name' => 'view_users']);
@@ -193,6 +199,10 @@ class RolesPermissionsSeeder extends Seeder
             'read_academicLoad',
             'read_groups',
             'read_personValidations',
+            'write_Professors',
+            'read_Professors',
+            'write_StaySchedule',
+            'read_StaySchedule',
             'view_myInfo',
             'view_uploadDoc',
             'view_updateDocs',
