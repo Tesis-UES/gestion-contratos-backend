@@ -71,16 +71,18 @@ class StayScheduleController extends Controller
         if(!$person) {
             return response(['message' => 'Registre sus datos personales primero'], 400);
         }
+
         $professor = $person->professor;
         if(!$professor) {
             return response(['message' => 'Registrese como profesor primero'], 400);
         }
+
         $staySchedule = StaySchedule::where([
             'id'            => $id, 
             'professor_id'  => $professor->id,
             ])
-            ->with(['semester', 'details'])
-            ->firstOrFail();
+        ->with(['semester', 'scheduleDetails', 'scheduleActivities.activity'])
+        ->firstOrFail();
 
         $this->RegisterAction('El profesor ha consultado los detalles de su horario de permanencia con id: '.$id);
         return response($staySchedule, 200);

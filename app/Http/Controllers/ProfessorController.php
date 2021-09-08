@@ -30,12 +30,12 @@ class ProfessorController extends Controller
         }
 
         $newProfessor = Professor::create([
-            'person_id'     => $personId,
+            'person_id'     => $person->id,
             'escalafon_id'  => $fields['escalafon_id'],
         ]);
 
         $this->RegisterAction('El usuario se ha registrado como profesor', 'medium');
-        return response([$newProfessor], 201);
+        return response($newProfessor, 201);
     }
 
     public function hasRegistered()
