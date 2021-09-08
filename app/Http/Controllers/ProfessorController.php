@@ -20,8 +20,11 @@ class ProfessorController extends Controller
         ]);
         Escalafon::where('id', $fields['escalafon_id'])->firstOrFail();
         
-        $personId = Auth::user()->person->id;
-        $professor = Professor::where('person_id', $personId )->first();
+        $person = Auth::user()->person;
+        if(!$person) {
+            return response(['message' => 'Registre sus datos personales primero'], 400);
+        }
+        $professor = Professor::where('person_id', $person->id )->first();
         if($professor) { 
             return response(['message' => 'El usuario ya se registro como profesor'], 422);
         }

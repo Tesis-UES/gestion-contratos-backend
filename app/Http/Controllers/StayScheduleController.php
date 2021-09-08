@@ -22,7 +22,7 @@ class StayScheduleController extends Controller
         }
         $professor =$person->professor;
         if(!$professor) {
-            return response(['message' => 'Registrese como profesor primero', 400]);
+            return response(['message' => 'Registrese como profesor primero'], 400);
         }
         $staySchedules = $professor->staySchedules;
         $this->RegisterAction('El profesor ha consultado el catalogo de sus horarios de permanencia');
@@ -33,7 +33,7 @@ class StayScheduleController extends Controller
     {
         $semester = Semester::firstWhere('status',1);
         if(!$semester) {
-            return response(['message' => 'No existe ciclo activo, comuniquese con el administrador del sistema', 400]);
+            return response(['message' => 'No existe ciclo activo, comuniquese con el administrador del sistema'], 400);
         }
         
         $person = Auth::user()->person;
@@ -43,7 +43,7 @@ class StayScheduleController extends Controller
 
         $professor = $person->professor;
         if(!$professor) {
-            return response(['message' => 'Registrese como profesor primero', 400]);
+            return response(['message' => 'Registrese como profesor primero'], 400);
         }
 
         $existingStaySchedule = StaySchedule::firstWhere([
@@ -51,7 +51,7 @@ class StayScheduleController extends Controller
             'professor_id'  => $professor->id,
         ]);
         if($existingStaySchedule) {
-            return response(['message' => 'Ya existe carga academica para el ciclo activo', 400]);            
+            return response(['message' => 'Ya existe carga academica para el ciclo activo'], 400);            
         }
 
         $newStaySchedule = StaySchedule::create([
@@ -70,7 +70,7 @@ class StayScheduleController extends Controller
         }
         $professor = $person->professor;
         if(!$professor) {
-            return response(['message' => 'Registrese como profesor primero', 400]);
+            return response(['message' => 'Registrese como profesor primero'], 400);
         }
         $staySchedule = StaySchedule::where([
             'id'            => $id, 
