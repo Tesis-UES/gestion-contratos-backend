@@ -163,6 +163,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
         Route::post('/persons/{id}/files/title/update', [PersonController::class, 'updateTitle']);
         Route::post('/persons/{id}/files/curriculum/update', [PersonController::class, 'updateCurriculum']);
         Route::post('/persons/{id}/files/permission/update', [PersonController::class, 'updatePermisssion']);
+        Route::get('/persons/changes',[PersonController::class, 'myChanges']);
     });
     Route::group(['middleware' => ['can:read_persons']], function () {
         Route::get('/persons', [PersonController::class, 'all']);

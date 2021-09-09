@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Person;
 use App\Models\PersonValidation;
+use App\Models\PersonChange;
 use Illuminate\Http\Request;
 use App\Http\Traits\WorklogTrait;
 use Illuminate\Support\Facades\Auth;
@@ -58,9 +59,11 @@ class PersonController extends Controller
         $newPerson->dui_text = $this->duiToText($newPerson->dui_number);
         $newPerson->nit_text = $this->nitToText($newPerson->nit_number);
         $newPerson->save();
+        PersonChange::create(['person_id'=>$newPerson->id,'change'=>"Se registraron los datos personales generales."]);
         $personValidation = new PersonValidation(['person_id' => $newPerson->id]);
         $personValidation->save();
-
+        
+       
         $this->RegisterAction("El usuario he registrado sus datos personales generales", "medium");
         return response([
             'person' => $newPerson,
@@ -117,17 +120,12 @@ class PersonController extends Controller
         $person->dui_text = $this->duiToText($person->dui_number);
         $person->nit_text = $this->nitToText($person->nit_number);
         $person->save();
+        PersonChange::create(['person_id'=>$person->id,'change'=>"Se actualizo la información general de datos personales"]);
                                              
         $this->RegisterAction("El usuario ha actualizado sus datos personales genrales", "medium");
         return response(['person' => $person], 200);
     }
 
-    /**
-     * Remove the specified resource from storage.
-     *
-     * @param  \App\Models\Escalafon  $escalafon
-     * @return \Illuminate\Http\Response
-     */
     public function destroy($id)
     {
         $user = Auth::user();
@@ -143,6 +141,7 @@ class PersonController extends Controller
         $nombre_archivo = $person->first_name." ".$person->middle_name." ".$person->last_name."-DUI.pdf";
         $person->dui = $nombre_archivo;
         $person->save();
+        PersonChange::create(['person_id'=>$person->id,'change'=>"Se subio y guardo el archivo que contiene el DUI"]);
         \Storage::disk('personalFiles')->put($nombre_archivo, \File::get($file));
         $this->RegisterAction("El usuario ha guardado el archivo pdf que contiene la imagen del DUI", "medium"); 
         return response(['person' => $person,], 200);
@@ -154,6 +153,7 @@ class PersonController extends Controller
         $nombre_archivo = $person->first_name." ".$person->middle_name." ".$person->last_name."-NIT.pdf";
         $person->nit = $nombre_archivo;
         $person->save();
+        PersonChange::create(['person_id'=>$person->id,'change'=>"Se subio y guardo el archivo que contiene el NIT"]);
         \Storage::disk('personalFiles')->put($nombre_archivo, \File::get($file)); 
         $this->RegisterAction("El usuario ha guardado el archivo pdf que contiene la imagen del NIT", "medium"); 
         return response(['person' => $person,], 200);
@@ -165,6 +165,7 @@ class PersonController extends Controller
         $nombre_archivo = $person->first_name." ".$person->middle_name." ".$person->last_name."-CuentaDeBanco.pdf";
         $person->bank_account = $nombre_archivo;
         $person->save();
+        PersonChange::create(['person_id'=>$person->id,'change'=>"Se subio y guardo el archivo que contiene la Cuenta Bancaria"]);
         \Storage::disk('personalFiles')->put($nombre_archivo, \File::get($file)); 
         $this->RegisterAction("El usuario ha guardado el archivo pdf que contiene la imagen de su cuenta de banco", "medium"); 
         return response(['person' => $person,], 200);
@@ -177,6 +178,7 @@ class PersonController extends Controller
         $nombre_archivo = $person->first_name." ".$person->middle_name." ".$person->last_name."-Titulo.pdf";
         $person->professional_title_scan = $nombre_archivo;
         $person->save();
+        PersonChange::create(['person_id'=>$person->id,'change'=>"Se subio y guardo el archivo que contiene el Titulo Univesitario"]);
         \Storage::disk('personalFiles')->put($nombre_archivo, \File::get($file)); 
         $this->RegisterAction("El usuario ha guardado el archivo pdf que contiene la imagen de su titulo Universitario", "medium"); 
         return response(['person' => $person,], 200);
@@ -188,6 +190,7 @@ class PersonController extends Controller
         $nombre_archivo = $person->first_name." ".$person->middle_name." ".$person->last_name."-Curriculum.pdf";
         $person->curriculum = $nombre_archivo;
         $person->save();
+        PersonChange::create(['person_id'=>$person->id,'change'=>"Se subio y guardo el archivo que contiene el curriculum"]);
         \Storage::disk('personalFiles')->put($nombre_archivo, \File::get($file)); 
         $this->RegisterAction("El usuario ha guardado el  archivo pdf que contiene su curriculum", "medium"); 
         return response(['person' => $person,], 200);
@@ -200,6 +203,7 @@ class PersonController extends Controller
         $nombre_archivo = $person->first_name." ".$person->middle_name." ".$person->last_name."-permission.pdf";
         $person->work_permission = $nombre_archivo;
         $person->save();
+        PersonChange::create(['person_id'=>$person->id,'change'=>"Se subio y guardo el archivo que contiene el Permiso de laborar en la facultad"]);
         \Storage::disk('personalFiles')->put($nombre_archivo, \File::get($file)); 
         $this->RegisterAction("El usuario ha guardado el  archivo pdf que contiene su permiso de trabajo"); 
         return response(['person' => $person,], 200);
@@ -213,6 +217,7 @@ class PersonController extends Controller
         \File::delete($person->dui);
         $person->dui = $nombre_archivo;
         $person->save();
+        PersonChange::create(['person_id'=>$person->id,'change'=>"Se Actualizo el archivo que contiene el DUI"]);
         \Storage::disk('personalFiles')->put($nombre_archivo, \File::get($file));
         $personValidations = $person->personValidations;
         $personValidations->update([
@@ -233,6 +238,7 @@ class PersonController extends Controller
         \File::delete($person->nit);
         $person->nit = $nombre_archivo;
         $person->save();
+        PersonChange::create(['person_id'=>$person->id,'change'=>"Se Actualizo el archivo que contiene el NIT"]);
         \Storage::disk('personalFiles')->put($nombre_archivo, \File::get($file)); 
         $personValidations = $person->personValidations;
         $personValidations->update([
@@ -250,6 +256,7 @@ class PersonController extends Controller
         \File::delete($person->bank_account);
         $person->bank_account = $nombre_archivo;
         $person->save();
+        PersonChange::create(['person_id'=>$person->id,'change'=>"Se Actualizo el archivo que contiene la cuenta bancaria"]);
         \Storage::disk('personalFiles')->put($nombre_archivo, \File::get($file)); 
         $personValidations = $person->personValidations;
         $personValidations->update([
@@ -267,6 +274,7 @@ class PersonController extends Controller
         \File::delete($person->professional_title_scan);
         $person->professional_title_scan = $nombre_archivo;
         $person->save();
+        PersonChange::create(['person_id'=>$person->id,'change'=>"Se Actualizo el archivo que contiene el Titulo Universitario"]);
         \Storage::disk('personalFiles')->put($nombre_archivo, \File::get($file)); 
         $personValidations = $person->personValidations;
         $personValidations->update([
@@ -285,6 +293,7 @@ class PersonController extends Controller
         \File::delete($person->curriculum);
         $person->curriculum = $nombre_archivo;
         $person->save();
+        PersonChange::create(['person_id'=>$person->id,'change'=>"Se Actualizo el archivo que contiene el curriculum"]);
         \Storage::disk('personalFiles')->put($nombre_archivo, \File::get($file)); 
         $personValidations = $person->personValidations;
         $personValidations->update([
@@ -302,6 +311,7 @@ class PersonController extends Controller
         \File::delete($person->work_permission);
         $person->work_permission = $nombre_archivo;
         $person->save();
+        PersonChange::create(['person_id'=>$person->id,'change'=>"Se Actualizo el archivo que contiene el permiso de trabajo"]);
         \Storage::disk('personalFiles')->put($nombre_archivo, \File::get($file)); 
         $personValidations = $person->personValidations;
         $personValidations->update([
@@ -388,5 +398,13 @@ class PersonController extends Controller
         $part4 =  $formatter->toString($nitParts[3]);
         return $textNIt = "".$part1." GUION ".$part2." GUION ".$part3." GUION ".$part4."";
         
+    }
+
+    public function myChanges()
+    {
+        $user = Auth::user();
+        $person = Person::where('user_id',$user->id)->firstOrFail();
+        $changes = PersonChange::where('person_id',$person->id)->get();
+        return response(['changes' => $changes,], 200);
     }
 }
