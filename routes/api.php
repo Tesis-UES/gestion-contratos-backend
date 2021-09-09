@@ -50,6 +50,9 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
 
     // Ruta para cambiar contraseña
     Route::put('/users/me/password', [AuthController::class, 'changePassword']);
+    Route::group(['middleware' => ['can:change_passwords']], function () {
+        Route::put('/users/{id}/password', [AuthController::class, 'changeUserPassword']);
+    });
 
     // Ruta para obtener los permisos del logged in user 
     Route::get('/users/me/permissions', [AuthController::class, 'getPermissions']);
