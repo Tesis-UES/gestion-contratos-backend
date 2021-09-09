@@ -3,7 +3,9 @@
 namespace App\Http\Controllers;
 
 use App\Http\Traits\WorklogTrait;
+use App\Models\Activity;
 use App\Models\StaySchedule;
+use App\Models\StayScheduleActivity;
 use App\Models\StayScheduleDetail;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
@@ -20,6 +22,8 @@ class StayScheduleDetailController extends Controller
             'details.*.day'         => 'required|string',
             'details.*.start_time'  => 'required|date_format:H:i:s',
             'details.*.finish_time' => 'required|date_format:H:i:s|after:details.*.start_time',
+            'activities'            => 'required|array|min:1',
+            'activities.*'          => 'required|string|distinct',
         ]);
         $person = Auth::user()->person;
         if(!$person) {
@@ -50,10 +54,24 @@ class StayScheduleDetailController extends Controller
             }
         }
 
+        foreach($fields['activities'] as $activityName) {
+            $activity = Activity::where('name', 'ilike', $activityName)->first();
+            if(!$activity){
+                $activity = Activity::create(['name' => $activityName]);
+            }
+            $activities[] = ['activity_id' => $activity->id];
+        }
+
         StayScheduleDetail::where('stay_schedule_id', $staySchedule->id)->delete();
-        $savedDetails =$staySchedule->details()->createMany($fields['details']);
-        
+        $scheduleDetails = $staySchedule->scheduleDetails()->createMany($fields['details']);
+
+        StayScheduleActivity::where('stay_schedule_id', $staySchedule->id)->delete();
+        $scheduleActivities = $staySchedule->scheduleActivities()->createMany($activities);
+
         $this->RegisterAction('El usuario ha registrado su horario de permanencia para el ciclo activo', 'medium');
-        return response($savedDetails, 200);
+        return response([
+            'scheduleDetails'       => $scheduleDetails,
+            'scheduleActivities'    => $scheduleActivities,
+        ], 200);
     }
 }
