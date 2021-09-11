@@ -295,6 +295,22 @@ class AuthController extends Controller
         return response(['message' => "Se ha actualizado la contraseña con exito"], 200);
     }
 
+    public function changeUserPassword($id, Request $request)
+    {
+        $fields = $request->validate([
+            'password'  => 'required|string|confirmed',
+        ]);
+
+        $user = User::findOrFail($id);
+        if (Hash::check($fields['password'], $user->password)) {
+            return response(['message' => 'La nueva contraseña debe de ser diferente a la actual.'], 401);
+        }
+        $user->password = bcrypt($fields['password']);
+        $user->save();
+        $this->RegisterAction('El administrador ha cambiado la contraseña del usuario con id'. $user->id);
+        return response(['message' => "Se ha actualizado la contraseña con exito"], 200);   
+    }
+
     public function updateUser(Request $request, $id)
     {
         $fields = $request->validate([

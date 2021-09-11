@@ -19,8 +19,13 @@ class StaySchedule extends Model
         return $this->belongsTo(Semester::class);
     }
 
-    public function details() 
+    public function scheduleDetails() 
     {
         return $this->hasMany(StayScheduleDetail::class);
+    }
+
+    public function scheduleActivities() 
+    {
+        return $this->hasMany(StayScheduleActivity::class);
     }
 }

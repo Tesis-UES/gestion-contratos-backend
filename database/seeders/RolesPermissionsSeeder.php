@@ -53,6 +53,8 @@ class RolesPermissionsSeeder extends Seeder
 
 
         // CREACION DE PERMISOS 
+        Permission::create(['name' => 'change_passwords']);
+
         Permission::create(['name' => 'read_worklog']);
         Permission::create(['name' => 'read_roles']);
 
@@ -144,6 +146,7 @@ class RolesPermissionsSeeder extends Seeder
 
 
         $admin->givePermissionTo([
+            'change_passwords',
             'read_worklog',
             'read_roles',
             'read_escalafones',
