@@ -180,6 +180,7 @@ class AuthController extends Controller
                     'school_id' => $fields['school_id'],
                     'password' => bcrypt($fields['password']),
                 ]);
+                $user->assignRole($request->role);
                 try {
                     Mail::to($user->email)->send(new NewUserNotification($user->email, $fields['password']));
                 } catch (\Swift_TransportException $e) {

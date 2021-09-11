@@ -146,7 +146,7 @@ class CentralAuthorityController extends Controller
              $part3 = $formatter->toString($nitParts[2]);
         }
         $part4 =  $formatter->toString($nitParts[3]);
-        return $textNIt = "".$part1." GUION ".$part2." GUION ".$part3." GUION ".$part4."";
+        return $textNIt = "".$part1."-".$part2."-".$part3."-".$part4."";
         
     }
 }
