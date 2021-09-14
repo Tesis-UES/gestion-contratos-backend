@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\User;
+use App\Models\School;
 use App\Models\worklog;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Hash;
@@ -64,6 +65,11 @@ class AuthController extends Controller
             'user' => $user,
             'token' => $token,
         ];
+
+        if($user['school_id']) {
+            $school = School::findorFail($user['school_id']);
+            $response = array_merge($response,['school' => $school]);
+        }
 
         return response($response, 200);
     }
