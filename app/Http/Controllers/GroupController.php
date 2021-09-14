@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\AcademicLoad;
 use App\Models\Group;
 use App\Models\Schedule;
 use Illuminate\Http\Request;
@@ -11,50 +12,36 @@ class GroupController extends Controller
   
     
     
-    public function store(Request $request)
+    public function store(Request $request, $academicLoadId)
     {
         $fields = $request->validate([ 
-            'number'            =>'required|integer',
-            'group_type_id'     =>'required|integer',
-            'academic_load_id'  =>'required|integer',
-            'course_id'         =>'required|integer',
-            'professor_id'      =>'required|integer',
-            'days'              =>'required|array|min:1',
-            'days.*'            =>'required|string',
-            'start_hours'       =>'required|array|min:1',
-            'start_hours.*'     =>'required|string',
-            'finish_hours'      =>'required|array|min:1',
-            'finish_hours.*'    =>'required|string',
+            'number'                => 'required|integer',
+            'group_type_id'         => 'required|integer',
+            'course_id'             => 'required|integer',
+            'professor_id'          => 'required|integer',
+            'details'               => 'required|array|min:1',
+            'details.*.day'         => 'required|string',
+            'details.*.start_hour'  => 'required|date_format:H:i',
+            'details.*.finish_hour' => 'required|date_format:H:i|after:details.*.start_hour',
         ]);
        
-        $days = $request->days;
-        $startHours = $request->start_hours;
-        $endHours = $request->finish_hours;
-
-        foreach ($days as $key => $day) {
-            $newSchedule = new Schedule([
-                'day'               =>$day,
-                'start_hour'        =>$startHours[$key],
-                'finish_hour'       =>$endHours[$key]
-            ]);
-            $nuevos[] =  $newSchedule;
-        }
-        $Group = Group::create($fields);
-        $Group->schedule()->saveMany($nuevos);
+        $academicLoad = AcademicLoad::where('id', $academicLoadId)->firstOrFail();
+        $Group = Group::create(array_merge($fields, ['academic_load_id' => $academicLoadId]));
+        $Group->schedule()->createMany($fields['details']);
         
          $newGroup = [
             'id'                =>  $Group->id,
             'number'            =>  $Group->number,          
             'group_type_id'     =>  $Group->group_type_id,
             'type_group'        =>  $Group->grupo->name,  
-            'academic_load_id'  =>  $Group->academic_load_id, 
+            'academic_load_id'  =>  $academicLoadId, 
             'course_id'         =>  $Group->course_id,
             'nombre_curso'      =>  $Group->course->name,                   
             'professor_id'      =>  $Group->professor_id, 
             'schedules'         =>  $Group->schedule()->get()
         ];
 
-        return response(['newGroup' =>  $newGroup], 200); 
+        return response($newGroup, 200); 
     }
 
    
@@ -83,46 +70,35 @@ class GroupController extends Controller
     public function update(Request $request, $id)
     {
         $fields = $request->validate([ 
-            'number'            =>'required|integer',
-            'group_type_id'     =>'required|integer',
-            'academic_load_id'  =>'required|integer',
-            'course_id'         =>'required|integer',
-            'professor_id'      =>'required|integer',
+            'number'                => 'required|integer',
+            'group_type_id'         => 'required|integer',
+            'academic_load_id'      => 'required|integer',
+            'course_id'             => 'required|integer',
+            'professor_id'          => 'required|integer',
+            'details'               => 'required|array|min:1',
+            'details.*.day'         => 'required|string',
+            'details.*.start_hour'  => 'required|date_format:H:i',
+            'details.*.finish_hour' => 'required|date_format:H:i|after:details.*.start_hour',
         ]);
-       
-        $days = $request->days;
-        $startHours = $request->start_hours;
-        $endHours = $request->finish_hours;
+
         $Group = Group::findorFail($id);
         $Group->update($fields);
-        Schedule::where('group_id','=',$id)->delete();
-        foreach ($days as $key => $day) {
-            $newSchedule = new Schedule([
-                'day'               =>$day,
-                'start_hour'        =>$startHours[$key],
-                'finish_hour'       =>$endHours[$key]
-            ]);
-            $nuevos[] =  $newSchedule;
-        }
-        $Group->schedule()->saveMany($nuevos);
+        
+        Schedule::where('group_id',$id)->delete();
+        $Group->schedule()->createMany($fields['details']);
+
         $updateGroup = [
             'id'                =>  $Group->id,
             'number'            =>  $Group->number,          
             'group_type_id'     =>  $Group->group_type_id,
-            'type_group'        =>  $Group->grupo->name,  
+            'group_type'        =>  $Group->grupo->name,  
             'academic_load_id'  =>  $Group->academic_load_id, 
             'course_id'         =>  $Group->course_id,
             'nombre_curso'      =>  $Group->course->name,                   
             'professor_id'      =>  $Group->professor_id, 
-            'schedules'         =>  $Group->schedule()->get()
+            'schedules'         =>  $Group->schedule()->get(),
         ];
 
-        return response(['updateGroup' => $updateGroup], 200); 
-    }
-
-  
-    public function destroy(Group $group)
-    {
-        //
+        return response($updateGroup, 200); 
     }
 }

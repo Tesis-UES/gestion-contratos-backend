@@ -20,8 +20,8 @@ class StayScheduleDetailController extends Controller
         $fields = $request->validate([
             'details'               => 'required|array|min:1',
             'details.*.day'         => 'required|string',
-            'details.*.start_time'  => 'required|date_format:H:i:s',
-            'details.*.finish_time' => 'required|date_format:H:i:s|after:details.*.start_time',
+            'details.*.start_time'  => 'required|date_format:H:i',
+            'details.*.finish_time' => 'required|date_format:H:i|after:details.*.start_time',
             'activities'            => 'required|array|min:1',
             'activities.*'          => 'required|string|distinct',
         ]);

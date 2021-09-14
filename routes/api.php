@@ -294,7 +294,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
 
     // Rutas que manejan el catalogo de grupos asignados en carga academica
     Route::group(['middleware' => ['can:write_groups']], function () {  
-        Route::post('/groups', [GroupController::class, 'store']);
+        Route::post('/academicLoad/{id}/groups', [GroupController::class, 'store']);
         Route::put('/groups/{id}', [GroupController::class, 'update']);
     });
     Route::group(['middleware' => ['can:read_groups']], function () {   
