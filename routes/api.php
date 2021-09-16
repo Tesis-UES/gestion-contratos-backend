@@ -20,6 +20,7 @@ use App\Http\Controllers\StudyPlanController;
 use App\Http\Controllers\FacultyAuthorityController;
 use App\Http\Controllers\SchoolAuthorityController;
 use App\Http\Controllers\GroupController;
+use App\Http\Controllers\EmployeeTypeController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
@@ -300,5 +301,16 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::group(['middleware' => ['can:read_groups']], function () {   
         Route::get('/groups/{id}', [GroupController::class, 'show']);
         Route::get('/academicLoad/{id}/groups', [GroupController::class, 'showByAcademicLoad']);
+    });
+
+    // Rutas que maneja el catalogo tipos de emepleado 
+    Route::group(['middleware' => ['can:write_escalafones']], function () {
+        Route::post('/EmployeeType', [EmployeeTypeController::class, 'store']);
+        Route::put('/EmployeeType/{id}', [EmployeeTypeController::class, 'update']);
+        Route::delete('/EmployeeType/{id}', [EmployeeTypeController::class, 'destroy']);
+    });
+    Route::group(['middleware' => ['can:read_escalafones']], function () {
+        Route::get('/EmployeeType', [EmployeeTypeController::class, 'all']);
+        Route::get('/EmployeeType/{id}', [EmployeeTypeController::class, 'show']);
     });
 });

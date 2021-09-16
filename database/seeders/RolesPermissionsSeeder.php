@@ -115,6 +115,9 @@ class RolesPermissionsSeeder extends Seeder
         Permission::create(['name' => 'write_StaySchedule']);
         Permission::create(['name' => 'read_StaySchedule']);
 
+        Permission::create(['name' => 'write_Employee_type']);
+        Permission::create(['name' => 'read_Employee_type']);
+        
         //Permisos visuales
         Permission::create(['name' => 'view_users']);
         Permission::create(['name' => 'view_worklog']);
@@ -149,6 +152,8 @@ class RolesPermissionsSeeder extends Seeder
             'change_passwords',
             'read_worklog',
             'read_roles',
+            'write_Employee_type',
+            'read_Employee_type',
             'read_escalafones',
             'write_escalafones',
             'read_faculties',
@@ -187,6 +192,7 @@ class RolesPermissionsSeeder extends Seeder
         ]);
 
         $profesor->givePermissionTo([
+            'read_Employee_type',
             'read_escalafones',
             'read_faculties',
             'read_schools',
@@ -215,6 +221,7 @@ class RolesPermissionsSeeder extends Seeder
         ]);
 
         $directorEscuela->givePermissionTo([
+            'read_Employee_type',
             'read_escalafones',
             'read_faculties',
             'read_schools',
@@ -238,6 +245,7 @@ class RolesPermissionsSeeder extends Seeder
         ]);
 
         $asistenteAdmin->givePermissionTo([
+            'read_Employee_type',
             'read_escalafones',
             'write_escalafones',
             'read_faculties',
