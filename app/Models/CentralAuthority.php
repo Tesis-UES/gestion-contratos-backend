@@ -20,6 +20,7 @@ class CentralAuthority extends Model
         'startPeriod',
         'endPeriod',
         'text_dui',
-        'text_nit'
+        'text_nit',
+        'birth_date'
     ];
 }

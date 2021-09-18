@@ -38,6 +38,7 @@ class CentralAuthorityController extends Controller
             'lastName'      => 'required|string|max:120',
             'dui'           => 'required|string|max:20',
             'nit'           => 'required|string|max:20',
+            'birth_date'    => 'required',
             'startPeriod'   => 'required',
             'endPeriod'     => 'required|after:startPeriod',
         ]);
@@ -79,6 +80,7 @@ class CentralAuthorityController extends Controller
             'lastName'    => 'required|string|max:120',
             'dui'         => 'required|string|max:20',
             'nit'         => 'required|string|max:20',
+            'birth_date'    => 'required',
             'startPeriod'   => 'required',
             'endPeriod'     => 'required|after:startPeriod',
         ]);
