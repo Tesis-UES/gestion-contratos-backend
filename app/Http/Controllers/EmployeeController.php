@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use App\Http\Traits\WorklogTrait;
 use App\Models\Escalafon;
 use App\Models\Employee;
+use App\Models\EmployeeType;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
@@ -16,10 +17,14 @@ class EmployeeController extends Controller
     public function store(Request $request)
     {   
         $fields = $request->validate([
-            'escalafon_id'     => 'required|integer|gte:1',
+            'same_faculty'      => 'required|boolean',
+            'escalafon_id'      => 'required|integer|gte:1',
+            'employee_type_id'  => 'required|integer|gte:1',
         ]);
-        Escalafon::where('id', $fields['escalafon_id'])->firstOrFail();
         
+        Escalafon::findOrFail( $fields['escalafon_id']);
+        EmployeeType::findOrFail($fields['employee_type_id']);
+
         $person = Auth::user()->person;
         if(!$person) {
             return response(['message' => 'Registre sus datos personales primero'], 400);
@@ -30,8 +35,10 @@ class EmployeeController extends Controller
         }
 
         $newEmployee = Employee::create([
-            'person_id'     => $person->id,
-            'escalafon_id'  => $fields['escalafon_id'],
+            'same_faculty'      => $fields['same_faculty'],
+            'person_id'         => $person->id,
+            'escalafon_id'      => $fields['escalafon_id'],
+            'employee_type_id'  => $fields['employee_type_id'],
         ]);
 
         $this->RegisterAction('El usuario se ha registrado como empleado', 'medium');

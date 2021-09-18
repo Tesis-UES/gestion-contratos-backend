@@ -191,12 +191,23 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     });
 
     // Rutas que manejan el catalogo de empleados
-    Route::group(['middleware' => ['can:write_employees']], function() {
+    Route::group(['middleware' => ['can:write_employee']], function() {
         Route::post('/employees/me', [EmployeeController::class, 'store']);
-    }); 
-    Route::group(['middleware' => ['can:read_employees']], function() {
+    });
+    Route::group(['middleware' => ['can:read_employee']], function() {
         Route::get('/employees/me/has-registered',[EmployeeController::class, 'hasRegistered']);
-    });  
+    });
+
+    // Rutas que maneja el catalogo tipos de emepleado 
+    Route::group(['middleware' => ['can:write_employeeType']], function () {
+        Route::post('/employee-type', [EmployeeTypeController::class, 'store']);
+        Route::put('/employee-type/{id}', [EmployeeTypeController::class, 'update']);
+        Route::delete('/employee-type/{id}', [EmployeeTypeController::class, 'destroy']);
+    });
+    Route::group(['middleware' => ['can:read_employeeType']], function () {
+        Route::get('/employee-type', [EmployeeTypeController::class, 'all']);
+        Route::get('/employee-type/{id}', [EmployeeTypeController::class, 'show']);
+    });
 
     // Rutas que manejan el catalogo de horario de permanencia 
     Route::group(['middleware' => ['can:write_staySchedule']], function() {
@@ -301,16 +312,5 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::group(['middleware' => ['can:read_groups']], function () {   
         Route::get('/groups/{id}', [GroupController::class, 'show']);
         Route::get('/academicLoad/{id}/groups', [GroupController::class, 'showByAcademicLoad']);
-    });
-
-    // Rutas que maneja el catalogo tipos de emepleado 
-    Route::group(['middleware' => ['can:write_escalafones']], function () {
-        Route::post('/employee-type', [EmployeeTypeController::class, 'store']);
-        Route::put('/employee-type/{id}', [EmployeeTypeController::class, 'update']);
-        Route::delete('/employee-type/{id}', [EmployeeTypeController::class, 'destroy']);
-    });
-    Route::group(['middleware' => ['can:read_escalafones']], function () {
-        Route::get('/employee-type', [EmployeeTypeController::class, 'all']);
-        Route::get('/employee-type/{id}', [EmployeeTypeController::class, 'show']);
     });
 });
