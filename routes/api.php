@@ -10,7 +10,7 @@ use App\Http\Controllers\CourseController;
 use App\Http\Controllers\ContractTypeController;
 use App\Http\Controllers\PersonController;
 use App\Http\Controllers\PersonValidationController;
-use App\Http\Controllers\ProfessorController;
+use App\Http\Controllers\EmployeeController;
 use App\Http\Controllers\SemesterController;
 use App\Http\Controllers\StayScheduleController;
 use App\Http\Controllers\StayScheduleDetailController;
@@ -63,7 +63,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
         Route::get('/roles', [AuthController::class, 'AllRoles']);
     });
 
-    // Ruta para verificar si el profesor ya ingreso sus datos personales
+    // Ruta para verificar si el candidato ya ingreso sus datos personales
     Route::get('/users/me/has-registered', [PersonController::class, 'hasRegistered']);
 
     // Ruta que maneja la bitacora de uso 
@@ -190,28 +190,28 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
         Route::put('/persons/{id}/validations', [PersonValidationController::class, 'update']);
     });
 
-    // Rutas que manejan el catalogo de profesores
-    Route::group(['middleware' => ['can:write_Professors']], function() {
-        Route::post('/professors/me', [ProfessorController::class, 'store']);
+    // Rutas que manejan el catalogo de empleados
+    Route::group(['middleware' => ['can:write_employees']], function() {
+        Route::post('/employees/me', [EmployeeController::class, 'store']);
     }); 
-    Route::group(['middleware' => ['can:read_Professors']], function() {
-        Route::get('/professors/me/has-registered',[ProfessorController::class, 'hasRegistered']);
+    Route::group(['middleware' => ['can:read_employees']], function() {
+        Route::get('/employees/me/has-registered',[EmployeeController::class, 'hasRegistered']);
     });  
 
     // Rutas que manejan el catalogo de horario de permanencia 
-    Route::group(['middleware' => ['can:write_StaySchedule']], function() {
-        Route::post('/professors/me/stay-schedules', [StayScheduleController::class, 'registerForActiveSemester']);
+    Route::group(['middleware' => ['can:write_staySchedule']], function() {
+        Route::post('/employees/me/stay-schedules', [StayScheduleController::class, 'registerForActiveSemester']);
     });  
-    Route::group(['middleware' => ['can:read_StaySchedule']], function() {
-        Route::get('/professors/me/stay-schedules', [StayScheduleController::class, 'allMine']);
-        Route::get('/professors/me/stay-schedules/{id}', [StayScheduleController::class, 'show']);
+    Route::group(['middleware' => ['can:read_staySchedule']], function() {
+        Route::get('/employees/me/stay-schedules', [StayScheduleController::class, 'allMine']);
+        Route::get('/employees/me/stay-schedules/{id}', [StayScheduleController::class, 'show']);
     });
 
     // Rutas que manejan el catalogo de horario de permanencia 
-    Route::group(['middleware' => ['can:write_StaySchedule']], function() {
-        Route::put('/professors/me/stay-schedules/{id}/details', [StayScheduleDetailController::class, 'store']);
+    Route::group(['middleware' => ['can:write_staySchedule']], function() {
+        Route::put('/employees/me/stay-schedules/{id}/details', [StayScheduleDetailController::class, 'store']);
     });  
-    Route::group(['middleware' => ['can:read_StaySchedule']], function() {
+    Route::group(['middleware' => ['can:read_staySchedule']], function() {
     });
     
     // Rutas que manejan el catalogo de usuarios
@@ -305,12 +305,12 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
 
     // Rutas que maneja el catalogo tipos de emepleado 
     Route::group(['middleware' => ['can:write_escalafones']], function () {
-        Route::post('/EmployeeType', [EmployeeTypeController::class, 'store']);
-        Route::put('/EmployeeType/{id}', [EmployeeTypeController::class, 'update']);
-        Route::delete('/EmployeeType/{id}', [EmployeeTypeController::class, 'destroy']);
+        Route::post('/employee-type', [EmployeeTypeController::class, 'store']);
+        Route::put('/employee-type/{id}', [EmployeeTypeController::class, 'update']);
+        Route::delete('/employee-type/{id}', [EmployeeTypeController::class, 'destroy']);
     });
     Route::group(['middleware' => ['can:read_escalafones']], function () {
-        Route::get('/EmployeeType', [EmployeeTypeController::class, 'all']);
-        Route::get('/EmployeeType/{id}', [EmployeeTypeController::class, 'show']);
+        Route::get('/employee-type', [EmployeeTypeController::class, 'all']);
+        Route::get('/employee-type/{id}', [EmployeeTypeController::class, 'show']);
     });
 });

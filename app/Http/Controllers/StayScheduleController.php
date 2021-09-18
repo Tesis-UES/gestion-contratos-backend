@@ -21,14 +21,14 @@ class StayScheduleController extends Controller
             return response(['message' => 'Registre sus datos personales primero'], 400);
         }
 
-        $professor =$person->professor;
-        if(!$professor) {
-            return response(['message' => 'Registrese como profesor primero'], 400);
+        $employee =$person->employee;
+        if(!$employee) {
+            return response(['message' => 'Registrese como empleado primero'], 400);
         }
 
-        $staySchedules = StaySchedule::where('professor_id', $professor->id)->with('semester')->get();
+        $staySchedules = StaySchedule::where('employee_id', $employee->id)->with('semester')->get();
         
-        $this->RegisterAction('El profesor ha consultado el catalogo de sus horarios de permanencia');
+        $this->RegisterAction('El empleado ha consultado el catalogo de sus horarios de permanencia');
         return response($staySchedules, 200);
     }
 
@@ -44,14 +44,14 @@ class StayScheduleController extends Controller
             return response(['message' => 'Registre sus datos personales primero'], 400);
         }
 
-        $professor = $person->professor;
-        if(!$professor) {
-            return response(['message' => 'Registrese como profesor primero'], 400);
+        $employee = $person->employee;
+        if(!$employee) {
+            return response(['message' => 'Registrese como empleado primero'], 400);
         }
 
         $existingStaySchedule = StaySchedule::firstWhere([
             'semester_id'   => $semester->id,
-            'professor_id'  => $professor->id,
+            'employee_id'  => $employee->id,
         ]);
         if($existingStaySchedule) {
             return response(['message' => 'Ya existe carga academica para el ciclo activo'], 400);            
@@ -59,9 +59,9 @@ class StayScheduleController extends Controller
 
         $newStaySchedule = StaySchedule::create([
             'semester_id'   => $semester->id,
-            'professor_id'  => $professor->id,
+            'employee_id'  => $employee->id,
         ]);
-        $this->RegisterAction('El profesor ha consultado el catalogo de sus horarios de permanencia', 'medium');
+        $this->RegisterAction('El empleado ha consultado el catalogo de sus horarios de permanencia', 'medium');
         return response($newStaySchedule, 200);
     }
 
@@ -72,19 +72,19 @@ class StayScheduleController extends Controller
             return response(['message' => 'Registre sus datos personales primero'], 400);
         }
 
-        $professor = $person->professor;
-        if(!$professor) {
-            return response(['message' => 'Registrese como profesor primero'], 400);
+        $employee = $person->employee;
+        if(!$employee) {
+            return response(['message' => 'Registrese como empleado primero'], 400);
         }
 
         $staySchedule = StaySchedule::where([
             'id'            => $id, 
-            'professor_id'  => $professor->id,
+            'employee_id'  => $employee->id,
             ])
         ->with(['semester', 'scheduleDetails', 'scheduleActivities.activity'])
         ->firstOrFail();
 
-        $this->RegisterAction('El profesor ha consultado los detalles de su horario de permanencia con id: '.$id);
+        $this->RegisterAction('El empleado ha consultado los detalles de su horario de permanencia con id: '.$id);
         return response($staySchedule, 200);
     }
 }

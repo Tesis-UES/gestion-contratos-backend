@@ -4,12 +4,12 @@ namespace App\Http\Controllers;
 
 use App\Http\Traits\WorklogTrait;
 use App\Models\Escalafon;
-use App\Models\Professor;
+use App\Models\Employee;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 
 
-class ProfessorController extends Controller
+class EmployeeController extends Controller
 {
     use WorklogTrait;
 
@@ -24,24 +24,24 @@ class ProfessorController extends Controller
         if(!$person) {
             return response(['message' => 'Registre sus datos personales primero'], 400);
         }
-        $professor = Professor::where('person_id', $person->id )->first();
-        if($professor) { 
-            return response(['message' => 'El usuario ya se registro como profesor'], 422);
+        $employee = Employee::where('person_id', $person->id )->first();
+        if($employee) { 
+            return response(['message' => 'El usuario ya se registro como empleado'], 422);
         }
 
-        $newProfessor = Professor::create([
+        $newEmployee = Employee::create([
             'person_id'     => $person->id,
             'escalafon_id'  => $fields['escalafon_id'],
         ]);
 
-        $this->RegisterAction('El usuario se ha registrado como profesor', 'medium');
-        return response($newProfessor, 201);
+        $this->RegisterAction('El usuario se ha registrado como empleado', 'medium');
+        return response($newEmployee, 201);
     }
 
     public function hasRegistered()
     {
-        $professor = Auth::user()->person->professor;
-        if($professor) {
+        $employee = Auth::user()->person->employee;
+        if($employee) {
             return response(['has_registered' => true], 200);
         }
         return response(['has_registered' => false], 200);
