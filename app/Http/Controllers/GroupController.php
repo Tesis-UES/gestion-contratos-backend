@@ -26,22 +26,33 @@ class GroupController extends Controller
         ]);
        
         $academicLoad = AcademicLoad::where('id', $academicLoadId)->firstOrFail();
-        $Group = Group::create(array_merge($fields, ['academic_load_id' => $academicLoadId]));
-        $Group->schedule()->createMany($fields['details']);
+        $result = Group::where(['academic_load_id'  => $academicLoadId,
+                                'group_type_id'     =>$fields['group_type_id'],
+                                'number'            =>$fields['number'],
+                                'course_id'         =>$fields['course_id']])->get();
+        if ($result->isEmpty()) {
+            $Group = Group::create(array_merge($fields, ['academic_load_id' => $academicLoadId]));
+            $Group->schedule()->createMany($fields['details']);
+            
+             $newGroup = [
+                'id'                =>  $Group->id,
+                'number'            =>  $Group->number,          
+                'group_type_id'     =>  $Group->group_type_id,
+                'type_group'        =>  $Group->grupo->name,  
+                'academic_load_id'  =>  $academicLoadId, 
+                'course_id'         =>  $Group->course_id,
+                'nombre_curso'      =>  $Group->course->name,                   
+                'professor_id'      =>  $Group->professor_id, 
+                'schedules'         =>  $Group->schedule()->get()
+            ];
+    
+            return response($newGroup, 200); 
+        } else {
+            $message = "ya existe un grupo registrado con ese numero de grupo registrado en el sistema";
+            return response($message, 400);
+        }
         
-         $newGroup = [
-            'id'                =>  $Group->id,
-            'number'            =>  $Group->number,          
-            'group_type_id'     =>  $Group->group_type_id,
-            'type_group'        =>  $Group->grupo->name,  
-            'academic_load_id'  =>  $academicLoadId, 
-            'course_id'         =>  $Group->course_id,
-            'nombre_curso'      =>  $Group->course->name,                   
-            'professor_id'      =>  $Group->professor_id, 
-            'schedules'         =>  $Group->schedule()->get()
-        ];
-
-        return response($newGroup, 200); 
+        
     }
 
    
