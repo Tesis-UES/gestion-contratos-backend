@@ -34,7 +34,7 @@ class PersonController extends Controller
             'gender'        => 'required|string|max:120',
             'telephone'     => 'required|string|max:120',
             'address'       => 'required|string|max:120',
-            'city'       => 'required|string|max:120',
+            'city'          => 'required|string|max:120',
             'department'       => 'required|string|max:120',
             'nationality'   => 'required|string|max:120',
             'is_employee'   => 'required|boolean',
@@ -42,11 +42,14 @@ class PersonController extends Controller
             'journey_type'  => 'string|max:120',
             'request_to_same_faculty'=> 'boolean',
             'professional_title'    => 'required|string|max:120',
+            'nup'                   =>'required|string|max:120',
+            'isss_number'           =>'required|string|max:120',
+            'passport_number'       =>'required|string|max:120',
             'dui_number'            => 'required|string|max:120',
             'dui_expiration_date'   => 'required|date',
             'nit_number'            => 'required|string|max:120',
             'bank_account_number'   => 'required|string|max:120',
-            'reading_signature'     => 'required|string',
+            
         ]);
 
         $user = Auth::user();
@@ -112,7 +115,9 @@ class PersonController extends Controller
             'dui_expiration_date'   => 'required|date',
             'nit_number'            => 'required|string|max:120',
             'bank_account_number'   => 'required|string|max:120',
-            'reading_signature'     => 'required|string',
+            'nup'                   =>'required|string|max:120',
+            'isss_number'           =>'required|string|max:120',
+            'passport_number'       =>'required|string|max:120',
         ]);
 
         $person = Person::where('user_id', $user->id)->firstOrFail();
@@ -366,7 +371,7 @@ class PersonController extends Controller
         }if(substr($dui,2,-7) == 0 && substr($dui,3,-6) == !0){
             return $textDui = "CERO CERO CERO ".$formatter->toString(substr($dui,0,-2))."GUION ".$formatter->toString(substr($dui,-1))."";
         }else{
-            return $textDui = "CERO CERO CERO CERO ".$formatter->toString(substr($dui,0,-2))."GUION ".$formatter->toString(substr($dui,-1))."";
+           return $textDui = "CERO CERO CERO CERO ".$formatter->toString(substr($dui,0,-2))."GUION ".$formatter->toString(substr($dui,-1))."";
         }
     }
 

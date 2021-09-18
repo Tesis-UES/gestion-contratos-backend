@@ -36,9 +36,12 @@ class CreatePeopleTable extends Migration
             $table->boolean('request_to_same_faculty')->nullable();
             $table->string('work_permission', 250)->nullable();
             $table->string('professional_title',250);
+            $table->string('nup');
+            $table->string('isss_number');
+            $table->string('passport_number');
             $table->string('dui_number',120);
             $table->string('dui_text');
-            $table->string('reading_signature');
+            $table->string('reading_signature')->default('Ilegible');
             $table->date('dui_expiration_date');
             $table->string('dui',250)->nullable();
             $table->string('nit_number',120);
@@ -46,7 +49,7 @@ class CreatePeopleTable extends Migration
             $table->string('nit',250)->nullable();
             $table->string('curriculum',250)->nullable();
             $table->string('professional_title_scan',250)->nullable();
-            $table->string('bank_account_number',120);
+            $table->string('bank_account_number',120)->nullable();;
             $table->string('bank_account',250)->nullable();
             $table->softDeletes();
             $table->timestamps();
