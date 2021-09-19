@@ -17,9 +17,10 @@ class CentralAuthority extends Model
         'lastName',
         'dui',
         'nit',
-        'startPeriod',
-        'endPeriod',
+        'start_period',
+        'end_period',
         'text_dui',
-        'text_nit'
+        'text_nit',
+        'birth_date'
     ];
 }
