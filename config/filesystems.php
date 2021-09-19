@@ -42,11 +42,16 @@ return [
             'visibility' => 'public',
         ],
 
-         /* Driver que contiene la ubicacion de los archivos personales de los candidatos*/
-         'personalFiles'=>[
+        /* Driver que contiene la ubicacion de los archivos personales de los candidatos*/
+        'personalFiles'=>[
             'driver'    =>  'local',
             'root'      =>  public_path().'/personalFiles',
+        ],
 
+        /* Driver que contiene la ubicacion de los formatos*/
+        'formats'=>[
+            'driver'    =>  'local',
+            'root'      =>  public_path().'/formats',
         ],
 
         's3' => [
