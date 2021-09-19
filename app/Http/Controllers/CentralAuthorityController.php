@@ -38,9 +38,9 @@ class CentralAuthorityController extends Controller
             'lastName'      => 'required|string|max:120',
             'dui'           => 'required|string|max:20',
             'nit'           => 'required|string|max:20',
-            'birth_date'    => 'required',
-            'startPeriod'   => 'required',
-            'endPeriod'     => 'required|after:startPeriod',
+            'birth_date'    => 'required|date|before:today',
+            'start_period'  => 'required|date',
+            'end_period'    => 'required|date|after:start_period',
         ]);
         $newAuthority = new  CentralAuthority ($request->all());
         $newAuthority->text_dui = $this->duiToText($newAuthority->dui);
@@ -80,9 +80,9 @@ class CentralAuthorityController extends Controller
             'lastName'    => 'required|string|max:120',
             'dui'         => 'required|string|max:20',
             'nit'         => 'required|string|max:20',
-            'birth_date'    => 'required',
-            'startPeriod'   => 'required',
-            'endPeriod'     => 'required|after:startPeriod',
+            'birth_date'  => 'required|date|before:today',
+            'start_period'=> 'required|date',
+            'end_period'  => 'required|date|after:start_period',
         ]);
 
         $authority = CentralAuthority::findOrFail($id);
