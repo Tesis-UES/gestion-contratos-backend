@@ -83,7 +83,6 @@ class GroupController extends Controller
         $fields = $request->validate([ 
             'number'                => 'required|integer',
             'group_type_id'         => 'required|integer',
-            'academic_load_id'      => 'required|integer',
             'course_id'             => 'required|integer',
             'professor_id'          => 'required|integer',
             'details'               => 'required|array|min:1',
