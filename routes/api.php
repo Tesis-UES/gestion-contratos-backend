@@ -5,6 +5,7 @@ use App\Http\Controllers\AuthController;
 use App\Http\Controllers\CentralAuthorityController;
 use App\Http\Controllers\EscalafonController;
 use App\Http\Controllers\FacultyController;
+use App\Http\Controllers\FormatController;
 use App\Http\Controllers\SchoolController;
 use App\Http\Controllers\CourseController;
 use App\Http\Controllers\ContractTypeController;
@@ -65,6 +66,15 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
 
     // Ruta para verificar si el profesor ya ingreso sus datos personales
     Route::get('/users/me/has-registered', [PersonController::class, 'hasRegistered']);
+
+    // Rutas para manejar el catalogo de formatos
+    Route::get('/formats', [FormatController::class, 'index']);
+    Route::get('/formats/{id}', [FormatController::class, 'show']);
+    Route::group(['middleware' => ['can:write_formats']], function () {
+        Route::post('/formats', [FormatController::class, 'store']);
+        Route::post('/formats/{id}/update', [FormatController::class, 'update']);
+        Route::delete('/formats/{id}', [FormatController::class, 'destroy']);
+    });
 
     // Ruta que maneja la bitacora de uso 
     Route::group(['middleware' => ['can:read_worklog']], function () {
