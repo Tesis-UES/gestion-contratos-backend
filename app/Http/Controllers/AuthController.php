@@ -179,7 +179,7 @@ class AuthController extends Controller
                 return response($response, 201);
                 break;
 
-            case 'Profesor':
+            case 'Candidato':
                 $user = User::create([
                     'name'      => $fields['name'],
                     'email'     => $fields['email'],
@@ -343,7 +343,7 @@ class AuthController extends Controller
                 return response($response, 201);
                 break;
 
-            case 'Profesor':
+            case 'Candidato':
                 $user->update([
                     'name'      => $fields['name'],
                     'email'     => $fields['email'],

@@ -54,6 +54,7 @@ class RolesPermissionsSeeder extends Seeder
 
         // CREACION DE PERMISOS 
         Permission::create(['name' => 'change_passwords']);
+        Permission::create(['name' => 'write_formats']);
 
         Permission::create(['name' => 'read_worklog']);
         Permission::create(['name' => 'read_roles']);
@@ -137,7 +138,7 @@ class RolesPermissionsSeeder extends Seeder
         
         //CREACION DE ROLES
         $admin = Role::create(['name' => 'Administrador']);
-        $profesor = Role::create(['name' => 'Profesor']);
+        $profesor = Role::create(['name' => 'Candidato']);
         $directorEscuela = Role::create(['name' => 'Director Escuela']);
         $asistenteAdmin = Role::create(['name' => 'Asistente Administrativo']);
         $financiero =   Role::create(['name' => 'Asistente Financiero']);
@@ -180,6 +181,7 @@ class RolesPermissionsSeeder extends Seeder
             'read_groups',
             'write_personValidations',
             'read_personValidations',
+            'write_formats',
             'view_users',
             'view_worklog',
             'view_centralAuthorities',
@@ -273,7 +275,7 @@ class RolesPermissionsSeeder extends Seeder
 
         $usuario1->assignRole('Administrador');
         $usuario2->assignRole('Administrador');
-        $usuario3->assignRole('Profesor');
+        $usuario3->assignRole('Candidato');
         $usuario4->assignRole('Director Escuela');
         $usuario5->assignRole('Asistente Administrativo');
         $usuario6->assignRole('Asistente Financiero');
