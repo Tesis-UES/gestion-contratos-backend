@@ -110,32 +110,28 @@ class RolesPermissionsSeeder extends Seeder
         Permission::create(['name' => 'write_personValidations']);
         Permission::create(['name' => 'read_personValidations']);
         
-        Permission::create(['name' => 'write_Professors']);
-        Permission::create(['name' => 'read_Professors']);
+        Permission::create(['name' => 'write_employee']);
+        Permission::create(['name' => 'read_employee']);
 
-        Permission::create(['name' => 'write_StaySchedule']);
-        Permission::create(['name' => 'read_StaySchedule']);
+        Permission::create(['name' => 'write_staySchedule']);
+        Permission::create(['name' => 'read_staySchedule']);
 
-        Permission::create(['name' => 'write_Employee_type']);
-        Permission::create(['name' => 'read_Employee_type']);
+        Permission::create(['name' => 'write_employeeType']);
+        Permission::create(['name' => 'read_employeeType']);
         
         //Permisos visuales
         Permission::create(['name' => 'view_users']);
         Permission::create(['name' => 'view_worklog']);
         Permission::create(['name' => 'view_centralAuthorities']);
         Permission::create(['name' => 'view_catalogs']);
-
         Permission::create(['name' => 'view_myInfo']);
         Permission::create(['name' => 'view_uploadDoc']);
         Permission::create(['name' => 'view_updateDocs']);
-
         Permission::create(['name' => 'view_solicitudeDirector']);
         Permission::create(['name' => 'view_academicLoadDirector']);
         Permission::create(['name' => 'view_academicLoad']);
-
         Permission::create(['name' => 'view_personInfo']);
         Permission::create(['name' => 'view_contracSolicitude']);
-
         Permission::create(['name' => 'view_Personal_changes']);
      
 
@@ -153,8 +149,8 @@ class RolesPermissionsSeeder extends Seeder
             'change_passwords',
             'read_worklog',
             'read_roles',
-            'write_Employee_type',
-            'read_Employee_type',
+            'write_employeeType',
+            'read_employeeType',
             'read_escalafones',
             'write_escalafones',
             'read_faculties',
@@ -194,7 +190,7 @@ class RolesPermissionsSeeder extends Seeder
         ]);
 
         $profesor->givePermissionTo([
-            'read_Employee_type',
+            'read_employeeType',
             'read_escalafones',
             'read_faculties',
             'read_schools',
@@ -212,10 +208,10 @@ class RolesPermissionsSeeder extends Seeder
             'read_academicLoad',
             'read_groups',
             'read_personValidations',
-            'write_Professors',
-            'read_Professors',
-            'write_StaySchedule',
-            'read_StaySchedule',
+            'write_employee',
+            'read_employee',
+            'write_staySchedule',
+            'read_staySchedule',
             'view_myInfo',
             'view_uploadDoc',
             'view_updateDocs',
@@ -223,7 +219,7 @@ class RolesPermissionsSeeder extends Seeder
         ]);
 
         $directorEscuela->givePermissionTo([
-            'read_Employee_type',
+            'read_employeeType',
             'read_escalafones',
             'read_faculties',
             'read_schools',
@@ -247,7 +243,7 @@ class RolesPermissionsSeeder extends Seeder
         ]);
 
         $asistenteAdmin->givePermissionTo([
-            'read_Employee_type',
+            'read_employeeType',
             'read_escalafones',
             'write_escalafones',
             'read_faculties',
@@ -283,6 +279,5 @@ class RolesPermissionsSeeder extends Seeder
         $usuario4->assignRole('Director Escuela');
         $usuario5->assignRole('Asistente Administrativo');
         $usuario6->assignRole('Asistente Financiero');
-
     }
 }

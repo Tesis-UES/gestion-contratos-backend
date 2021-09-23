@@ -29,14 +29,14 @@ class StayScheduleDetailController extends Controller
         if(!$person) {
             return response(['message' => 'Registre sus datos personales primero'], 400);
         }
-        $professor = $person->professor;
-        if(!$professor) {
-            return response(['message' => 'Registrese como profesor primero', 400]);
+        $employee = $person->employee;
+        if(!$employee) {
+            return response(['message' => 'Registrese como empleado primero', 400]);
         }
 
         $staySchedule = StaySchedule::where([
             'id'            => $stayScheduleId, 
-            'professor_id'  => $professor->id,
+            'employee_id'  => $employee->id,
         ])->with('semester')->firstOrFail();
         if($staySchedule->semester->status = false){
             return response(['message' => 'No se puede editar horario de permanencia de ciclos inactivos'], 422);

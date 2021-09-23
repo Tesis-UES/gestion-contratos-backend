@@ -16,9 +16,9 @@ class CreateStaySchedulesTable extends Migration
         Schema::create('stay_schedules', function (Blueprint $table) {
             $table->id();
             $table->bigInteger('semester_id')->unsigned()->nonullable();
-            $table->bigInteger('professor_id')->unsigned()->nonullable();
+            $table->bigInteger('employee_id')->unsigned()->nonullable();
             $table->foreign('semester_id')->references('id')->on('semesters')->onDelete('cascade')->nonullable();
-            $table->foreign('professor_id')->references('id')->on('professors')->onDelete('cascade')->nonullable();
+            $table->foreign('employee_id')->references('id')->on('employees')->onDelete('cascade')->nonullable();
             $table->timestamps();
         });
     }
