@@ -152,6 +152,18 @@ class PersonController extends Controller
         return response(['person' => $person,], 200);
     }
 
+    public function storePassport(Request $request, $id){
+        $person = Person::findOrFail($id);
+        $file = $request->file('passport');
+        $nombre_archivo = $person->first_name." ".$person->middle_name." ".$person->last_name."-PASAPORTE.pdf";
+        $person->dui = $nombre_archivo;
+        $person->save();
+        PersonChange::create(['person_id'=>$person->id,'change'=>"Se subio y guardo el archivo que contiene el Pasaporte"]);
+        \Storage::disk('personalFiles')->put($nombre_archivo, \File::get($file));
+        $this->RegisterAction("El usuario ha guardado el archivo pdf que contiene la imagen del Pasaporte", "medium"); 
+        return response(['person' => $person,], 200);
+    }
+
     public function storeNit(Request $request, $id){
         $person = Person::findOrFail($id);
         $file = $request->file('nit');
@@ -326,10 +338,30 @@ class PersonController extends Controller
         return response(['person' => $person,], 200);
     }
 
+    public function updatePassport(Request $request, $id) {
+        $person = Person::findOrFail($id);
+        $file = $request->file('passport');
+        $nombre_archivo = $person->first_name." ".$person->middle_name." ".$person->last_name."-PASAPORTE.pdf";
+        //Se elimina el archivo antiguo
+        \File::delete($person->passport);
+        $person->passport = $nombre_archivo;
+        $person->save();
+        PersonChange::create(['person_id'=>$person->id,'change'=>"Se Actualizo el archivo que contiene el Pasaporte"]);
+        \Storage::disk('personalFiles')->put($nombre_archivo, \File::get($file)); 
+        $this->RegisterAction("El usuario ha Actualizado el  archivo pdf que contiene su Pasaporte"); 
+        return response(['person' => $person,], 200);
+    }
+
     public function getDui($id){
         $person = Person::findOrFail($id);
         $pdf = base64_encode(\Storage::disk('personalFiles')->get($person->dui));
         return response(['pdfDui' => $pdf], 200);
+    }
+
+    public function getPassport($id){
+        $person = Person::findOrFail($id);
+        $pdf = base64_encode(\Storage::disk('personalFiles')->get($person->passport));
+        return response(['pdfPassport' => $pdf], 200);
     }
 
     public function getNit($id){

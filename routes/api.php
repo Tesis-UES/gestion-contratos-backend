@@ -171,6 +171,8 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
         Route::post('/persons/{id}/files/title', [PersonController::class, 'storeTitle']);
         Route::post('/persons/{id}/files/curriculum', [PersonController::class, 'storeCurriculum']);
         Route::post('/persons/{id}/files/permission', [PersonController::class, 'storePermission']);
+        Route::post('/persons/{id}/files/passport', [PersonController::class, 'storePassport']);
+        Route::post('/persons/{id}/files/passport/update', [PersonController::class, 'updatePassport']);
         Route::post('/persons/{id}/files/dui/update', [PersonController::class, 'updateDui']);
         Route::post('/persons/{id}/files/nit/update', [PersonController::class, 'updateNit']);
         Route::post('/persons/{id}/files/bank-account/update', [PersonController::class, 'updateBank']);
@@ -189,6 +191,8 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
         Route::get('/persons/{id}/files/title/view', [PersonController::class, 'getTitle']);
         Route::get('/persons/{id}/files/curriculum/view', [PersonController::class, 'getCurriculum']);
         Route::get('/persons/{id}/files/permission/view', [PersonController::class, 'getPermission']);
+        Route::get('/persons/{id}/files/passport/view', [PersonController::class, 'getPassport']);
+        
     });
 
     // Rutas que manejan las validaciones de personas
