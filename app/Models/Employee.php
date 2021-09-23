@@ -10,6 +10,7 @@ class Employee extends Model
     use HasFactory;
 
     protected $fillable = [
+        'journey_type',
         'same_faculty',
         'person_id',
         'escalafon_id',
