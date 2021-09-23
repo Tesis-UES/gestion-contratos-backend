@@ -26,6 +26,8 @@ class CreatePeopleTable extends Migration
             $table->date('birth_date');
             $table->string('gender',120);
             $table->string('telephone',120);
+            $table->string('alternate_telephone',120)->nullable();
+            $table->string('alternate_mail',120)->nullable();
             $table->string('address',250);
             $table->string('city',250);
             $table->string('department',250);
