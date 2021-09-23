@@ -8,6 +8,7 @@ use App\Models\Employee;
 use App\Models\EmployeeType;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\Rule;
 
 
 class EmployeeController extends Controller
