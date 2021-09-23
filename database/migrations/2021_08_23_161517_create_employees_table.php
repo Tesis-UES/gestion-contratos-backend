@@ -16,6 +16,7 @@ class CreateEmployeesTable extends Migration
         Schema::create('employees', function (Blueprint $table) {
             $table->id();
             $table->boolean('same_faculty');
+            $table->enum('journey_type', ['tiempo-completo', 'medio-tiempo', 'cuarto-tiempo']);
             $table->bigInteger('person_id')->unsigned()->nonullable();
             $table->bigInteger('escalafon_id')->unsigned()->nonullable();
             $table->bigInteger('employee_type_id')->unsigned()->nonullable();

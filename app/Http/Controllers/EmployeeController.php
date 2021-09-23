@@ -17,6 +17,7 @@ class EmployeeController extends Controller
     public function store(Request $request)
     {   
         $fields = $request->validate([
+            'journey_type'      =>['required', Rule::in(['tiempo-completo', 'medio-tiempo', 'cuarto-tiempo'])],
             'same_faculty'      => 'required|boolean',
             'escalafon_id'      => 'required|integer|gte:1',
             'employee_type_id'  => 'required|integer|gte:1',
@@ -35,6 +36,7 @@ class EmployeeController extends Controller
         }
 
         $newEmployee = Employee::create([
+            'journey_type'      => $fields['journey_type'],
             'same_faculty'      => $fields['same_faculty'],
             'person_id'         => $person->id,
             'escalafon_id'      => $fields['escalafon_id'],
