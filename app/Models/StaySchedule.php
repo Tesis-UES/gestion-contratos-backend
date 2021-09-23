@@ -11,7 +11,7 @@ class StaySchedule extends Model
 
     protected $fillable = [ 
         'semester_id',
-        'professor_id',
+        'employee_id',
     ];
 
     public function semester()

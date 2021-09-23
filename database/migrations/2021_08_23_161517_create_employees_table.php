@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateProfessorsTable extends Migration
+class CreateEmployeesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,12 +13,16 @@ class CreateProfessorsTable extends Migration
      */
     public function up()
     {
-        Schema::create('professors', function (Blueprint $table) {
-            $table->id();            
+        Schema::create('employees', function (Blueprint $table) {
+            $table->id();
+            $table->boolean('same_faculty');
+            $table->enum('journey_type', ['tiempo-completo', 'medio-tiempo', 'cuarto-tiempo']);
             $table->bigInteger('person_id')->unsigned()->nonullable();
             $table->bigInteger('escalafon_id')->unsigned()->nonullable();
+            $table->bigInteger('employee_type_id')->unsigned()->nonullable();
             $table->foreign('person_id')->references('id')->on('people')->onDelete('cascade')->nonullable();
             $table->foreign('escalafon_id')->references('id')->on('escalafons')->nonullable();
+            $table->foreign('employee_type_id')->references('id')->on('employee_types')->nonullable();
             $table->timestamps();
         });
     }
@@ -30,6 +34,6 @@ class CreateProfessorsTable extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('profesors');
+        Schema::dropIfExists('employees');
     }
 }

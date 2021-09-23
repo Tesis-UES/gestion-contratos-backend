@@ -54,8 +54,8 @@ class Person extends Model
         return $this->hasOne(PersonValidation::class);
     }
 
-    public function professor()
+    public function employee()
     {
-        return $this->hasOne(Professor::class);
+        return $this->hasOne(Employee::class);
     }
 }
