@@ -41,7 +41,7 @@ class CreatePeopleTable extends Migration
             $table->string('nup');
             $table->string('isss_number');
             $table->string('passport_number')->nullable();
-            $table->string('passport');
+            $table->string('passport')->nullable();
             $table->string('dui_number',120);
             $table->string('dui_text');
             $table->string('reading_signature')->default('Ilegible');
