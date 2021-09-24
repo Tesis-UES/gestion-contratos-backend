@@ -40,7 +40,7 @@ class CreatePeopleTable extends Migration
             $table->string('professional_title',250);
             $table->string('nup');
             $table->string('isss_number');
-            $table->string('passport_number');
+            $table->string('passport_number')->nullable();
             $table->string('passport');
             $table->string('dui_number',120);
             $table->string('dui_text');
