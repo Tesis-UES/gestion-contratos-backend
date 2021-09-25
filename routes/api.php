@@ -182,7 +182,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
         Route::get('/persons/changes',[PersonController::class, 'myChanges']);
     });
     Route::group(['middleware' => ['can:read_persons']], function () {
-        Route::get('/persons', [PersonController::class, 'all']);
+       
         Route::get('/persons/me', [PersonController::class, 'showMyInfo']);
         Route::get('/persons/{id}', [PersonController::class, 'show']);
         Route::get('/persons/{id}/files/dui/view', [PersonController::class, 'getDui']);
@@ -327,4 +327,10 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
         Route::get('/groups/{id}', [GroupController::class, 'show']);
         Route::get('/academicLoad/{id}/groups', [GroupController::class, 'showByAcademicLoad']);
     });
+
+    //Rutas que manejan las fuciones de RRHH
+    Route::group(['middleware' => ['can:view_candidates']], function () {   
+        Route::get('/persons', [PersonController::class, 'allCandidates']);
+    });
+   
 });

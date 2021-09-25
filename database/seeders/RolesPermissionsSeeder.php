@@ -48,6 +48,12 @@ class RolesPermissionsSeeder extends Seeder
             'password'  => bcrypt('foobar'),
         ]);
 
+        $usuario7 = User::create([
+            'name'      => 'Recursos Humanos',
+            'email'     => 'rrhh@ues.edu.sv',
+            'password'  => bcrypt('foobar'),
+        ]);
+
 
 
 
@@ -118,6 +124,10 @@ class RolesPermissionsSeeder extends Seeder
 
         Permission::create(['name' => 'write_employeeType']);
         Permission::create(['name' => 'read_employeeType']);
+
+        Permission::create(['name' => 'view_rrhh']);
+        Permission::create(['name' => 'view_candidates']);
+      
         
         //Permisos visuales
         Permission::create(['name' => 'view_users']);
@@ -142,6 +152,7 @@ class RolesPermissionsSeeder extends Seeder
         $directorEscuela = Role::create(['name' => 'Director Escuela']);
         $asistenteAdmin = Role::create(['name' => 'Asistente Administrativo']);
         $financiero =   Role::create(['name' => 'Asistente Financiero']);
+        $rrhh = Role::create(['name' => 'Recursos Humanos']);
 
 
 
@@ -273,11 +284,19 @@ class RolesPermissionsSeeder extends Seeder
             'view_contracSolicitude',
         ]);
 
+        $rrhh->givePermissionTo([
+            'view_rrhh',
+            'view_candidates',
+            'write_personValidations',
+            'read_personValidations'
+        ]);
+
         $usuario1->assignRole('Administrador');
         $usuario2->assignRole('Administrador');
         $usuario3->assignRole('Candidato');
         $usuario4->assignRole('Director Escuela');
         $usuario5->assignRole('Asistente Administrativo');
         $usuario6->assignRole('Asistente Financiero');
+        $usuario7->assignRole('Recursos Humanos');
     }
 }

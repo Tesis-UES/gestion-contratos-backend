@@ -16,6 +16,7 @@ class PersonSeeder extends Seeder
             'name'      => 'Usuario Nacional',
             'email'     => 'nacional@ues.edu.sv',
             'password'  => bcrypt('foobar'),
+            'school_id' => 8
         ]);
         $Nacional->assignRole('Candidato');
 
@@ -23,6 +24,7 @@ class PersonSeeder extends Seeder
             'name'      => 'Usuario Nacional Empleado UES',
             'email'     => 'nacionalues@ues.edu.sv',
             'password'  => bcrypt('foobar'),
+            'school_id' => 8,
         ]);
         $NacionalE->assignRole('Candidato');
 
@@ -30,6 +32,7 @@ class PersonSeeder extends Seeder
             'name'      => 'Usuario Nacional Empleado UES - Otra Facultad',
             'email'     => 'nacionalotra@ues.edu.sv',
             'password'  => bcrypt('foobar'),
+            'school_id' => 8
         ]);
         $NacionalEOtra->assignRole('Candidato');
 
@@ -37,6 +40,7 @@ class PersonSeeder extends Seeder
             'name'      => 'Usuario Extranjero',
             'email'     => 'extranjero@ues.edu.sv',
             'password'  => bcrypt('foobar'),
+            'school_id' => 8
         ]);
         $Internacional->assignRole('Candidato');
 
@@ -44,6 +48,7 @@ class PersonSeeder extends Seeder
             'name'      => 'Usuario Extranjero',
             'email'     => 'extranjeroEmpleado@ues.edu.sv',
             'password'  => bcrypt('foobar'),
+            'school_id' => 8
         ]);
         $InternacionalE->assignRole('Candidato');
 
