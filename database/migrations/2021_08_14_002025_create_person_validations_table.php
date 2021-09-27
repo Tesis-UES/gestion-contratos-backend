@@ -38,17 +38,17 @@ class CreatePersonValidationsTable extends Migration
             //Validaciones Correspondientes al Permiso de trabajo de otra facultad
             $table->boolean('work_permission_readable')->default(false)->nullable();
             //Validaciones Correspondientes al Pasaporte
-             $table->boolean('passport_readable')->default(false)->nullable();
-             $table->boolean('passport_name')->default(false)->nullable();
-             $table->boolean('passport_number')->default(false)->nullable();
-             //Validaciones Correspondientes al titulo
-             $table->boolean('title_readable')->default(false)->nullable();
-             //Nacional
-             $table->boolean('title_mined')->default(false)->nullable();
-             //Internacional
-             $table->boolean('title_apostilled')->default(false)->nullable();
-             $table->boolean('title_apostilled_redeable')->default(false)->nullable();
-             $table->boolean('title_authentic')->default(false)->nullable();
+            $table->boolean('passport_readable')->default(false)->nullable();
+            $table->boolean('passport_name')->default(false)->nullable();
+            $table->boolean('passport_number')->default(false)->nullable();
+            //Validaciones Correspondientes al titulo
+            $table->boolean('title_readable')->default(false)->nullable();
+            //Nacional
+            $table->boolean('title_mined')->default(false)->nullable();
+            //Internacional
+            $table->boolean('title_apostilled')->default(false)->nullable();
+            $table->boolean('title_apostilled_redeable')->default(false)->nullable();
+            $table->boolean('title_authentic')->default(false)->nullable();
             $table->timestamps();
         });
     }

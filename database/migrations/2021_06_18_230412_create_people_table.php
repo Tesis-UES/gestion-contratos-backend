@@ -32,10 +32,6 @@ class CreatePeopleTable extends Migration
             $table->string('city',250)->nullable();;
             $table->string('department',250)->nullable();;
             $table->string('nationality', 120);
-            $table->boolean('is_employee');
-            $table->string('employee_type',120)->nullable();
-            $table->string('journey_type', 120)->nullable();
-            $table->boolean('request_to_same_faculty')->nullable();
             $table->string('work_permission', 250)->nullable();
             $table->string('professional_title',250);
             $table->string('nup')->nullable();;
@@ -54,6 +50,7 @@ class CreatePeopleTable extends Migration
             $table->string('professional_title_scan',250)->nullable();
             $table->string('bank_account_number',120)->nullable();;
             $table->string('bank_account',250)->nullable();
+            $table->string('status',50)->default('Registrando');
             $table->softDeletes();
             $table->timestamps();
         });
