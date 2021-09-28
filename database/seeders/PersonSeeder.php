@@ -4,7 +4,7 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
-use App\Models\{User,Person,PersonValidation};
+use App\Models\{User,Person,PersonValidation,Employee};
 
 class PersonSeeder extends Seeder
 {
@@ -27,6 +27,7 @@ class PersonSeeder extends Seeder
             'school_id' => 8,
         ]);
         $NacionalE->assignRole('Candidato');
+        
 
         $NacionalEOtra = User::create([
             'name'      => 'Usuario Nacional Empleado UES - Otra Facultad',
@@ -45,13 +46,22 @@ class PersonSeeder extends Seeder
         $Internacional->assignRole('Candidato');
 
         $InternacionalE = User::create([
-            'name'      => 'Usuario Extranjero',
+            'name'      => 'Usuario Extranjero FIA',
             'email'     => 'extranjeroEmpleado@ues.edu.sv',
             'password'  => bcrypt('foobar'),
             'school_id' => 8
         ]);
         $InternacionalE->assignRole('Candidato');
 
+        $InternacionalEOtra = User::create([
+            'name'      => 'Usuario Extranjero OTRA FACULTAD',
+            'email'     => 'extranjeroEmpleadoOtra@ues.edu.sv',
+            'password'  => bcrypt('foobar'),
+            'school_id' => 8
+        ]);
+        $InternacionalEOtra->assignRole('Candidato');
+
+         //****************************************************************************************************** */
         //Ingresando Datos de Un Candidato NACIONAL
         $datosNacional = Person::create([
                 'user_id'       => $Nacional->id,
@@ -68,7 +78,7 @@ class PersonSeeder extends Seeder
                 'address'       => 'Colonia la malaga, calle 3, block 5',
                 'department'   =>'San Salvador',
                 'city'          =>'Aguilares',
-                'nationality'   =>'Salvadoreño',
+                'nationality'   =>'El Salvador',
                 'professional_title'   =>'Ingeniero en Sistemas Informaticos',
                 'nup'           =>'123456987',
                 'isss_number'   =>'852159753465',
@@ -99,7 +109,7 @@ class PersonSeeder extends Seeder
             'address'       => 'Colonia la malaga, calle 3, block 5',
             'department'   =>'San Salvador',
             'city'          =>'Aguilares',
-            'nationality'   =>'Salvadoreño',
+            'nationality'   =>'El Salvador',
             'professional_title'   =>'Ingeniero en Sistemas Informaticos',
             'nup'           =>'123456987',
             'isss_number'   =>'852159753465',
@@ -113,9 +123,18 @@ class PersonSeeder extends Seeder
         ]);
         $personValidation = new PersonValidation(['person_id' => $datosNacionalUesFia->id]);
         $personValidation->save();
+        //Ingresando datos de empleado 
+        Employee::create([
+            'journey_type'      =>'tiempo-completo',
+            'faculty_id'        => 1,
+            'escalafon_id'      => 1,
+            'employee_type_id'  => 1,
+            'person_id'         => $datosNacionalUesFia->id,
+        ]);
+
         //Ingresando datos de candidato Nacional - Trabajador UES - Otra Facultad
-        $NacionalEOtra = Person::create([
-            'user_id'       => $NacionalE->id,
+        $datosNacionalEOtra = Person::create([
+            'user_id'       => $NacionalEOtra->id,
             'first_name'    => 'Jose',
             'middle_name'   => 'bennet',
             'last_name'     => 'Corderjo Argueta',
@@ -129,7 +148,7 @@ class PersonSeeder extends Seeder
             'address'       => 'Colonia la malaga, calle 3, block 5',
             'department'   =>'San Salvador',
             'city'          =>'Aguilares',
-            'nationality'   =>'Salvadoreño',
+            'nationality'   =>'El Salvador',
             'professional_title'   =>'Ingeniero en Sistemas Informaticos',
             'nup'           =>'123456987',
             'isss_number'   =>'852159753465',
@@ -142,11 +161,19 @@ class PersonSeeder extends Seeder
 
         ]);
 
-            $personValidation = new PersonValidation(['person_id' =>$NacionalEOtra->id]);
+            $personValidation = new PersonValidation(['person_id' =>$datosNacionalEOtra ->id]);
             $personValidation->save();
 
+            Employee::create([
+            'journey_type'      =>'tiempo-completo',
+            'faculty_id'        => 2,
+            'escalafon_id'      => 1,
+            'employee_type_id'  => 1,
+            'person_id'         => $datosNacionalEOtra ->id,
+                ]);
+        
         //Ingresando Datos de Candidato Extranjero
-        $Internacional =  Person::create([
+        $DatosInternacional =  Person::create([
             'user_id'       => $Internacional->id,
             'first_name'    => 'Vladimir',
             'middle_name'   => 'irvetzeliv',
@@ -164,10 +191,10 @@ class PersonSeeder extends Seeder
             'professional_title'   =>'Ingeniero en Sistemas Informaticos',
             'bank_account_number'   =>'0125415656',
         ]);
-            $personValidation = new PersonValidation(['person_id' =>$Internacional->id]);
+            $personValidation = new PersonValidation(['person_id' =>$DatosInternacional->id]);
             $personValidation->save();
 
-            $InternacionalE =  Person::create([
+            $DatosInternacionalE =  Person::create([
                 'user_id'       => $InternacionalE->id,
                 'first_name'    => 'Vladimir',
                 'middle_name'   => 'irvetzeliv',
@@ -185,7 +212,44 @@ class PersonSeeder extends Seeder
                 'professional_title'   =>'Ingeniero en Sistemas Informaticos',
                 'bank_account_number'   =>'0125415656',
             ]);
-                $personValidation = new PersonValidation(['person_id' =>$InternacionalE->id]);
+                $personValidation = new PersonValidation(['person_id' =>$DatosInternacionalE->id]);
                 $personValidation->save();
+
+                Employee::create([
+                    'journey_type'      =>'tiempo-completo',
+                    'faculty_id'        => 1,
+                    'escalafon_id'      => 1,
+                    'employee_type_id'  => 1,
+                    'person_id'         =>$DatosInternacionalE->id,
+                        ]);
+
+        $DatosInternacionalEO =  Person::create([
+                            'user_id'       => $InternacionalEOtra->id,
+                            'first_name'    => 'Cordelio',
+                            'middle_name'   => 'irvetzeliv',
+                            'last_name'     => 'bliat',
+                            'know_as'       => 'Bielorusia',
+                            'birth_date'    => '1996-01-18',
+                            'gender'        => 'Masculino',
+                            'civil_status'  => 'Soltero',
+                            'telephone'     => '2232-2009',
+                            'passport_number'=>'16168416416846854',
+                            'alternate_telephone'   => '2356-8974',
+                            'alternate_mail'        => 'prueba@gmail.com',
+                            'address'       => 'Siberia',
+                            'nationality'   =>'España',  
+                            'professional_title'   =>'Ingeniero en Sistemas Informaticos',
+                            'bank_account_number'   =>'0125415656',
+         ]);
+        $personValidation = new PersonValidation(['person_id' =>$DatosInternacionalEO->id]);
+        $personValidation->save();
+            
+        Employee::create([
+                        'journey_type'      =>'tiempo-completo',
+                        'faculty_id'        => 2,
+                        'escalafon_id'      => 1,
+                        'employee_type_id'  => 2,
+                        'person_id'         => $DatosInternacionalEO->id,
+                    ]);
     }
 }
