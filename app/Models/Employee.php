@@ -11,7 +11,7 @@ class Employee extends Model
 
     protected $fillable = [
         'journey_type',
-        'same_faculty',
+        'faculty_id',
         'person_id',
         'escalafon_id',
         'employee_type_id',
