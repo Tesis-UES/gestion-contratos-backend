@@ -17,9 +17,7 @@ class PersonValidationController extends Controller
             //Si no es empleado verificamos que sea nacional o extanjero
             if ($person->nationality == 'El Salvador') {
                 //VERIFICAMOS DUI
-                if($person->personValidations->dui_readable&&$person->personValidations->dui_name&&$person->personValidations->dui_number&&
-                   $person->personValidations->dui_profession&&$person->personValidations->dui_civil_status&&$person->personValidations->dui_birth_date&&
-                   $person->personValidations->dui_unexpired&&$person->personValidations->dui_unexpired){
+                if($person->personValidations->dui_readable&&$person->personValidations->dui_name&&$person->personValidations->dui_number&&$person->personValidations->dui_profession&&$person->personValidations->dui_civil_status&&$person->personValidations->dui_birth_date&&$person->personValidations->dui_unexpired&&$person->personValidations->dui_unexpired){
                     dd('todo validado dui');
                 }else{
                     dd('pendiente validar dui');
@@ -68,8 +66,7 @@ class PersonValidationController extends Controller
                             }else{
                                 dd('pendiente validar curriculum');
                         }
-                if($person->personValidations->title_readable&&$person->personValidations->title_apostilled
-                   &&$person->personValidations->title_apostilled_redeable&&$person->personValidations->title_authentic){
+                if($person->personValidations->title_readable&&$person->personValidations->title_apostilled&&$person->personValidations->title_apostilled_redeable&&$person->personValidations->title_authentic){
                         dd('todo validado titulo');
                             }else{
                                 dd('pendiente validar titulo');
@@ -84,9 +81,7 @@ class PersonValidationController extends Controller
                 if ($person->employee->faculty_id == 1) {
                     dd('Empleado Salvadoreño - TRABAJADOR DE LA FIA');
                      //VERIFICAMOS DUI
-                if($person->personValidations->dui_readable&&$person->personValidations->dui_name&&$person->personValidations->dui_number&&
-                $person->personValidations->dui_profession&&$person->personValidations->dui_civil_status&&$person->personValidations->dui_birth_date&&
-                        $person->personValidations->dui_unexpired&&$person->personValidations->dui_unexpired){
+                if($person->personValidations->dui_readable&&$person->personValidations->dui_name&&$person->personValidations->dui_number&&$person->personValidations->dui_profession&&$person->personValidations->dui_civil_status&&$person->personValidations->dui_birth_date&&$person->personValidations->dui_unexpired&&$person->personValidations->dui_unexpired){
                         dd('todo validado dui');
                     }else{
                         dd('pendiente validar dui');
@@ -117,9 +112,7 @@ class PersonValidationController extends Controller
                 } else {
                     dd('Empleado Salvadoreño - TRABAJADOR DE OTRA FACULTAD');
                          //VERIFICAMOS DUI
-                         if($person->personValidations->dui_readable&&$person->personValidations->dui_name&&$person->personValidations->dui_number&&
-                            $person->personValidations->dui_profession&&$person->personValidations->dui_civil_status&&$person->personValidations->dui_birth_date&&
-                            $person->personValidations->dui_unexpired&&$person->personValidations->dui_unexpired){
+                         if($person->personValidations->dui_readable&&$person->personValidations->dui_name&&$person->personValidations->dui_number&&$person->personValidations->dui_profession&&$person->personValidations->dui_civil_status&&$person->personValidations->dui_birth_date&&$person->personValidations->dui_unexpired&&$person->personValidations->dui_unexpired){
                                 dd('todo validado dui');
                             }else{
                                 dd('pendiente validar dui');
@@ -152,7 +145,6 @@ class PersonValidationController extends Controller
                                             }else{
                                                 dd('pendiente validar curriculum permiso de trabajo');
                                         }
-                    
                 }
             } else {
                 //Candidato - Trabajador - Internacional 
