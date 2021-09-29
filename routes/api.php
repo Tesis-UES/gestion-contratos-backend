@@ -197,11 +197,11 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
 
     // Rutas que manejan las validaciones de personas
     Route::group(['middleware' => ['can:read_personValidations']], function () {
-        Route::get('/persons/me/validations', [PersonValidationController::class, 'showMe']);
-        Route::get('/persons/{id}/validations', [PersonValidationController::class, 'show']);
+        Route::get('/person/{id}/validations', [PersonValidationController::class, 'getValidations']);
+        
     });
     Route::group(['middleware' => ['can:write_personValidations']], function () {
-        Route::put('/persons/{id}/validations', [PersonValidationController::class, 'update']);
+        
     });
 
     // Rutas que manejan el catalogo de empleados
