@@ -47,7 +47,7 @@ class CreatePersonValidationsTable extends Migration
             $table->boolean('title_mined')->default(false)->nullable();
             //Internacional
             $table->boolean('title_apostilled')->default(false)->nullable();
-            $table->boolean('title_apostilled_redeable')->default(false)->nullable();
+            $table->boolean('title_apostilled_readable')->default(false)->nullable();
             $table->boolean('title_authentic')->default(false)->nullable();
             $table->timestamps();
         });

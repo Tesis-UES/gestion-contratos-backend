@@ -198,6 +198,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     // Rutas que manejan las validaciones de personas
     Route::group(['middleware' => ['can:read_personValidations']], function () {
         Route::get('/person/{id}/validations', [PersonValidationController::class, 'getValidations']);
+        Route::get('/person/{person}/validation/{type}', [PersonValidationController::class, 'validationData']);
         
     });
     Route::group(['middleware' => ['can:write_personValidations']], function () {
