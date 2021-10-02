@@ -5,6 +5,9 @@ namespace App\Http\Controllers;
 use App\Models\{Person};
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
+use App\Mail\ValidationDocsNotification;
+use Mail;
+
 
 class PersonValidationController extends Controller
 {
@@ -365,4 +368,103 @@ class PersonValidationController extends Controller
         ];
         return ['data' => $data, 'validations' => $validations];
     }
+
+    public function validationStore(Person $person, $type, Request $request)
+    {
+       
+        $person->personValidations->update($request['validations']);
+        $validado = $this->checkValidationsMail($request['validations']);
+        switch ($type) {
+            //Envio de correos segun valiadiciones
+            case 'DUI':
+               if ($validado) {
+                $mensaje = "Se ha validado con exito el documento DUI, cumple con todos los requerimientos, para mas detalles ingresar al sistema con sus credenciales";
+               }else{
+                $mensaje = "Se ha validado el documento DUI que ha subido al sistema, pero este no cumple con los requerimientos, por favor verificar entrando en el sistema las Respectivas observaciones  y solventarlas lo mas pronto posible";
+               } 
+                break;
+
+            case 'NIT':
+                if ($validado) {
+                    $mensaje = "Se ha validado con exito el documento NIT, cumple con todos los requerimientos, para mas detalles ingresar al sistema con sus credenciales";
+                   }else{
+                    $mensaje = "Se ha validado el documento NIT que ha subido al sistema, pero este no cumple con los requerimientos, por favor verificar entrando en el sistema las Respectivas observaciones  y solventarlas lo mas pronto posible";
+                   } 
+                break;
+
+            case 'BANCO':
+                if ($validado) {
+                    $mensaje = "Se ha validado con exito el documento de su comprobante de cuenta bancaria, cumple con todos los requerimientos, para mas detalles ingresar al sistema con sus credenciales";
+                   }else{
+                    $mensaje = "Se ha validado el documento de su comprobante de cuenta bancaria, que ha subido al sistema, pero este no cumple con los requerimientos, por favor verificar entrando en el sistema las Respectivas observaciones  y solventarlas lo mas pronto posible";
+                   } 
+                break;
+
+            case 'CV':
+                if ($validado) {
+                    $mensaje = "Se ha validado con exito el documento que contiene el Curriculum Vitae, cumple con todos los requerimientos, para mas detalles ingresar al sistema con sus credenciales";
+                   }else{
+                    $mensaje = "Se ha validado el documento que contiene el Curriculum Vitae que ha subido al sistema, pero este no cumple con los requerimientos, por favor verificar entrando en el sistema las Respectivas observaciones  y solventarlas lo mas pronto posible";
+                   } 
+                break;
+
+            case 'TITULO-N':
+                if ($validado) {
+                    $mensaje = "Se ha validado con exito el documento que contiene sus Titulos Profesionales, cumple con todos los requerimientos, para mas detalles ingresar al sistema con sus credenciales";
+                   }else{
+                    $mensaje = "Se ha validado el documento que contiene sus Titulos Profesionales que ha subido al sistema, pero este no cumple con los requerimientos, por favor verificar entrando en el sistema las Respectivas observaciones  y solventarlas lo mas pronto posible";
+                   } 
+                break;
+
+            case 'TITULO-I':
+                if ($validado) {
+                    $mensaje = "Se ha validado con exito el documento que contiene sus Titulos Profesionales, cumple con todos los requerimientos, para mas detalles ingresar al sistema con sus credenciales";
+                   }else{
+                    $mensaje = "Se ha validado el documento que contiene sus Titulos Profesionales que ha subido al sistema, pero este no cumple con los requerimientos, por favor verificar entrando en el sistema las Respectivas observaciones  y solventarlas lo mas pronto posible";
+                   } 
+                break;
+
+            case 'PERMISO':
+                if ($validado) {
+                    $mensaje = "Se ha validado con exito el documento que contiene su permiso de trabajo de otra facultad, cumple con todos los requerimientos, para mas detalles ingresar al sistema con sus credenciales";
+                   }else{
+                    $mensaje = "Se ha validado el documento que contiene su permiso de trabajo de otra facultadque ha subido al sistema, pero este no cumple con los requerimientos, por favor verificar entrando en el sistema las Respectivas observaciones  y solventarlas lo mas pronto posible";
+                   } 
+                break;
+            case 'PASS':
+                if ($validado) {
+                    $mensaje = "Se ha validado con exito el documento que contiene su Pasaporte, cumple con todos los requerimientos, para mas detalles ingresar al sistema con sus credenciales";
+                   }else{
+                    $mensaje = "Se ha validado el documento que contiene su Pasaporte que ha subido al sistema, pero este no cumple con los requerimientos, por favor verificar entrando en el sistema las Respectivas observaciones y solventarlas lo mas pronto posible";
+                   } 
+                break;
+            default:
+                # code...
+                break;
+        }
+       
+        try {
+            Mail::to($person->user->email)->send(new ValidationDocsNotification($mensaje));
+            $response = ['mensaje'   =>"Si se envio el correo electronico"];
+            return response($response, 201);
+        } catch (\Swift_TransportException $e) {
+            $response = ['mensaje'   =>"No se ha enviado el correo electronico"];
+            return response($response, 201);
+         } 
+         
+    }
+
+    public function checkValidationsMail($validations){
+        $control = count($validations);
+        $validados = 0;
+        foreach ($validations as $key => $value) {
+            if ($value == true) {
+                $validados++;
+            }
+        }
+        return ($validados == $control) ?  true : false ;
+       
+    }
+
+
 }

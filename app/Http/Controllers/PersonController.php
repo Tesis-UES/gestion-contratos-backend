@@ -22,6 +22,7 @@ class PersonController extends Controller
                 'id'        => $rest->id,
                 'name'      => $rest->first_name." ".$rest->middle_name,
                 'last_name' => $rest->last_name,
+                ''
             ];
             $candiates[] = $candidate;
         }
@@ -148,8 +149,45 @@ class PersonController extends Controller
         return response(null, 204);
     }
 
-    public function storeDui(Request $request, $id){
-        $person = Person::findOrFail($id);
+    public function storeMenu(Request $request){
+        $type = $request['type'];
+        switch ($type) {
+            case 'dui':
+               $person =  $this->storeDui($request);
+                break;
+
+            case 'nit':
+                $person =  $this->storeNit($request);
+                break;
+
+            case 'banco':
+                $person =  $this->storeBank($request);
+                break;
+
+            case 'cv':
+                $person =  $this->storeCurriculum($request);
+                break;
+
+            case 'titulo':
+                $person =  $this->storeTitle($request);
+                break;
+
+            case 'permiso':
+                $person =  $this->storePermission($request);
+                break;
+            case 'pass':
+                $person =  $this->storePassport($request);
+                break;
+            default:
+                # code...
+                break;
+        }
+        return response(['person' => $person,], 200);
+    }
+
+    public function storeDui(Request $request){
+        $user = Auth::user();
+        $person = Person::where('user_id',$user->id)->firstOrFail();
         $file = $request->file('dui');
         $nombre_archivo = $person->first_name." ".$person->middle_name." ".$person->last_name."-DUI.pdf";
         $person->dui = $nombre_archivo;
@@ -157,23 +195,25 @@ class PersonController extends Controller
         PersonChange::create(['person_id'=>$person->id,'change'=>"Se subio y guardo el archivo que contiene el DUI"]);
         \Storage::disk('personalFiles')->put($nombre_archivo, \File::get($file));
         $this->RegisterAction("El usuario ha guardado el archivo pdf que contiene la imagen del DUI", "medium"); 
-        return response(['person' => $person,], 200);
+        return $person;
     }
 
-    public function storePassport(Request $request, $id){
-        $person = Person::findOrFail($id);
-        $file = $request->file('passport');
+    public function storePassport(Request $request){
+        $user = Auth::user();
+        $person = Person::where('user_id',$user->id)->firstOrFail();
+        $file = $request->file('pass');
         $nombre_archivo = $person->first_name." ".$person->middle_name." ".$person->last_name."-PASAPORTE.pdf";
-        $person->dui = $nombre_archivo;
+        $person->passport = $nombre_archivo;
         $person->save();
         PersonChange::create(['person_id'=>$person->id,'change'=>"Se subio y guardo el archivo que contiene el Pasaporte"]);
         \Storage::disk('personalFiles')->put($nombre_archivo, \File::get($file));
         $this->RegisterAction("El usuario ha guardado el archivo pdf que contiene la imagen del Pasaporte", "medium"); 
-        return response(['person' => $person,], 200);
+        return  $person;
     }
 
-    public function storeNit(Request $request, $id){
-        $person = Person::findOrFail($id);
+    public function storeNit(Request $request){
+        $user = Auth::user();
+        $person = Person::where('user_id',$user->id)->firstOrFail();
         $file = $request->file('nit');
         $nombre_archivo = $person->first_name." ".$person->middle_name." ".$person->last_name."-NIT.pdf";
         $person->nit = $nombre_archivo;
@@ -181,61 +221,102 @@ class PersonController extends Controller
         PersonChange::create(['person_id'=>$person->id,'change'=>"Se subio y guardo el archivo que contiene el NIT"]);
         \Storage::disk('personalFiles')->put($nombre_archivo, \File::get($file)); 
         $this->RegisterAction("El usuario ha guardado el archivo pdf que contiene la imagen del NIT", "medium"); 
-        return response(['person' => $person,], 200);
+        return $person;
     }
 
-    public function storeBank(Request $request, $id){
-        $person = Person::findOrFail($id);
-        $file = $request->file('account');
+    public function storeBank(Request $request){
+        $user = Auth::user();
+        $person = Person::where('user_id',$user->id)->firstOrFail();
+        $file = $request->file('banco');
         $nombre_archivo = $person->first_name." ".$person->middle_name." ".$person->last_name."-CuentaDeBanco.pdf";
         $person->bank_account = $nombre_archivo;
         $person->save();
         PersonChange::create(['person_id'=>$person->id,'change'=>"Se subio y guardo el archivo que contiene la Cuenta Bancaria"]);
         \Storage::disk('personalFiles')->put($nombre_archivo, \File::get($file)); 
         $this->RegisterAction("El usuario ha guardado el archivo pdf que contiene la imagen de su cuenta de banco", "medium"); 
-        return response(['person' => $person,], 200);
+        return $person;
 
     }
 
-    public function storeTitle(Request $request, $id){
-        $person = Person::findOrFail($id);
-        $file = $request->file('title');
+    public function storeTitle(Request $request){
+        $user = Auth::user();
+        $person = Person::where('user_id',$user->id)->firstOrFail();
+        $file = $request->file('titulo');
         $nombre_archivo = $person->first_name." ".$person->middle_name." ".$person->last_name."-Titulo.pdf";
         $person->professional_title_scan = $nombre_archivo;
         $person->save();
         PersonChange::create(['person_id'=>$person->id,'change'=>"Se subio y guardo el archivo que contiene el Titulo Univesitario"]);
         \Storage::disk('personalFiles')->put($nombre_archivo, \File::get($file)); 
         $this->RegisterAction("El usuario ha guardado el archivo pdf que contiene la imagen de su titulo Universitario", "medium"); 
-        return response(['person' => $person,], 200);
+        return  $person;
     }
 
-    public function storeCurriculum(Request $request, $id){
-        $person = Person::findOrFail($id);
-        $file = $request->file('curriculum');
+    public function storeCurriculum(Request $request){
+        $user = Auth::user();
+        $person = Person::where('user_id',$user->id)->firstOrFail();
+        $file = $request->file('cv');
         $nombre_archivo = $person->first_name." ".$person->middle_name." ".$person->last_name."-Curriculum.pdf";
         $person->curriculum = $nombre_archivo;
         $person->save();
         PersonChange::create(['person_id'=>$person->id,'change'=>"Se subio y guardo el archivo que contiene el curriculum"]);
         \Storage::disk('personalFiles')->put($nombre_archivo, \File::get($file)); 
         $this->RegisterAction("El usuario ha guardado el  archivo pdf que contiene su curriculum", "medium"); 
-        return response(['person' => $person,], 200);
+        return  $person;
     }
 
-    public function storePermission(Request $request, $id)
+    public function storePermission(Request $request)
     {
-        $person = Person::findOrFail($id);
-        $file = $request->file('work_permission');
+        $user = Auth::user();
+        $person = Person::where('user_id',$user->id)->firstOrFail();
+        $file = $request->file('permiso');
         $nombre_archivo = $person->first_name." ".$person->middle_name." ".$person->last_name."-permission.pdf";
         $person->work_permission = $nombre_archivo;
         $person->save();
         PersonChange::create(['person_id'=>$person->id,'change'=>"Se subio y guardo el archivo que contiene el Permiso de laborar en la facultad"]);
         \Storage::disk('personalFiles')->put($nombre_archivo, \File::get($file)); 
         $this->RegisterAction("El usuario ha guardado el  archivo pdf que contiene su permiso de trabajo"); 
+        return $person;
+    }
+
+    public function updateMenu(Request $request){
+        $type = $request['type'];
+        switch ($type) {
+            case 'dui':
+               $person =  $this->updateDui($request);
+                break;
+
+            case 'nit':
+                $person =  $this->updateNit($request);
+                break;
+
+            case 'banco':
+                $person =  $this->updateBank($request);
+                break;
+
+            case 'cv':
+                $person =  $this->updateCurriculum($request);
+                break;
+
+            case 'titulo':
+                $person =  $this->storeTitle($request);
+                break;
+
+            case 'permiso':
+                $person =  $this->storePermission($request);
+                break;
+            case 'pass':
+                $person =  $this->storePassport($request);
+                break;
+            default:
+                # code...
+                break;
+        }
         return response(['person' => $person,], 200);
     }
 
-    public function updateDui(Request $request, $id){
-        $person = Person::findOrFail($id);
+    public function updateDui(Request $request){
+        $user = Auth::user();
+        $person = Person::where('user_id',$user->id)->firstOrFail();
         $file = $request->file('dui');
         $nombre_archivo = $person->first_name." ".$person->middle_name." ".$person->last_name."-DUI.pdf";
         //Se elimina el archivo antiguo
@@ -244,19 +325,24 @@ class PersonController extends Controller
         $person->save();
         PersonChange::create(['person_id'=>$person->id,'change'=>"Se Actualizo el archivo que contiene el DUI"]);
         \Storage::disk('personalFiles')->put($nombre_archivo, \File::get($file));
-       /*  $personValidations = $person->personValidations;
+        $personValidations = $person->personValidations;
         $personValidations->update([
-            'dui_readable'      => false,
-            'name_correct'      => false,
-            'address_correct'   => false,
-            'dui_current'       => false,
-        ]); */
+            'dui_readable'      =>  false,
+            'dui_name'          =>  false,
+            'dui_number'        =>  false,
+            'dui_profession'    =>  false,
+            'dui_civil_status'  =>  false,
+            'dui_birth_date'    =>  false,
+            'dui_unexpired'     =>  false,
+            'dui_address'       =>  false
+        ]); 
         $this->RegisterAction("El usuario ha actualizado el archivo pdf que contiene la imagen del DUI", "medium"); 
-        return response(['person' => $person,], 200);
+        return $person;
     }
 
-    public function updateNit(Request $request, $id){
-        $person = Person::findOrFail($id);
+    public function updateNit(Request $request){
+        $user = Auth::user();
+        $person = Person::where('user_id',$user->id)->firstOrFail();
         $file = $request->file('nit');
         $nombre_archivo = $person->first_name." ".$person->middle_name." ".$person->last_name."-NIT.pdf";
         //Se elimina el archivo antiguo
@@ -265,17 +351,20 @@ class PersonController extends Controller
         $person->save();
         PersonChange::create(['person_id'=>$person->id,'change'=>"Se Actualizo el archivo que contiene el NIT"]);
         \Storage::disk('personalFiles')->put($nombre_archivo, \File::get($file)); 
-        /* $personValidations = $person->personValidations;
+        $personValidations = $person->personValidations;
         $personValidations->update([
-            'nit_readable' => false,
-        ]); */
+            'nit_readable'      =>  false,
+            'nit_name'          =>  false,
+            'nit_number'        =>  false
+        ]); 
         $this->RegisterAction("El usuario ha actualizado el archivo pdf que contiene la imagen del NIT", "medium");
-        return response(['person' => $person,], 200);
+        return  $person;
     }
 
-    public function updateBank(Request $request, $id){
-        $person = Person::findOrFail($id);
-        $file = $request->file('account');
+    public function updateBank(Request $request){
+        $user = Auth::user();
+        $person = Person::where('user_id',$user->id)->firstOrFail();
+        $file = $request->file('banco');
         $nombre_archivo = $person->first_name." ".$person->middle_name." ".$person->last_name."-CuentaDeBanco.pdf";
         //Se elimina el archivo antiguo
         \File::delete($person->bank_account);
@@ -283,17 +372,19 @@ class PersonController extends Controller
         $person->save();
         PersonChange::create(['person_id'=>$person->id,'change'=>"Se Actualizo el archivo que contiene la cuenta bancaria"]);
         \Storage::disk('personalFiles')->put($nombre_archivo, \File::get($file)); 
-       /*  $personValidations = $person->personValidations;
+         $personValidations = $person->personValidations;
         $personValidations->update([
-            'bank_account_readable' => false,
-        ]); */
+            'bank_readable'        =>  false,
+            'bank_number'          =>  false,
+        ]); 
         $this->RegisterAction("El usuario ha actualizado el  archivo pdf que contiene la imagen de su cuenta de banco", "medium"); 
-        return response(['person' => $person,], 200);
+        return $person;
     }
 
-    public function updateTitle(Request $request, $id){
-        $person = Person::findOrFail($id);
-        $file = $request->file('title');
+    public function updateTitle(Request $request){
+        $user = Auth::user();
+        $person = Person::where('user_id',$user->id)->firstOrFail();
+        $file = $request->file('titulo');
         $nombre_archivo = $person->first_name." ".$person->middle_name." ".$person->last_name."-Titulo.pdf";
         //Se elimina el archivo antiguo
         \File::delete($person->professional_title_scan);
@@ -301,18 +392,22 @@ class PersonController extends Controller
         $person->save();
         PersonChange::create(['person_id'=>$person->id,'change'=>"Se Actualizo el archivo que contiene el Titulo Universitario"]);
         \Storage::disk('personalFiles')->put($nombre_archivo, \File::get($file)); 
-        /* $personValidations = $person->personValidations;
+        $personValidations = $person->personValidations;
         $personValidations->update([
-            'profesional_title_readable' => false,
-            'profesional_title_validated' => false,
-        ]); */
+            'title_readable'        =>  false,
+            'title_mined'           =>   false,
+            'title_apostilled'      =>   false,
+            'title_apostilled_readable'         =>   false,
+            'title_authentic'                   =>   false,
+        ]); 
         $this->RegisterAction("El usuario ha actualizado el  archivo pdf que contiene la imagen de su titulo Universitario", "medium"); 
-        return response(['person' => $person,], 200);
+        return  $person;
     }
 
-    public function updateCurriculum(Request $request, $id){
-        $person = Person::findOrFail($id);
-        $file = $request->file('curriculum');
+    public function updateCurriculum(Request $request){
+        $user = Auth::user();
+        $person = Person::where('user_id',$user->id)->firstOrFail();
+        $file = $request->file('cv');
         $nombre_archivo = $person->first_name." ".$person->middle_name." ".$person->last_name."-curriculum.pdf";
         //Se elimina el archivo antiguo
         \File::delete($person->curriculum);
@@ -320,17 +415,18 @@ class PersonController extends Controller
         $person->save();
         PersonChange::create(['person_id'=>$person->id,'change'=>"Se Actualizo el archivo que contiene el curriculum"]);
         \Storage::disk('personalFiles')->put($nombre_archivo, \File::get($file)); 
-        /* $personValidations = $person->personValidations;
+        $personValidations = $person->personValidations;
         $personValidations->update([
-            'curriculum_readable'  => false,
-        ]); */
+            'curriculum_readable'      => false,
+        ]); 
         $this->RegisterAction("El usuario ha actualizado el archivo pdf que contiene su curriculum", "medium"); 
-        return response(['person' => $person,], 200);
+        return $person;
     }
 
-    public function updatePermisssion(Request $request, $id) {
-        $person = Person::findOrFail($id);
-        $file = $request->file('work_permission');
+    public function updatePermisssion(Request $request) {
+        $user = Auth::user();
+        $person = Person::where('user_id',$user->id)->firstOrFail();
+        $file = $request->file('permiso');
         $nombre_archivo = $person->first_name." ".$person->middle_name." ".$person->last_name."-permission.pdf";
         //Se elimina el archivo antiguo
         \File::delete($person->work_permission);
@@ -338,17 +434,18 @@ class PersonController extends Controller
         $person->save();
         PersonChange::create(['person_id'=>$person->id,'change'=>"Se Actualizo el archivo que contiene el permiso de trabajo"]);
         \Storage::disk('personalFiles')->put($nombre_archivo, \File::get($file)); 
-        /* $personValidations = $person->personValidations;
+        $personValidations = $person->personValidations;
         $personValidations->update([
-            'work_permission_readable'  => false,
-        ]); */
+            'work_permission_readable'      =>  false,
+        ]); 
         $this->RegisterAction("El usuario ha guardado el  archivo pdf que contiene su permiso de trabajo"); 
-        return response(['person' => $person,], 200);
+        return  $person;
     }
 
-    public function updatePassport(Request $request, $id) {
-        $person = Person::findOrFail($id);
-        $file = $request->file('passport');
+    public function updatePassport(Request $request) {
+        $user = Auth::user();
+        $person = Person::where('user_id',$user->id)->firstOrFail();
+        $file = $request->file('pass');
         $nombre_archivo = $person->first_name." ".$person->middle_name." ".$person->last_name."-PASAPORTE.pdf";
         //Se elimina el archivo antiguo
         \File::delete($person->passport);
@@ -356,50 +453,151 @@ class PersonController extends Controller
         $person->save();
         PersonChange::create(['person_id'=>$person->id,'change'=>"Se Actualizo el archivo que contiene el Pasaporte"]);
         \Storage::disk('personalFiles')->put($nombre_archivo, \File::get($file)); 
+        $personValidations = $person->personValidations;
+        $personValidations->update([
+            'passport_readable'      =>  false,
+            'passport_name'          =>  false,
+            'passport_number'        =>  false,
+        ]); 
         $this->RegisterAction("El usuario ha Actualizado el  archivo pdf que contiene su Pasaporte"); 
-        return response(['person' => $person,], 200);
+        return  $person;
     }
 
-    public function getDui($id){
-        $person = Person::findOrFail($id);
+    public function getMenu($type){
+        
+        switch ($type) {
+            case 'dui':
+               $person =  $this->getDui();
+                break;
+
+            case 'nit':
+                $person =  $this->getNit();
+                break;
+
+            case 'banco':
+                $person =  $this->getBank();
+                break;
+
+            case 'cv':
+                $person =  $this->getCurriculum();
+                break;
+
+            case 'titulo':
+                $person =  $this->getTitle();
+                break;
+
+            case 'permiso':
+                $person =  $this->getPermission();
+                break;
+            case 'pass':
+                $person =  $this->getPassport();
+                break;
+            default:
+                # code...
+                break;
+        }
+        return response(['person' => $person], 200);
+    }
+
+
+    public function getDui(){
+        $user = Auth::user();
+        $person = Person::where('user_id',$user->id)->firstOrFail();
+        $validations = [
+            'dui_readable'      =>  $person->personValidations->dui_readable,
+            'dui_name'          =>  $person->personValidations->dui_name,
+            'dui_number'        =>  $person->personValidations->dui_number,
+            'dui_profession'    =>  $person->personValidations->dui_profession,
+            'dui_civil_status'  =>  $person->personValidations->dui_civil_status,
+            'dui_birth_date'    =>  $person->personValidations->dui_birth_date,
+            'dui_unexpired'     =>  $person->personValidations->dui_unexpired,
+            'dui_address'       =>  $person->personValidations->dui_address
+        ];
         $pdf = base64_encode(\Storage::disk('personalFiles')->get($person->dui));
-        return response(['pdfDui' => $pdf], 200);
+        return ['pdfDui' => $pdf,
+                'validations'=> $validations ];
     }
 
-    public function getPassport($id){
-        $person = Person::findOrFail($id);
+    public function getPassport(){
+        $user = Auth::user();
+        $person = Person::where('user_id',$user->id)->firstOrFail();
+        $validations = [
+            'passport_readable'      =>  $person->personValidations->passport_readable,
+            'passport_name'          =>  $person->personValidations->passport_name,
+            'passport_number'        =>  $person->personValidations->passport_number,
+        ];
         $pdf = base64_encode(\Storage::disk('personalFiles')->get($person->passport));
-        return response(['pdfPassport' => $pdf], 200);
+        return ['pdfPassport' => $pdf,
+        'validations'=> $validations ];
     }
 
-    public function getNit($id){
-        $person = Person::findOrFail($id);
+    public function getNit(){
+        $user = Auth::user();
+        $person = Person::where('user_id',$user->id)->firstOrFail();
+        $validations = [
+            'nit_readable'      =>  $person->personValidations->nit_readable,
+            'nit_name'          =>  $person->personValidations->nit_name,
+            'nit_number'        =>  $person->personValidations->nit_number,
+        ];
         $pdf = base64_encode(\Storage::disk('personalFiles')->get($person->nit));
-        return response(['pdfNit' => $pdf], 200);
+        return ['pdfNit' => $pdf,
+        'validations'=> $validations];
     }
 
-    public function getBank($id){
-        $person = Person::findOrFail($id);
+    public function getBank(){
+        $user = Auth::user();
+        $person = Person::where('user_id',$user->id)->firstOrFail();
+        $validations = [
+            'bank_readable'      =>  $person->personValidations->bank_readable,
+            'bank_number'          =>  $person->personValidations->bank_number,
+        ];
         $pdf = base64_encode(\Storage::disk('personalFiles')->get($person->bank_account));
-        return response(['pdfBank' => $pdf], 200);
+        return ['pdfBank' => $pdf,
+        'validations'=> $validations];
     }
 
-    public function getTitle($id){
-        $person = Person::findOrFail($id);
+    public function getTitle(){
+        $user = Auth::user();
+        $person = Person::where('user_id',$user->id)->firstOrFail();
+        if ($person->nationality == 'El Salvador') {
+            $validations = [
+                'title_readable'      =>  $person->personValidations->title_readable,
+                'title_mined'      =>  $person->personValidations->title_mined,
+            ];
+        } else {
+            $validations = [
+                'title_readable'      =>  $person->personValidations->title_readable,
+                'title_apostilled'      =>  $person->personValidations->title_apostilled,
+                'title_apostilled_readable'      =>  $person->personValidations->title_apostilled_readable,
+                'title_authentic'      =>  $person->personValidations->title_authentic,
+            ];
+        }
+        
         $pdf = base64_encode(\Storage::disk('personalFiles')->get($person->professional_title_scan));
-        return response(['pdfTitle' => $pdf], 200);
+        return ['pdfTitle' => $pdf,
+        'validations'=> $validations];
     }
 
-    public function getCurriculum($id){
-        $person = Person::findOrFail($id);
+    public function getCurriculum(){
+        $user = Auth::user();
+        $person = Person::where('user_id',$user->id)->firstOrFail();
+        $validations = [
+            'curriculum_readable'      =>  $person->personValidations->curriculum_readable,
+        ];
         $pdf = base64_encode(\Storage::disk('personalFiles')->get($person->curriculum));
-        return response(['pdfCurriculum' => $pdf], 200);
+        return ['pdfCurriculum' => $pdf,
+        'validations'=> $validations];
     }
 
-    public function getPermission($id) {
-        $person = Person::findOrFail($id);
+    public function getPermission() {
+        $user = Auth::user();
+        $person = Person::where('user_id',$user->id)->firstOrFail();
+        $validations = [
+            'work_permission_readable'      =>  $person->personValidations->work_permission_readable,
+        ];
         $pdf = base64_encode(\Storage::disk('personalFiles')->get($person->work_permission));
-        return response(['pdfPermission' => $pdf], 200);
+        return ['pdfPermission' => $pdf,
+        'validations'=> $validations];
     }
 
     public function duiToText($dui){
@@ -451,5 +649,40 @@ class PersonController extends Controller
         $person = Person::where('user_id',$user->id)->firstOrFail();
         $changes = PersonChange::where('person_id',$person->id)->get();
         return response(['changes' => $changes,], 200);
+    }
+
+    public function getDocumentsByCase()
+    {
+        $user = Auth::user();
+        $person = Person::where('user_id',$user->id)->firstOrFail();
+        
+
+        if ($person->employee == null) {
+            //Si no es empleado verificamos que sea nacional o extanjero
+            if ($person->nationality == 'El Salvador') {
+                return  response(['archivos' => ['dui','nit','banco','cv','titulo']], 200);
+            } else {
+                //EXTRANJERO
+                return  response(['archivos' =>  ['banco','cv','titulo','pass']], 200);
+            }
+        } else {
+            //Candidato - Trabajador
+            if ($person->nationality == 'El Salvador') {
+                //Candidato - Trabajador - Nacional
+                if ($person->employee->faculty_id == 1) {
+                    return  response(['archivos' =>  ['dui','nit','banco','cv','titulo']], 200);
+                } else {
+                    return  response(['archivos' =>  ['dui','nit','banco','cv','titulo','permiso']], 200);
+                    
+                }
+            } else {
+                //Candidato - Trabajador - Internacional 
+                if ($person->employee->faculty_id == 1) {
+                    return  response(['archivos' =>  ['banco','cv','titulo','pass']], 200);
+                } else {
+                    return  response(['archivos' =>  ['banco','cv','titulo','permiso','pass']], 200);
+                }
+            }
+        }
     }
 }

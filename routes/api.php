@@ -165,33 +165,17 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
         Route::post('/persons', [PersonController::class, 'store']);
         Route::put('/persons/me', [PersonController::class, 'update']);
         Route::delete('/persons/me', [PersonController::class, 'destroy']);
-        Route::post('/persons/{id}/files/dui', [PersonController::class, 'storeDui']);
-        Route::post('/persons/{id}/files/nit', [PersonController::class, 'storeNit']);
-        Route::post('/persons/{id}/files/bank-account', [PersonController::class, 'storeBank']);
-        Route::post('/persons/{id}/files/title', [PersonController::class, 'storeTitle']);
-        Route::post('/persons/{id}/files/curriculum', [PersonController::class, 'storeCurriculum']);
-        Route::post('/persons/{id}/files/permission', [PersonController::class, 'storePermission']);
-        Route::post('/persons/{id}/files/passport', [PersonController::class, 'storePassport']);
-        Route::post('/persons/{id}/files/passport/update', [PersonController::class, 'updatePassport']);
-        Route::post('/persons/{id}/files/dui/update', [PersonController::class, 'updateDui']);
-        Route::post('/persons/{id}/files/nit/update', [PersonController::class, 'updateNit']);
-        Route::post('/persons/{id}/files/bank-account/update', [PersonController::class, 'updateBank']);
-        Route::post('/persons/{id}/files/title/update', [PersonController::class, 'updateTitle']);
-        Route::post('/persons/{id}/files/curriculum/update', [PersonController::class, 'updateCurriculum']);
-        Route::post('/persons/{id}/files/permission/update', [PersonController::class, 'updatePermisssion']);
+        Route::post('/persons/files/',[PersonController::class, 'storeMenu']);
+        Route::post('/persons/files/update',[PersonController::class, 'updateMenu']);
         Route::get('/persons/changes',[PersonController::class, 'myChanges']);
     });
     Route::group(['middleware' => ['can:read_persons']], function () {
        
         Route::get('/persons/me', [PersonController::class, 'showMyInfo']);
         Route::get('/persons/{id}', [PersonController::class, 'show']);
-        Route::get('/persons/{id}/files/dui/view', [PersonController::class, 'getDui']);
-        Route::get('/persons/{id}/files/nit/view', [PersonController::class, 'getNit']);
-        Route::get('/persons/{id}/files/bank-account/view', [PersonController::class, 'getBank']);
-        Route::get('/persons/{id}/files/title/view', [PersonController::class, 'getTitle']);
-        Route::get('/persons/{id}/files/curriculum/view', [PersonController::class, 'getCurriculum']);
-        Route::get('/persons/{id}/files/permission/view', [PersonController::class, 'getPermission']);
-        Route::get('/persons/{id}/files/passport/view', [PersonController::class, 'getPassport']);
+        Route::get('/persons/files/{type}/view', [PersonController::class, 'getMenu']);
+        Route::get('/persons/files/options', [PersonController::class, 'getDocumentsByCase']);
+       
         
     });
 
@@ -199,10 +183,11 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::group(['middleware' => ['can:read_personValidations']], function () {
         Route::get('/person/{id}/validations', [PersonValidationController::class, 'getValidations']);
         Route::get('/person/{person}/validation/{type}', [PersonValidationController::class, 'validationData']);
+       
         
     });
     Route::group(['middleware' => ['can:write_personValidations']], function () {
-        
+        Route::post('/person/{person}/validation/{type}/store', [PersonValidationController::class, 'validationStore']);
     });
 
     // Rutas que manejan el catalogo de empleados

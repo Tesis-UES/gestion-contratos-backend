@@ -165,16 +165,17 @@ class AuthController extends Controller
                 $user->assignRole($request->role);
                     try {
                         Mail::to($user->email)->send(new NewUserNotification($user->email, $fields['password']));
+                        $response = [
+                            'user'      => $user,
+                            'mensaje'   =>"Si se envio el correo electronico",
+                        ];
                     } catch (\Swift_TransportException $e) {
                         $response = [
                             'user'      => $user,
                             'mensaje'   =>"No se ha enviado el correo electronico",
                         ];
                     } 
-                $response = [
-                    'user'      => $user,
-                    'mensaje'   =>"Si se envio el correo electronico",
-                ];
+               
                 $this->RegisterAction('El administrador ha registrado al usuario ' . $user->name . ' como administrador', "medium");
                 return response($response, 201);
                 break;
@@ -189,16 +190,17 @@ class AuthController extends Controller
                 $user->assignRole($request->role);
                 try {
                     Mail::to($user->email)->send(new NewUserNotification($user->email, $fields['password']));
+                    $response = [
+                        'user'      => $user,
+                        'mensaje'   =>"Si se envio el correo electronico",
+                    ];
                 } catch (\Swift_TransportException $e) {
                     $response = [
                         'user'      => $user,
                         'mensaje'   =>"No se ha enviado el correo electronico",
                     ];
                 } 
-                $response = [
-                    'user'      => $user,
-                    'mensaje'   =>"Si se envio el correo electronico",
-                ];
+                
                 $this->RegisterAction('El administrador ha registrado al usuario ' . $user->name . ' como Profesor', "medium");
                 return response($response, 201);
                 break;
@@ -213,16 +215,17 @@ class AuthController extends Controller
                 $user->assignRole($request->role);
                 try {
                     Mail::to($user->email)->send(new NewUserNotification($user->email, $fields['password']));
+                    $response = [
+                        'user'      => $user,
+                        'mensaje'   =>"Si se envio el correo electronico",
+                    ];
                 } catch (\Swift_TransportException $e) {
                     $response = [
                         'user'      => $user,
                         'mensaje'   =>"No se ha enviado el correo electronico",
                     ];
                 } 
-                $response = [
-                    'user'      => $user,
-                    'mensaje'   =>"Si se envio el correo electronico",
-                ];
+                
                 $this->RegisterAction('El administrador ha registrado al usuario ' . $user->name . ' como Director de Escuela', "medium");
                 return response($response, 201);
                 break;
@@ -236,16 +239,17 @@ class AuthController extends Controller
                 $user->assignRole($request->role);
                 try {
                     Mail::to($user->email)->send(new NewUserNotification($user->email, $fields['password']));
+                    $response = [
+                        'user'      => $user,
+                        'mensaje'   =>"Si se envio el correo electronico",
+                    ];
                 } catch (\Swift_TransportException $e) {
                     $response = [
                         'user'      => $user,
                         'mensaje'   =>"No se ha enviado el correo electronico",
                     ];
                 } 
-                $response = [
-                    'user'      => $user,
-                    'mensaje'   =>"Si se envio el correo electronico",
-                ];
+               
                 $this->RegisterAction('El administrador ha registrado al usuario ' . $user->name . ' como Asistente Administrativo', "medium");
                 return response($response, 201);
 
@@ -260,16 +264,17 @@ class AuthController extends Controller
                 $user->assignRole($request->role);
                 try {
                     Mail::to($user->email)->send(new NewUserNotification($user->email, $fields['password']));
+                    $response = [
+                        'user'      => $user,
+                        'mensaje'   =>"Si se envio el correo electronico",
+                    ];
                 } catch (\Swift_TransportException $e) {
                     $response = [
                         'user'      => $user,
                         'mensaje'   =>"No se ha enviado el correo electronico",
                     ];
                 } 
-                $response = [
-                    'user'      => $user,
-                    'mensaje'   =>"Si se envio el correo electronico",
-                ];
+                
                 $this->RegisterAction('El administrador ha registrado al usuario ' . $user->name . ' como Asistente Financiero', "medium");
                 return response($response, 201);
 

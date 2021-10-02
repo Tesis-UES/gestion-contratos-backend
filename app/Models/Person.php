@@ -17,6 +17,7 @@ class Person extends Model
         'last_name',
         'know_as',
         'civil_status',
+        'status',
         'married_name',
         'birth_date',
         'gender',
@@ -30,6 +31,7 @@ class Person extends Model
         'nup',
         'isss_number',
         'passport_number',
+        'passport',
         'dui_number',
         'dui_expiration_date',
         'nit',
@@ -48,6 +50,11 @@ class Person extends Model
     public function personValidations()
     {
         return $this->hasOne(PersonValidation::class);
+    }
+
+    public function user()
+    {
+        return $this->belongsTo(User::class);
     }
 
     public function employee()
