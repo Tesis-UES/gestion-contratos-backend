@@ -10,7 +10,8 @@ class PersonValidation extends Model
     use HasFactory;
 
     protected $fillable = [
-       'dui_readable',
+           'person_id',        
+           'dui_readable',
            'dui_name',
            'dui_number',
            'dui_profession',
