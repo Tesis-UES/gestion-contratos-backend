@@ -23,7 +23,9 @@ class PersonController extends Controller
                 'id'        => $rest->id,
                 'name'      => $rest->first_name." ".$rest->middle_name,
                 'last_name' => $rest->last_name,
-                'status'    => $rest->status
+                'status'    => $rest->status,
+                'school_id' => $rest->user->school_id,
+                'school_name'   => $rest->user->school->name
             ];
             $candiates[] = $candidate;
         }
@@ -31,8 +33,6 @@ class PersonController extends Controller
         $this->RegisterAction('El usuario ha consultado el catalogo de candidatos registrados en el sistema');
         return response($candiates, 200);
     }
-
-  
 
     public function store(Request $request)
     {
