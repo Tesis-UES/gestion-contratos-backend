@@ -165,7 +165,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
         Route::post('/persons', [PersonController::class, 'store']);
         Route::put('/persons/me', [PersonController::class, 'update']);
         Route::delete('/persons/me', [PersonController::class, 'destroy']);
-        Route::post('/persons/files/',[PersonController::class, 'storeMenu']);
+        Route::post('/persons/files',[PersonController::class, 'storeMenu']);
         Route::post('/persons/files/update',[PersonController::class, 'updateMenu']);
         Route::get('/persons/changes',[PersonController::class, 'myChanges']);
     });
@@ -181,13 +181,13 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
 
     // Rutas que manejan las validaciones de personas
     Route::group(['middleware' => ['can:read_personValidations']], function () {
-        Route::get('/person/{id}/validations', [PersonValidationController::class, 'getValidations']);
-        Route::get('/person/{person}/validation/{type}', [PersonValidationController::class, 'validationData']);
+        Route::get('/persons/{id}/validations', [PersonValidationController::class, 'getValidations']);
+        Route::get('/persons/{person}/validations/{type}', [PersonValidationController::class, 'validationData']);
        
         
     });
     Route::group(['middleware' => ['can:write_personValidations']], function () {
-        Route::post('/person/{person}/validation/{type}/store', [PersonValidationController::class, 'validationStore']);
+        Route::post('/persons/{person}/validations/{type}/store', [PersonValidationController::class, 'validationStore']);
     });
 
     // Rutas que manejan el catalogo de empleados

@@ -6,23 +6,24 @@ use App\Models\Person;
 use App\Models\PersonValidation;
 use App\Models\PersonChange;
 use Illuminate\Http\Request;
-use App\Http\Traits\WorklogTrait;
+use App\Http\Traits\{WorklogTrait, ValidationTrait};
 use Illuminate\Support\Facades\Auth;
 use Luecano\NumeroALetras\NumeroALetras;
 
 class PersonController extends Controller
 {
-    use WorklogTrait;
+    use WorklogTrait, ValidationTrait;
 
     public function allCandidates()
     {
+       
         $result = Person::all();
         foreach ($result as $rest) {
             $candidate = [
                 'id'        => $rest->id,
                 'name'      => $rest->first_name." ".$rest->middle_name,
                 'last_name' => $rest->last_name,
-                ''
+                'status'    => $rest->status
             ];
             $candiates[] = $candidate;
         }
@@ -30,6 +31,8 @@ class PersonController extends Controller
         $this->RegisterAction('El usuario ha consultado el catalogo de candidatos registrados en el sistema');
         return response($candiates, 200);
     }
+
+  
 
     public function store(Request $request)
     {
@@ -153,7 +156,7 @@ class PersonController extends Controller
         $type = $request['type'];
         switch ($type) {
             case 'dui':
-               $person =  $this->storeDui($request);
+                $person =  $this->storeDui($request);
                 break;
 
             case 'nit':
@@ -182,6 +185,7 @@ class PersonController extends Controller
                 # code...
                 break;
         }
+        $this->updatePersonStatus($person);
         return response(['person' => $person,], 200);
     }
 
@@ -311,6 +315,7 @@ class PersonController extends Controller
                 # code...
                 break;
         }
+        $this->updatePersonStatus($person);
         return response(['person' => $person,], 200);
     }
 

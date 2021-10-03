@@ -6,12 +6,13 @@ use App\Models\{Person};
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use App\Mail\ValidationDocsNotification;
+use App\Http\Traits\{WorklogTrait, ValidationTrait};
 use Mail;
 
 
 class PersonValidationController extends Controller
 {
-
+    use WorklogTrait, ValidationTrait;
     /*Funcion que retornara las validaciones a realizar segun el tipo de candiato */
     public function getValidations($id)
     {
@@ -442,7 +443,7 @@ class PersonValidationController extends Controller
                 # code...
                 break;
         }
-       
+        $this->updatePersonStatus($person);
         try {
             Mail::to($person->user->email)->send(new ValidationDocsNotification($mensaje));
             $response = ['mensaje'   =>"Si se envio el correo electronico"];
