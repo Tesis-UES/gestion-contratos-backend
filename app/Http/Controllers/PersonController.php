@@ -2,6 +2,9 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\EmployeeType;
+use App\Models\Escalafon;
+use App\Models\Faculty;
 use App\Models\Person;
 use App\Models\PersonValidation;
 use App\Models\PersonChange;
@@ -79,6 +82,9 @@ class PersonController extends Controller
                 'escalafon_id'     => 'required|integer|gte:1',
                 'employee_type_id' => 'required|integer|gte:1',
             ]);
+            Escalafon::findOrFail( $employeeFields['escalafon_id']);
+            EmployeeType::findOrFail($employeeFields['employee_type_id']);
+            Faculty::findOrFail($employeeFields['faculty_id']);
         } 
 
         $user = Auth::user();
@@ -100,7 +106,7 @@ class PersonController extends Controller
 
         if($request->input('is_employee')==true)
         {
-            $newPerson->employee()->save($employeeFields);
+            $newPerson->employee()->create($employeeFields);
             PersonChange::create(['person_id'=>$newPerson->id,'change'=>"Se registraron los datos del profesor."]);
             $this->RegisterAction("El usuario he registrado como profesor", "medium");
         }
@@ -179,8 +185,10 @@ class PersonController extends Controller
                 'escalafon_id'     => 'required|integer|gte:1',
                 'employee_type_id' => 'required|integer|gte:1',
             ]);
+            Escalafon::findOrFail( $employeeFields['escalafon_id']);
+            EmployeeType::findOrFail($employeeFields['employee_type_id']);
+            Faculty::findOrFail($employeeFields['faculty_id']);
         }
-        
         
         $user = Auth::user();
         $person = Person::where('user_id', $user->id)->firstOrFail();
@@ -193,12 +201,13 @@ class PersonController extends Controller
         }
         $person->save();
         PersonChange::create(['person_id'=>$person->id,'change'=>"Se actualizo la información general de datos personales"]);
+        $this->RegisterAction("El usuario ha actualizado sus datos personales generales", "medium");
 
         if($request->input('is_employee')==true)
         {
             $employee = $newPerson->employee;
             if($employee == null){
-                $newPerson->employee()->save($employeeFields);
+                $newPerson->employee()->create($employeeFields);
                 PersonChange::create(['person_id'=>$newPerson->id,'change'=>"Se registraron los datos del profesor."]);
                 $this->RegisterAction("El usuario he registrado como profesor", "medium");
             } else {
@@ -208,7 +217,6 @@ class PersonController extends Controller
             }
         } 
                                              
-        $this->RegisterAction("El usuario ha actualizado sus datos personales genrales", "medium");
         return response(['person' => $person], 200);
     }
 
