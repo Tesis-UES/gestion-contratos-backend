@@ -196,14 +196,14 @@ class PersonController extends Controller
         $this->RegisterAction("El usuario ha actualizado sus datos personales generales", "medium");
 
         if($request->input('is_employee') == true) {
-            $employee = $newPerson->employee;
+            $employee = $person->employee;
             if($employee == null) {
-                $newPerson->employee()->create($employeeFields);
-                PersonChange::create(['person_id'=>$newPerson->id,'change'=>"Se registraron los datos del profesor."]);
+                $person->employee()->create($employeeFields);
+                PersonChange::create(['person_id'=>$person->id,'change'=>"Se registraron los datos del profesor."]);
                 $this->RegisterAction("El usuario he registrado como profesor", "medium");
             } else {
                 $employee->update($employeeFields);
-                PersonChange::create(['person_id'=>$newPerson->id,'change'=>"Se actualizaron los datos del profesor."]);
+                PersonChange::create(['person_id'=>$person->id,'change'=>"Se actualizaron los datos del profesor."]);
                 $this->RegisterAction("El usuario ha actualizado sus datos de profesor", "medium");
             }
         }
