@@ -318,5 +318,5 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::group(['middleware' => ['can:view_candidates']], function () {   
         Route::get('/persons', [PersonController::class, 'allCandidates']);
     });
-   
+    Route::post('/importGroups/{academicLoadId}', [GroupController::class, 'importGroups']);
 });

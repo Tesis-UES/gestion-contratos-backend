@@ -5,7 +5,9 @@ namespace App\Http\Controllers;
 use App\Models\AcademicLoad;
 use App\Models\Group;
 use App\Models\Schedule;
+use App\Imports\GroupCoursesImport;
 use Illuminate\Http\Request;
+use Maatwebsite\Excel\Facades\Excel;
 
 class GroupController extends Controller
 {
@@ -110,5 +112,11 @@ class GroupController extends Controller
         ];
 
         return response($updateGroup, 200); 
+    }
+
+    public function importGroups(Request $request, $academicLoadId){
+        Excel::import(new GroupCoursesImport($academicLoadId), $request->file('excel'));
+        
+
     }
 }
