@@ -54,7 +54,7 @@ class PersonController extends Controller
             'bank_account_number'   => 'string|max:120',
         ]);
 
-        if($request->input('nationality')=='Salvadoreno')
+        if($request->input('nationality')=='El Salvador')
         {
             $request->validate([
             'city'                  => 'required|string|max:120',
@@ -88,7 +88,7 @@ class PersonController extends Controller
 
         $newPerson = new Person ($request->all());
         $newPerson->user_id = $user->id;
-        if($newPerson->nationality == 'Salvadoreno'){
+        if($newPerson->nationality == 'El Salvador'){
             $newPerson->dui_text = $this->duiToText($newPerson->dui_number);
             $newPerson->nit_text = $this->nitToText($newPerson->nit_number);
         }
