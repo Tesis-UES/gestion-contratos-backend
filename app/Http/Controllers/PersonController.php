@@ -43,44 +43,71 @@ class PersonController extends Controller
             'civil_status'          => 'required|string|max:120',
             'know_as'               => 'string|max:120',
             'married_name'          => 'string|max:120',
-            'birth_date'            => 'required|date',
+            'birth_date'            => 'required|date|before:today',
             'gender'                => 'required|string|max:120',
             'telephone'             => 'required|string|max:120',
             'alternate_telephone'   => 'string|max:120',
             'alternate_mail'        => 'string|max:120',
             'address'               => 'required|string|max:120',
-            'city'                  => 'string|max:120',
-            'department'            => 'string|max:120',
             'nationality'           => 'required|string|max:120',
             'professional_title'    => 'required|string|max:120',
-            'nup'                   =>'string|max:120',
-            'isss_number'           =>'string|max:120',
-            'passport_number'       =>'string|max:120',
-            'dui_number'            => 'string|max:120',
-            'dui_expiration_date'   => 'date',
-            'nit_number'            => 'string|max:120',
             'bank_account_number'   => 'string|max:120',
         ]);
+
+        if($request->input('nationality')=='Salvadoreno')
+        {
+            $request->validate([
+            'city'                  => 'required|string|max:120',
+            'department'            => 'required|string|max:120',
+            'nup'                   => 'required|string|max:120',
+            'isss_number'           => 'required|string|max:120',
+            'dui_number'            => 'required|string|max:120',
+            'dui_expiration_date'   => 'required|date|after:today',
+            'nit_number'            => 'required|string|max:120',
+            ]);
+        } else 
+        {
+            $request->validate(['passport_number' => 'required|string|max:120']);
+        }
+
+        if($request->input('is_employee')==true)
+        {
+            $employeeFields = $request->validate([
+                'journey_type'     => 'required|string' ,
+                'faculty_id'       => 'required|integer|gte:1',
+                'escalafon_id'     => 'required|integer|gte:1',
+                'employee_type_id' => 'required|integer|gte:1',
+            ]);
+        } 
 
         $user = Auth::user();
         $person = Person::where('user_id', $user->id)->first();
         if($person){
             return response(['message' => "El usuario ya ha registrado sus datos personales",], 400);        
         }
+
         $newPerson = new Person ($request->all());
         $newPerson->user_id = $user->id;
-        $newPerson->dui_text = $this->duiToText($newPerson->dui_number);
-        $newPerson->nit_text = $this->nitToText($newPerson->nit_number);
+        if($newPerson->nationality == 'Salvadoreno'){
+            $newPerson->dui_text = $this->duiToText($newPerson->dui_number);
+            $newPerson->nit_text = $this->nitToText($newPerson->nit_number);
+        }
         $newPerson->save();
+
         PersonChange::create(['person_id'=>$newPerson->id,'change'=>"Se registraron los datos personales generales."]);
+        $this->RegisterAction("El usuario he registrado sus datos personales generales", "medium");
+
+        if($request->input('is_employee')==true)
+        {
+            $newPerson->employee()->save($employeeFields);
+            PersonChange::create(['person_id'=>$newPerson->id,'change'=>"Se registraron los datos del profesor."]);
+            $this->RegisterAction("El usuario he registrado como profesor", "medium");
+        }
+
         $personValidation = new PersonValidation(['person_id' => $newPerson->id]);
         $personValidation->save();
-        
-       
-        $this->RegisterAction("El usuario he registrado sus datos personales generales", "medium");
-        return response([
-            'person' => $newPerson,
-        ], 201);
+
+        return response(['person' => $newPerson], 201);
     }
 
     public function show($id)
