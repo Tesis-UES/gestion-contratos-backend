@@ -40,10 +40,6 @@ use Illuminate\Support\Facades\Auth;
 // Public Routes
 Route::post('/auth/register', [AuthController::class, 'register']);
 Route::post('/auth/login', [AuthController::class, 'login']);
-Route::get('/prueba/{dui}/texto',[PersonController::class, 'duiToText']);
-Route::get('/prueba/{nit}/texto/nit',[PersonController::class, 'nitToText']);
-
-
 
 // Protected Routes 
 Route::group(['middleware' => ['auth:sanctum']], function () {
