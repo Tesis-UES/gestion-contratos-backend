@@ -130,6 +130,7 @@ class RolesPermissionsSeeder extends Seeder
       
         
         //Permisos visuales
+        Permission::create(['name' => 'view_activities']);
         Permission::create(['name' => 'view_users']);
         Permission::create(['name' => 'view_worklog']);
         Permission::create(['name' => 'view_centralAuthorities']);
