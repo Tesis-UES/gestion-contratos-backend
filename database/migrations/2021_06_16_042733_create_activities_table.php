@@ -16,7 +16,7 @@ class CreateActivitiesTable extends Migration
         Schema::create('activities', function (Blueprint $table) {
             $table->id();
             $table->string('name', 100);
-            $table->boolean('recommended')->default(false);
+            $table->enum('recommended', ['profesor', 'administrativo', 'jefe'])->default(null)->nullable();
             $table->softDeletes();
             $table->timestamps();
         });

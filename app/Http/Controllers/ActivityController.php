@@ -27,10 +27,14 @@ class ActivityController extends Controller
      *
      * @return \Illuminate\Http\Response
      */
-    public function recommended()
+    public function recommended(Request $request)
     {
-        $activities = Activity::where('recommended', true)->get();
-        $this->RegisterAction('El usuario ha consultado el catalogo de actividades recomendadas');
+        $type = $request->query('type');
+        if(!($type == 'profesor' || $type == 'administrativo' || $type == 'jefe')) {
+            return response(['message' => "type debe ser 'profesor' || 'administrativo' || 'jefe'"],400);
+        }
+        $activities = Activity::where('recommended', $type)->get();
+        $this->RegisterAction('El usuario ha consultado el catalogo de actividades recomendadas del tipo ', $type);
         return response($activities, 200);
     }
 
