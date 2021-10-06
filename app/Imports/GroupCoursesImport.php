@@ -8,7 +8,8 @@ use Maatwebsite\Excel\Concerns\WithHeadingRow;
 use App\Models\{Group,Schedule,GroupType,Course};
 class GroupCoursesImport implements ToCollection, WithHeadingRow
 {
-
+    public $resultM;
+    public $resultB;
 
     public function  __construct($academicLoadId)
     {
@@ -16,7 +17,8 @@ class GroupCoursesImport implements ToCollection, WithHeadingRow
     }
 
     public function collection(Collection $rows)
-    {
+    {  $errorGroups=[];
+       $successGroups=[];
         foreach ($rows as $row) {
             
             //Primero Obtenemos los Datos relacionados consultados desde otras tablas
@@ -96,16 +98,60 @@ class GroupCoursesImport implements ToCollection, WithHeadingRow
                 ];
                 array_push($details, $hr);
             }
-           
-            //Creamos el Grupo
-            $GroupRegister = Group::create([
-            'number'                => $group ,
-            'group_type_id'         => $groupType->id,
-            'course_id'             => $course->id,
-            'academic_load_id'      => $academicLoad,
-            ]);
-            $GroupRegister->schedule()->createMany($details);
+            $errorDetail = 0;
+            foreach ($details as $det) {
+                if (strtotime($det['start_hour']) > strtotime($det['finish_hour'])) {
+                    $errorDetail++;
+                } 
+             }
             
+            //Validamos que no exista ningun grupo duplicado y discrepacia de horarios
+            $result = Group::where([
+                'number'                => $group ,
+                'group_type_id'         => $groupType->id,
+                'course_id'             => $course->id,
+                'academic_load_id'      => $academicLoad,])->get();
+                
+                 
+                 if ($result->isEmpty()&&$errorDetail == 0) {           
+                        //Creamos el Grupo
+                            $GroupRegister = Group::create([
+                                'number'                => $group ,
+                                'group_type_id'         => $groupType->id,
+                                'course_id'             => $course->id,
+                                'academic_load_id'      => $academicLoad,
+                                ]);
+                            $GroupRegister->schedule()->createMany($details);
+                            $grupoB = [
+                                'materia'              => $row['materia'],
+                                'tipo_de_grupo'        =>$row['tipo'],
+                                'numero_grupo'         =>$group,
+                                'horarios'             =>$details           
+                            ];
+                        array_push($successGroups, $grupoB);
+                }else{
+                   if ($errorDetail > 0) {
+                     $grupo = [
+                         'materia'              => $row['materia'],
+                         'tipo_de_grupo'        =>$row['tipo'],
+                         'numero_grupo'         =>$group,
+                         'Error'                =>'Los horarios de este Grupo Son Incongruentes',
+                         'horarios'             =>$details           
+                     ];
+                   } else {
+                    $grupo = [
+                        'materia'              => $row['materia'],
+                        'tipo_de_grupo'        =>$row['tipo'],
+                        'numero_grupo'         =>$group,
+                        'Error'                =>'Ya hay un grupo de este tipo registrado con la misma numeración',
+                        'horarios'             =>$details           
+                    ];
+                   }
+                   array_push($errorGroups, $grupo);
+                }  
+             
         }
+        $this->resultM =  $errorGroups;
+        $this->resultB =  $successGroups;
     }
 }

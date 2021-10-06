@@ -115,8 +115,9 @@ class GroupController extends Controller
     }
 
     public function importGroups(Request $request, $academicLoadId){
-        Excel::import(new GroupCoursesImport($academicLoadId), $request->file('excel'));
-        
 
+        $import =  new GroupCoursesImport($academicLoadId);
+        Excel::import($import, $request->file('excel'));
+        return response(['DatosMalos'=>$import->resultM, 'DatosBuenos'=>$import->resultB], 200);        
     }
 }
