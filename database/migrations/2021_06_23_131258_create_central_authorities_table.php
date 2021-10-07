@@ -26,6 +26,8 @@ class CreateCentralAuthoritiesTable extends Migration
             $table->date('start_period');
             $table->date('end_period');
             $table->date('birth_date');
+            $table->string('profession');
+            $table->string('reading_signature');
             $table->boolean('status')->default(1);
             $table->softDeletes();
             $table->timestamps();

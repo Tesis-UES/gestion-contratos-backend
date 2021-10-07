@@ -4,7 +4,7 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use App\Models\School;
-use App\Models\SchoolAuthority;
+use App\Models\{SchoolAuthority,CentralAuthority};
 class SchoolSeeder extends Seeder
 {
     /**
@@ -380,5 +380,21 @@ SchoolAuthority::create(['name'=>'PRUEBA  DIRECTOR','position'=>'DIRECTOR','star
 SchoolAuthority::create(['name'=>'PRUEBA  DIRECTOR','position'=>'DIRECTOR','startPeriod'=>'2021-02-02','endPeriod'=>'2021-12-02','school_id'=>'168']);
 SchoolAuthority::create(['name'=>'PRUEBA  DIRECTOR','position'=>'DIRECTOR','startPeriod'=>'2021-02-02','endPeriod'=>'2021-12-02','school_id'=>'169']);
 
+
+        CentralAuthority::create([
+            'position'      =>'Rector',
+            'firstName'     =>'ROGER',
+            'middleName'    =>'ARMANDO',
+            'lastName'      =>'ARIAS ALVARADO',
+            'dui'           =>'01645197-6',
+            'nit'           =>'0403-200868-101-7',
+            'start_period'  =>'2021-02-02',
+            'end_period'    =>'2021-12-02',
+            'text_dui'      =>'cero un millon seiscientos cuarenta y cinco mil ciento noventa y siete guion seis',
+            'text_nit'      =>'cero cuatrocientos tres - doscientos mil ochocientos sesenta y ocho - ciento uno-siete',
+            'birth_date'    =>'1968-08-20',
+            'profession'    =>'Economista',
+            'reading_signature'=>'R. Arias'
+        ]);
     }
 }

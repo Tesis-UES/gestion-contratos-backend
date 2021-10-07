@@ -319,4 +319,5 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
         Route::get('/persons', [PersonController::class, 'allCandidates']);
     });
     Route::post('/importGroups/{academicLoadId}', [GroupController::class, 'importGroups']);
+    Route::get('/Word/{id}', [PersonController::class, 'wordExample']);
 });
