@@ -106,14 +106,28 @@ class GroupCoursesImport implements ToCollection, WithHeadingRow
              }
             
             //Validamos que no exista ningun grupo duplicado y discrepacia de horarios
-            $result = Group::where([
-                'number'                => $group ,
-                'group_type_id'         => $groupType->id,
-                'course_id'             => $course->id,
-                'academic_load_id'      => $academicLoad,])->get();
-                
-                 
-                 if ($result->isEmpty()&&$errorDetail == 0) {           
+           
+                    $grupo = [
+                        'materia'              => $row['materia'],
+                        'tipo_de_grupo'        =>$row['tipo'],
+                        'numero_grupo'         =>$group,
+                        'horarios'             =>$details,   
+                        'Error'=>''        
+                    ];
+                 if ($course == null || $groupType == null) {
+                    if ($course == null) {
+                        $grupo['Error' ] = 'El codigo de la materia ingresado No existe';               
+                    } else {
+                        $grupo['Error' ] = 'El tipo de Grupo ingresado  No existe';
+                    }
+                    array_push($errorGroups, $grupo);
+                 } else {
+                    $result = Group::where([
+                        'number'                => $group ,
+                        'group_type_id'         => $groupType->id,
+                        'course_id'             => $course->id,
+                        'academic_load_id'      => $academicLoad,])->get();
+                    if ($result->isEmpty()&&$errorDetail == 0) {           
                         //Creamos el Grupo
                             $GroupRegister = Group::create([
                                 'number'                => $group ,
@@ -131,24 +145,17 @@ class GroupCoursesImport implements ToCollection, WithHeadingRow
                         array_push($successGroups, $grupoB);
                 }else{
                    if ($errorDetail > 0) {
-                     $grupo = [
-                         'materia'              => $row['materia'],
-                         'tipo_de_grupo'        =>$row['tipo'],
-                         'numero_grupo'         =>$group,
-                         'Error'                =>'Los horarios de este Grupo Son Incongruentes',
-                         'horarios'             =>$details           
-                     ];
+                    $grupo['Error' ] = 'Las horas de este grupo son incongruentes';
+                    array_push( $grupo,$var);
                    } else {
-                    $grupo = [
-                        'materia'              => $row['materia'],
-                        'tipo_de_grupo'        =>$row['tipo'],
-                        'numero_grupo'         =>$group,
-                        'Error'                =>'Ya hay un grupo de este tipo registrado con la misma numeración',
-                        'horarios'             =>$details           
-                    ];
+                    $grupo['Error' ] = "Ya existe un grupo ".$row['tipo']." de esta materia resgistrado con el numero de ".$row['tipo']." ".$group."";
+                    
                    }
                    array_push($errorGroups, $grupo);
                 }  
+                 }
+                 
+                
              
         }
         $this->resultM =  $errorGroups;
