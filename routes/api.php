@@ -172,6 +172,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::group(['middleware' => ['can:read_persons']], function () {
        
         Route::get('/persons/me', [PersonController::class, 'showMyInfo']);
+        Route::get('/persons/me/validations', [PersonValidationController::class, 'myValidationStatus']);
         Route::get('/persons/files/{type}/view', [PersonController::class, 'getMenu']);
         Route::get('/persons/files/options', [PersonController::class, 'getDocumentsByCase']);
        

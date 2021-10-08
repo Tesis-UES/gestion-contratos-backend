@@ -711,6 +711,7 @@ class PersonController extends Controller
      $nombreRector = "".$rector->firstName." ".$rector->middleName." ".$rector->lastName."";
      $firmaRector = $rector->reading_signature;
      $edadRector = $formatter->toString($edad);
+     $profesionRector = $rector->profession;
      $duiTextoRector = $rector->text_dui;
      $nitTextoRector = $rector->text_nit;
      
@@ -734,6 +735,7 @@ class PersonController extends Controller
         $phpWord->setValue('edadRector',strtoupper($edadRector));
         $phpWord->setValue('duiTextoRector',strtoupper($duiTextoRector));
         $phpWord->setValue('nitTextoRector',strtoupper($nitTextoRector));
+        $phpWord->setValue('profesionRector',strtoupper($profesionRector));
         $phpWord->setValue('nombreCandidato',strtoupper($nombreCandidato));
 
         $phpWord->setValue('candidatoEdad',strtoupper($candidatoEdad));
