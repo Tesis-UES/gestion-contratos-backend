@@ -304,6 +304,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     // Rutas que manejan el catalogo de grupos asignados en carga academica
     Route::group(['middleware' => ['can:write_groups']], function () {  
         Route::post('/academicLoad/{id}/groups', [GroupController::class, 'store']);
+        Route::post('/importGroups/{academicLoadId}', [GroupController::class, 'importGroups']);
         Route::put('/groups/{id}', [GroupController::class, 'update']);
     });
     Route::group(['middleware' => ['can:read_groups']], function () {   
@@ -314,7 +315,8 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     //Rutas que manejan las fuciones de RRHH
     Route::group(['middleware' => ['can:view_candidates']], function () {   
         Route::get('/persons', [PersonController::class, 'allCandidates']);
+        Route::get('/Word/{id}', [PersonController::class, 'wordExample']);
     });
-    Route::post('/importGroups/{academicLoadId}', [GroupController::class, 'importGroups']);
-    Route::get('/Word/{id}', [PersonController::class, 'wordExample']);
+    
+   
 });
