@@ -21,6 +21,8 @@ class CentralAuthority extends Model
         'end_period',
         'text_dui',
         'text_nit',
-        'birth_date'
+        'birth_date',
+        'profession',
+        'reading_signature'
     ];
 }

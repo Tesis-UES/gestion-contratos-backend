@@ -41,6 +41,8 @@ class CentralAuthorityController extends Controller
             'birth_date'    => 'required|date|before:today',
             'start_period'  => 'required|date',
             'end_period'    => 'required|date|after:start_period',
+            'profession'    => 'required|string',
+            'reading_signature' => 'required|string',
         ]);
         $newAuthority = new  CentralAuthority ($request->all());
         $newAuthority->text_dui = $this->duiToText($newAuthority->dui);
@@ -83,6 +85,8 @@ class CentralAuthorityController extends Controller
             'birth_date'  => 'required|date|before:today',
             'start_period'=> 'required|date',
             'end_period'  => 'required|date|after:start_period',
+            'profession'    => 'required|string',
+            'reading_signature' => 'required|string',
         ]);
 
         $authority = CentralAuthority::findOrFail($id);

@@ -7,11 +7,12 @@ use App\Models\Escalafon;
 use App\Models\Faculty;
 use App\Models\Person;
 use App\Models\PersonValidation;
-use App\Models\PersonChange;
+use App\Models\{PersonChange,CentralAuthority};
 use Illuminate\Http\Request;
 use App\Http\Traits\{WorklogTrait, ValidationTrait};
 use Illuminate\Support\Facades\Auth;
 use Luecano\NumeroALetras\NumeroALetras;
+use Carbon\Carbon;
 
 class PersonController extends Controller
 {
@@ -757,5 +758,73 @@ class PersonController extends Controller
                 }
             }
         }
+    }
+    public function calculaedad($fechanacimiento){
+        list($ano,$mes,$dia) = explode("-",$fechanacimiento);
+        $ano_diferencia  = date("Y") - $ano;
+        $mes_diferencia = date("m") - $mes;
+        $dia_diferencia   = date("d") - $dia;
+        if ($dia_diferencia < 0 || $mes_diferencia < 0)
+          $ano_diferencia--;
+        return $ano_diferencia;
+      }
+
+    public function wordExample($id){
+     $rector = CentralAuthority::where('position','=','Rector')->get()->first();
+     
+     //Preparando los datos del rector
+     $formatter = new NumeroALetras();
+     $edad = $this->calculaedad($rector->birth_date);
+     $numeroAcuerdo = 'FIA-666-2021';
+     $nombreRector = "".$rector->firstName." ".$rector->middleName." ".$rector->lastName."";
+     $firmaRector = $rector->reading_signature;
+     $edadRector = $formatter->toString($edad);
+     $profesionRector = $rector->profession;
+     $duiTextoRector = $rector->text_dui;
+     $nitTextoRector = $rector->text_nit;
+     
+     //Preparando la Información del candidato
+     $candidato = Person::findOrFail($id);
+     $edadC = $this->calculaedad($candidato->birth_date);
+     $nombreCandidato = "".$candidato->first_name." ".$candidato->middle_name." ".$candidato->last_name."";
+     $candidatoEdad = $formatter->toString($edadC);
+     $candidatoProfesion = $candidato->professional_title;
+     $candidatoCiudad = $candidato->city;
+     $candidatoDepartamento = $candidato->department;
+     $duiTextoCandidato = $candidato->dui_text;
+     $nitTextoCandidato = $candidato->nit_text;
+     $date = Carbon::now()->locale('es');
+     $fecha = "A LOS  ".$formatter->toString($date->day)." DIAS DEL MES DE  ".$date->monthName." DE ".$formatter->toString($date->year)."";
+     try {
+        $phpWord = new \PhpOffice\PhpWord\TemplateProcessor(\Storage::disk('formats')->path('/SPNP.docx'));
+        $phpWord->setValue('numeroAcuerdo',$numeroAcuerdo);
+        $phpWord->setValue('nombreRector',strtoupper($nombreRector));
+        $phpWord->setValue('firmaRector',$firmaRector);
+        $phpWord->setValue('edadRector',strtoupper($edadRector));
+        $phpWord->setValue('duiTextoRector',strtoupper($duiTextoRector));
+        $phpWord->setValue('nitTextoRector',strtoupper($nitTextoRector));
+        $phpWord->setValue('profesionRector',strtoupper($profesionRector));
+        $phpWord->setValue('nombreCandidato',strtoupper($nombreCandidato));
+
+        $phpWord->setValue('candidatoEdad',strtoupper($candidatoEdad));
+        $phpWord->setValue('candidatoProfesion',strtoupper($candidatoProfesion));
+        $phpWord->setValue('candidatoCiudad',strtoupper($candidatoCiudad));
+        $phpWord->setValue('candidatoDepartamento',strtoupper($candidatoDepartamento));
+        $phpWord->setValue('candidatoDui',strtoupper($duiTextoCandidato));
+        $phpWord->setValue('candidatoNit',strtoupper($nitTextoCandidato));
+        $phpWord->setValue('fecha',strtoupper($fecha));
+       
+        $tenpFile = tempnam(sys_get_temp_dir(),'PHPWord');
+        $phpWord->saveAs($tenpFile);
+        
+        $header = [
+            "Content-Type: application/octet-stream",
+      ]; 
+        return response()->download($tenpFile, 'Contrato Generado Servicios Profesionales.docx', $header)->deleteFileAfterSend($shouldDelete = true);
+    } catch (\PhpOffice\PhpWord\Exception\Exception $e) {
+        //throw $th;
+        return back($e->getCode());
+    }
+
     }
 }

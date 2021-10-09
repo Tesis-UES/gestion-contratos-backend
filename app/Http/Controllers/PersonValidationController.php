@@ -14,6 +14,14 @@ class PersonValidationController extends Controller
 {
     use WorklogTrait, ValidationTrait;
     /*Funcion que retornara las validaciones a realizar segun el tipo de candiato */
+    
+    public function myValidationStatus(){
+        $user = Auth::user();
+        $person = Person::where('user_id',$user->id)->firstOrFail();
+        $response = $this->getValidations($person->id);
+        return $response;
+    }
+    
     public function getValidations($id)
     {
         $person = Person::findOrFail($id);

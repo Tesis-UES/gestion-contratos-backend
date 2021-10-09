@@ -168,6 +168,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::group(['middleware' => ['can:read_persons']], function () {
        
         Route::get('/persons/me', [PersonController::class, 'showMyInfo']);
+        Route::get('/persons/me/validations', [PersonValidationController::class, 'myValidationStatus']);
         Route::get('/persons/files/{type}/view', [PersonController::class, 'getMenu']);
         Route::get('/persons/files/options', [PersonController::class, 'getDocumentsByCase']);
        
@@ -314,5 +315,6 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::group(['middleware' => ['can:view_candidates']], function () {   
         Route::get('/persons', [PersonController::class, 'allCandidates']);
     });
-   
+    Route::post('/importGroups/{academicLoadId}', [GroupController::class, 'importGroups']);
+    Route::get('/Word/{id}', [PersonController::class, 'wordExample']);
 });
