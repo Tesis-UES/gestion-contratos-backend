@@ -46,7 +46,8 @@ class Person extends Model
         'dui_text',
         'nit_text',
         'alternate_telephone',
-        'alternate_mail' 
+        'alternate_mail' ,
+        'is_employe'
     ];
 
     public function personValidations()

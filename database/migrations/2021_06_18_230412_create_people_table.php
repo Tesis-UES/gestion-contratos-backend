@@ -51,6 +51,7 @@ class CreatePeopleTable extends Migration
             $table->string('bank_account_number',120)->nullable();;
             $table->string('bank_account',250)->nullable();
             $table->string('status',50)->default('Registrando');
+            $table->boolen('is_employe');
             $table->softDeletes();
             $table->timestamps();
         });
