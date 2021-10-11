@@ -45,6 +45,8 @@ class Person extends Model
         'reading_signature',
         'dui_text',
         'nit_text',
+        'alternate_telephone',
+        'alternate_mail' 
     ];
 
     public function personValidations()
