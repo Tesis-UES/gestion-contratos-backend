@@ -116,14 +116,18 @@ class PersonController extends Controller
 
     public function show($id)
     {
-        $person = Person::findOrFail($id);
+        $person = Person::where('id',$id)->with('employee',function($query){
+            $query->with('faculty')->with('escalafon')->with('employeeType');
+        })->firstOrFail();
         return response(['person' => $person,], 200);
     }
 
     public function showMyInfo()
     {
         $user = Auth::user();
-        $person = Person::where('user_id',$user->id)->firstOrFail();
+        $person = Person::where('user_id',$user->id)->with('employee',function($query){
+            $query->with('faculty')->with('escalafon')->with('employeeType');
+        })->firstOrFail();
         return response($person, 200);
     }
 

@@ -20,4 +20,16 @@ class Employee extends Model
     public function staySchedules() {
         return $this->hasMany(StaySchedule::class);
     }
+
+    public function faculty() {
+        return $this->belongsTo(Faculty::class);
+    }
+
+    public function escalafon() {
+        return $this->belongsTo(Escalafon::class);
+    }
+
+    public function employeeType() {
+        return $this->belongsTo(EmployeeType::class);
+    }
 }
