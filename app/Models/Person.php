@@ -47,7 +47,7 @@ class Person extends Model
         'nit_text',
         'alternate_telephone',
         'alternate_mail' ,
-        'is_employe'
+        'is_employee'
     ];
 
     public function personValidations()
