@@ -269,8 +269,6 @@ class RolesPermissionsSeeder extends Seeder
             'write_contractTypes',
             'read_centralAuthorities',
             'write_centralAuthorities',
-            'read_persons',
-            'write_persons',
             'read_plans',
             'read_facultyAuth',
             'read_schoolAuth',
