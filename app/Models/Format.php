@@ -10,13 +10,14 @@ class Format extends Model
 {
     use HasFactory, SoftDeletes;
 
-
     protected $fillable = [
+        'code',
         'name',
-        'fileUrl',
+        'is_template',
+        'file_url',
     ];
 
     protected $hidden = [
-        'fileUrl',
+        'file_url',
     ];
 }

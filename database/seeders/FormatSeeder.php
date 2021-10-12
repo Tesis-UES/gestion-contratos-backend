@@ -14,6 +14,18 @@ class FormatSeeder extends Seeder
      */
     public function run()
     {
-        Format::create(['name' => 'Declaracion jurada', 'fileUrl' => 'Declaracion-jurada.pdf']);
+        Format::create([
+            'code'        => 'DJ-01',
+            'name'        => 'Declaracion jurada',
+            'is_template'  => true,
+            'file_url'     => 'Declaracion-jurada.pdf',
+        ]);
+
+        Format::create([
+            'code'        => 'SPNP',
+            'name'        => 'Contrato ervicios profesionales no permanentes',
+            'is_template'  => true,
+            'file_url'     => 'SPNP.docx',
+        ]);
     }
 }

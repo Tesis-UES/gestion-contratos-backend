@@ -15,8 +15,10 @@ class CreateFormatsTable extends Migration
     {
         Schema::create('formats', function (Blueprint $table) {
             $table->id();
-            $table->string('name')->unique();
-            $table->string('fileUrl')->unique();
+            $table->string('code')->unique();
+            $table->string('name');
+            $table->boolean('is_template');
+            $table->string('file_url')->unique();
             $table->softDeletes();
             $table->timestamps();
         });
