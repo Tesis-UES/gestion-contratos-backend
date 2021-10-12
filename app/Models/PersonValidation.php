@@ -42,5 +42,13 @@ class PersonValidation extends Model
            'title_apostilled',
            'title_apostilled_readable',
            'title_authentic',
+           'dui',
+           'nit',
+           'bank',
+           'curriculum',
+           'work',
+           'passport',
+           'title'
+
     ];
 }

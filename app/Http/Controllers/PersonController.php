@@ -408,7 +408,8 @@ class PersonController extends Controller
             'dui_civil_status'  =>  false,
             'dui_birth_date'    =>  false,
             'dui_unexpired'     =>  false,
-            'dui_address'       =>  false
+            'dui_address'       =>  false,
+            'dui'               =>  false
         ]); 
         $this->RegisterAction("El usuario ha actualizado el archivo pdf que contiene la imagen del DUI", "medium"); 
         return $person;
@@ -429,7 +430,9 @@ class PersonController extends Controller
         $personValidations->update([
             'nit_readable'      =>  false,
             'nit_name'          =>  false,
-            'nit_number'        =>  false
+            'nit_number'        =>  false,
+            'nit'               =>  false,
+
         ]); 
         $this->RegisterAction("El usuario ha actualizado el archivo pdf que contiene la imagen del NIT", "medium");
         return  $person;
@@ -450,6 +453,7 @@ class PersonController extends Controller
         $personValidations->update([
             'bank_readable'        =>  false,
             'bank_number'          =>  false,
+            'bank'          =>  false,
         ]); 
         $this->RegisterAction("El usuario ha actualizado el  archivo pdf que contiene la imagen de su cuenta de banco", "medium"); 
         return $person;
@@ -473,6 +477,7 @@ class PersonController extends Controller
             'title_apostilled'      =>   false,
             'title_apostilled_readable'         =>   false,
             'title_authentic'                   =>   false,
+            'title'                   =>   false,
         ]); 
         $this->RegisterAction("El usuario ha actualizado el  archivo pdf que contiene la imagen de su titulo Universitario", "medium"); 
         return  $person;
@@ -492,6 +497,7 @@ class PersonController extends Controller
         $personValidations = $person->personValidations;
         $personValidations->update([
             'curriculum_readable'      => false,
+            'curriculum'      => false,
         ]); 
         $this->RegisterAction("El usuario ha actualizado el archivo pdf que contiene su curriculum", "medium"); 
         return $person;
@@ -511,6 +517,7 @@ class PersonController extends Controller
         $personValidations = $person->personValidations;
         $personValidations->update([
             'work_permission_readable'      =>  false,
+            'work'      =>  false,
         ]); 
         $this->RegisterAction("El usuario ha guardado el  archivo pdf que contiene su permiso de trabajo"); 
         return  $person;
@@ -532,6 +539,7 @@ class PersonController extends Controller
             'passport_readable'      =>  false,
             'passport_name'          =>  false,
             'passport_number'        =>  false,
+            'passport'        =>  false,
         ]); 
         $this->RegisterAction("El usuario ha Actualizado el  archivo pdf que contiene su Pasaporte"); 
         return  $person;

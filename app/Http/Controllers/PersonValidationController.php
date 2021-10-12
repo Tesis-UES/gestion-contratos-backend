@@ -57,12 +57,18 @@ class PersonValidationController extends Controller
                         $var['Estado'] = 'Sin archivo';
                         array_push($menu, $var);
                     } else {
-                        if ($person->personValidations->work_permission_readable) {
-                            $var['Estado'] = 'Validado';
-                            array_push($menu, $var);
+
+                        if ($person->personValidations->work) {
+                            if ($person->personValidations->work_permission_readable) {
+                                $var['Estado'] = 'Validado';
+                                array_push($menu, $var);
+                            } else {
+                                $var['Estado'] = 'Con Observaciones';
+                                array_push($menu, $var);
+                            }
                         } else {
                             $var['Estado'] = 'Pendiente';
-                            array_push($menu, $var);
+                                array_push($menu, $var);
                         }
                     }
                     return response(['Menu' =>  $menu, 'personal' => $personal], 200);
@@ -82,9 +88,16 @@ class PersonValidationController extends Controller
                         $var['Estado'] = 'Sin archivo';
                         array_push($menu, $var);
                     } else {
-                        if ($person->personValidations->work_permission_readable) {
-                            $var['Estado'] = 'Validado';
-                            array_push($menu, $var);
+
+
+                        if ($person->personValidations->work) {
+                            if ($person->personValidations->work_permission_readable) {
+                                $var['Estado'] = 'Validado';
+                                array_push($menu, $var);
+                            } else {
+                                $var['Estado'] = 'Con Observaciones';
+                                array_push($menu, $var);
+                            }
                         } else {
                             $var['Estado'] = 'Pendiente';
                             array_push($menu, $var);
@@ -108,13 +121,20 @@ class PersonValidationController extends Controller
             $var['Estado'] = 'Sin archivo';
                 array_push($menu, $var);
         } else {
-            if ($person->personValidations->dui_readable && $person->personValidations->dui_name && $person->personValidations->dui_number && $person->personValidations->dui_profession && $person->personValidations->dui_civil_status && $person->personValidations->dui_birth_date && $person->personValidations->dui_unexpired && $person->personValidations->dui_address) {
-                $var['Estado'] = 'Validado';
-                array_push($menu, $var);
+            if ($person->personValidations->dui) {
+               
+                if ($person->personValidations->dui_readable && $person->personValidations->dui_name && $person->personValidations->dui_number && $person->personValidations->dui_profession && $person->personValidations->dui_civil_status && $person->personValidations->dui_birth_date && $person->personValidations->dui_unexpired && $person->personValidations->dui_address) {
+                    $var['Estado'] = 'Validado';
+                    array_push($menu, $var);
+                } else {
+                    $var['Estado'] = 'Con Observaciones';
+                    array_push($menu, $var);
+                }
             } else {
-                $var['Estado'] = 'Pendiente';
+                $var['Estado'] = 'pendiente';
                 array_push($menu, $var);
             }
+           
         }
         
        
@@ -129,13 +149,20 @@ class PersonValidationController extends Controller
             $var['Estado'] = 'Sin archivo';
             array_push($menu, $var);
         }else{
-            if ($person->personValidations->nit_readable && $person->personValidations->nit_name && $person->personValidations->nit_number) {
-                $var['Estado'] = 'Validado';
-                array_push($menu, $var);
+            if ($person->personValidations->nit) {
+                if ($person->personValidations->nit_readable && $person->personValidations->nit_name && $person->personValidations->nit_number) {
+                    $var['Estado'] = 'Validado';
+                    array_push($menu, $var);
+                } else {
+                    $var['Estado'] = 'Con Observaciones';
+                    array_push($menu, $var);
+                }
             } else {
                 $var['Estado'] = 'Pendiente';
                 array_push($menu, $var);
             }
+            
+           
         }
         
         //VERIFICAMOS Cuenta de Banco
@@ -148,12 +175,18 @@ class PersonValidationController extends Controller
             $var['Estado'] = 'Sin archivo';
             array_push($menu, $var);
         } else {
-            if ($person->personValidations->bank_readable && $person->personValidations->bank_number) {
-                $var['Estado'] = 'Validado';
-                array_push($menu, $var);
+
+            if ($person->personValidations->bank) {
+                if ($person->personValidations->bank_readable && $person->personValidations->bank_number) {
+                    $var['Estado'] = 'Validado';
+                    array_push($menu, $var);
+                } else {
+                    $var['Estado'] = 'Con Observaciones';
+                    array_push($menu, $var);
+                }
             } else {
                 $var['Estado'] = 'Pendiente';
-                array_push($menu, $var);
+                    array_push($menu, $var);
             }
         }
         
@@ -168,13 +201,22 @@ class PersonValidationController extends Controller
             $var['Estado'] = 'Sin archivo';
             array_push($menu, $var);
         } else {
-            if ($person->personValidations->curriculum_readable) {
-                $var['Estado'] = 'Validado';
-                array_push($menu, $var);
+
+            if ($person->personValidations->curriculum) {
+                if ($person->personValidations->curriculum_readable) {
+                    $var['Estado'] = 'Validado';
+                    array_push($menu, $var);
+                } else {
+                    $var['Estado'] = 'Con Observaciones';
+                    array_push($menu, $var);
+                }
             } else {
                 $var['Estado'] = 'Pendiente';
                 array_push($menu, $var);
             }
+            
+
+            
         }
         $var = [
             'Nombre' => 'Titulo',
@@ -185,13 +227,20 @@ class PersonValidationController extends Controller
             $var['Estado'] = 'Sin archivo';
             array_push($menu, $var);
         } else {
-            if ($person->personValidations->title_readable && $person->personValidations->title_mined) {
-                $var['Estado'] = 'Validado';
-                array_push($menu, $var);
+            if ($person->personValidations->title) {
+                if ($person->personValidations->title_readable && $person->personValidations->title_mined) {
+                    $var['Estado'] = 'Validado';
+                    array_push($menu, $var);
+                } else {
+                    $var['Estado'] = 'Con Observaciones';
+                    array_push($menu, $var);
+                }
             } else {
                 $var['Estado'] = 'Pendiente';
-                array_push($menu, $var);
+                    array_push($menu, $var);
             }
+            
+            
         }
         
        
@@ -212,13 +261,22 @@ class PersonValidationController extends Controller
             $var['Estado'] = 'Sin archivo';
             array_push($menu, $var);
         } else {
-            if ($person->personValidations->passport_readable && $person->personValidations->passport_name && $person->personValidations->passport_number) {
-                $var['Estado'] = 'Validado';
-                array_push($menu, $var);
+
+            if ($person->personValidations->passport) {
+                if ($person->personValidations->passport_readable && $person->personValidations->passport_name && $person->personValidations->passport_number) {
+                    $var['Estado'] = 'Validado';
+                    array_push($menu, $var);
+                } else {
+                    $var['Estado'] = 'Con Observaciones';
+                    array_push($menu, $var);
+                }
             } else {
                 $var['Estado'] = 'Pendiente';
-                array_push($menu, $var);
+                    array_push($menu, $var);
             }
+            
+
+           
         }
 
         //VERIFICAMOS Cuenta de Banco
@@ -232,12 +290,18 @@ class PersonValidationController extends Controller
             $var['Estado'] = 'Sin archivo';
             array_push($menu, $var);
         } else {
-            if ($person->personValidations->bank_readable && $person->personValidations->bank_number) {
-                $var['Estado'] = 'Validado';
-                array_push($menu, $var);
+
+            if ($person->personValidations->bank) {
+                if ($person->personValidations->bank_readable && $person->personValidations->bank_number) {
+                    $var['Estado'] = 'Validado';
+                    array_push($menu, $var);
+                } else {
+                    $var['Estado'] = 'Con Observaciones';
+                    array_push($menu, $var);
+                }
             } else {
                 $var['Estado'] = 'Pendiente';
-                array_push($menu, $var);
+                    array_push($menu, $var);
             }
         }
         $var = [
@@ -250,13 +314,19 @@ class PersonValidationController extends Controller
             $var['Estado'] = 'Sin archivo';
             array_push($menu, $var);
         } else {
-            if ($person->personValidations->curriculum_readable) {
 
-                $var['Estado'] = 'Validado';
-                array_push($menu, $var);
+            if ($person->personValidations->curriculum) {
+                if ($person->personValidations->curriculum_readable) {
+
+                    $var['Estado'] = 'Validado';
+                    array_push($menu, $var);
+                } else {
+                    $var['Estado'] = 'Con Observaciones';
+                    array_push($menu, $var);
+                }
             } else {
                 $var['Estado'] = 'Pendiente';
-                array_push($menu, $var);
+                    array_push($menu, $var);
             }
         }
 
@@ -271,16 +341,20 @@ class PersonValidationController extends Controller
             $var['Estado'] = 'Sin archivo';
             array_push($menu, $var);
         } else {
-            if ($person->personValidations->title_readable && $person->personValidations->title_apostilled && $person->personValidations->title_apostilled_readable && $person->personValidations->title_authentic) {
-                $var['Estado'] = 'Validado';
-                array_push($menu, $var);
+
+            if ($person->personValidations->title) {
+                if ($person->personValidations->title_readable && $person->personValidations->title_apostilled && $person->personValidations->title_apostilled_readable && $person->personValidations->title_authentic) {
+                    $var['Estado'] = 'Validado';
+                    array_push($menu, $var);
+                } else {
+                    $var['Estado'] = 'Con Observaciones';
+                    array_push($menu, $var);
+                }
             } else {
                 $var['Estado'] = 'Pendiente';
                 array_push($menu, $var);
             }
         }
-
-        
         return  $menu;
     }
 
@@ -458,6 +532,8 @@ class PersonValidationController extends Controller
         switch ($type) {
             //Envio de correos segun valiadiciones
             case 'DUI':
+                $person->personValidations->update(['dui' => true]);
+               
                if ($validado) {
                 $mensaje = "Se ha validado con exito el documento DUI, cumple con todos los requerimientos, para mas detalles ingresar al sistema con sus credenciales";
                }else{
@@ -466,6 +542,7 @@ class PersonValidationController extends Controller
                 break;
 
             case 'NIT':
+                $person->personValidations->update(['nit' => true]);
                 if ($validado) {
                     $mensaje = "Se ha validado con exito el documento NIT, cumple con todos los requerimientos, para mas detalles ingresar al sistema con sus credenciales";
                    }else{
@@ -474,6 +551,7 @@ class PersonValidationController extends Controller
                 break;
 
             case 'BANCO':
+                $person->personValidations->update(['bank' => true]);
                 if ($validado) {
                     $mensaje = "Se ha validado con exito el documento de su comprobante de cuenta bancaria, cumple con todos los requerimientos, para mas detalles ingresar al sistema con sus credenciales";
                    }else{
@@ -482,6 +560,7 @@ class PersonValidationController extends Controller
                 break;
 
             case 'CV':
+                $person->personValidations->update(['curriculum' => true]);
                 if ($validado) {
                     $mensaje = "Se ha validado con exito el documento que contiene el Curriculum Vitae, cumple con todos los requerimientos, para mas detalles ingresar al sistema con sus credenciales";
                    }else{
@@ -490,6 +569,7 @@ class PersonValidationController extends Controller
                 break;
 
             case 'TITULO-N':
+                $person->personValidations->update(['title' => true]);
                 if ($validado) {
                     $mensaje = "Se ha validado con exito el documento que contiene sus Titulos Profesionales, cumple con todos los requerimientos, para mas detalles ingresar al sistema con sus credenciales";
                    }else{
@@ -498,6 +578,7 @@ class PersonValidationController extends Controller
                 break;
 
             case 'TITULO-I':
+                $person->personValidations->update(['title' => true]);
                 if ($validado) {
                     $mensaje = "Se ha validado con exito el documento que contiene sus Titulos Profesionales, cumple con todos los requerimientos, para mas detalles ingresar al sistema con sus credenciales";
                    }else{
@@ -506,6 +587,7 @@ class PersonValidationController extends Controller
                 break;
 
             case 'PERMISO':
+                $person->personValidations->update(['work' => true]);
                 if ($validado) {
                     $mensaje = "Se ha validado con exito el documento que contiene su permiso de trabajo de otra facultad, cumple con todos los requerimientos, para mas detalles ingresar al sistema con sus credenciales";
                    }else{
@@ -513,6 +595,7 @@ class PersonValidationController extends Controller
                    } 
                 break;
             case 'PASS':
+                $person->personValidations->update(['passport' => true]);
                 if ($validado) {
                     $mensaje = "Se ha validado con exito el documento que contiene su Pasaporte, cumple con todos los requerimientos, para mas detalles ingresar al sistema con sus credenciales";
                    }else{

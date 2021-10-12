@@ -18,6 +18,7 @@ class CreatePersonValidationsTable extends Migration
             $table->bigInteger('person_id')->unsigned()->nonullable();
             $table->foreign('person_id')->references('id')->on('people')->onDelete('cascade')->nonullable();
             //Validaciones Corrependientes al DUI
+            $table->boolean('dui')->default(false)->nullable();
             $table->boolean('dui_readable')->default(false)->nullable();
             $table->boolean('dui_name')->default(false)->nullable();
             $table->boolean('dui_number')->default(false)->nullable();
@@ -27,21 +28,28 @@ class CreatePersonValidationsTable extends Migration
             $table->boolean('dui_unexpired')->default(false)->nullable();
             $table->boolean('dui_address')->default(false)->nullable();
             //Validaciones Correspondientes al NIT
+            $table->boolean('nit')->default(false)->nullable();
             $table->boolean('nit_readable')->default(false)->nullable();
             $table->boolean('nit_name')->default(false)->nullable(); 
             $table->boolean('nit_number')->default(false)->nullable();
             //Validaciones Correspondientes a la cuenta de Banco
+            $table->boolean('bank')->default(false)->nullable();
             $table->boolean('bank_readable')->default(false)->nullable();
             $table->boolean('bank_number')->default(false)->nullable(); 
             //Validaciones Correspondientes al curriculum
+            $table->boolean('curriculum')->default(false)->nullable();
             $table->boolean('curriculum_readable')->default(false)->nullable();
             //Validaciones Correspondientes al Permiso de trabajo de otra facultad
+            $table->boolean('work')->default(false)->nullable();
             $table->boolean('work_permission_readable')->default(false)->nullable();
             //Validaciones Correspondientes al Pasaporte
+            $table->boolean('passport')->default(false)->nullable();
             $table->boolean('passport_readable')->default(false)->nullable();
             $table->boolean('passport_name')->default(false)->nullable();
             $table->boolean('passport_number')->default(false)->nullable();
             //Validaciones Correspondientes al titulo
+            $table->boolean('title')->default(false)->nullable();
+           
             $table->boolean('title_readable')->default(false)->nullable();
             //Nacional
             $table->boolean('title_mined')->default(false)->nullable();
