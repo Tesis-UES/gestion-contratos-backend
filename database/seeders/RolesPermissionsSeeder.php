@@ -280,6 +280,7 @@ class RolesPermissionsSeeder extends Seeder
             'read_personValidations',
             'view_personInfo',
             'view_contracSolicitude',
+            'view_candidates',
         ]);
 
         $rrhh->givePermissionTo([
