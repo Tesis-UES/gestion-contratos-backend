@@ -12,7 +12,7 @@ class ActivityController extends Controller
 
     public function all()
     {
-        $activities = Activity::all();
+        $activities = Activity::orderBy('name', 'asc')->get();
         $this->RegisterAction('El usuario ha consultado el catalogo de actividades');
         return response($activities, 200);
     }

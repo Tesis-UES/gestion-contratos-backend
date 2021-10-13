@@ -13,7 +13,7 @@ class PositionController extends Controller
 
     public function all()
     {
-        $positions = Position::all();
+        $positions = Position::orderBy('name', 'asc')->get();
         $this->RegisterAction('El usuario ha consultado el catalogo de cargos');
         return response($positions, 200);
     }
