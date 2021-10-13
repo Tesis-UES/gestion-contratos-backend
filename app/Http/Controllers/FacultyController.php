@@ -12,9 +12,10 @@ class FacultyController extends Controller
     public function all()
     {
         $faculties = Faculty::select('faculties.id AS facultyId','faculties.name AS nameFaculty','faculty_authorities.name AS deanName')
-        ->join('faculty_authorities','faculties.id','=','faculty_authorities.faculty_id')
+        ->join('faculty_authorities','faculties.id','=','faculty_authorities.faculty_id','full outer')
         ->where('faculty_authorities.status','=',1)
         ->where('faculty_authorities.position','=','DECANO')
+        ->orWhere('faculty_authorities.position','=',null)
         ->get();
         $this->RegisterAction("El usuario ha consultado el catalogo de facultades");
         return response($faculties, 200);

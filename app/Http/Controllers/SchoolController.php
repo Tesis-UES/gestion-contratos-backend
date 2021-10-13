@@ -17,7 +17,8 @@ class SchoolController extends Controller
         ->leftjoin('school_authorities','schools.id','=','school_authorities.school_id')
         ->where('school_authorities.status','=',1)
         ->where('school_authorities.position','=','DIRECTOR')
-        ->where('schools.faculty_id', $id)->get();
+        ->where('schools.faculty_id', $id)
+        ->orWhere('school_authorities.position','=',null)->get();
         $this->RegisterAction("El usuario ha consultado el catalogo de Escuelas");
         return response($schools, 200);
     }

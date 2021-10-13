@@ -379,6 +379,7 @@ SchoolAuthority::create(['name'=>'PRUEBA  DIRECTOR','position'=>'DIRECTOR','star
 SchoolAuthority::create(['name'=>'PRUEBA  DIRECTOR','position'=>'DIRECTOR','startPeriod'=>'2021-02-02','endPeriod'=>'2021-12-02','school_id'=>'167']);
 SchoolAuthority::create(['name'=>'PRUEBA  DIRECTOR','position'=>'DIRECTOR','startPeriod'=>'2021-02-02','endPeriod'=>'2021-12-02','school_id'=>'168']);
 SchoolAuthority::create(['name'=>'PRUEBA  DIRECTOR','position'=>'DIRECTOR','startPeriod'=>'2021-02-02','endPeriod'=>'2021-12-02','school_id'=>'169']);
+SchoolAuthority::create(['name'=>'PRUEBA  DIRECTOR','position'=>'DIRECTOR','startPeriod'=>'2021-02-02','endPeriod'=>'2021-12-02','school_id'=>'170']);
 
 
         CentralAuthority::create([
