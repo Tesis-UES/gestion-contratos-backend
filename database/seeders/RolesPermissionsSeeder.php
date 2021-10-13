@@ -290,6 +290,10 @@ class RolesPermissionsSeeder extends Seeder
             'read_personValidations'
         ]);
 
+        $financiero->givePermissionTo([
+            'view_candidates',
+        ]);
+
         $usuario1->assignRole('Administrador');
         $usuario2->assignRole('Administrador');
         $usuario3->assignRole('Candidato');
