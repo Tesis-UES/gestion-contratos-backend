@@ -6,17 +6,16 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
-class Activity extends Model
+class Position extends Model
 {
     use HasFactory, SoftDeletes;
 
     protected $fillable = [
         'name',
-        'recommended',
     ];
 
-    public function positions() 
+    public function activities() 
     {
-        return $this->belongsToMany(Position::class, 'position_activities');
+        return $this->belongsToMany(Activity::class, 'position_activities');
     }
 }

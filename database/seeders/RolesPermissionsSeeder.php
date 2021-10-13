@@ -54,10 +54,6 @@ class RolesPermissionsSeeder extends Seeder
             'password'  => bcrypt('foobar'),
         ]);
 
-
-
-
-
         // CREACION DE PERMISOS 
         Permission::create(['name' => 'change_passwords']);
         Permission::create(['name' => 'write_formats']);
@@ -76,6 +72,9 @@ class RolesPermissionsSeeder extends Seeder
 
         Permission::create(['name' => 'read_activities']);
         Permission::create(['name' => 'write_activities']);
+
+        Permission::create(['name' => 'read_positions']);
+        Permission::create(['name' => 'write_positions']);
 
         Permission::create(['name' => 'read_courses']);
         Permission::create(['name' => 'write_courses']);
@@ -128,7 +127,6 @@ class RolesPermissionsSeeder extends Seeder
         Permission::create(['name' => 'view_rrhh']);
         Permission::create(['name' => 'view_candidates']);
       
-        
         //Permisos visuales
         Permission::create(['name' => 'view_activities']);
         Permission::create(['name' => 'view_users']);
@@ -145,8 +143,6 @@ class RolesPermissionsSeeder extends Seeder
         Permission::create(['name' => 'view_contracSolicitude']);
         Permission::create(['name' => 'view_Personal_changes']);
      
-
-        
         //CREACION DE ROLES
         $admin = Role::create(['name' => 'Administrador']);
         $profesor = Role::create(['name' => 'Candidato']);
@@ -154,8 +150,6 @@ class RolesPermissionsSeeder extends Seeder
         $asistenteAdmin = Role::create(['name' => 'Asistente Administrativo']);
         $financiero =   Role::create(['name' => 'Asistente Financiero']);
         $rrhh = Role::create(['name' => 'Recursos Humanos']);
-
-
 
         $admin->givePermissionTo([
             'change_passwords',
@@ -171,6 +165,8 @@ class RolesPermissionsSeeder extends Seeder
             'write_schools',
             'read_activities',
             'write_activities',
+            'read_positions',
+            'write_positions',
             'read_courses',
             'write_courses',
             'read_contractTypes',
@@ -237,6 +233,7 @@ class RolesPermissionsSeeder extends Seeder
             'read_schools',
             'read_activities',
             'write_activities',
+            'read_positions',
             'read_courses',
             'write_courses',
             'read_contractTypes',
@@ -263,7 +260,7 @@ class RolesPermissionsSeeder extends Seeder
             'read_schools',
             'write_schools',
             'read_activities',
-            'write_activities',
+            'read_positions',
             'read_courses',
             'write_courses',
             'read_contractTypes',

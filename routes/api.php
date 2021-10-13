@@ -7,6 +7,7 @@ use App\Http\Controllers\EscalafonController;
 use App\Http\Controllers\FacultyController;
 use App\Http\Controllers\FormatController;
 use App\Http\Controllers\SchoolController;
+use App\Http\Controllers\PositionController;
 use App\Http\Controllers\CourseController;
 use App\Http\Controllers\ContractTypeController;
 use App\Http\Controllers\PersonController;
@@ -110,15 +111,23 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
         Route::get('/schools/{id}', [SchoolController::class, 'show']);
     });
 
+    // Rutas que manejan el catalogo de cargos de docentes
+    Route::group(['middleware' => ['can:write_positions']], function () {
+        Route::post('/positions', [PositionController::class, 'store']);
+        Route::delete('/positions/{id}', [PositionController::class, 'destroy']);
+    });
+    Route::group(['middleware' => ['can:read_positions']], function () {
+        Route::get('/positions', [PositionController::class, 'all']);
+        Route::get('/positions/{id}', [PositionController::class, 'show']);
+    });
+
     // Rutas que manejan el catalogo de actividades de docentes
     Route::group(['middleware' => ['can:write_activities']], function () {
         Route::post('/activities', [ActivityController::class, 'store']);
-        Route::put('/activities/{id}', [ActivityController::class, 'update']);
         Route::delete('/activities/{id}', [ActivityController::class, 'destroy']);
     });
     Route::group(['middleware' => ['can:read_activities']], function () {
         Route::get('/activities', [ActivityController::class, 'all']);
-        Route::get('/activities/recommended', [ActivityController::class, 'recommended']);
         Route::get('/activities/{id}', [ActivityController::class, 'show']);
     });
 
