@@ -14,6 +14,8 @@ class Position extends Model
         'name',
     ];
 
+    protected $hidden = ['pivot'];
+
     public function activities() 
     {
         return $this->belongsToMany(Activity::class, 'position_activities');

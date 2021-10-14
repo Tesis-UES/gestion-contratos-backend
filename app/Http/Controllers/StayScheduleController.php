@@ -54,7 +54,7 @@ class StayScheduleController extends Controller
             'employee_id'  => $employee->id,
         ]);
         if($existingStaySchedule) {
-            return response(['message' => 'Ya existe carga academica para el ciclo activo'], 400);            
+            return response(['message' => 'Ya existe  un horario de permanencia para el ciclo activo'], 400);            
         }
 
         $newStaySchedule = StaySchedule::create([
