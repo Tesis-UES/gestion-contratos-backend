@@ -76,8 +76,13 @@ class GroupController extends Controller
     }
 
     public function showByAcademicLoad($id){
+        $academicLoad = AcademicLoad::where('id',$id)->with('semester')->firstOrFail();
         $group = Group::with('course')->with('grupo')->with('schedule')->where('academic_load_id','=',$id)->get();
-        return response(['groups' =>  $group], 200);
+        
+        return response([
+            'groups' =>  $group, 
+            'semesterActive'=> $academicLoad->semester->status
+        ], 200);
     }
 
     public function update(Request $request, $id)
