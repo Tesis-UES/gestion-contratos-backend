@@ -75,8 +75,7 @@ class FormatController extends Controller
                 return response(['message' => 'El valor del campo código ya ha sido ocupado'], 400);
             }
         }
-
-        if($fields['file']){
+        if(array_key_exists('file', $fields)){
             $formatName = preg_replace('/\s+/', '-', $fields['code']);
             $fileExt = pathinfo($fields['file']->getClientOriginalName(), PATHINFO_EXTENSION);
             $file_url = $formatName.'.'.$fileExt;
