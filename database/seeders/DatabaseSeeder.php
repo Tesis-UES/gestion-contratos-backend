@@ -25,6 +25,6 @@ class DatabaseSeeder extends Seeder
                 $this->call(EmployeeTypeSeeder::class);
                 $this->call(FormatSeeder::class);
                 $this->call(PersonSeeder::class);
-
+                $this->call(PositionSeeder::class);
         }
 }
