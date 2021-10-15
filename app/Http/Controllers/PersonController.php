@@ -375,14 +375,14 @@ class PersonController extends Controller
                 break;
 
             case 'titulo':
-                $person =  $this->storeTitle($request);
+                $person =  $this->updateTitle($request);
                 break;
 
             case 'permiso':
-                $person =  $this->storePermission($request);
+                $person =  $this->updatePermisssion($request);
                 break;
             case 'pass':
-                $person =  $this->storePassport($request);
+                $person =  $this->updatePassport($request);
                 break;
             default:
                 # code...
