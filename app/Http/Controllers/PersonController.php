@@ -398,7 +398,7 @@ class PersonController extends Controller
         $file = $request->file('dui');
         $nombre_archivo = $person->first_name." ".$person->middle_name." ".$person->last_name."-DUI.pdf";
         //Se elimina el archivo antiguo
-        \File::delete($person->dui);
+        \Storage::disk('personalFiles')->delete($person->dui);
         $person->dui = $nombre_archivo;
         $person->save();
         PersonChange::create(['person_id'=>$person->id,'change'=>"Se Actualizo el archivo que contiene el DUI"]);
@@ -425,7 +425,7 @@ class PersonController extends Controller
         $file = $request->file('nit');
         $nombre_archivo = $person->first_name." ".$person->middle_name." ".$person->last_name."-NIT.pdf";
         //Se elimina el archivo antiguo
-        \File::delete($person->nit);
+        \Storage::disk('personalFiles')->delete($person->nit);
         $person->nit = $nombre_archivo;
         $person->save();
         PersonChange::create(['person_id'=>$person->id,'change'=>"Se Actualizo el archivo que contiene el NIT"]);
@@ -448,7 +448,7 @@ class PersonController extends Controller
         $file = $request->file('banco');
         $nombre_archivo = $person->first_name." ".$person->middle_name." ".$person->last_name."-CuentaDeBanco.pdf";
         //Se elimina el archivo antiguo
-        \File::delete($person->bank_account);
+        \Storage::disk('personalFiles')->delete($person->bank_account);
         $person->bank_account = $nombre_archivo;
         $person->save();
         PersonChange::create(['person_id'=>$person->id,'change'=>"Se Actualizo el archivo que contiene la cuenta bancaria"]);
@@ -469,7 +469,7 @@ class PersonController extends Controller
         $file = $request->file('titulo');
         $nombre_archivo = $person->first_name." ".$person->middle_name." ".$person->last_name."-Titulo.pdf";
         //Se elimina el archivo antiguo
-        \File::delete($person->professional_title_scan);
+        \Storage::disk('personalFiles')->delete($person->professional_title_scan);
         $person->professional_title_scan = $nombre_archivo;
         $person->save();
         PersonChange::create(['person_id'=>$person->id,'change'=>"Se Actualizo el archivo que contiene el Titulo Universitario"]);
@@ -493,7 +493,7 @@ class PersonController extends Controller
         $file = $request->file('cv');
         $nombre_archivo = $person->first_name." ".$person->middle_name." ".$person->last_name."-curriculum.pdf";
         //Se elimina el archivo antiguo
-        \File::delete($person->curriculum);
+        \Storage::disk('personalFiles')->delete($person->curriculum);
         $person->curriculum = $nombre_archivo;
         $person->save();
         PersonChange::create(['person_id'=>$person->id,'change'=>"Se Actualizo el archivo que contiene el curriculum"]);
@@ -513,7 +513,7 @@ class PersonController extends Controller
         $file = $request->file('permiso');
         $nombre_archivo = $person->first_name." ".$person->middle_name." ".$person->last_name."-permission.pdf";
         //Se elimina el archivo antiguo
-        \File::delete($person->work_permission);
+        \Storage::disk('personalFiles')->delete($person->work_permission);
         $person->work_permission = $nombre_archivo;
         $person->save();
         PersonChange::create(['person_id'=>$person->id,'change'=>"Se Actualizo el archivo que contiene el permiso de trabajo"]);
@@ -533,7 +533,7 @@ class PersonController extends Controller
         $file = $request->file('pass');
         $nombre_archivo = $person->first_name." ".$person->middle_name." ".$person->last_name."-PASAPORTE.pdf";
         //Se elimina el archivo antiguo
-        \File::delete($person->passport);
+        \Storage::disk('personalFiles')->delete($person->passport);
         $person->passport = $nombre_archivo;
         $person->save();
         PersonChange::create(['person_id'=>$person->id,'change'=>"Se Actualizo el archivo que contiene el Pasaporte"]);
