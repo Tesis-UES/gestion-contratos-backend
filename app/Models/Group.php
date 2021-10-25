@@ -15,13 +15,19 @@ class Group extends Model
         'group_type_id',
         'academic_load_id',
         'course_id',
-        'professor_id'
+        'people_id'
     ];
 
     public function grupo()
     {
         return $this->belongsTo(GroupType::class, 'group_type_id');
     }
+
+    public function candidato()
+    {
+        return $this->belongsTo(PersonType::class, 'people_id');
+    }
+
 
     public function academicLoad()
     {
