@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Models\Bank;
 use App\Models\EmployeeType;
 use App\Models\Escalafon;
 use App\Models\Faculty;
@@ -55,9 +56,14 @@ class PersonController extends Controller
             'address'               => 'required|string|max:120',
             'nationality'           => 'required|string|max:120',
             'professional_title'    => 'required|string|max:120',
+            'bank_id'               => 'integer|gte:1',
             'bank_account_number'   => 'string|max:120',
             'is_employee'           => 'required|boolean',
         ]);
+
+        if($request->input('bank_id') != null) {
+            Bank::findOrFail($request->input('bank_id'));
+        }
 
         if($request->input('nationality') == 'El Salvador') {
             $request->validate([
@@ -116,18 +122,22 @@ class PersonController extends Controller
 
     public function show($id)
     {
-        $person = Person::where('id',$id)->with('employee',function($query){
-            $query->with('faculty')->with('escalafon')->with('employeeType');
-        })->firstOrFail();
+        $person = Person::where('id',$id)
+        ->with('bank')
+        ->with('employee',function($query) { $query->with(['faculty', 'escalafon', 'employeeType']); })
+        ->firstOrFail();
+
         return response(['person' => $person,], 200);
     }
 
     public function showMyInfo()
     {
         $user = Auth::user();
-        $person = Person::where('user_id',$user->id)->with('employee',function($query){
-            $query->with('faculty')->with('escalafon')->with('employeeType');
-        })->firstOrFail();
+        $person = Person::where('user_id',$user->id)
+        ->with('bank')
+        ->with('employee', function($query) { $query->with(['faculty', 'escalafon', 'employeeType']); })
+        ->firstOrFail();
+
         return response($person, 200);
     }
 
@@ -158,9 +168,14 @@ class PersonController extends Controller
             'address'               => 'required|string|max:120',
             'nationality'           => 'required|string|max:120',
             'professional_title'    => 'required|string|max:120',
+            'bank_id'               => 'integer|gte:1',
             'bank_account_number'   => 'string|max:120',
             'is_employee'           => 'required|boolean',
         ]);
+
+        if($request->input('bank_id') != null) {
+            Bank::findOrFail($request->input('bank_id'));
+        }
 
         if($request->input('nationality') == 'El Salvador') {
             $request->validate([

@@ -39,6 +39,7 @@ class Person extends Model
         'curriculum',
         'professional_title',
         'professional_title_scan',
+        'bank_id',
         'bank_account',
         'bank_account_number',
         'work_permission',
@@ -63,5 +64,10 @@ class Person extends Model
     public function employee()
     {
         return $this->hasOne(Employee::class);
+    }
+
+    public function bank()
+    {
+        return $this->BelongsTo(Bank::class);
     }
 }

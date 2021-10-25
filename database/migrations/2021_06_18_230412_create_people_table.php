@@ -48,6 +48,8 @@ class CreatePeopleTable extends Migration
             $table->string('nit',250)->nullable();
             $table->string('curriculum',250)->nullable();
             $table->string('professional_title_scan',250)->nullable();
+            $table->bigInteger('bank_id')->unsigned()->nullable();
+            $table->foreign('bank_id')->references('id')->on('banks');
             $table->string('bank_account_number',120)->nullable();;
             $table->string('bank_account',250)->nullable();
             $table->string('status',50)->default('Registrando');

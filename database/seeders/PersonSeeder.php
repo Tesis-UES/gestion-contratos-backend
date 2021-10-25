@@ -87,6 +87,7 @@ class PersonSeeder extends Seeder
                 'dui_expiration_date'   => '2022-01-29',
                 'nit_number'    =>'0804-890597-207-8',
                 'nit_text'      =>'CERO OCHOCIENTOS CUATRO-OCHOCIENTOS NOVENTA MIL QUINIENTOS NOVENTA Y SIETE-CERO CERO DOSCIENTOS SIETE-OCHO ',
+                'bank_id'       => 2,
                 'bank_account_number'   =>'0125415656'
 
         ]);
@@ -118,6 +119,7 @@ class PersonSeeder extends Seeder
             'dui_expiration_date'   => '2022-01-29',
             'nit_number'    =>'0804-890597-207-8',
             'nit_text'      =>'CERO OCHOCIENTOS CUATRO-OCHOCIENTOS NOVENTA MIL QUINIENTOS NOVENTA Y SIETE-CERO CERO DOSCIENTOS SIETE-OCHO ',
+            'bank_id'       => 3,
             'bank_account_number'   =>'0125415656'
 
         ]);
@@ -157,6 +159,7 @@ class PersonSeeder extends Seeder
             'dui_expiration_date'   => '2022-01-29',
             'nit_number'    =>'0804-890597-207-8',
             'nit_text'      =>'CERO OCHOCIENTOS CUATRO-OCHOCIENTOS NOVENTA MIL QUINIENTOS NOVENTA Y SIETE-CERO CERO DOSCIENTOS SIETE-OCHO ',
+            'bank_id'       => 4,
             'bank_account_number'   =>'0125415656'
 
         ]);
@@ -189,6 +192,7 @@ class PersonSeeder extends Seeder
             'address'       => 'Siberia',
             'nationality'   =>'Rusia',  
             'professional_title'   =>'Ingeniero en Sistemas Informaticos',
+            'bank_id'       => 5,
             'bank_account_number'   =>'0125415656',
         ]);
             $personValidation = new PersonValidation(['person_id' =>$DatosInternacional->id]);
@@ -210,6 +214,7 @@ class PersonSeeder extends Seeder
                 'address'       => 'Siberia',
                 'nationality'   =>'Rusia',  
                 'professional_title'   =>'Ingeniero en Sistemas Informaticos',
+                'bank_id'       => 6,
                 'bank_account_number'   =>'0125415656',
             ]);
                 $personValidation = new PersonValidation(['person_id' =>$DatosInternacionalE->id]);
@@ -239,6 +244,7 @@ class PersonSeeder extends Seeder
                             'address'       => 'Siberia',
                             'nationality'   =>'España',  
                             'professional_title'   =>'Ingeniero en Sistemas Informaticos',
+                            'bank_id'       => 7,
                             'bank_account_number'   =>'0125415656',
          ]);
         $personValidation = new PersonValidation(['person_id' =>$DatosInternacionalEO->id]);

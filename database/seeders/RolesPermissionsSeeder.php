@@ -124,8 +124,8 @@ class RolesPermissionsSeeder extends Seeder
         Permission::create(['name' => 'write_employeeType']);
         Permission::create(['name' => 'read_employeeType']);
 
-        Permission::create(['name' => 'view_rrhh']);
-        Permission::create(['name' => 'view_candidates']);
+        Permission::create(['name' => 'read_banks']);
+        Permission::create(['name' => 'write_banks']);
       
         //Permisos visuales
         Permission::create(['name' => 'view_activities']);
@@ -142,6 +142,8 @@ class RolesPermissionsSeeder extends Seeder
         Permission::create(['name' => 'view_personInfo']);
         Permission::create(['name' => 'view_contracSolicitude']);
         Permission::create(['name' => 'view_Personal_changes']);
+        Permission::create(['name' => 'view_rrhh']);
+        Permission::create(['name' => 'view_candidates']);
      
         //CREACION DE ROLES
         $admin = Role::create(['name' => 'Administrador']);
@@ -194,7 +196,9 @@ class RolesPermissionsSeeder extends Seeder
             'view_worklog',
             'view_centralAuthorities',
             'view_catalogs',
-            'view_academicLoad'
+            'view_academicLoad',
+            'read_banks',
+            'write_banks',
         ]);
 
         $profesor->givePermissionTo([
@@ -225,6 +229,7 @@ class RolesPermissionsSeeder extends Seeder
             'view_uploadDoc',
             'view_updateDocs',
             'view_Personal_changes',
+            'read_banks',
         ]);
 
         $directorEscuela->givePermissionTo([
@@ -286,7 +291,7 @@ class RolesPermissionsSeeder extends Seeder
             'view_rrhh',
             'view_candidates',
             'write_personValidations',
-            'read_personValidations'
+            'read_personValidations',
         ]);
 
         $financiero->givePermissionTo([
