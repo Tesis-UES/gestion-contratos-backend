@@ -2,6 +2,7 @@
 
 use App\Http\Controllers\ActivityController;
 use App\Http\Controllers\AuthController;
+use App\Http\Controllers\BankController;
 use App\Http\Controllers\CentralAuthorityController;
 use App\Http\Controllers\EscalafonController;
 use App\Http\Controllers\FacultyController;
@@ -64,7 +65,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     // Ruta para verificar si el candidato ya ingreso sus datos personales
     Route::get('/users/me/has-registered', [PersonController::class, 'hasRegistered']);
 
-    // Rutas para manejar el catalogo de formatos
+    // Rutas que manejan el catalogo de formatos
     Route::get('/formats', [FormatController::class, 'index']);
     Route::get('/formats/{id}', [FormatController::class, 'show']);
     Route::group(['middleware' => ['can:write_formats']], function () {
@@ -73,12 +74,23 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
         Route::delete('/formats/{id}', [FormatController::class, 'destroy']);
     });
 
-    // Ruta que maneja la bitacora de uso 
+    // Rutas que manejan la bitacora de uso 
     Route::group(['middleware' => ['can:read_worklog']], function () {
         Route::get('/worklog', [AuthController::class, 'worklog']);
     });
 
-    // Rutas que maneja el catalogo de escalafones 
+    // Rutas que manejan el catalogo de bancos 
+        Route::group(['middleware' => ['can:write_banks']], function () {
+            Route::post('/banks', [BankController::class, 'store']);
+            Route::put('/banks/{id}', [BankController::class, 'update']);
+            Route::delete('/banks/{id}', [BankController::class, 'destroy']);
+        });
+        Route::group(['middleware' => ['can:read_banks']], function () {
+            Route::get('/banks', [BankController::class, 'all']);
+            Route::get('/banks/{id}', [BankController::class, 'show']);
+        });
+
+    // Rutas que manejan el catalogo de escalafones 
     Route::group(['middleware' => ['can:write_escalafones']], function () {
         Route::post('/escalafones', [EscalafonController::class, 'store']);
         Route::put('/escalafones/{id}', [EscalafonController::class, 'update']);
@@ -89,7 +101,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
         Route::get('/escalafones/{id}', [EscalafonController::class, 'show']);
     });
 
-    // Rutas que maneja el catalogo de facultades
+    // Rutas que manejan el catalogo de facultades
     Route::group(['middleware' => ['can:write_faculties']], function () {
         Route::post('/faculties', [FacultyController::class, 'store']);
         Route::put('/faculties/{id}', [FacultyController::class, 'update']);
@@ -100,7 +112,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
         Route::get('/faculties/{id}', [FacultyController::class, 'show']);
     });
 
-    // Rutas que maneja el catalogo de escuelas pertenecientes a facultades
+    // Rutas que manejan el catalogo de escuelas pertenecientes a facultades
     Route::group(['middleware' => ['can:write_schools']], function () {
         Route::post('/faculties/{id}/schools', [SchoolController::class, 'store']);
         Route::put('/schools/{id}', [SchoolController::class, 'update']);

@@ -26,5 +26,6 @@ class DatabaseSeeder extends Seeder
                 $this->call(FormatSeeder::class);
                 $this->call(PersonSeeder::class);
                 $this->call(PositionSeeder::class);
+                $this->call(BankSeeder::class);
         }
 }
