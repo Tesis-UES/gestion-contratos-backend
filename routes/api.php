@@ -327,6 +327,8 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
         Route::post('/academicLoad/{id}/groups', [GroupController::class, 'store']);
         Route::post('/importGroups/{academicLoadId}', [GroupController::class, 'importGroups']);
         Route::put('/groups/{id}', [GroupController::class, 'update']);
+        Route::put('/groups/{id}/professor', [GroupController::class, 'setProfessor']);
+        Route::get('/professors', [PersonController::class, 'allCandidatesProfessor']);
     });
     Route::group(['middleware' => ['can:read_groups']], function () {   
         Route::get('/groups/{id}', [GroupController::class, 'show']);

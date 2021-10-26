@@ -138,6 +138,7 @@ class GroupController extends Controller
             'course_id'         =>  $Group->course_id,
             'nombre_curso'      =>  $Group->course->name,                   
             'people_id'         =>  $Group->people_id, 
+            'people_name'     =>" ".$Group->candidato->first_name." ".$Group->candidato->middle_name." ".$Group->candidato->last_name." ",
             'schedules'         =>  $Group->schedule()->get(),
         ];
 
@@ -149,5 +150,32 @@ class GroupController extends Controller
         $import =  new GroupCoursesImport($academicLoadId);
         Excel::import($import, $request->file('excel'));
         return response(['DatosMalos'=>$import->resultM, 'DatosBuenos'=>$import->resultB], 200);        
+    }
+
+    public function setProfessor(Request $request, $id){
+        $fields = $request->validate([ 
+            'people_id'             => 'required|integer',
+           
+        ]);
+
+        $Group = Group::findorFail($id);
+        $Group->people_id = $fields['people_id'];
+        $Group->save();
+    
+
+        $updateGroup = [
+            'id'                =>  $Group->id,
+            'number'            =>  $Group->number,          
+            'group_type_id'     =>  $Group->group_type_id,
+            'group_type'        =>  $Group->grupo->name,  
+            'academic_load_id'  =>  $Group->academic_load_id, 
+            'course_id'         =>  $Group->course_id,
+            'nombre_curso'      =>  $Group->course->name,                   
+            'people_id'         =>  $Group->people_id, 
+            'people_name'     =>" ".$Group->candidato->first_name." ".$Group->candidato->middle_name." ".$Group->candidato->last_name." ",
+            'schedules'         =>  $Group->schedule()->get(),
+        ];
+
+        return response($updateGroup, 200); 
     }
 }
