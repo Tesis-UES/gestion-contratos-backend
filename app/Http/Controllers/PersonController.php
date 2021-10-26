@@ -56,6 +56,7 @@ class PersonController extends Controller
             'address'               => 'required|string|max:120',
             'nationality'           => 'required|string|max:120',
             'professional_title'    => 'required|string|max:120',
+            'bank_account_type'     => 'string:max:100',
             'bank_id'               => 'integer|gte:1',
             'bank_account_number'   => 'string|max:120',
             'is_employee'           => 'required|boolean',
@@ -169,6 +170,7 @@ class PersonController extends Controller
             'nationality'           => 'required|string|max:120',
             'professional_title'    => 'required|string|max:120',
             'bank_id'               => 'integer|gte:1',
+            'bank_account_type'     => 'string:max:100',
             'bank_account_number'   => 'string|max:120',
             'is_employee'           => 'required|boolean',
         ]);

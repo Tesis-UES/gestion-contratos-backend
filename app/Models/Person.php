@@ -41,6 +41,7 @@ class Person extends Model
         'professional_title_scan',
         'bank_id',
         'bank_account',
+        'bank_account_type',
         'bank_account_number',
         'work_permission',
         'reading_signature',
