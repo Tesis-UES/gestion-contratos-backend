@@ -25,7 +25,7 @@ class Group extends Model
 
     public function candidato()
     {
-        return $this->belongsTo(PersonType::class, 'people_id');
+        return $this->belongsTo(Person::class, 'people_id');
     }
 
 
