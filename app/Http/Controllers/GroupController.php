@@ -20,7 +20,7 @@ class GroupController extends Controller
             'number'                => 'required|integer',
             'group_type_id'         => 'required|integer',
             'course_id'             => 'required|integer',
-            'professor_id'          => 'required|integer',
+            'people_id'             => 'integer',
             'details'               => 'required|array|min:1',
             'details.*.day'         => 'required|string',
             'details.*.start_hour'  => 'required|date_format:H:i',
@@ -44,7 +44,7 @@ class GroupController extends Controller
                 'academic_load_id'  =>  $academicLoadId, 
                 'course_id'         =>  $Group->course_id,
                 'nombre_curso'      =>  $Group->course->name,                   
-                'professor_id'      =>  $Group->professor_id, 
+                'people_id'         =>  $Group->people_id, 
                 'schedules'         =>  $Group->schedule()->get()
             ];
     
@@ -69,7 +69,8 @@ class GroupController extends Controller
             'academic_load_id'  =>  $group->academic_load_id, 
             'course_id'         =>  $group->course_id,
             'nombre_curso'      =>  $group->course->name,                   
-            'professor_id'      =>  $group->professor_id, 
+            'people_id'         =>  $group->people_id, 
+            'people_name'     =>" ".$group->candidato->first_name." ".$group->candidato->middle_name." ".$group->candidato->last_name." ",
             'schedules'         =>  $group->schedule()->get()
         ];
         return response(['Group' =>  $Group], 200);
@@ -78,9 +79,33 @@ class GroupController extends Controller
     public function showByAcademicLoad($id){
         $academicLoad = AcademicLoad::where('id',$id)->with('semester')->firstOrFail();
         $group = Group::with('course')->with('grupo')->with('schedule')->where('academic_load_id','=',$id)->get();
-        
+        $groups = [];
+        foreach ($group as $gp) {
+           
+            $horario =[];
+            foreach ($gp->schedule as $sch) {
+                $hr =[
+                    'day'           =>$sch->day,
+                    'start_hour'    =>$sch->start_hour,
+                    'finish_hour'   =>$sch->finish_hour,
+                ];
+                array_push($horario,$hr);
+                
+            }
+            $grp =[
+                'id'    => $gp->id,
+                'number'=> $gp->number,
+                'group_type_name' =>$gp->grupo->name,
+                'course_code'     =>$gp->course->code,
+                'course_name'     =>$gp->course->name,
+                'people_name'     =>" ".$gp->candidato->first_name." ".$gp->candidato->middle_name." ".$gp->candidato->last_name." ",
+                'schedule'        =>$horario
+            ];
+           array_push($groups,$grp);
+        }
+       
         return response([
-            'groups' =>  $group, 
+            'groups' =>  $groups, 
             'semesterActive'=> $academicLoad->semester->status
         ], 200);
     }
@@ -91,7 +116,7 @@ class GroupController extends Controller
             'number'                => 'required|integer',
             'group_type_id'         => 'required|integer',
             'course_id'             => 'required|integer',
-            'professor_id'          => 'required|integer',
+            'people_id'             => 'integer',
             'details'               => 'required|array|min:1',
             'details.*.day'         => 'required|string',
             'details.*.start_hour'  => 'required|date_format:H:i',
@@ -112,7 +137,8 @@ class GroupController extends Controller
             'academic_load_id'  =>  $Group->academic_load_id, 
             'course_id'         =>  $Group->course_id,
             'nombre_curso'      =>  $Group->course->name,                   
-            'professor_id'      =>  $Group->professor_id, 
+            'people_id'         =>  $Group->people_id, 
+            'people_name'     =>" ".$Group->candidato->first_name." ".$Group->candidato->middle_name." ".$Group->candidato->last_name." ",
             'schedules'         =>  $Group->schedule()->get(),
         ];
 
@@ -124,5 +150,32 @@ class GroupController extends Controller
         $import =  new GroupCoursesImport($academicLoadId);
         Excel::import($import, $request->file('excel'));
         return response(['DatosMalos'=>$import->resultM, 'DatosBuenos'=>$import->resultB], 200);        
+    }
+
+    public function setProfessor(Request $request, $id){
+        $fields = $request->validate([ 
+            'people_id'             => 'required|integer',
+           
+        ]);
+
+        $Group = Group::findorFail($id);
+        $Group->people_id = $fields['people_id'];
+        $Group->save();
+    
+
+        $updateGroup = [
+            'id'                =>  $Group->id,
+            'number'            =>  $Group->number,          
+            'group_type_id'     =>  $Group->group_type_id,
+            'group_type'        =>  $Group->grupo->name,  
+            'academic_load_id'  =>  $Group->academic_load_id, 
+            'course_id'         =>  $Group->course_id,
+            'nombre_curso'      =>  $Group->course->name,                   
+            'people_id'         =>  $Group->people_id, 
+            'people_name'     =>" ".$Group->candidato->first_name." ".$Group->candidato->middle_name." ".$Group->candidato->last_name." ",
+            'schedules'         =>  $Group->schedule()->get(),
+        ];
+
+        return response($updateGroup, 200); 
     }
 }

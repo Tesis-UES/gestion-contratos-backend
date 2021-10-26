@@ -22,7 +22,8 @@ class CreateGroupsTable extends Migration
             $table->foreign('academic_load_id')->references('id')->on('academic_loads')->onDelete('cascade')->nonullable();
             $table->bigInteger('course_id')->unsigned()->nonullable();
             $table->foreign('course_id')->references('id')->on('courses')->onDelete('cascade')->nonullable();
-            $table->bigInteger('professor_id')->unsigned()->nullable();
+            $table->bigInteger('people_id')->unsigned()->nullable();
+            $table->foreign('people_id')->references('id')->on('people')->onDelete('cascade')->nonullable();
             $table->softDeletes();
             $table->timestamps();
         });

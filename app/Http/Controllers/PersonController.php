@@ -39,6 +39,21 @@ class PersonController extends Controller
         return response($candiates, 200);
     }
 
+    public function allCandidatesProfessor(){
+        //ESTA FUNCION PODRA SER MODIFICADA MAS ADELANTE DEPENDIENDO DE LOS REQUERIMIENTOS
+        $result = Person::all();
+        foreach ($result as $rest) {
+            $candidate = [
+                'id'        => $rest->id,
+                'name'      => $rest->first_name." ".$rest->middle_name." ".$rest->last_name,
+            ];
+            $candiates[] = $candidate;
+        }
+
+        $this->RegisterAction('El usuario ha consultado el catalogo de candidatos registrados en el sistema para asignar a un grupo');
+        return response($candiates, 200);
+    }
+
     public function store(Request $request)
     {
         $request->validate([
