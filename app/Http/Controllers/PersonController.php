@@ -75,6 +75,10 @@ class PersonController extends Controller
             'bank_id'               => 'integer|gte:1',
             'bank_account_number'   => 'string|max:120',
             'is_employee'           => 'required|boolean',
+            'is_nationalized'       => 'required|boolean',
+            'other_title'           =>'required|boolean',
+            
+            
         ]);
 
         if($request->input('bank_id') != null) {
@@ -82,15 +86,28 @@ class PersonController extends Controller
         }
 
         if($request->input('nationality') == 'El Salvador') {
-            $request->validate([
-            'city'                  => 'required|string|max:120',
-            'department'            => 'required|string|max:120',
-            'nup'                   => 'required|string|max:120',
-            'isss_number'           => 'required|string|max:120',
-            'dui_number'            => 'required|string|max:120',
-            'dui_expiration_date'   => 'required|date|after:today',
-            'nit_number'            => 'required|string|max:120',
-            ]);
+            
+            if ($request->input('is_nationalized') == true ) {
+                $request->validate([
+                    'city'                  => 'required|string|max:120',
+                    'department'            => 'required|string|max:120',
+                    'nup'                   => 'required|string|max:120',
+                    'isss_number'           => 'required|string|max:120',
+                    'resident_card_number'  => 'required|string|max:120',
+                    'resident_expiration_date'   => 'required|date|after:today',
+                    'nit_number'            => 'required|string|max:120',
+                    ]);
+            } else {
+                $request->validate([
+                    'city'                  => 'required|string|max:120',
+                    'department'            => 'required|string|max:120',
+                    'nup'                   => 'required|string|max:120',
+                    'isss_number'           => 'required|string|max:120',
+                    'dui_number'            => 'required|string|max:120',
+                    'dui_expiration_date'   => 'required|date|after:today',
+                    'nit_number'            => 'required|string|max:120',
+                    ]);
+            }
         } else {
             $request->validate(['passport_number' => 'required|string|max:120']);
         }
@@ -106,6 +123,11 @@ class PersonController extends Controller
             EmployeeType::findOrFail($employeeFields['employee_type_id']);
             Faculty::findOrFail($employeeFields['faculty_id']);
         } 
+        if ($request->input('other_title') == true) {
+            $request->validate([
+                'other_title_name'                 => 'required|string|max:120',
+                ]);
+        }
 
         $user = Auth::user();
         $person = Person::where('user_id', $user->id)->first();
@@ -116,8 +138,14 @@ class PersonController extends Controller
         $newPerson = new Person ($request->all());
         $newPerson->user_id = $user->id;
         if($newPerson->nationality == 'El Salvador') {
+
+            if ($request->input('is_nationalized') == true) {
+                $newPerson->resident_card_text = $this->carnetToText($newPerson->resident_card_number);
+                $newPerson->nit_text = $this->nitToText($newPerson->nit_number);
+            }else{
             $newPerson->dui_text = $this->duiToText($newPerson->dui_number);
             $newPerson->nit_text = $this->nitToText($newPerson->nit_number);
+            }
         }
         $newPerson->save();
 
@@ -188,6 +216,8 @@ class PersonController extends Controller
             'bank_account_type'     => 'string:max:100',
             'bank_account_number'   => 'string|max:120',
             'is_employee'           => 'required|boolean',
+            'is_nationalized'       => 'required|boolean',
+            'other_title'           =>'required|boolean',
         ]);
 
         if($request->input('bank_id') != null) {
@@ -195,15 +225,27 @@ class PersonController extends Controller
         }
 
         if($request->input('nationality') == 'El Salvador') {
-            $request->validate([
-            'city'                  => 'required|string|max:120',
-            'department'            => 'required|string|max:120',
-            'nup'                   => 'required|string|max:120',
-            'isss_number'           => 'required|string|max:120',
-            'dui_number'            => 'required|string|max:120',
-            'dui_expiration_date'   => 'required|date|after:today',
-            'nit_number'            => 'required|string|max:120',
-            ]);
+            if ($request->input('is_nationalized') == true ) {
+                $request->validate([
+                    'city'                  => 'required|string|max:120',
+                    'department'            => 'required|string|max:120',
+                    'nup'                   => 'required|string|max:120',
+                    'isss_number'           => 'required|string|max:120',
+                    'resident_card_number'  => 'required|string|max:120',
+                    'resident_expiration_date'   => 'required|date|after:today',
+                    'nit_number'            => 'required|string|max:120',
+                    ]);
+            } else {
+                $request->validate([
+                    'city'                  => 'required|string|max:120',
+                    'department'            => 'required|string|max:120',
+                    'nup'                   => 'required|string|max:120',
+                    'isss_number'           => 'required|string|max:120',
+                    'dui_number'            => 'required|string|max:120',
+                    'dui_expiration_date'   => 'required|date|after:today',
+                    'nit_number'            => 'required|string|max:120',
+                    ]);
+            }
         } else {
             $request->validate(['passport_number' => 'required|string|max:120']);
         }
@@ -219,14 +261,24 @@ class PersonController extends Controller
             EmployeeType::findOrFail($employeeFields['employee_type_id']);
             Faculty::findOrFail($employeeFields['faculty_id']);
         }
+        if ($request->input('other_title') == true) {
+            $request->validate([
+                'other_title_name'                 => 'required|string|max:120',
+                ]);
+        }
         
         $user = Auth::user();
         $person = Person::where('user_id', $user->id)->firstOrFail();
 
         $person->update($request->all());
         if($person->nationality == 'El Salvador') {
+            if ($request->input('is_nationalized') == true) {
+                $person->resident_card_text = $this->carnetToText($person->resident_card_number);
+                $person->nit_text = $this->nitToText($person->nit_number);
+            }else{
             $person->dui_text = $this->duiToText($person->dui_number);
             $person->nit_text = $this->nitToText($person->nit_number);
+            }
         }
         $person->save();
         PersonChange::create(['person_id'=>$person->id,'change'=>"Se actualizo la información general de datos personales"]);
@@ -729,6 +781,11 @@ class PersonController extends Controller
         }else{
            return $textDui = "CERO CERO CERO CERO ".$formatter->toString(substr($dui,0,-2))."GUION ".$formatter->toString(substr($dui,-1))."";
         }
+    }
+
+    public function carnetToText($carnet){
+        $formatter = new NumeroALetras();
+          return  $textCarnet = $formatter->toString($carnet);
     }
 
     public function nitToText($nit){
