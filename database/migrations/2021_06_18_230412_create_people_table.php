@@ -43,8 +43,8 @@ class CreatePeopleTable extends Migration
             $table->string('reading_signature')->default('Ilegible');
             $table->date('dui_expiration_date')->nullable();
             $table->string('dui')->nullable();
-            $table->string('nit_number',120)->nullable();;
-            $table->string('nit_text')->nullable();;
+            $table->string('nit_number',120)->nullable();
+            $table->string('nit_text')->nullable();
             $table->string('nit')->nullable();
             $table->string('curriculum')->nullable();
             $table->string('professional_title_scan')->nullable();
