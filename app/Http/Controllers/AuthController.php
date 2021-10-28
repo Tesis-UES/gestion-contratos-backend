@@ -2,21 +2,23 @@
 
 namespace App\Http\Controllers;
 
-use App\Models\User;
+use App\Http\Traits\GeneratorTrait;
+use App\Http\Traits\WorklogTrait;
+use App\Mail\NewUserNotification;
 use App\Models\School;
+use App\Models\User;
 use App\Models\worklog;
 use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\Hash;
 use Spatie\Permission\Models\Role;
-use App\Http\Traits\WorklogTrait;
-use Illuminate\Support\Facades\Auth;
-use App\Mail\NewUserNotification;
 use Mail;
 
 
 class AuthController extends Controller
 {
-    use WorklogTrait;
+    use GeneratorTrait, WorklogTrait;
+
     public function register(Request $request)
     {
         $fields = $request->validate([
@@ -53,7 +55,7 @@ class AuthController extends Controller
         if (!$user || !Hash::check($fields['password'], $user->password)) {
             return response(['message' => 'bad credentials'], 401);
         }
-        if($user->password_expiration != null && $user->password_expiration > new DateTime()) {
+        if($user->password_expiration != null && $user->password_expiration > new \DateTime()) {
             return response([
                 'message' => 'Su contraseña ha expirado, pongase en conacto con el administrador del sistema',
             ], 401);
@@ -154,7 +156,7 @@ class AuthController extends Controller
             'school_id' => 'numeric',
         ]);
 
-        $expirationDate = (new DateTime())->add(new DateInterval(env('PASSWORD_VALID_FOR', 'P7D')));
+        $expirationDate = (new \DateTime())->add(new \DateInterval(env('PASSWORD_VALID_FOR', 'P7D')));
 
         switch ($request->role) {
             case 'Administrador':
@@ -314,24 +316,19 @@ class AuthController extends Controller
         return response(['message' => "Se ha actualizado la contraseña con exito"], 200);
     }
 
-    public function changeUserPassword($id, Request $request)
+    public function changeUserPassword($userId, Request $request)
     {
-        $fields = $request->validate([
-            'password'  => 'required|string|confirmed',
-        ]);
+        $user = User::findOrFail($userId);
+        
+        $newPassword = $this->generatePassword(32);
+        $expirationDate = (new \DateTime())->add(new \DateInterval(env('PASSWORD_VALID_FOR', 'P7D')));
 
-        $user = User::findOrFail($id);
-        if (Hash::check($fields['password'], $user->password)) {
-            return response(['message' => 'La nueva contraseña debe de ser diferente a la actual.'], 401);
-        }
-
-        $expirationDate = (new DateTime())->add(new DateInterval(env('PASSWORD_VALID_FOR', 'P7D')));
-        $user->password = bcrypt($fields['password']);
+        $user->password = bcrypt($newPassword);
         $user->password_expiration = $expirationDate;
         $user->save();
 
         $this->RegisterAction('El administrador ha cambiado la contraseña del usuario con id'. $user->id);
-        return response(['message' => "Se ha actualizado la contraseña con exito"], 200);   
+        return response(['message' => "Se ha actualizado la contraseña con exito y se ha enviado al correo del usuario"], 200);   
     }
 
     public function updateUser(Request $request, $id)
