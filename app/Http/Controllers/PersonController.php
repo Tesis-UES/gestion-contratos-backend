@@ -343,7 +343,7 @@ class PersonController extends Controller
                 $person =  $this->storeResident($request);
                 break;
             
-            case 'otherTitle':
+            case 'otro_titulo':
                 $person =  $this->storeOtherTitle($request);
                 break;
             default:
@@ -506,7 +506,7 @@ class PersonController extends Controller
                 $person =  $this->updateResident($request);
                 break;
             
-            case 'otherTitle':
+            case 'otro_titulo':
                 $person =  $this->updateOtherTitle($request);
                 break;
             default:
@@ -753,7 +753,7 @@ class PersonController extends Controller
                 $person =  $this->getResident();
                 break;
             
-            case 'otherTitle':
+            case 'otro_titulo':
                 $person =  $this->getOtherTitle();
                 break;
             default:
@@ -962,31 +962,58 @@ class PersonController extends Controller
         if ($person->employee == null) {
             //Si no es empleado verificamos que sea nacional o extanjero
             if ($person->nationality == 'El Salvador') {
-                return  response(['archivos' => ['dui','nit','banco','cv','titulo']], 200);
+                $archivos = ['nit','banco','cv','titulo'];
+                if ($person->is_nationalized == true) {
+                    array_push($archivos,'carnet');
+                } else {
+                    array_push($archivos,'dui');
+                }
+                if ($person->other_title == true) {
+                    array_push($archivos,'otro_titulo');
+                }
+                return response(['archivos' => $archivos],200);
+
             } else {
                 //EXTRANJERO
-                return  response(['archivos' =>  ['banco','cv','titulo','pass']], 200);
+                $archivo =  ['banco','cv','titulo','pass'];
+                if ($person->other_title == true) {
+                    array_push($archivos,'otro_titulo');
+                }
+                return  response(['archivos' =>  $archivo  ], 200);
             }
         } else {
             //Candidato - Trabajador
             if ($person->nationality == 'El Salvador') {
                 //Candidato - Trabajador - Nacional
-                if ($person->employee->faculty_id == 1) {
-                    return  response(['archivos' =>  ['dui','nit','banco','cv','titulo']], 200);
+                $archivos = ['nit','banco','cv','titulo'];
+                if ($person->is_nationalized == true) {
+                    array_push($archivos,'carnet');
                 } else {
-                    return  response(['archivos' =>  ['dui','nit','banco','cv','titulo','permiso']], 200);
-                    
+                    array_push($archivos,'dui');
                 }
+                if ($person->other_title == true) {
+                    array_push($archivos,'otro_titulo');
+                }
+                if (!($person->employee->faculty_id == 1)) {
+                    array_push($archivos,'permiso');
+                }
+
+                return response(['archivos' => $archivos],200);
             } else {
                 //Candidato - Trabajador - Internacional 
-                if ($person->employee->faculty_id == 1) {
-                    return  response(['archivos' =>  ['banco','cv','titulo','pass']], 200);
-                } else {
-                    return  response(['archivos' =>  ['banco','cv','titulo','permiso','pass']], 200);
+                $archivos = ['banco','cv','titulo','pass'];
+                if (!($person->employee->faculty_id == 1)) {
+                    array_push($archivos,'permiso');
+                } 
+                if ($person->other_title == true) {
+                    array_push($archivos,'otro_titulo');
                 }
+                return response(['archivos' => $archivos],200);
+                
             }
         }
     }
+    
     public function calculaedad($fechanacimiento){
         list($ano,$mes,$dia) = explode("-",$fechanacimiento);
         $ano_diferencia  = date("Y") - $ano;

@@ -20,6 +20,14 @@ class PersonSeeder extends Seeder
         ]);
         $Nacional->assignRole('Candidato');
 
+        $Nacionalizado = User::create([
+            'name'      => 'Usuario Nacionalizado',
+            'email'     => 'nacionalizado@ues.edu.sv',
+            'password'  => bcrypt('foobar'),
+            'school_id' => 8
+        ]);
+        $Nacionalizado->assignRole('Candidato');
+
         $NacionalE = User::create([
             'name'      => 'Usuario Nacional Empleado UES',
             'email'     => 'nacionalues@ues.edu.sv',
@@ -93,6 +101,48 @@ class PersonSeeder extends Seeder
         ]);
         $personValidation = new PersonValidation(['person_id' => $datosNacional->id]);
         $personValidation->save();
+
+        /*********************************************************************************************/
+        //Ingresando Datos Nacionalizado//
+        $datosNacionalizado = Person::create([
+            'user_id'       => $Nacionalizado->id,
+            'first_name'    => 'JOSE',
+            'middle_name'   => 'Alexander',
+            'last_name'     => 'Cornejo',
+            'know_as'       => 'Pelon',
+            'birth_date'    => '1996-01-18',
+            'gender'        => 'Masculino',
+            'civil_status'  => 'Soltero',
+            'telephone'     => '2232-2009',
+            'alternate_telephone'   => '2356-8974',
+            'alternate_mail'        => 'prueba@gmail.com',
+            'address'       => 'Colonia la malaga, calle 3, block 5',
+            'department'   =>'San Salvador',
+            'city'          =>'Aguilares',
+            'nationality'   =>'El Salvador',
+            'professional_title'   =>'Ingeniero en Sistemas Informaticos',
+            'nup'           =>'123456987',
+            'isss_number'   =>'852159753465',
+            'nit_number'    =>'0804-890597-207-8',
+            'nit_text'      =>'CERO OCHOCIENTOS CUATRO-OCHOCIENTOS NOVENTA MIL QUINIENTOS NOVENTA Y SIETE-CERO CERO DOSCIENTOS SIETE-OCHO ',
+            'bank_id'       => 2,
+            'bank_account_number'   =>'0125415656',
+            'is_nationalized' => true,
+            'resident_card_number'      => '63541834684',
+            'resident_card_text'        => 'NUMERO X',
+            'resident_expiration_date' => '2022-01-29',
+            'other_title'   => true,
+        'other_title_name' => 'ingeniero en perreologia',
+    ]);
+    $personValidation = new PersonValidation(['person_id' => $datosNacionalizado->id]);
+    $personValidation->save();
+    Employee::create([
+        'journey_type'      =>'tiempo-completo',
+        'faculty_id'        => 2,
+        'escalafon_id'      => 1,
+        'employee_type_id'  => 1,
+        'person_id'         => $datosNacionalizado ->id,
+            ]);
 
         //Ingresando datos de candidato Nacional - Trabajador UES - FIA
         $datosNacionalUesFia =  Person::create([
