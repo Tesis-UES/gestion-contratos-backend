@@ -17,6 +17,8 @@ class Employee extends Model
         'employee_type_id',
     ];
 
+    protected $hidden = ['pivot'];
+
     public function staySchedules() {
         return $this->hasMany(StaySchedule::class);
     }
@@ -29,7 +31,7 @@ class Employee extends Model
         return $this->belongsTo(Escalafon::class);
     }
 
-    public function employeeType() {
-        return $this->belongsTo(EmployeeType::class);
+    public function employeeTypes() {
+        return $this->belongsToMany(EmployeeType::class, 'employee_employee_types');
     }
 }

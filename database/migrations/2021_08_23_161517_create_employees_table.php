@@ -19,11 +19,9 @@ class CreateEmployeesTable extends Migration
             $table->bigInteger('person_id')->unsigned()->nonullable();
             $table->bigInteger('faculty_id')->unsigned()->nonullable();
             $table->bigInteger('escalafon_id')->unsigned()->nonullable();
-            $table->bigInteger('employee_type_id')->unsigned()->nonullable();
             $table->foreign('person_id')->references('id')->on('people')->onDelete('cascade')->nonullable();
             $table->foreign('faculty_id')->references('id')->on('faculties')->nonullable();
             $table->foreign('escalafon_id')->references('id')->on('escalafons')->nonullable();
-            $table->foreign('employee_type_id')->references('id')->on('employee_types')->nonullable();
             $table->timestamps();
         });
     }
