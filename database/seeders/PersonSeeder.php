@@ -138,14 +138,13 @@ class PersonSeeder extends Seeder
     ]);
     $personValidation = new PersonValidation(['person_id' => $datosNacionalizado->id]);
     $personValidation->save();
-    Employee::create([
+    $nacionalizadoEmployee = Employee::create([
         'journey_type'      =>'tiempo-completo',
         'faculty_id'        => 2,
         'escalafon_id'      => 1,
-        'employee_type_id'  => 1,
         'person_id'         => $datosNacionalizado ->id,
             ]);
-
+    $nacionalizadoEmployee->employeeTypes()->save($employeeTypes[0]);
         //Ingresando datos de candidato Nacional - Trabajador UES - FIA
         $datosNacionalUesFia =  Person::create([
             'user_id'       => $NacionalE->id,
