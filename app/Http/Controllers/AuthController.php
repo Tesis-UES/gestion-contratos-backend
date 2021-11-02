@@ -151,24 +151,24 @@ class AuthController extends Controller
         $fields = $request->validate([
             'name'      => 'required|string',
             'email'     => 'required|string|unique:users,email',
-            'password'  => 'required|string',
             'role'      => 'required|string',
             'school_id' => 'numeric',
         ]);
 
         $expirationDate = (new \DateTime())->add(new \DateInterval(env('PASSWORD_VALID_FOR', 'P7D')));
+        $newPassword = $this->generatePassword(32);
 
         switch ($request->role) {
             case 'Administrador':
                 $user = User::create([
                     'name'                  => $fields['name'],
                     'email'                 => $fields['email'],
-                    'password'              => bcrypt($fields['password']),
+                    'password'              => bcrypt($newPassword),
                     'password_expiration'   => $expirationDate,
                 ]);
                 $user->assignRole($request->role);
                     try {
-                        Mail::to($user->email)->send(new NewUserNotification($user->email, $fields['password']));
+                        Mail::to($user->email)->send(new NewUserNotification($user->email,$newPassword ));
                         $response = [
                             'user'      => $user,
                             'mensaje'   => "Si se envio el correo electronico",
@@ -189,12 +189,12 @@ class AuthController extends Controller
                     'name'                  => $fields['name'],
                     'email'                 => $fields['email'],
                     'school_id'             => $fields['school_id'],
-                    'password'              => bcrypt($fields['password']),
+                    'password'              => bcrypt($newPassword),
                     'password_expiration'   => $expirationDate,
                 ]);
                 $user->assignRole($request->role);
                 try {
-                    Mail::to($user->email)->send(new NewUserNotification($user->email, $fields['password']));
+                    Mail::to($user->email)->send(new NewUserNotification($user->email,$newPassword ));
                     $response = [
                         'user'      => $user,
                         'mensaje'   => "Si se envio el correo electronico",
@@ -215,12 +215,12 @@ class AuthController extends Controller
                     'name'                  => $fields['name'],
                     'email'                 => $fields['email'],
                     'school_id'             => $fields['school_id'],
-                    'password'              => bcrypt($fields['password']),
+                    'password'              => bcrypt($newPassword),
                     'password_expiration'   => $expirationDate,
                 ]);
                 $user->assignRole($request->role);
                 try {
-                    Mail::to($user->email)->send(new NewUserNotification($user->email, $fields['password']));
+                    Mail::to($user->email)->send(new NewUserNotification($user->email,$newPassword ));
                     $response = [
                         'user'      => $user,
                         'mensaje'   => "Si se envio el correo electronico",
@@ -240,12 +240,12 @@ class AuthController extends Controller
                 $user = User::create([
                     'name'                  => $fields['name'],
                     'email'                 => $fields['email'],
-                    'password'              => bcrypt($fields['password']),
+                    'password'              => bcrypt($newPassword),
                     'password_expiration'   => $expirationDate,
                 ]);
                 $user->assignRole($request->role);
                 try {
-                    Mail::to($user->email)->send(new NewUserNotification($user->email, $fields['password']));
+                    Mail::to($user->email)->send(new NewUserNotification($user->email,$newPassword));
                     $response = [
                         'user'      => $user,
                         'mensaje'   => "Si se envio el correo electronico",
@@ -266,12 +266,12 @@ class AuthController extends Controller
                 $user = User::create([
                     'name'                  => $fields['name'],
                     'email'                 => $fields['email'],
-                    'password'              => bcrypt($fields['password']),
+                    'password'              => bcrypt($newPassword ),
                     'password_expiration'   => $expirationDate,
                 ]);
                 $user->assignRole($request->role);
                 try {
-                    Mail::to($user->email)->send(new NewUserNotification($user->email, $fields['password']));
+                    Mail::to($user->email)->send(new NewUserNotification($user->email,$newPassword ));
                     $response = [
                         'user'      => $user,
                         'mensaje'   => "Si se envio el correo electronico",
@@ -326,9 +326,13 @@ class AuthController extends Controller
         $user->password = bcrypt($newPassword);
         $user->password_expiration = $expirationDate;
         $user->save();
-
-        $this->RegisterAction('El administrador ha cambiado la contraseña del usuario con id'. $user->id);
-        return response(['message' => "Se ha actualizado la contraseña con exito y se ha enviado al correo del usuario"], 200);   
+        try {
+            Mail::to($user->email)->send(new NewUserNotification($user->email, $newPassword ));
+            $this->RegisterAction('El administrador ha cambiado la contraseña del usuario con id'. $user->id);
+            return response(['message' => "Se ha actualizado la contraseña con exito y se ha enviado el correo"], 200);   
+        } catch (\Swift_TransportException $e) {
+            return response(['message' => "No se ha cambiado la contraseña y enviado el correo, por favor intente denuevo o contacte con el administrador"], 200);   
+        } 
     }
 
     public function updateUser(Request $request, $id)
