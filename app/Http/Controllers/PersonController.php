@@ -117,11 +117,15 @@ class PersonController extends Controller
                 'journey_type'     => 'required|string' ,
                 'faculty_id'       => 'required|integer|gte:1',
                 'escalafon_id'     => 'required|integer|gte:1',
-                'employee_type_id' => 'required|integer|gte:1',
+                'employee_types'    => 'required|array|min:1',
+                'employee_types.*'  => 'required|integer|distinct|gte:1',
             ]);
+
             Escalafon::findOrFail( $employeeFields['escalafon_id']);
-            EmployeeType::findOrFail($employeeFields['employee_type_id']);
             Faculty::findOrFail($employeeFields['faculty_id']);
+            foreach ($employeeFields['employee_types'] as $typeId ) {
+                $employeeTypes[] = EmployeeType::findOrFail($typeId);
+            }
         } 
         if ($request->input('other_title') == true) {
             $request->validate([
@@ -153,7 +157,9 @@ class PersonController extends Controller
         $this->RegisterAction("El usuario he registrado sus datos personales generales", "medium");
 
         if($request->input('is_employee') == true) {
-            $newPerson->employee()->create($employeeFields);
+            $newEmployee = $newPerson->employee()->create($employeeFields);
+            $newEmployee->employeeTypes()->saveMany($employeeTypes);
+
             PersonChange::create(['person_id'=>$newPerson->id,'change'=>"Se registraron los datos del profesor."]);
             $this->RegisterAction("El usuario he registrado como profesor", "medium");
         }
@@ -168,7 +174,7 @@ class PersonController extends Controller
     {
         $person = Person::where('id',$id)
         ->with('bank')
-        ->with('employee',function($query) { $query->with(['faculty', 'escalafon', 'employeeType']); })
+        ->with('employee',function($query) { $query->with(['faculty', 'escalafon', 'employeeTypes']); })
         ->firstOrFail();
 
         return response(['person' => $person,], 200);
@@ -179,7 +185,7 @@ class PersonController extends Controller
         $user = Auth::user();
         $person = Person::where('user_id',$user->id)
         ->with('bank')
-        ->with('employee', function($query) { $query->with(['faculty', 'escalafon', 'employeeType']); })
+        ->with('employee', function($query) { $query->with(['faculty', 'escalafon', 'employeeTypes']); })
         ->firstOrFail();
 
         return response($person, 200);
@@ -252,14 +258,18 @@ class PersonController extends Controller
 
         if($request->input('is_employee') == true) {
             $employeeFields = $request->validate([
-                'journey_type'     => 'required|string' ,
-                'faculty_id'       => 'required|integer|gte:1',
-                'escalafon_id'     => 'required|integer|gte:1',
-                'employee_type_id' => 'required|integer|gte:1',
+                'journey_type'      => 'required|string' ,
+                'faculty_id'        => 'required|integer|gte:1',
+                'escalafon_id'      => 'required|integer|gte:1',
+                'employee_types'    => 'required|array|min:1',
+                'employee_types.*'  => 'required|integer|distinct|gte:1',
             ]);
+
             Escalafon::findOrFail( $employeeFields['escalafon_id']);
-            EmployeeType::findOrFail($employeeFields['employee_type_id']);
             Faculty::findOrFail($employeeFields['faculty_id']);
+            foreach ($employeeFields['employee_types'] as $typeId ) {
+                $employeeTypes[] = EmployeeType::findOrFail($typeId);
+            }
         }
         if ($request->input('other_title') == true) {
             $request->validate([
@@ -287,16 +297,22 @@ class PersonController extends Controller
         if($request->input('is_employee') == true) {
             $employee = $person->employee;
             if($employee == null) {
-                $person->employee()->create($employeeFields);
+                $newEmployee = $person->employee()->create($employeeFields);
+                $newEmployee->employeeTypes()->saveMany($employeeTypes);
+
                 PersonChange::create(['person_id'=>$person->id,'change'=>"Se registraron los datos del profesor."]);
                 $this->RegisterAction("El usuario he registrado como profesor", "medium");
             } else {
                 $employee->update($employeeFields);
+                $employee->employeeTypes()->detach();
+                $employee->employeeTypes()->saveMany($employeeTypes);
+
                 PersonChange::create(['person_id'=>$person->id,'change'=>"Se actualizaron los datos del profesor."]);
                 $this->RegisterAction("El usuario ha actualizado sus datos de profesor", "medium");
             }
         }
 
+        $person->refresh();
         return response(['person' => $person], 200);
     }
 
