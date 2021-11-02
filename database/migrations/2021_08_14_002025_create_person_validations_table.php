@@ -57,7 +57,20 @@ class CreatePersonValidationsTable extends Migration
             $table->boolean('title_apostilled')->default(false)->nullable();
             $table->boolean('title_apostilled_readable')->default(false)->nullable();
             $table->boolean('title_authentic')->default(false)->nullable();
-            $table->timestamps();
+            //carnet de residencia 
+            $table->boolean('carnet')->default(false)->nullable();
+            $table->boolean('carnet_readable')->default(false)->nullable();
+            $table->boolean('carnet_name')->default(false)->nullable();
+            $table->boolean('carnet_number')->default(false)->nullable();
+            $table->boolean('carnet_unexpired')->default(false)->nullable();
+           //otro titulo
+           $table->boolean('other_title')->default(false)->nullable();
+           $table->boolean('other_title_readable')->default(false)->nullable();
+           $table->boolean('other_title_apostilled')->default(false)->nullable();
+           $table->boolean('other_title_apostilled_readable')->default(false)->nullable();
+           $table->boolean('other_title_authentic')->default(false)->nullable();
+            
+           $table->timestamps();
         });
     }
 

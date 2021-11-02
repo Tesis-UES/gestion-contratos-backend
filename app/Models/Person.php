@@ -49,7 +49,15 @@ class Person extends Model
         'nit_text',
         'alternate_telephone',
         'alternate_mail' ,
-        'is_employee'
+        'is_employee',
+        'is_nationalized',
+        'resident_card',
+        'resident_card_number',
+        'resident_card_text',
+        'resident_expiration_date',
+        'other_title',
+        'other_title_name',
+        'other_title_doc',
     ];
 
     public function personValidations()

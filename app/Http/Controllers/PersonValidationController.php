@@ -112,30 +112,59 @@ class PersonValidationController extends Controller
     public function validateNational(Person $person)
     {
         $menu = array();
-        $var = [
-            'Nombre' => 'Documento Unico De Identidad DUI',
-            'Estado' => '',
-            'codigo' => 'DUI'
-        ];
-        if ($person->dui == null) {
-            $var['Estado'] = 'Sin archivo';
-                array_push($menu, $var);
-        } else {
-            if ($person->personValidations->dui) {
-               
-                if ($person->personValidations->dui_readable && $person->personValidations->dui_name && $person->personValidations->dui_number && $person->personValidations->dui_profession && $person->personValidations->dui_civil_status && $person->personValidations->dui_birth_date && $person->personValidations->dui_unexpired && $person->personValidations->dui_address) {
-                    $var['Estado'] = 'Validado';
+        if ($person->is_nationalized == true) {
+            $var = [
+                'Nombre' => 'Carnet de Residencia',
+                'Estado' => '',
+                'codigo' => 'CARNET'
+            ];
+            if ($person->resident_card == null) {
+                $var['Estado'] = 'Sin archivo';
                     array_push($menu, $var);
+            } else {
+                if ($person->personValidations->carnet) {
+                   
+                    if ($person->personValidations->carnet_readable && $person->personValidations->carnet_name && $person->personValidations->carnet_number && $person->personValidations->carnet_unexpired) {
+                        $var['Estado'] = 'Validado';
+                        array_push($menu, $var);
+                    } else {
+                        $var['Estado'] = 'Con Observaciones';
+                        array_push($menu, $var);
+                    }
                 } else {
-                    $var['Estado'] = 'Con Observaciones';
+                    $var['Estado'] = 'pendiente';
                     array_push($menu, $var);
                 }
-            } else {
-                $var['Estado'] = 'pendiente';
-                array_push($menu, $var);
+               
             }
-           
+        } else {
+            $var = [
+                'Nombre' => 'Documento Unico De Identidad DUI',
+                'Estado' => '',
+                'codigo' => 'DUI'
+            ];
+            if ($person->dui == null) {
+                $var['Estado'] = 'Sin archivo';
+                    array_push($menu, $var);
+            } else {
+                if ($person->personValidations->dui) {
+                   
+                    if ($person->personValidations->dui_readable && $person->personValidations->dui_name && $person->personValidations->dui_number && $person->personValidations->dui_profession && $person->personValidations->dui_civil_status && $person->personValidations->dui_birth_date && $person->personValidations->dui_unexpired && $person->personValidations->dui_address) {
+                        $var['Estado'] = 'Validado';
+                        array_push($menu, $var);
+                    } else {
+                        $var['Estado'] = 'Con Observaciones';
+                        array_push($menu, $var);
+                    }
+                } else {
+                    $var['Estado'] = 'pendiente';
+                    array_push($menu, $var);
+                }
+               
+            }
         }
+        
+       
         
        
         //VERIFICAMOS NIT
@@ -241,6 +270,33 @@ class PersonValidationController extends Controller
             }
             
             
+        }
+
+        if($person->other_title == true){
+            $var = [
+                'Nombre' => 'Titulo Extra (Maestria / Phd)',
+                'Estado' => '',
+                'codigo' => 'OTRO-TITULO'
+            ];
+            if ($person->other_title_doc == null) {
+                $var['Estado'] = 'Sin archivo';
+                array_push($menu, $var);
+            } else {
+                if ($person->personValidations->other_title) {
+                    if ($person->personValidations->other_title_readable && $person->personValidations->other_title_apostilled && $person->personValidations->other_title_apostilled_readable && $person->personValidations->other_title_authentic ) {
+                        $var['Estado'] = 'Validado';
+                        array_push($menu, $var);
+                    } else {
+                        $var['Estado'] = 'Con Observaciones';
+                        array_push($menu, $var);
+                    }
+                } else {
+                    $var['Estado'] = 'Pendiente';
+                        array_push($menu, $var);
+                }
+                
+                
+            }
         }
         
        
@@ -355,6 +411,33 @@ class PersonValidationController extends Controller
                 array_push($menu, $var);
             }
         }
+
+        if($person->other_title == true){
+            $var = [
+                'Nombre' => 'Titulo Extra (Maestria / Phd)',
+                'Estado' => '',
+                'codigo' => 'OTRO-TITULO'
+            ];
+            if ($person->other_title_doc == null) {
+                $var['Estado'] = 'Sin archivo';
+                array_push($menu, $var);
+            } else {
+                if ($person->personValidations->other_title) {
+                    if ($person->personValidations->other_title_readable && $person->personValidations->other_title_apostilled && $person->personValidations->other_title_apostilled_readable && $person->personValidations->other_title_authentic ) {
+                        $var['Estado'] = 'Validado';
+                        array_push($menu, $var);
+                    } else {
+                        $var['Estado'] = 'Con Observaciones';
+                        array_push($menu, $var);
+                    }
+                } else {
+                    $var['Estado'] = 'Pendiente';
+                        array_push($menu, $var);
+                }
+                
+                
+            }
+        }
         return  $menu;
     }
 
@@ -392,11 +475,54 @@ class PersonValidationController extends Controller
             case 'PASS':
                 return $this->getPASSValidation($person);
                 break;
+             case 'CARNET':
+                return $this->getCarValidation($person);
+                break;
+            case 'OTRO-TITULO':
+                return $this->getOtValidation($person);
+                break;
             default:
                 # code...
                 break;
         }
     }
+
+
+    public function getCarValidation(Person $person)
+    {
+
+        $data = [
+            'nombre'            => $person->first_name . " " . $person->middle_name . " " . $person->last_name,
+            'numero_carnet'     => $person->resident_card_number,
+            'fecha_vencimiento'  => $person->resident_expiration_date,
+            'pdf'               =>  base64_encode(\Storage::disk('personalFiles')->get($person->resident_card)),
+        ];
+        $validations = [
+            'carnet_readable'      =>  $person->personValidations->carnet_readable,
+            'carnet_name'         =>  $person->personValidations->carnet_name,
+            'carnet_number'        =>  $person->personValidations->carnet_number,
+            'carnet_unexpired'    =>  $person->personValidations->carnet_unexpired,
+            
+        ];
+        return ['data' => $data, 'validations' => $validations];
+    }
+
+    public function getOtValidation(Person $person)
+    {
+
+        $data = [
+            'pdf'               =>  base64_encode(\Storage::disk('personalFiles')->get($person->other_title_doc)),
+        ];
+        $validations = [
+            'other_title_readable'      =>  $person->personValidations->other_title_readable,
+            'other_title_apostilled'      =>  $person->personValidations->other_title_apostilled,
+            'other_title_apostilled_readable'      =>  $person->personValidations->other_title_apostilled_readable,
+            'other_title_authentic'      =>  $person->personValidations->other_title_authentic,
+        ];
+        return ['data' => $data, 'validations' => $validations];
+    }
+
+
 
     public function getDuiValidation(Person $person)
     {
@@ -602,6 +728,22 @@ class PersonValidationController extends Controller
                     $mensaje = "Se ha validado el documento que contiene su Pasaporte que ha subido al sistema, pero este no cumple con los requerimientos, por favor verificar entrando en el sistema las Respectivas observaciones y solventarlas lo mas pronto posible";
                    } 
                 break;
+                case 'CARNET':
+                    $person->personValidations->update(['carnet' => true]);
+                    if ($validado) {
+                        $mensaje = "Se ha validado con exito el documento que contiene su Carnet de Residente, cumple con todos los requerimientos, para mas detalles ingresar al sistema con sus credenciales";
+                       }else{
+                        $mensaje = "Se ha validado el documento que contiene su Carnet de Residente que ha subido al sistema, pero este no cumple con los requerimientos, por favor verificar entrando en el sistema las Respectivas observaciones y solventarlas lo mas pronto posible";
+                       } 
+                    break;
+                case 'OTRO-TITULO':
+                    $person->personValidations->update(['other_title' => true]);
+                    if ($validado) {
+                        $mensaje = "Se ha validado con exito el documento que contiene su Titulo Extra, cumple con todos los requerimientos, para mas detalles ingresar al sistema con sus credenciales";
+                       }else{
+                        $mensaje = "Se ha validado el documento que contiene su Titulo Extra que ha subido al sistema, pero este no cumple con los requerimientos, por favor verificar entrando en el sistema las Respectivas observaciones y solventarlas lo mas pronto posible";
+                       } 
+                    break;
             default:
                 # code...
                 break;

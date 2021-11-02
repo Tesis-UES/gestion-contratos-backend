@@ -48,7 +48,19 @@ class PersonValidation extends Model
            'curriculum',
            'work',
            'passport',
-           'title'
+           'title',
+
+          'carnet',
+          'carnet_readable',
+          'carnet_name',
+          'carnet_number',
+          'carnet_unexpired',
+
+          'other_title',
+           'other_title_readable',
+           'other_title_apostilled',
+           'other_title_apostilled_readable',
+           'other_title_authentic',
 
     ];
 }

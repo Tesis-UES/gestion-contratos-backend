@@ -75,6 +75,10 @@ class PersonController extends Controller
             'bank_id'               => 'integer|gte:1',
             'bank_account_number'   => 'string|max:120',
             'is_employee'           => 'required|boolean',
+            'is_nationalized'       => 'required|boolean',
+            'other_title'           =>'required|boolean',
+            
+            
         ]);
 
         if($request->input('bank_id') != null) {
@@ -82,15 +86,28 @@ class PersonController extends Controller
         }
 
         if($request->input('nationality') == 'El Salvador') {
-            $request->validate([
-            'city'                  => 'required|string|max:120',
-            'department'            => 'required|string|max:120',
-            'nup'                   => 'required|string|max:120',
-            'isss_number'           => 'required|string|max:120',
-            'dui_number'            => 'required|string|max:120',
-            'dui_expiration_date'   => 'required|date|after:today',
-            'nit_number'            => 'required|string|max:120',
-            ]);
+            
+            if ($request->input('is_nationalized') == true ) {
+                $request->validate([
+                    'city'                  => 'required|string|max:120',
+                    'department'            => 'required|string|max:120',
+                    'nup'                   => 'required|string|max:120',
+                    'isss_number'           => 'required|string|max:120',
+                    'resident_card_number'  => 'required|string|max:120',
+                    'resident_expiration_date'   => 'required|date|after:today',
+                    'nit_number'            => 'required|string|max:120',
+                    ]);
+            } else {
+                $request->validate([
+                    'city'                  => 'required|string|max:120',
+                    'department'            => 'required|string|max:120',
+                    'nup'                   => 'required|string|max:120',
+                    'isss_number'           => 'required|string|max:120',
+                    'dui_number'            => 'required|string|max:120',
+                    'dui_expiration_date'   => 'required|date|after:today',
+                    'nit_number'            => 'required|string|max:120',
+                    ]);
+            }
         } else {
             $request->validate(['passport_number' => 'required|string|max:120']);
         }
@@ -106,6 +123,11 @@ class PersonController extends Controller
             EmployeeType::findOrFail($employeeFields['employee_type_id']);
             Faculty::findOrFail($employeeFields['faculty_id']);
         } 
+        if ($request->input('other_title') == true) {
+            $request->validate([
+                'other_title_name'                 => 'required|string|max:120',
+                ]);
+        }
 
         $user = Auth::user();
         $person = Person::where('user_id', $user->id)->first();
@@ -116,8 +138,14 @@ class PersonController extends Controller
         $newPerson = new Person ($request->all());
         $newPerson->user_id = $user->id;
         if($newPerson->nationality == 'El Salvador') {
+
+            if ($request->input('is_nationalized') == true) {
+                $newPerson->resident_card_text = $this->carnetToText($newPerson->resident_card_number);
+                $newPerson->nit_text = $this->nitToText($newPerson->nit_number);
+            }else{
             $newPerson->dui_text = $this->duiToText($newPerson->dui_number);
             $newPerson->nit_text = $this->nitToText($newPerson->nit_number);
+            }
         }
         $newPerson->save();
 
@@ -188,6 +216,8 @@ class PersonController extends Controller
             'bank_account_type'     => 'string:max:100',
             'bank_account_number'   => 'string|max:120',
             'is_employee'           => 'required|boolean',
+            'is_nationalized'       => 'required|boolean',
+            'other_title'           =>'required|boolean',
         ]);
 
         if($request->input('bank_id') != null) {
@@ -195,15 +225,27 @@ class PersonController extends Controller
         }
 
         if($request->input('nationality') == 'El Salvador') {
-            $request->validate([
-            'city'                  => 'required|string|max:120',
-            'department'            => 'required|string|max:120',
-            'nup'                   => 'required|string|max:120',
-            'isss_number'           => 'required|string|max:120',
-            'dui_number'            => 'required|string|max:120',
-            'dui_expiration_date'   => 'required|date|after:today',
-            'nit_number'            => 'required|string|max:120',
-            ]);
+            if ($request->input('is_nationalized') == true ) {
+                $request->validate([
+                    'city'                  => 'required|string|max:120',
+                    'department'            => 'required|string|max:120',
+                    'nup'                   => 'required|string|max:120',
+                    'isss_number'           => 'required|string|max:120',
+                    'resident_card_number'  => 'required|string|max:120',
+                    'resident_expiration_date'   => 'required|date|after:today',
+                    'nit_number'            => 'required|string|max:120',
+                    ]);
+            } else {
+                $request->validate([
+                    'city'                  => 'required|string|max:120',
+                    'department'            => 'required|string|max:120',
+                    'nup'                   => 'required|string|max:120',
+                    'isss_number'           => 'required|string|max:120',
+                    'dui_number'            => 'required|string|max:120',
+                    'dui_expiration_date'   => 'required|date|after:today',
+                    'nit_number'            => 'required|string|max:120',
+                    ]);
+            }
         } else {
             $request->validate(['passport_number' => 'required|string|max:120']);
         }
@@ -219,14 +261,24 @@ class PersonController extends Controller
             EmployeeType::findOrFail($employeeFields['employee_type_id']);
             Faculty::findOrFail($employeeFields['faculty_id']);
         }
+        if ($request->input('other_title') == true) {
+            $request->validate([
+                'other_title_name'                 => 'required|string|max:120',
+                ]);
+        }
         
         $user = Auth::user();
         $person = Person::where('user_id', $user->id)->firstOrFail();
 
         $person->update($request->all());
         if($person->nationality == 'El Salvador') {
+            if ($request->input('is_nationalized') == true) {
+                $person->resident_card_text = $this->carnetToText($person->resident_card_number);
+                $person->nit_text = $this->nitToText($person->nit_number);
+            }else{
             $person->dui_text = $this->duiToText($person->dui_number);
             $person->nit_text = $this->nitToText($person->nit_number);
+            }
         }
         $person->save();
         PersonChange::create(['person_id'=>$person->id,'change'=>"Se actualizo la información general de datos personales"]);
@@ -286,6 +338,14 @@ class PersonController extends Controller
             case 'pass':
                 $person =  $this->storePassport($request);
                 break;
+
+            case 'carnet':
+                $person =  $this->storeResident($request);
+                break;
+            
+            case 'otro_titulo':
+                $person =  $this->storeOtherTitle($request);
+                break;
             default:
                 # code...
                 break;
@@ -304,6 +364,19 @@ class PersonController extends Controller
         PersonChange::create(['person_id'=>$person->id,'change'=>"Se subio y guardo el archivo que contiene el DUI"]);
         \Storage::disk('personalFiles')->put($nombre_archivo, \File::get($file));
         $this->RegisterAction("El usuario ha guardado el archivo pdf que contiene la imagen del DUI", "medium"); 
+        return $person;
+    }
+
+    public function storeResident(Request $request){
+        $user = Auth::user();
+        $person = Person::where('user_id',$user->id)->firstOrFail();
+        $file = $request->file('carnet');
+        $nombre_archivo = $person->first_name." ".$person->middle_name." ".$person->last_name."-CARNET_RESIDENTE.pdf";
+        $person->resident_card = $nombre_archivo;
+        $person->save();
+        PersonChange::create(['person_id'=>$person->id,'change'=>"Se subio y guardo el archivo que contiene el Carnet de Residencia"]);
+        \Storage::disk('personalFiles')->put($nombre_archivo, \File::get($file));
+        $this->RegisterAction("El usuario ha guardado el archivo pdf que contiene la imagen del Carnet de Residencia", "medium"); 
         return $person;
     }
 
@@ -357,6 +430,19 @@ class PersonController extends Controller
         PersonChange::create(['person_id'=>$person->id,'change'=>"Se subio y guardo el archivo que contiene el Titulo Univesitario"]);
         \Storage::disk('personalFiles')->put($nombre_archivo, \File::get($file)); 
         $this->RegisterAction("El usuario ha guardado el archivo pdf que contiene la imagen de su titulo Universitario", "medium"); 
+        return  $person;
+    }
+
+    public function storeOtherTitle(Request $request){
+        $user = Auth::user();
+        $person = Person::where('user_id',$user->id)->firstOrFail();
+        $file = $request->file('otro_titulo');
+        $nombre_archivo = $person->first_name." ".$person->middle_name." ".$person->last_name."-Titulo_extra.pdf";
+        $person->other_title_doc = $nombre_archivo;
+        $person->save();
+        PersonChange::create(['person_id'=>$person->id,'change'=>"Se subio y guardo el archivo que contiene el titulo Extra (Doctorado/Maestria)"]);
+        \Storage::disk('personalFiles')->put($nombre_archivo, \File::get($file)); 
+        $this->RegisterAction("El usuario ha guardado el archivo pdf que contiene la imagen de su  titulo Extra (Doctorado/Maestria)", "medium"); 
         return  $person;
     }
 
@@ -416,6 +502,13 @@ class PersonController extends Controller
             case 'pass':
                 $person =  $this->updatePassport($request);
                 break;
+            case 'carnet':
+                $person =  $this->updateResident($request);
+                break;
+            
+            case 'otro_titulo':
+                $person =  $this->updateOtherTitle($request);
+                break;
             default:
                 # code...
                 break;
@@ -448,6 +541,29 @@ class PersonController extends Controller
             'dui'               =>  false
         ]); 
         $this->RegisterAction("El usuario ha actualizado el archivo pdf que contiene la imagen del DUI", "medium"); 
+        return $person;
+    }
+
+    public function updateResident(Request $request){
+        $user = Auth::user();
+        $person = Person::where('user_id',$user->id)->firstOrFail();
+        $file = $request->file('carnet');
+        $nombre_archivo = $person->first_name." ".$person->middle_name." ".$person->last_name."-CARNET_RESIDENTE.pdf";
+        //Se elimina el archivo antiguo
+        \Storage::disk('personalFiles')->delete($person->resident_card);
+        $person->resident_card = $nombre_archivo;
+        $person->save();
+        PersonChange::create(['person_id'=>$person->id,'change'=>"Se Actualizo el archivo que contiene el carnet de residente"]);
+        \Storage::disk('personalFiles')->put($nombre_archivo, \File::get($file));
+        $personValidations = $person->personValidations;
+        $personValidations->update([
+                'carnet'            => false,
+                'carnet_readable'   => false,
+                'carnet_name'       => false,
+                'carnet_number'     => false,
+                'carnet_unexpired'  => false
+        ]); 
+        $this->RegisterAction("El usuario ha actualizado el archivo pdf que contiene la imagen del Carnet de residente", "medium"); 
         return $person;
     }
 
@@ -516,6 +632,29 @@ class PersonController extends Controller
             'title'                   =>   false,
         ]); 
         $this->RegisterAction("El usuario ha actualizado el  archivo pdf que contiene la imagen de su titulo Universitario", "medium"); 
+        return  $person;
+    }
+
+    public function updateOtherTitle(Request $request){
+        $user = Auth::user();
+        $person = Person::where('user_id',$user->id)->firstOrFail();
+        $file = $request->file('otro_titulo');
+        $nombre_archivo = $person->first_name." ".$person->middle_name." ".$person->last_name."-Titulo_extra.pdf";
+        //Se elimina el archivo antiguo
+        \Storage::disk('personalFiles')->delete($person->other_title_doc);
+        $person->other_title_doc = $nombre_archivo;
+        $person->save();
+        PersonChange::create(['person_id'=>$person->id,'change'=>"Se Actualizo el archivo que contiene  el titulo Extra (Doctorado/Maestria)"]);
+        \Storage::disk('personalFiles')->put($nombre_archivo, \File::get($file)); 
+        $personValidations = $person->personValidations;
+        $personValidations->update([
+        'other_title'                       =>false,
+        'other_title_readable'              =>false,
+        'other_title_apostilled'            =>false,
+        'other_title_apostilled_readable'   =>false,
+        'other_title_authentic'             =>false
+        ]); 
+        $this->RegisterAction("El usuario ha actualizado el  archivo pdf que contiene la imagen de su titulo Extra (Doctorado/Maestria)", "medium"); 
         return  $person;
     }
 
@@ -610,6 +749,13 @@ class PersonController extends Controller
             case 'pass':
                 $person =  $this->getPassport();
                 break;
+             case 'carnet':
+                $person =  $this->getResident();
+                break;
+            
+            case 'otro_titulo':
+                $person =  $this->getOtherTitle();
+                break;
             default:
                 # code...
                 break;
@@ -633,6 +779,21 @@ class PersonController extends Controller
         ];
         $pdf = base64_encode(\Storage::disk('personalFiles')->get($person->dui));
         return ['pdfDui' => $pdf,
+                'validations'=> $validations ];
+    }
+
+    public function getResident(){
+        $user = Auth::user();
+        $person = Person::where('user_id',$user->id)->firstOrFail();
+        $validations = [
+           
+            'carnet_readable'   => $person->personValidations->carnet_readable,
+            'carnet_name'       => $person->personValidations->carnet_name,
+            'carnet_number'     => $person->personValidations->carnet_number,
+            'carnet_unexpired'  => $person->personValidations->carnet_unexpired,
+        ];
+        $pdf = base64_encode(\Storage::disk('personalFiles')->get($person->resident_card));
+        return ['pdfResident' => $pdf,
                 'validations'=> $validations ];
     }
 
@@ -696,6 +857,24 @@ class PersonController extends Controller
         'validations'=> $validations];
     }
 
+    public function getOtherTitle(){
+        $user = Auth::user();
+        $person = Person::where('user_id',$user->id)->firstOrFail();
+      
+            $validations = [
+                'other_title_readable'              =>$person->personValidations->other_title_readable,
+                'other_title_apostilled'            =>$person->personValidations->other_title_apostilled,
+                'other_title_apostilled_readable'   =>$person->personValidations->other_title_apostilled_readable,
+                'other_title_authentic'             =>$person->personValidations->other_title_authentic
+               
+            ];
+        
+        
+        $pdf = base64_encode(\Storage::disk('personalFiles')->get($person->other_title_doc));
+        return ['pdfOtherTitle' => $pdf,
+        'validations'=> $validations];
+    }
+
     public function getCurriculum(){
         $user = Auth::user();
         $person = Person::where('user_id',$user->id)->firstOrFail();
@@ -729,6 +908,11 @@ class PersonController extends Controller
         }else{
            return $textDui = "CERO CERO CERO CERO ".$formatter->toString(substr($dui,0,-2))."GUION ".$formatter->toString(substr($dui,-1))."";
         }
+    }
+
+    public function carnetToText($carnet){
+        $formatter = new NumeroALetras();
+          return  $textCarnet = $formatter->toString($carnet);
     }
 
     public function nitToText($nit){
@@ -778,31 +962,58 @@ class PersonController extends Controller
         if ($person->employee == null) {
             //Si no es empleado verificamos que sea nacional o extanjero
             if ($person->nationality == 'El Salvador') {
-                return  response(['archivos' => ['dui','nit','banco','cv','titulo']], 200);
+                $archivos = ['nit','banco','cv','titulo'];
+                if ($person->is_nationalized == true) {
+                    array_push($archivos,'carnet');
+                } else {
+                    array_push($archivos,'dui');
+                }
+                if ($person->other_title == true) {
+                    array_push($archivos,'otro_titulo');
+                }
+                return response(['archivos' => $archivos],200);
+
             } else {
                 //EXTRANJERO
-                return  response(['archivos' =>  ['banco','cv','titulo','pass']], 200);
+                $archivo =  ['banco','cv','titulo','pass'];
+                if ($person->other_title == true) {
+                    array_push($archivos,'otro_titulo');
+                }
+                return  response(['archivos' =>  $archivo  ], 200);
             }
         } else {
             //Candidato - Trabajador
             if ($person->nationality == 'El Salvador') {
                 //Candidato - Trabajador - Nacional
-                if ($person->employee->faculty_id == 1) {
-                    return  response(['archivos' =>  ['dui','nit','banco','cv','titulo']], 200);
+                $archivos = ['nit','banco','cv','titulo'];
+                if ($person->is_nationalized == true) {
+                    array_push($archivos,'carnet');
                 } else {
-                    return  response(['archivos' =>  ['dui','nit','banco','cv','titulo','permiso']], 200);
-                    
+                    array_push($archivos,'dui');
                 }
+                if ($person->other_title == true) {
+                    array_push($archivos,'otro_titulo');
+                }
+                if (!($person->employee->faculty_id == 1)) {
+                    array_push($archivos,'permiso');
+                }
+
+                return response(['archivos' => $archivos],200);
             } else {
                 //Candidato - Trabajador - Internacional 
-                if ($person->employee->faculty_id == 1) {
-                    return  response(['archivos' =>  ['banco','cv','titulo','pass']], 200);
-                } else {
-                    return  response(['archivos' =>  ['banco','cv','titulo','permiso','pass']], 200);
+                $archivos = ['banco','cv','titulo','pass'];
+                if (!($person->employee->faculty_id == 1)) {
+                    array_push($archivos,'permiso');
+                } 
+                if ($person->other_title == true) {
+                    array_push($archivos,'otro_titulo');
                 }
+                return response(['archivos' => $archivos],200);
+                
             }
         }
     }
+    
     public function calculaedad($fechanacimiento){
         list($ano,$mes,$dia) = explode("-",$fechanacimiento);
         $ano_diferencia  = date("Y") - $ano;
@@ -811,7 +1022,7 @@ class PersonController extends Controller
         if ($dia_diferencia < 0 || $mes_diferencia < 0)
           $ano_diferencia--;
         return $ano_diferencia;
-      }
+    }
 
     public function wordExample($id){
      $rector = CentralAuthority::where('position','=','Rector')->get()->first();
