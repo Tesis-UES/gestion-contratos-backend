@@ -90,11 +90,41 @@ trait ValidationTrait{
     }
 
     private function allFilesNational(Person $person){
-        return  $person->dui != null && 
+
+        if ($person->is_nationalized == true) {
+           
+            if ($person->other_title == true) {
+                return $person->resident_card != null && 
+                $person->nit != null && 
+                $person->curriculum != null && 
+                $person->bank_account != null && 
+                $person->professional_title_scan != null &&
+                $person->other_title_doc != null;
+            }else{
+                return $person->resident_card != null && 
                 $person->nit != null && 
                 $person->curriculum != null && 
                 $person->bank_account != null && 
                 $person->professional_title_scan != null;
+            }
+        }else{
+            if ($person->other_title == true) {
+                return  $person->dui != null && 
+                $person->nit != null && 
+                $person->curriculum != null && 
+                $person->bank_account != null && 
+                $person->professional_title_scan != null&&
+                $person->other_title_doc != null;;
+            }else{
+                return  $person->dui != null && 
+                $person->nit != null && 
+                $person->curriculum != null && 
+                $person->bank_account != null && 
+                $person->professional_title_scan != null;
+            }
+        }
+
+       
     }
 
     private function validatedNational(Person $person){
