@@ -128,14 +128,13 @@ trait ValidationTrait{
     }
 
     private function validatedNational(Person $person){
-        return $person->personValidations->dui_readable && 
-               $person->personValidations->dui_name && 
-               $person->personValidations->dui_number && 
-               $person->personValidations->dui_profession && 
-               $person->personValidations->dui_civil_status && 
-               $person->personValidations->dui_birth_date && 
-               $person->personValidations->dui_unexpired && 
-               $person->personValidations->dui_address &&
+
+        if ($person->is_nationalized == true) {
+            if ($person->other_title == true) {
+                return $person->personValidations->carnet_readable && 
+               $person->personValidations->carnet_name && 
+               $person->personValidations->carnet_number && 
+               $person->personValidations->carnet_unexpired && 
                $person->personValidations->nit_readable && 
                $person->personValidations->nit_name && 
                $person->personValidations->nit_number &&
@@ -143,27 +142,120 @@ trait ValidationTrait{
                $person->personValidations->bank_number &&
                $person->personValidations->curriculum_readable &&
                $person->personValidations->title_readable && 
-               $person->personValidations->title_mined;
+               $person->personValidations->title_mined &&
+               $person->personValidations->other_title_readable &&
+               $person->personValidations->other_title_apostilled &&
+               $person->personValidations->other_title_apostilled_readable &&
+               $person->personValidations->other_title_authentic; 
+            }else{
+                return $person->personValidations->carnet_readable && 
+                $person->personValidations->carnet_name && 
+                $person->personValidations->carnet_number && 
+                $person->personValidations->carnet_unexpired && 
+                $person->personValidations->nit_readable && 
+                $person->personValidations->nit_name && 
+                $person->personValidations->nit_number &&
+                $person->personValidations->bank_readable &&
+                $person->personValidations->bank_number &&
+                $person->personValidations->curriculum_readable &&
+                $person->personValidations->title_readable && 
+                $person->personValidations->title_mined;
+            }
+        }else{
+            if ($person->other_title == true) {
+                return $person->personValidations->dui_readable && 
+                $person->personValidations->dui_name && 
+                $person->personValidations->dui_number && 
+                $person->personValidations->dui_profession && 
+                $person->personValidations->dui_civil_status && 
+                $person->personValidations->dui_birth_date && 
+                $person->personValidations->dui_unexpired && 
+                $person->personValidations->dui_address &&
+                $person->personValidations->nit_readable && 
+                $person->personValidations->nit_name && 
+                $person->personValidations->nit_number &&
+                $person->personValidations->bank_readable &&
+                $person->personValidations->bank_number &&
+                $person->personValidations->curriculum_readable &&
+                $person->personValidations->title_readable && 
+                $person->personValidations->title_mined &&
+                $person->personValidations->other_title_readable &&
+                $person->personValidations->other_title_apostilled &&
+                $person->personValidations->other_title_apostilled_readable &&
+                $person->personValidations->other_title_authentic;
+            }else{
+                return $person->personValidations->dui_readable && 
+                $person->personValidations->dui_name && 
+                $person->personValidations->dui_number && 
+                $person->personValidations->dui_profession && 
+                $person->personValidations->dui_civil_status && 
+                $person->personValidations->dui_birth_date && 
+                $person->personValidations->dui_unexpired && 
+                $person->personValidations->dui_address &&
+                $person->personValidations->nit_readable && 
+                $person->personValidations->nit_name && 
+                $person->personValidations->nit_number &&
+                $person->personValidations->bank_readable &&
+                $person->personValidations->bank_number &&
+                $person->personValidations->curriculum_readable &&
+                $person->personValidations->title_readable && 
+                $person->personValidations->title_mined;
+            }
+        }
+
+        
     }
 
     private function allFilesInternational(Person $person){
-        return  $person->passport != null && 
-                $person->curriculum != null && 
-                $person->bank_account != null && 
-                $person->professional_title_scan != null;
+
+        if($person->other_title == true){
+            return  $person->passport != null && 
+            $person->curriculum != null && 
+            $person->bank_account != null && 
+            $person->professional_title_scan != null &&
+            $person->other_title_doc != null;
+        }else{
+            return  $person->passport != null && 
+            $person->curriculum != null && 
+            $person->bank_account != null && 
+            $person->professional_title_scan != null;
+        }
+
+       
     }
 
     private function validatedInternational(Person $person){
-        return  $person->personValidations->passport_readable && 
-        $person->personValidations->passport_name && 
-        $person->personValidations->passport_number && 
-        $person->personValidations->bank_readable && 
-        $person->personValidations->bank_number && 
-        $person->personValidations->curriculum_readable && 
-        $person->personValidations->title_readable && 
-        $person->personValidations->title_apostilled && 
-        $person->personValidations->title_apostilled_readable && 
-        $person->personValidations->title_authentic;
+
+
+        if ($person->other_title == true) {
+            return  $person->personValidations->passport_readable && 
+            $person->personValidations->passport_name && 
+            $person->personValidations->passport_number && 
+            $person->personValidations->bank_readable && 
+            $person->personValidations->bank_number && 
+            $person->personValidations->curriculum_readable && 
+            $person->personValidations->title_readable && 
+            $person->personValidations->title_apostilled && 
+            $person->personValidations->title_apostilled_readable && 
+            $person->personValidations->title_authentic &&  
+            $person->personValidations->other_title_readable &&
+            $person->personValidations->other_title_apostilled &&
+            $person->personValidations->other_title_apostilled_readable &&
+            $person->personValidations->other_title_authentic;
+        }else{
+            return  $person->personValidations->passport_readable && 
+            $person->personValidations->passport_name && 
+            $person->personValidations->passport_number && 
+            $person->personValidations->bank_readable && 
+            $person->personValidations->bank_number && 
+            $person->personValidations->curriculum_readable && 
+            $person->personValidations->title_readable && 
+            $person->personValidations->title_apostilled && 
+            $person->personValidations->title_apostilled_readable && 
+            $person->personValidations->title_authentic;  
+        }
+
+        
     }
 
     private function workPermissionFile(Person $person){
