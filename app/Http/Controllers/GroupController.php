@@ -61,7 +61,7 @@ class GroupController extends Controller
     public function show($id)
     {
         $group = Group::findorFail($id);
-        if ($gp->candidato == null) {
+        if ($group->candidato == null) {
             $Group = [
                 'id'                =>  $group->id,
                 'number'            =>  $group->number,          
