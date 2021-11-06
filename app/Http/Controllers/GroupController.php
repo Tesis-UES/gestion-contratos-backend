@@ -61,18 +61,33 @@ class GroupController extends Controller
     public function show($id)
     {
         $group = Group::findorFail($id);
-        $Group = [
-            'id'                =>  $group->id,
-            'number'            =>  $group->number,          
-            'group_type_id'     =>  $group->group_type_id,
-            'type_group'        =>  $group->grupo->name,  
-            'academic_load_id'  =>  $group->academic_load_id, 
-            'course_id'         =>  $group->course_id,
-            'nombre_curso'      =>  $group->course->name,                   
-            'people_id'         =>  $group->people_id, 
-            'people_name'     =>" ".$group->candidato->first_name." ".$group->candidato->middle_name." ".$group->candidato->last_name." ",
-            'schedules'         =>  $group->schedule()->get()
-        ];
+        if ($gp->candidato == null) {
+            $Group = [
+                'id'                =>  $group->id,
+                'number'            =>  $group->number,          
+                'group_type_id'     =>  $group->group_type_id,
+                'type_group'        =>  $group->grupo->name,  
+                'academic_load_id'  =>  $group->academic_load_id, 
+                'course_id'         =>  $group->course_id,
+                'nombre_curso'      =>  $group->course->name,                   
+                'people_id'         =>  $group->people_id, 
+                'people_name'       =>  "Sin Asignar",
+                'schedules'         =>  $group->schedule()->get()
+            ]; 
+        }else{
+            $Group = [
+                'id'                =>  $group->id,
+                'number'            =>  $group->number,          
+                'group_type_id'     =>  $group->group_type_id,
+                'type_group'        =>  $group->grupo->name,  
+                'academic_load_id'  =>  $group->academic_load_id, 
+                'course_id'         =>  $group->course_id,
+                'nombre_curso'      =>  $group->course->name,                   
+                'people_id'         =>  $group->people_id, 
+                'people_name'     =>" ".$group->candidato->first_name." ".$group->candidato->middle_name." ".$group->candidato->last_name." ",
+                'schedules'         =>  $group->schedule()->get()
+            ]; 
+        }
         return response(['Group' =>  $Group], 200);
     }
 
