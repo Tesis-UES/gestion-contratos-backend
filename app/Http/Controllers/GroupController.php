@@ -92,15 +92,28 @@ class GroupController extends Controller
                 array_push($horario,$hr);
                 
             }
-            $grp =[
-                'id'    => $gp->id,
-                'number'=> $gp->number,
-                'group_type_name' =>$gp->grupo->name,
-                'course_code'     =>$gp->course->code,
-                'course_name'     =>$gp->course->name,
-                'people_name'     =>" ".$gp->candidato->first_name." ".$gp->candidato->middle_name." ".$gp->candidato->last_name." ",
-                'schedule'        =>$horario
-            ];
+            if ($gp->candidato == null) {
+                $grp =[
+                    'id'    => $gp->id,
+                    'number'=> $gp->number,
+                    'group_type_name' =>$gp->grupo->name,
+                    'course_code'     =>$gp->course->code,
+                    'course_name'     =>$gp->course->name,
+                    'people_name'     =>"Sin Docente Asignado",
+                    'schedule'        =>$horario
+                ];
+            }else{
+                $grp =[
+                    'id'    => $gp->id,
+                    'number'=> $gp->number,
+                    'group_type_name' =>$gp->grupo->name,
+                    'course_code'     =>$gp->course->code,
+                    'course_name'     =>$gp->course->name,
+                    'people_name'     =>" ".$gp->candidato->first_name." ".$gp->candidato->middle_name." ".$gp->candidato->last_name." ",
+                    'schedule'        =>$horario
+                ];
+            }
+            
            array_push($groups,$grp);
         }
        
