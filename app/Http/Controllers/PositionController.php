@@ -49,6 +49,37 @@ class PositionController extends Controller
         return response($newPosition, 200);
     }
 
+    public function update($id, Request $request) {
+        $fields = $request->validate([
+            'name'          => 'required|string|max:100',
+            'activities'    => 'required|array|min:2',
+            'activities.*'  => 'required|string|distinct',
+        ]);
+
+        $position = Position::findOrFail($id);
+
+        $otherPosition = Position::where('name', 'ilike', $fields['name'])->whereNull('deleted _at')->first();
+        if ($otherPosition != null && $otherPosition->id != $id) {
+            return response(['message' => 'Ya existe un cargo con ese nombre'], 400);
+        }
+
+        foreach($fields['activities'] as $activityName) {
+            $activity = Activity::where('name', 'ilike', $activityName)->first();
+            if(!$activity){
+                $activity = Activity::create(['name' => $activityName]);
+            }
+            $activityIds[] = $activity->id;
+        }
+        
+        $position->name = $fields['name'];
+        $position->activities()->sync($activityIds);
+        
+        $position->save();
+
+        $this->RegisterAction('El usuario ha actualizado el cargo con ID: ' . $id);
+        return response($position, 200);
+    }
+
     public function show($id)
     {
         $position = Position::where('id', $id)->with('activities')->firstOrFail();

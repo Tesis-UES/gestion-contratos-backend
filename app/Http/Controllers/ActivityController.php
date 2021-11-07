@@ -39,6 +39,22 @@ class ActivityController extends Controller
         return response($activty, 200);
     }
 
+    public function update($id, Request $request ) {
+        $fields = $request->validate(['name'=> 'required|string|max:100']);
+        $activty = Activity::findOrFail($id);
+
+        $otherActivity = Activity::where('name', 'ilike', $fields['name'])->whereNull('deleted _at')->first();
+        if($otherActivity != null && $otherActivity->id != $id) {
+            return response(['message' => 'Ya existe una actividad con ese nombre'], 400);
+        }
+
+        $activity->name = $fields['name'];
+        $activity->save();
+
+        $this->RegisterAction('El usuario ha actualizado la actividad con ID: ' . $id);
+        return response($activty, 200);
+    }
+
     public function destroy($id)
     {
         $activity = Activity::findOrFail($id);
