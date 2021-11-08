@@ -126,6 +126,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     // Rutas que manejan el catalogo de cargos de docentes
     Route::group(['middleware' => ['can:write_positions']], function () {
         Route::post('/positions', [PositionController::class, 'store']);
+        Route::put('/positions/{id}', [PositionController::class, 'update']);
         Route::delete('/positions/{id}', [PositionController::class, 'destroy']);
     });
     Route::group(['middleware' => ['can:read_positions']], function () {
@@ -136,6 +137,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     // Rutas que manejan el catalogo de actividades de docentes
     Route::group(['middleware' => ['can:write_activities']], function () {
         Route::post('/activities', [ActivityController::class, 'store']);
+        Route::put('/activities/{id}', [ActivityController::class, 'update']);
         Route::delete('/activities/{id}', [ActivityController::class, 'destroy']);
     });
     Route::group(['middleware' => ['can:read_activities']], function () {
