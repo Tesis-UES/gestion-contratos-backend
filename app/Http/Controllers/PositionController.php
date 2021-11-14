@@ -58,7 +58,7 @@ class PositionController extends Controller
 
         $position = Position::findOrFail($id);
 
-        $otherPosition = Position::where('name', 'ilike', $fields['name'])->whereNull('deleted _at')->first();
+        $otherPosition = Position::where('name', 'ilike', $fields['name'])->whereNull('deleted_at')->first();
         if ($otherPosition != null && $otherPosition->id != $id) {
             return response(['message' => 'Ya existe un cargo con ese nombre'], 400);
         }
