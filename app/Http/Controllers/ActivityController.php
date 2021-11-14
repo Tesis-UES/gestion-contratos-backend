@@ -41,7 +41,7 @@ class ActivityController extends Controller
 
     public function update($id, Request $request ) {
         $fields = $request->validate(['name'=> 'required|string|max:100']);
-        $activty = Activity::findOrFail($id);
+        $activity = Activity::findOrFail($id);
 
         $otherActivity = Activity::where('name', 'ilike', $fields['name'])->whereNull('deleted_at')->first();
         if($otherActivity != null && $otherActivity->id != $id) {
