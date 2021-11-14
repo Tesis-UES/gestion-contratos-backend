@@ -43,7 +43,7 @@ class ActivityController extends Controller
         $fields = $request->validate(['name'=> 'required|string|max:100']);
         $activty = Activity::findOrFail($id);
 
-        $otherActivity = Activity::where('name', 'ilike', $fields['name'])->whereNull('deleted _at')->first();
+        $otherActivity = Activity::where('name', 'ilike', $fields['name'])->whereNull('deleted_at')->first();
         if($otherActivity != null && $otherActivity->id != $id) {
             return response(['message' => 'Ya existe una actividad con ese nombre'], 400);
         }
