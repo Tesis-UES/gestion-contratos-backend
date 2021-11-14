@@ -52,7 +52,7 @@ class ActivityController extends Controller
         $activity->save();
 
         $this->RegisterAction('El usuario ha actualizado la actividad con ID: ' . $id);
-        return response($activty, 200);
+        return response($activity, 200);
     }
 
     public function destroy($id)
