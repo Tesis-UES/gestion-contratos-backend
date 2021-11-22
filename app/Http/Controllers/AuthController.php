@@ -57,7 +57,7 @@ class AuthController extends Controller
         }
         if($user->password_expiration != null && $user->password_expiration > new \DateTime()) {
             return response([
-                'message' => 'Su contraseña ha expirado, pongase en conacto con el administrador del sistema',
+                'message' => 'Su contraseña ha expirado, pongase en contacto con el administrador del sistema',
             ], 401);
         }
 

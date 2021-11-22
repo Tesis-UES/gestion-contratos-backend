@@ -16,8 +16,10 @@ class ValidationDocsNotification extends Mailable
      *
      * @return void
      */
-    public function __construct($mensaje)
-    {
+    //El envio de correos de este notificador sera tanto para validaciones y Cambios criticos en datos de alto riesgo del sistema
+    public function __construct($mensaje,$type)
+    {   
+        $this->type = $type;
         $this->mensaje = $mensaje;
     }
 
@@ -28,9 +30,24 @@ class ValidationDocsNotification extends Mailable
      */
     public function build()
     {
-        return $this->subject('Notificación de Validación de Documentos - FIA-UES')
-            ->markdown('emails.NotificationDocs',[
-                'mensaje'      =>$this-> mensaje,
-            ]);
+        switch ($this->type) {
+            case 'validations':
+                return $this->subject('Notificación de Validación de Documentos - FIA-UES')
+                ->markdown('emails.NotificationDocs',[
+                    'mensaje'      =>$this-> mensaje,
+                ]);
+                break;
+            case 'escalafones':
+                return $this->subject('Notificación de Cambio de Información en Catalogo de Escalafónes - FIA-UES')
+                ->markdown('emails.NotificationDocs',[
+                    'mensaje'      =>$this-> mensaje,
+                ]);
+                break;
+            
+            default:
+                # code...
+                break;
+        }
+        
     }
 }

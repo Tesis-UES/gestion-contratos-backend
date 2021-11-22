@@ -750,7 +750,7 @@ class PersonValidationController extends Controller
         }
         $this->updatePersonStatus($person);
         try {
-            Mail::to($person->user->email)->send(new ValidationDocsNotification($mensaje));
+            Mail::to($person->user->email)->send(new ValidationDocsNotification($mensaje,'validations'));
             $response = ['mensaje'   =>"Si se envio el correo electronico"];
             return response($response, 201);
         } catch (\Swift_TransportException $e) {
