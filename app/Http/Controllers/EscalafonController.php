@@ -7,6 +7,7 @@ use Illuminate\Http\Request;
 use App\Http\Traits\WorklogTrait;
 use App\Mail\ValidationDocsNotification;
 use App\Models\User;
+use Spatie\Permission\Models\Role;
 use Mail;
 
 class EscalafonController extends Controller
@@ -27,15 +28,9 @@ class EscalafonController extends Controller
      */
 
      public function getAdminMail(){
-        $admin = User::all();
-        $emails = [];
-       foreach ($admin as $admins) {
-            if ($admins->roles[0]->name == 'Administrador') {
-               $email[] = $admins->email; 
-            }
-
-        }
-        return $email;
+        $role = Role::where('name','Administrador')->first();
+        $admin = User::join('model_has_roles', 'model_has_roles.model_id', '=', 'users.id')->select('users.email')->where('model_has_roles.role_id', '=', $role->id)->get()->toArray();
+        return $admin;
      }
 
 
@@ -54,12 +49,12 @@ class EscalafonController extends Controller
             'salary' => $fields['salary'],
         ]);
         $this->RegisterAction("El usuario ha Ingresado un nuevo registro en el catalogo de Escalafones", "high");
-        $email = $this->getAdminMail();
+        $emails = $this->getAdminMail();
         $mensajeEmail = "Se ha registrado un nuevo escalafón con el nombre <b>".$fields['name']."</b> con el código de Identificación <b>".$fields['code']."</b> Con un monto de Salario <b>$".number_format($fields['salary'],2).".</b>";
         
-        foreach ($email as $emails) {
+        foreach ($emails as $email) {
             try {
-                Mail::to($emails)->send(new ValidationDocsNotification($mensajeEmail,'escalafones'));
+                Mail::to($email)->send(new ValidationDocsNotification($mensajeEmail,'escalafones'));
                 $mensaje = 'Se envio el correo con exito';
             } catch (\Swift_TransportException $e) {
                 $mensaje = 'No se envio el correo';
@@ -107,7 +102,7 @@ class EscalafonController extends Controller
         $salarioAnterior = $escalafon->salary;
         $escalafon->update($request->all());
         $this->RegisterAction("El usuario ha actualizado el registro del escalafon ".$nombreAnterior." en el catalogo de escalafones", "high");
-        $email = $this->getAdminMail();
+        $emails = $this->getAdminMail();
         $mensajeEmail = "Se ha actualizado el escalafón con el nombre <b>".$nombreAnterior."</b> con los siguientes datos:<br>
         <b>Datos Antiguos:</b>
         <ul>
@@ -123,9 +118,9 @@ class EscalafonController extends Controller
         </ul>
         ";
         
-        foreach ($email as $emails) {
+        foreach ($emails as $email) {
             try {
-                Mail::to($emails)->send(new ValidationDocsNotification($mensajeEmail,'escalafones'));
+                Mail::to($email)->send(new ValidationDocsNotification($mensajeEmail,'escalafones'));
                 $mensaje = 'Se envio el correo con exito';
             } catch (\Swift_TransportException $e) {
                 $mensaje = 'No se envio el correo';
@@ -153,7 +148,7 @@ class EscalafonController extends Controller
         $salario = $escalafon->salary;
         $escalafon->delete();
         $this->RegisterAction("El usuario ha eliminado el registro del escalafon ".$escalafon->name." en el catalogo de Escalafones" , "high");
-        $email = $this->getAdminMail();
+        $emails = $this->getAdminMail();
         $mensajeEmail = "Se ha eliminado el escalafón con el nombre <b>".$escalafon->name."</b> con los siguientes datos:<br>
         <b>Datos Del escalafón eliminado:</b>
         <ul>
@@ -163,9 +158,9 @@ class EscalafonController extends Controller
         </ul><br>
      ";
         
-        foreach ($email as $emails) {
+        foreach ($emails as $email) {
             try {
-                Mail::to($emails)->send(new ValidationDocsNotification($mensajeEmail,'escalafones'));
+                Mail::to($email)->send(new ValidationDocsNotification($mensajeEmail,'escalafones'));
                 $mensaje = 'Se envio el correo con exito';
             } catch (\Swift_TransportException $e) {
                 $mensaje = 'No se envio el correo';
