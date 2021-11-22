@@ -10,9 +10,9 @@ class SemesterController extends Controller
 {
 
     use WorklogTrait;
-    public function all()
+    public function all(Request $request)
     {
-        $semesters = Semester::all();
+        $semesters = Semester::where('status', '=', $request->query('status'))->paginate($request->query('paginate'));
         $this->RegisterAction("El usuario ha consultado el catalogo de historial de ciclo registrados en el sistema.");
         return response($semesters, 200);
     }
