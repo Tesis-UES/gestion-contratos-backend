@@ -660,87 +660,67 @@ class PersonValidationController extends Controller
             case 'DUI':
                 $person->personValidations->update(['dui' => true]);
                
-               if ($validado) {
-                $mensaje = "Se ha validado con exito el documento DUI, cumple con todos los requerimientos, para mas detalles ingresar al sistema con sus credenciales";
-               }else{
+               if (!$validado) {
                 $mensaje = "Se ha validado el documento DUI que ha subido al sistema, pero este no cumple con los requerimientos, por favor verificar entrando en el sistema las Respectivas observaciones  y solventarlas lo mas pronto posible";
-               } 
+               }
                 break;
 
             case 'NIT':
                 $person->personValidations->update(['nit' => true]);
-                if ($validado) {
-                    $mensaje = "Se ha validado con exito el documento NIT, cumple con todos los requerimientos, para mas detalles ingresar al sistema con sus credenciales";
-                   }else{
+                if (!$validado) {
                     $mensaje = "Se ha validado el documento NIT que ha subido al sistema, pero este no cumple con los requerimientos, por favor verificar entrando en el sistema las Respectivas observaciones  y solventarlas lo mas pronto posible";
-                   } 
+                   }
                 break;
 
             case 'BANCO':
                 $person->personValidations->update(['bank' => true]);
-                if ($validado) {
-                    $mensaje = "Se ha validado con exito el documento de su comprobante de cuenta bancaria, cumple con todos los requerimientos, para mas detalles ingresar al sistema con sus credenciales";
-                   }else{
+                if (!$validado) {
                     $mensaje = "Se ha validado el documento de su comprobante de cuenta bancaria, que ha subido al sistema, pero este no cumple con los requerimientos, por favor verificar entrando en el sistema las Respectivas observaciones  y solventarlas lo mas pronto posible";
                    } 
                 break;
 
             case 'CV':
                 $person->personValidations->update(['curriculum' => true]);
-                if ($validado) {
-                    $mensaje = "Se ha validado con exito el documento que contiene el Curriculum Vitae, cumple con todos los requerimientos, para mas detalles ingresar al sistema con sus credenciales";
-                   }else{
+                if (!$validado) {
                     $mensaje = "Se ha validado el documento que contiene el Curriculum Vitae que ha subido al sistema, pero este no cumple con los requerimientos, por favor verificar entrando en el sistema las Respectivas observaciones  y solventarlas lo mas pronto posible";
                    } 
                 break;
 
             case 'TITULO-N':
                 $person->personValidations->update(['title' => true]);
-                if ($validado) {
-                    $mensaje = "Se ha validado con exito el documento que contiene sus Titulos Profesionales, cumple con todos los requerimientos, para mas detalles ingresar al sistema con sus credenciales";
-                   }else{
+                if (!$validado) {
                     $mensaje = "Se ha validado el documento que contiene sus Titulos Profesionales que ha subido al sistema, pero este no cumple con los requerimientos, por favor verificar entrando en el sistema las Respectivas observaciones  y solventarlas lo mas pronto posible";
                    } 
                 break;
 
             case 'TITULO-I':
                 $person->personValidations->update(['title' => true]);
-                if ($validado) {
-                    $mensaje = "Se ha validado con exito el documento que contiene sus Titulos Profesionales, cumple con todos los requerimientos, para mas detalles ingresar al sistema con sus credenciales";
-                   }else{
+                if (!$validado) {
                     $mensaje = "Se ha validado el documento que contiene sus Titulos Profesionales que ha subido al sistema, pero este no cumple con los requerimientos, por favor verificar entrando en el sistema las Respectivas observaciones  y solventarlas lo mas pronto posible";
                    } 
                 break;
 
             case 'PERMISO':
                 $person->personValidations->update(['work' => true]);
-                if ($validado) {
-                    $mensaje = "Se ha validado con exito el documento que contiene su permiso de trabajo de otra facultad, cumple con todos los requerimientos, para mas detalles ingresar al sistema con sus credenciales";
-                   }else{
+                if (!$validado) {
                     $mensaje = "Se ha validado el documento que contiene su permiso de trabajo de otra facultadque ha subido al sistema, pero este no cumple con los requerimientos, por favor verificar entrando en el sistema las Respectivas observaciones  y solventarlas lo mas pronto posible";
                    } 
                 break;
             case 'PASS':
                 $person->personValidations->update(['passport' => true]);
-                if ($validado) {
-                    $mensaje = "Se ha validado con exito el documento que contiene su Pasaporte, cumple con todos los requerimientos, para mas detalles ingresar al sistema con sus credenciales";
-                   }else{
+                if (!$validado) {
                     $mensaje = "Se ha validado el documento que contiene su Pasaporte que ha subido al sistema, pero este no cumple con los requerimientos, por favor verificar entrando en el sistema las Respectivas observaciones y solventarlas lo mas pronto posible";
                    } 
                 break;
                 case 'CARNET':
                     $person->personValidations->update(['carnet' => true]);
-                    if ($validado) {
-                        $mensaje = "Se ha validado con exito el documento que contiene su Carnet de Residente, cumple con todos los requerimientos, para mas detalles ingresar al sistema con sus credenciales";
-                       }else{
+                    if (!$validado) {
                         $mensaje = "Se ha validado el documento que contiene su Carnet de Residente que ha subido al sistema, pero este no cumple con los requerimientos, por favor verificar entrando en el sistema las Respectivas observaciones y solventarlas lo mas pronto posible";
                        } 
                     break;
                 case 'OTRO-TITULO':
                     $person->personValidations->update(['other_title' => true]);
-                    if ($validado) {
-                        $mensaje = "Se ha validado con exito el documento que contiene su Titulo Extra, cumple con todos los requerimientos, para mas detalles ingresar al sistema con sus credenciales";
-                       }else{
+                    if (!$validado) {
                         $mensaje = "Se ha validado el documento que contiene su Titulo Extra que ha subido al sistema, pero este no cumple con los requerimientos, por favor verificar entrando en el sistema las Respectivas observaciones y solventarlas lo mas pronto posible";
                        } 
                     break;
@@ -749,14 +729,19 @@ class PersonValidationController extends Controller
                 break;
         }
         $this->updatePersonStatus($person);
-        try {
-            Mail::to($person->user->email)->send(new ValidationDocsNotification($mensaje));
-            $response = ['mensaje'   =>"Si se envio el correo electronico"];
-            return response($response, 201);
-        } catch (\Swift_TransportException $e) {
-            $response = ['mensaje'   =>"No se ha enviado el correo electronico"];
-            return response($response, 201);
-         } 
+        if (!$validado) {
+            try {
+                Mail::to($person->user->email)->send(new ValidationDocsNotification($mensaje,'validations'));
+                $response = ['mensaje'   =>"Si se envio el correo electronico"];
+                return response($response, 201);
+            } catch (\Swift_TransportException $e) {
+                $response = ['mensaje'   =>"No se ha enviado el correo electronico"];
+                return response($response, 201);
+             } 
+        }
+        $response = ['mensaje'   =>"Sin mensaje"];
+        return response($response, 201);
+       
          
     }
 
