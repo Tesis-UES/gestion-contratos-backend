@@ -81,7 +81,7 @@ class StayScheduleController extends Controller
             'id'            => $id, 
             'employee_id'  => $employee->id,
             ])
-        ->with(['semester', 'scheduleDetails', 'scheduleActivities.activity'])
+        ->with(['semester', 'scheduleDetails', 'scheduleActivities'])
         ->firstOrFail();
 
         $this->RegisterAction('El empleado ha consultado los detalles de su horario de permanencia con id: '.$id);
@@ -100,6 +100,7 @@ class StayScheduleController extends Controller
         }
 
         $lastStaySchedule = StaySchedule::select('stay_schedules.*')
+            ->with(['scheduleDetails', 'scheduleActivities'])
             ->join('semesters', 'stay_schedules.semester_id', '=', 'semesters.id')
             ->where('stay_schedules.employee_id', $employee->id)
             ->where('semesters.status', '=', '0')
@@ -107,20 +108,13 @@ class StayScheduleController extends Controller
             ->first();
 
         if(!$lastStaySchedule) {
-            return response(null, 204);
+            return response(['message' => 'Usted no cuenta con horario de permanencia antiguo'], 204);
         }
 
-        $serializedScheduleDetails = $lastStaySchedule
-            ->scheduleDetails
-            ->makeHidden(['id', 'stay_schedule_id', 'created_at', 'updated_at']);
+        $lastStaySchedule->makeHidden(['id', 'semester_id', 'employee_id', 'created_at', 'updated_at']);
+        $lastStaySchedule->scheduleDetails->makeHidden(['id', 'stay_schedule_id', 'created_at', 'updated_at']);
+        $lastStaySchedule->scheduleActivities->makeHidden(['id', 'created_at', 'updated_at', 'deleted_at']);
 
-        $serializedScheduleActivities = $lastStaySchedule
-            ->scheduleActivities
-            ->makeHidden(['id', 'created_at', 'updated_at', 'deleted_at']);
-
-        return response([
-        'scheduleDetails' => $serializedScheduleDetails,
-        'scheduleActivities' => $serializedScheduleActivities,
-        ], 200);
+        return response($lastStaySchedule, 200);
     }
 }
