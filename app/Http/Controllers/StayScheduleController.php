@@ -108,7 +108,7 @@ class StayScheduleController extends Controller
             ->first();
 
         if(!$lastStaySchedule) {
-            return response(['message' => 'Usted no cuenta con horario de permanencia antiguo'], 204);
+            return response(['message' => 'Usted no cuenta con horario de permanencia antiguo'], 404);
         }
 
         $lastStaySchedule->makeHidden(['id', 'semester_id', 'employee_id', 'created_at', 'updated_at']);
