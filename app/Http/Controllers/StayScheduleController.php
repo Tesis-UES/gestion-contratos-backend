@@ -87,4 +87,40 @@ class StayScheduleController extends Controller
         $this->RegisterAction('El empleado ha consultado los detalles de su horario de permanencia con id: '.$id);
         return response($staySchedule, 200);
     }
+
+    public function last(){
+        $person = Auth::user()->person;
+        if(!$person) {
+            return response(['message' => 'Registre sus datos personales primero'], 400);
+        }
+
+        $employee =$person->employee;
+        if(!$employee) {
+            return response(['message' => 'Registrese como empleado primero'], 400);
+        }
+
+        $lastStaySchedule = StaySchedule::select('stay_schedules.*')
+            ->join('semesters', 'stay_schedules.semester_id', '=', 'semesters.id')
+            ->where('stay_schedules.employee_id', $employee->id)
+            ->where('semesters.status', '=', '0')
+            ->orderBy('semesters.end_date', 'DESC')
+            ->first();
+
+        if(!$lastStaySchedule) {
+            return response(null, 204);
+        }
+
+        $serializedScheduleDetails = $lastStaySchedule
+            ->scheduleDetails
+            ->makeHidden(['id', 'stay_schedule_id', 'created_at', 'updated_at']);
+
+        $serializedScheduleActivities = $lastStaySchedule
+            ->scheduleActivities
+            ->makeHidden(['id', 'created_at', 'updated_at', 'deleted_at']);
+
+        return response([
+        'scheduleDetails' => $serializedScheduleDetails,
+        'scheduleActivities' => $serializedScheduleActivities,
+        ], 200);
+    }
 }
