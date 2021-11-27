@@ -81,10 +81,40 @@ class StayScheduleController extends Controller
             'id'            => $id, 
             'employee_id'  => $employee->id,
             ])
-        ->with(['semester', 'scheduleDetails', 'scheduleActivities.activity'])
+        ->with(['semester', 'scheduleDetails', 'scheduleActivities'])
         ->firstOrFail();
 
         $this->RegisterAction('El empleado ha consultado los detalles de su horario de permanencia con id: '.$id);
         return response($staySchedule, 200);
+    }
+
+    public function last(){
+        $person = Auth::user()->person;
+        if(!$person) {
+            return response(['message' => 'Registre sus datos personales primero'], 400);
+        }
+
+        $employee =$person->employee;
+        if(!$employee) {
+            return response(['message' => 'Registrese como empleado primero'], 400);
+        }
+
+        $lastStaySchedule = StaySchedule::select('stay_schedules.*')
+            ->with(['scheduleDetails', 'scheduleActivities'])
+            ->join('semesters', 'stay_schedules.semester_id', '=', 'semesters.id')
+            ->where('stay_schedules.employee_id', $employee->id)
+            ->where('semesters.status', '=', '0')
+            ->orderBy('semesters.end_date', 'DESC')
+            ->first();
+
+        if(!$lastStaySchedule) {
+            return response(['message' => 'Usted no cuenta con horario de permanencia antiguo'], 204);
+        }
+
+        $lastStaySchedule->makeHidden(['id', 'semester_id', 'employee_id', 'created_at', 'updated_at']);
+        $lastStaySchedule->scheduleDetails->makeHidden(['id', 'stay_schedule_id', 'created_at', 'updated_at']);
+        $lastStaySchedule->scheduleActivities->makeHidden(['id', 'created_at', 'updated_at', 'deleted_at']);
+
+        return response($lastStaySchedule, 200);
     }
 }

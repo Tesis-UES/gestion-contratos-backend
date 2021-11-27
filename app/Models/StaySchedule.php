@@ -14,6 +14,8 @@ class StaySchedule extends Model
         'employee_id',
     ];
 
+    protected $hidden = ['pivot'];
+
     public function semester()
     {
         return $this->belongsTo(Semester::class);
@@ -26,6 +28,6 @@ class StaySchedule extends Model
 
     public function scheduleActivities() 
     {
-        return $this->hasMany(StayScheduleActivity::class);
+        return $this->belongsToMany(Activity::class, 'stay_schedule_activities');
     }
 }

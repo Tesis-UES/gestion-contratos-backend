@@ -235,6 +235,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     });  
     Route::group(['middleware' => ['can:read_staySchedule']], function() {
         Route::get('/employees/me/stay-schedules', [StayScheduleController::class, 'allMine']);
+        Route::get('/employees/me/stay-schedules/last', [StayScheduleController::class, 'last']);
         Route::get('/employees/me/stay-schedules/{id}', [StayScheduleController::class, 'show']);
     });
 
