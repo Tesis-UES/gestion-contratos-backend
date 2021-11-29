@@ -24,6 +24,7 @@ use App\Http\Controllers\FacultyAuthorityController;
 use App\Http\Controllers\SchoolAuthorityController;
 use App\Http\Controllers\GroupController;
 use App\Http\Controllers\EmployeeTypeController;
+use App\Http\Controllers\HiringRequestController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
@@ -343,6 +344,8 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
         Route::get('/persons', [PersonController::class, 'allCandidates']);
         Route::get('/Word/{id}', [PersonController::class, 'wordExample']);
     });
+
+    Route::post('/hiringRequest', [HiringRequestController::class, 'store']);
     
    
 });
