@@ -4,10 +4,11 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use Illuminate\Database\Eloquent\SoftDeletes;
 
 class HiringRequest extends Model
 {
-    use HasFactory;
+    use HasFactory,softdeletes;
     protected $fillable = [
         'id',
         'hiring_request_code',
@@ -15,6 +16,10 @@ class HiringRequest extends Model
         'school_id',
         'type_modality',
         'message',
+        'status',
+        'request_create',
+        'request_send',
+
     ];
 
     public function school()

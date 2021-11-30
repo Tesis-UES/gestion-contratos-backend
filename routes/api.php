@@ -345,7 +345,12 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
         Route::get('/Word/{id}', [PersonController::class, 'wordExample']);
     });
 
+    //Pendiente por definir los permisos
     Route::post('/hiringRequest', [HiringRequestController::class, 'store']);
-    
+    Route::get('/hiringRequest/{id}', [HiringRequestController::class, 'show']);    
+    Route::put('/hiringRequest/{id}', [HiringRequestController::class, 'update']);
+    Route::delete('/hiringRequest/{id}', [HiringRequestController::class, 'destroy']);
+    Route::get('/hiringRequest/all/peticions',[HiringRequestController::class, 'getAllHiringRequests']);
+    Route::get('/hiringRequest/school/{id}',[HiringRequestController::class, 'getAllHiringRequestBySchool']);
    
 });
