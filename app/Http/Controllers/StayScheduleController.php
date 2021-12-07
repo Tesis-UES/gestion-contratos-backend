@@ -14,7 +14,7 @@ class StayScheduleController extends Controller
     use WorklogTrait;
 
 
-    public function allMine()
+    public function allMine(Request $request)
     {
         $person = Auth::user()->person;
         if(!$person) {
@@ -26,7 +26,11 @@ class StayScheduleController extends Controller
             return response(['message' => 'Registrese como empleado primero'], 400);
         }
 
-        $staySchedules = StaySchedule::where('employee_id', $employee->id)->with('semester')->get();
+        $staySchedules = StaySchedule::where('employee_id', $employee->id)
+        ->with('semester')
+        ->join('semesters', 'stay_schedules.semester_id', '=', 'semesters.id')
+        ->orderBy('semesters.end_date', 'DESC')
+        ->paginate($request->query('paginate'));
         
         $this->RegisterAction('El empleado ha consultado el catalogo de sus horarios de permanencia');
         return response($staySchedules, 200);
