@@ -24,6 +24,7 @@ use App\Http\Controllers\FacultyAuthorityController;
 use App\Http\Controllers\SchoolAuthorityController;
 use App\Http\Controllers\GroupController;
 use App\Http\Controllers\EmployeeTypeController;
+use App\Http\Controllers\HiringRequestController;
 use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Route;
 use Illuminate\Support\Facades\Auth;
@@ -343,6 +344,13 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
         Route::get('/persons', [PersonController::class, 'allCandidates']);
         Route::get('/Word/{id}', [PersonController::class, 'wordExample']);
     });
-    
+
+    //Pendiente por definir los permisos
+    Route::post('/hiringRequest', [HiringRequestController::class, 'store']);
+    Route::get('/hiringRequest/{id}', [HiringRequestController::class, 'show']);    
+    Route::put('/hiringRequest/{id}', [HiringRequestController::class, 'update']);
+    Route::delete('/hiringRequest/{id}', [HiringRequestController::class, 'destroy']);
+    Route::get('/hiringRequest/all/peticions',[HiringRequestController::class, 'getAllHiringRequests']);
+    Route::get('/hiringRequest/school/{id}',[HiringRequestController::class, 'getAllHiringRequestBySchool']);
    
 });
