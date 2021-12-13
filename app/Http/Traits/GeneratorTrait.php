@@ -69,7 +69,10 @@ trait GeneratorTrait {
       ]);
     }
     
-    $formatedCode = $schoolCode.substr(str_repeat(0, 3).$requestCode->next_code, - 3);
+    $yearCode = substr($currentYear, -2);
+    $serial = substr(str_repeat(0, 3).$requestCode->next_code, - 3);
+    $formatedCode = $schoolCode.$yearCode.$serial;
+
     $requestCode->next_code = $requestCode->next_code + 1;
     $requestCode->save();
 
