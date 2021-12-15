@@ -13,7 +13,7 @@ use Carbon\Carbon;
 
 class HiringRequestController extends Controller
 {
-    use WorklogTrait, generatorTrait;
+    use WorklogTrait, GeneratorTrait;
 
     public function store(StoreHiringRequestRequest $request)
     {  

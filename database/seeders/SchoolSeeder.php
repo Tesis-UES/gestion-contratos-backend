@@ -46,7 +46,7 @@ class SchoolSeeder extends Seeder
         SchoolAuthority::create(['name'=>'PRUEBA  DIRECTOR','position'=>'DIRECTOR','startPeriod'=>'2021-02-02','endPeriod'=>'2021-12-02','school_id'=>10]);
         SchoolAuthority::create(['name'=>'PRUEBA  SECRETARIO','position'=>'SECRETARIO','startPeriod'=>'2021-02-02','endPeriod'=>'2021-12-02','school_id'=>10]);
         
-        /*AGRONOMIA*/
+        /*AGRONOMIA
         School::create(['faculty_id'=>'2', 'name' =>'Ingeniería Agronómica']);
         SchoolAuthority::create(['name'=>'PRUEBA  DIRECTOR','position'=>'DIRECTOR','startPeriod'=>'2021-02-02','endPeriod'=>'2021-12-02','school_id'=>11]);
         School::create(['faculty_id'=>'2', 'name' =>'Licenciatura en Medicina Veterinaria y Zootecnia']);
@@ -54,7 +54,7 @@ class SchoolSeeder extends Seeder
         School::create(['faculty_id'=>'2', 'name' =>'Maestría en Gestión Integral del Agua']); 
         SchoolAuthority::create(['name'=>'PRUEBA  DIRECTOR','position'=>'DIRECTOR','startPeriod'=>'2021-02-02','endPeriod'=>'2021-12-02','school_id'=>13]);
         
-        /*NATRUALES*/
+        NATRUALES
         School::create(['faculty_id'=>'3', 'name' =>'Licenciatura en Geofísica']);
         School::create(['faculty_id'=>'3', 'name' =>'Licenciatura en Biología']);
         School::create(['faculty_id'=>'3', 'name' =>'Licenciatura en Física']);
@@ -89,7 +89,7 @@ class SchoolSeeder extends Seeder
         SchoolAuthority::create(['name'=>'PRUEBA  DIRECTOR','position'=>'DIRECTOR','startPeriod'=>'2021-02-02','endPeriod'=>'2021-12-02','school_id'=>'28']);
         SchoolAuthority::create(['name'=>'PRUEBA  DIRECTOR','position'=>'DIRECTOR','startPeriod'=>'2021-02-02','endPeriod'=>'2021-12-02','school_id'=>'29']);
 
-        /*CIENCIAS ECONOMICAS */
+        CIENCIAS ECONOMICAS 
         School::create(['faculty_id'=>'4', 'name' =>'Licenciatura en Administración de Empresas']);
         School::create(['faculty_id'=>'4', 'name' =>'Licenciatura en Contaduría Pública']);
         School::create(['faculty_id'=>'4', 'name' =>'Licenciatura en Economía']);
@@ -104,11 +104,11 @@ class SchoolSeeder extends Seeder
         SchoolAuthority::create(['name'=>'PRUEBA  DIRECTOR','position'=>'DIRECTOR','startPeriod'=>'2021-02-02','endPeriod'=>'2021-12-02','school_id'=>'35']);
 
 
-        /*ODONTO <3 */
+        ODONTO <3 
         School::create(['faculty_id'=>'5', 'name' =>'Doctorado en Cirugía Dental']);
         SchoolAuthority::create(['name'=>'PRUEBA  DIRECTOR','position'=>'DIRECTOR','startPeriod'=>'2021-02-02','endPeriod'=>'2021-12-02','school_id'=>'36']);
 
-        /*QUIMICA */
+        QUIMICA 
         School::create(['faculty_id'=>'6', 'name' =>'Licenciatura en Química y Farmacia']);
         School::create(['faculty_id'=>'7', 'name' =>'Licenciatura en Ciencias Jurídicas']);
         School::create(['faculty_id'=>'7', 'name' =>'Licenciatura en Relaciones Internacionales']);
@@ -119,7 +119,7 @@ class SchoolSeeder extends Seeder
         SchoolAuthority::create(['name'=>'PRUEBA  DIRECTOR','position'=>'DIRECTOR','startPeriod'=>'2021-02-02','endPeriod'=>'2021-12-02','school_id'=>'40']);
 
 
-        //MEDICINA
+        MEDICINA
         School::create(['faculty_id'=>'8', 'name' =>'Doctorado en Medicina']);
         School::create(['faculty_id'=>'8', 'name' =>'Licenciatura en Laboratorio Clínico']);
         School::create(['faculty_id'=>'8', 'name' =>'Licenciatura en Anestesiología e Inhaloterapia']);
@@ -380,7 +380,7 @@ SchoolAuthority::create(['name'=>'PRUEBA  DIRECTOR','position'=>'DIRECTOR','star
 SchoolAuthority::create(['name'=>'PRUEBA  DIRECTOR','position'=>'DIRECTOR','startPeriod'=>'2021-02-02','endPeriod'=>'2021-12-02','school_id'=>'168']);
 SchoolAuthority::create(['name'=>'PRUEBA  DIRECTOR','position'=>'DIRECTOR','startPeriod'=>'2021-02-02','endPeriod'=>'2021-12-02','school_id'=>'169']);
 SchoolAuthority::create(['name'=>'PRUEBA  DIRECTOR','position'=>'DIRECTOR','startPeriod'=>'2021-02-02','endPeriod'=>'2021-12-02','school_id'=>'170']);
-
+*/
 
         CentralAuthority::create([
             'position'      =>'Rector',
