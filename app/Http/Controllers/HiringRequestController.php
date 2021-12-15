@@ -6,18 +6,19 @@ use App\Models\HiringRequest;
 use App\Http\Requests\StoreHiringRequestRequest;
 use App\Http\Requests\UpdateHiringRequestRequest;
 use App\Http\Traits\WorklogTrait;
+use App\Http\Traits\GeneratorTrait;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 
 class HiringRequestController extends Controller
 {
-    use WorklogTrait;
+    use WorklogTrait, generatorTrait;
 
     public function store(StoreHiringRequestRequest $request)
-    {   
+    {  
         $request->request->add([
-            'hiring_request_code'   =>uniqid('HR_'), //Aqui va el generador de codigos de peñate
+            'hiring_request_code'   =>$this->generateRequestCode($request->school_id), //Aqui va el generador de codigos de peñate
             'status'                =>'En creacion',
             'request_create'        => Carbon::now()
         ]); 

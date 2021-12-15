@@ -10,7 +10,7 @@ class RequestCode extends Model
     use HasFactory;
 
     protected $fillable = [
-        'school_code',
+        'school_id',
         'year',
         'next_code',
     ];
