@@ -15,7 +15,8 @@ class CreateRequestCodesTable extends Migration
     {
         Schema::create('request_codes', function (Blueprint $table) {
             $table->id();
-            $table->string('school_code')->nonullable();
+            $table->integer('school_id');
+            $table->foreign('school_id')->references('id')->on('schools')->nonullable();
             $table->string('year')->nonullable();
             $table->integer('next_code')->nonullable()->default(1);
             $table->timestamps();

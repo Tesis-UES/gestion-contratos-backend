@@ -13,43 +13,43 @@ trait GeneratorTrait {
       return $generator->generateString(32);
     }
 
-  public function generateRequestCode(string $schoolName) {
+  public function generateRequestCode(int $schoolId) {
     $currentYear = date('Y');
     $schoolCode;
-    switch ($schoolName) {
-      case 'Arquitectura':
+    switch ($schoolId) {
+      case 1:
         $schoolCode = 'ARQ';
         break;
       
-      case 'Ingeniería Civil':
+      case 2:
         $schoolCode = 'CIV';
         break;
             
-      case 'Ingeniería Industrial':
+      case 3:
         $schoolCode = 'IND';
         break;
             
-      case 'Ingeniería Mecánica':
+      case 4:
         $schoolCode = 'MEC';
         break;
             
-      case 'Ingeniería Eléctrica':
+      case 5:
         $schoolCode = 'ELE';
         break;
             
-      case 'Ingeniería Química':
+      case 6:
         $schoolCode = 'QMC';
         break;
                
-      case 'Ingeniería de Alimentos':
+      case 7:
         $schoolCode = 'ALI';
         break;
                
-      case 'Ingeniería en Sistemas Informáticos':
+      case 8:
         $schoolCode = 'SIF';
         break;
                
-      case 'Unidad de Ciencias Basicas':
+      case 9:
         $schoolCode = 'UCB';
         break;
                           
@@ -58,12 +58,12 @@ trait GeneratorTrait {
         break;
     }
     $requestCode = RequestCode::where([
-      'school_code' => $schoolCode, 
+      'school_id' => $schoolId, 
       'year'  => $currentYear,
     ])->first();
     if(!$requestCode) {
       $requestCode = RequestCode::create([
-        'school_code' => $schoolCode,
+        'school_id' => $schoolId,
         'year' => $currentYear,
         'next_code' => 1,
       ]);
