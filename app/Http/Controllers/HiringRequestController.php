@@ -17,12 +17,11 @@ class HiringRequestController extends Controller
 
     public function store(StoreHiringRequestRequest $request)
     {  
-        $request->request->add([
-            'hiring_request_code'   =>$this->generateRequestCode($request->school_id), //Aqui va el generador de codigos de peñate
+        $newHiringRequest = HiringRequest::create(array_merge($request->all(),[
+            'hiring_request_code'   =>$this->generateRequestCode($request->school_id),
             'status'                =>'En creacion',
             'request_create'        => Carbon::now()
-        ]); 
-        $newHiringRequest = HiringRequest::create($request->all());
+        ]));
         $this->RegisterAction("El usuario ha registrado una nueva solicitud de contratación", "high");
         return response(['hiringRequest' => $newHiringRequest], 201);
     }
