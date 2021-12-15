@@ -17,7 +17,8 @@
         "luecano/numero-a-letras": "^3.0",
         "maatwebsite/excel": "^3.1",
         "phpoffice/phpword": "^0.18.2",
-        "spatie/laravel-permission": "^4.2"
+        "spatie/laravel-permission": "^4.2",
+        "fakerphp/faker": "^1.9.1"
     },
     "require-dev": {
         "facade/ignition": "^2.5",
