@@ -34,6 +34,14 @@ class StayScheduleDetailController extends Controller
             return response(['message' => 'Registrese como empleado primero', 400]);
         }
 
+        $totalHours = array_reduce($fields['details'], function($pv, $cv) {
+            return $pv + (strtotime($cv['finish_time']) - strtotime($cv['start_time'])) /3600;
+        }, 0);
+
+        if($totalHours > 40) {
+            return response(['message' => 'El total de horas no puede ser mayor a 40'],400);
+        }
+
         $staySchedule = StaySchedule::where([
             'id'            => $stayScheduleId, 
             'employee_id'  => $employee->id,
