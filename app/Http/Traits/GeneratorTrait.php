@@ -13,50 +13,26 @@ trait GeneratorTrait {
       return $generator->generateString(32);
     }
 
+    public function getSchoolCode(int $schoolId){
+      $schoolCode = [
+        '1' => 'ARQ',
+        '2' => 'CIV',
+        '3' => 'IND',
+        '4' => 'MEC',
+        '5' => 'ELE',
+        '6' => 'QMC',
+        '7' => 'ALI',
+        '8' => 'SIF',
+        '9' => 'UCB',
+        'DEFAULT' => 'PGD'
+      ];
+      if ($schoolId>sizeof($schoolCode)-1) return $schoolCode['DEFAULT'];
+      else return $schoolCode[$schoolId];
+    }
+
   public function generateRequestCode(int $schoolId) {
     $currentYear = date('Y');
-    $schoolCode;
-    switch ($schoolId) {
-      case 1:
-        $schoolCode = 'ARQ';
-        break;
-      
-      case 2:
-        $schoolCode = 'CIV';
-        break;
-            
-      case 3:
-        $schoolCode = 'IND';
-        break;
-            
-      case 4:
-        $schoolCode = 'MEC';
-        break;
-            
-      case 5:
-        $schoolCode = 'ELE';
-        break;
-            
-      case 6:
-        $schoolCode = 'QMC';
-        break;
-               
-      case 7:
-        $schoolCode = 'ALI';
-        break;
-               
-      case 8:
-        $schoolCode = 'SIF';
-        break;
-               
-      case 9:
-        $schoolCode = 'UCB';
-        break;
-                          
-      default:
-        $schoolCode = 'PGD';
-        break;
-    }
+    $schoolCode = $this->getSchoolCode($schoolId);
     $requestCode = RequestCode::where([
       'school_id' => $schoolId, 
       'year'  => $currentYear,
