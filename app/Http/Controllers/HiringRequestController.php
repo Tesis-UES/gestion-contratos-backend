@@ -52,14 +52,14 @@ class HiringRequestController extends Controller
 
     public function getAllHiringRequests(Request $request)
     {
-        $hiringRequests = HiringRequest::where('status', '=', $request->query('status'))->with('school')->with('contractType')->paginate($request->query('paginate'));
+        $hiringRequests = HiringRequest::where('status', '=', $request->query('status'))->with('school')->with('contractType')->orderBy('request_create','DESC')->paginate($request->query('paginate'));
         $this->RegisterAction("El usuario ha consultado todas las solicitudes de contratación", "medium");
         return response($hiringRequests, 200);
     }
 
     public function getAllHiringRequestBySchool($id,Request $request)
     {
-        $hiringRequests = HiringRequest::where('school_id', '=', $id)->where('status', '=', $request->query('status'))->with('school')->with('contractType')->paginate($request->query('paginate'));
+        $hiringRequests = HiringRequest::where('school_id', '=', $id)->where('status', '=', $request->query('status'))->with('school')->with('contractType')->orderBy('request_create','DESC')->paginate($request->query('paginate'));
         $this->RegisterAction("El usuario ha consultado todas las solicitudes de contratación", "medium");
         return response($hiringRequests, 200);
     }
