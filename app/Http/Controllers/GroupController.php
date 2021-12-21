@@ -5,9 +5,11 @@ namespace App\Http\Controllers;
 use App\Models\AcademicLoad;
 use App\Models\Group;
 use App\Models\Schedule;
+use App\Models\Semester;
 use App\Imports\GroupCoursesImport;
 use Illuminate\Http\Request;
 use Maatwebsite\Excel\Facades\Excel;
+use Illuminate\Support\Facades\Auth;
 
 class GroupController extends Controller
 {
@@ -205,5 +207,13 @@ class GroupController extends Controller
         ];
 
         return response($updateGroup, 200); 
+    }
+
+    public function getAllGroupsWhitoutProfessors(){
+        $semester = Semester::where('status',1)->firstOrFail();
+        $school = $user = Auth::user()->school_id;
+        $academicLoad = AcademicLoad::where([['semester_id',$semester->id],['school_id',$school]])->first();
+        $groups = Group::with('course')->with('grupo')->with('schedule')->where([['academic_load_id',$academicLoad->id],['people_id',null]])->get();
+        return $groups;
     }
 }

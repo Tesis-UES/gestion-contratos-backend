@@ -54,7 +54,7 @@ class CreatePeopleTable extends Migration
             $table->string('bank_account_number',120)->nullable();;
             $table->string('bank_account')->nullable();
             $table->string('status',50)->default('Registrando');
-            $table->boolean('is_employee')->nullable();
+            $table->boolean('is_employee')->default(false);
             $table->boolean('is_nationalized')->nullable();
             $table->string('resident_card')->nullable();
             $table->string('resident_card_number',250)->nullable();

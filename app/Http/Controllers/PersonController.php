@@ -13,6 +13,7 @@ use Illuminate\Http\Request;
 use App\Http\Traits\{WorklogTrait, ValidationTrait};
 use Illuminate\Support\Facades\Auth;
 use Luecano\NumeroALetras\NumeroALetras;
+use DB;
 use Carbon\Carbon;
 
 class PersonController extends Controller
@@ -1092,10 +1093,24 @@ class PersonController extends Controller
             "Content-Type: application/octet-stream",
       ]; 
         return response()->download($tenpFile, 'Contrato Generado Servicios Profesionales.docx', $header)->deleteFileAfterSend($shouldDelete = true);
-    } catch (\PhpOffice\PhpWord\Exception\Exception $e) {
-        //throw $th;
-        return back($e->getCode());
-    }
+        } catch (\PhpOffice\PhpWord\Exception\Exception $e) {
+            //throw $th;
+            return back($e->getCode());
+        }
 
     }
+
+    public function getCandidates(Request $request){
+        $candidates = Person::select('id', DB::raw("CONCAT(first_name,' ',middle_name,' ',last_name) as name"));
+        switch ($request->hiringType) {
+            case 'SPNP':
+                $candidates = $candidates->where('is_employee',false);
+                break;
+            default:
+                $candidates = $candidates->where('is_employee',true);
+                break;
+        }
+        $candidates = $candidates->get();
+        return response(['candidates' => $candidates],200);
+    }  
 }
