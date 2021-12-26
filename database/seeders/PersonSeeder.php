@@ -4,15 +4,90 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
-use App\Models\{User,Person,PersonValidation,Employee,EmployeeType};
+use App\Models\{User,Person,PersonValidation,Employee,EmployeeType,StaySchedule,Semester,Activity};
 
 class PersonSeeder extends Seeder
 {
     
     public function run()
     {
-        // Obtenemos employeeTypes
+        // Obtenemos employeeTypes,semesters,users
+        Semester::Create(['name'=>'Ciclo 2-2021','start_date'=>'2021-07-13','end_date'=>'2021-12-12','status'=>true]);
         $employeeTypes = EmployeeType::all();
+        $semester = Semester::firstWhere('status',1);
+        //detalles de horario
+        $details = [ 
+            [
+            "day" => "Lunes",
+            "start_time" => "07:00",
+            "finish_time"=> "12:00"
+            ],
+            [
+            "day"=> "Lunes",
+            "start_time"=> "13:00",
+            "finish_time"=> "16:00"
+            ],
+            [
+            "day"=> "Martes",
+            "start_time"=> "07:00",
+            "finish_time"=> "12:00"
+            ],
+            [
+            "day"=> "Martes",
+            "start_time"=> "13:00",
+            "finish_time"=> "16:00"
+            ],
+            [
+            "day"=> "Miercoles",
+            "start_time"=> "07:00",
+            "finish_time"=> "12:00"
+            ],
+            [
+            "day"=> "Miercoles",
+            "start_time"=> "13:00",
+            "finish_time"=> "16:00"
+            ],
+            [
+            "day"=> "Jueves",
+            "start_time"=> "07:00",
+            "finish_time"=> "12:00"
+            ],
+            [
+            "day"=> "Jueves",
+            "start_time"=> "13:00",
+            "finish_time"=> "16:00"
+            ],
+            [
+                "day"=>"Viernes",
+            "start_time"=> "07:00",
+            "finish_time"=> "12:00"
+            ],
+            [
+            "day"=> "Viernes",
+            "start_time"=> "13:00",
+            "finish_time"=> "16:00"
+            ]
+        ];
+        $activities = [
+            "Programar y coordinar el uso de equipo de laboratorio",
+            "Asesorar el uso de equipo, insumos y materiales diversos",
+            "Monitorear e informar sobre la necesidad de insuos",
+            "Impartir cursos, talleres, charlas y ponencias",
+            "Promover y dar apoyo en estudios de investigacion tecnologica",
+            "Administrar evaluaciones",
+            "Calificar evaluaciones",
+            "Atender consultas",
+            "Impartir discusiones de la asignatura",
+            "Preparar material de apoyo",
+            "Elaborar evlualaciones"
+        ];
+        foreach($activities as $activityName) {
+            $activity = Activity::where('name', 'ilike', $activityName)->first();
+            if(!$activity){
+                $activity = Activity::create(['name' => $activityName]);
+            }
+            $activityIds[] = $activity->id;
+        }
 
         //Creamo dos Usuarios para las pruebas de Candidato Nacional / Internacional
         $Nacional = User::create([
@@ -184,6 +259,13 @@ class PersonSeeder extends Seeder
             'person_id'         => $datosNacionalUesFia->id,
         ]);
         $employeeNacionalUesFia->employeeTypes()->save($employeeTypes[0]);
+        $newStaySchedule = StaySchedule::create([
+            'semester_id'   => $semester->id,
+            'employee_id'  => $employeeNacionalUesFia->id,
+        ]);
+       
+        $newStaySchedule->scheduleDetails()->createMany($details);
+        $newStaySchedule->scheduleActivities()->sync($activityIds);
 
         //Ingresando datos de candidato Nacional - Trabajador UES - Otra Facultad
         $datosNacionalEOtra = Person::create([
@@ -225,7 +307,13 @@ class PersonSeeder extends Seeder
         'person_id'         => $datosNacionalEOtra->id,
         ]);
         $employeeNacionalEOtra->employeeTypes()->saveMany([$employeeTypes[0], $employeeTypes[1]]);
-        
+         $newStaySchedule = StaySchedule::create([
+            'semester_id'   => $semester->id,
+            'employee_id'  => $employeeNacionalEOtra->id,
+        ]);
+       
+        $newStaySchedule->scheduleDetails()->createMany($details);
+        $newStaySchedule->scheduleActivities()->sync($activityIds); 
         //Ingresando Datos de Candidato Extranjero
         $DatosInternacional =  Person::create([
             'user_id'       => $Internacional->id,
@@ -279,7 +367,14 @@ class PersonSeeder extends Seeder
             'person_id'         =>$DatosInternacionalE->id,
         ]);
         $employeeInternacionalE->employeeTypes()->save($employeeTypes[2]);
-
+         $newStaySchedule = StaySchedule::create([
+            'semester_id'   => $semester->id,
+            'employee_id'  => $employeeInternacionalE->id,
+        ]);
+       
+        $newStaySchedule->scheduleDetails()->createMany($details);
+        $newStaySchedule->scheduleActivities()->sync($activityIds); 
+        
         $DatosInternacionalEO =  Person::create([
             'user_id'       => $InternacionalEOtra->id,
             'first_name'    => 'Cordelio',
@@ -309,6 +404,13 @@ class PersonSeeder extends Seeder
             'escalafon_id'      => 1,
             'person_id'         => $DatosInternacionalEO->id,
         ]);
-        $employeeInternacionalEO->employeeTypes()->save($employeeTypes[1]);
-    }
+         $employeeInternacionalEO->employeeTypes()->save($employeeTypes[1]);
+        $newStaySchedule = StaySchedule::create([
+            'semester_id'   => $semester->id,
+            'employee_id'  => $employeeInternacionalEO->id,
+        ]);
+       
+        $newStaySchedule->scheduleDetails()->createMany($details);
+        $newStaySchedule->scheduleActivities()->sync($activityIds);
+    } 
 }
