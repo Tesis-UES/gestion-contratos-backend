@@ -171,7 +171,8 @@ class PersonSeeder extends Seeder
             'nit_number'    =>'0804-890597-207-8',
             'nit_text'      =>'CERO OCHOCIENTOS CUATRO-OCHOCIENTOS NOVENTA MIL QUINIENTOS NOVENTA Y SIETE-CERO CERO DOSCIENTOS SIETE-OCHO ',
             'bank_id'       => 3,
-            'bank_account_number'   =>'0125415656'
+            'bank_account_number'   =>'0125415656',
+            'is_employee' => true
         ]);
         $personValidation = new PersonValidation(['person_id' => $datosNacionalUesFia->id]);
         $personValidation->save();
@@ -210,7 +211,8 @@ class PersonSeeder extends Seeder
             'nit_number'    =>'0804-890597-207-8',
             'nit_text'      =>'CERO OCHOCIENTOS CUATRO-OCHOCIENTOS NOVENTA MIL QUINIENTOS NOVENTA Y SIETE-CERO CERO DOSCIENTOS SIETE-OCHO ',
             'bank_id'       => 4,
-            'bank_account_number'   =>'0125415656'
+            'bank_account_number'   =>'0125415656',
+            'is_employee' => true
         ]);
 
         $personValidation = new PersonValidation(['person_id' =>$datosNacionalEOtra ->id]);
@@ -265,6 +267,7 @@ class PersonSeeder extends Seeder
             'professional_title'   =>'Ingeniero en Sistemas Informaticos',
             'bank_id'       => 6,
             'bank_account_number'   =>'0125415656',
+            'is_employee' => true
         ]);
         $personValidation = new PersonValidation(['person_id' =>$DatosInternacionalE->id]);
         $personValidation->save();
@@ -295,6 +298,7 @@ class PersonSeeder extends Seeder
             'professional_title'   =>'Ingeniero en Sistemas Informaticos',
             'bank_id'       => 7,
             'bank_account_number'   =>'0125415656',
+            'is_employee' => true                            
          ]);
         $personValidation = new PersonValidation(['person_id' =>$DatosInternacionalEO->id]);
         $personValidation->save();

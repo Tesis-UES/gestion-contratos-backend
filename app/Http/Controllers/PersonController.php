@@ -8,7 +8,7 @@ use App\Models\Escalafon;
 use App\Models\Faculty;
 use App\Models\Person;
 use App\Models\PersonValidation;
-use App\Models\{PersonChange,CentralAuthority};
+use App\Models\{PersonChange,CentralAuthority,StaySchedule};
 use Illuminate\Http\Request;
 use App\Http\Traits\{WorklogTrait, ValidationTrait};
 use Illuminate\Support\Facades\Auth;
@@ -1113,4 +1113,24 @@ class PersonController extends Controller
         $candidates = $candidates->get();
         return response(['candidates' => $candidates],200);
     }  
+
+    public function getInfoCandidate($person){
+        $person = Person::findOrFail($person);
+        $lastStaySchedule = StaySchedule::select('stay_schedules.*')
+        ->with(['scheduleDetails', 'scheduleActivities'])
+        ->join('semesters', 'stay_schedules.semester_id', '=', 'semesters.id')
+        ->where('stay_schedules.employee_id', $person->employee->id)->get()->last();
+        $lastStaySchedule->makeHidden(['employee_id', 'created_at', 'updated_at']);
+        $lastStaySchedule->scheduleDetails->makeHidden(['id', 'stay_schedule_id', 'created_at', 'updated_at']);
+        $lastStaySchedule->scheduleActivities->makeHidden(['id', 'created_at', 'updated_at', 'deleted_at']);
+        $candidate = [
+            'id'                => $person->id,
+            'name'              => $person->first_name.' '.$person->middle_name.' '.$person->last_name,
+            'escalafon_code'    => $person->employee->escalafon->code,
+            'escalafon_name'    => $person->employee->escalafon->name,
+            'salary'            => $person->employee->escalafon->salary,
+            'details'           => $lastStaySchedule
+        ];
+        return response(['candidate' => $candidate],200);
+    }
 }
