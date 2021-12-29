@@ -19,8 +19,6 @@ class HiringRequestController extends Controller
     {  
         $newHiringRequest = HiringRequest::create(array_merge($request->all(),[
             'hiring_request_code'   =>$this->generateRequestCode($request->school_id),
-            'status'                =>'En creacion',
-            'request_create'        => Carbon::now()
         ]));
         $this->RegisterAction("El usuario ha registrado una nueva solicitud de contratación", "high");
         return response(['hiringRequest' => $newHiringRequest], 201);
@@ -52,14 +50,14 @@ class HiringRequestController extends Controller
 
     public function getAllHiringRequests(Request $request)
     {
-        $hiringRequests = HiringRequest::where('status', '=', $request->query('status'))->with('school')->with('contractType')->orderBy('request_create','DESC')->paginate($request->query('paginate'));
+        $hiringRequests = HiringRequest::with('school')->with('contractType')->orderBy('created_at','DESC')->paginate($request->query('paginate'));
         $this->RegisterAction("El usuario ha consultado todas las solicitudes de contratación", "medium");
         return response($hiringRequests, 200);
     }
 
     public function getAllHiringRequestBySchool($id,Request $request)
     {
-        $hiringRequests = HiringRequest::where('school_id', '=', $id)->where('status', '=', $request->query('status'))->with('school')->with('contractType')->orderBy('request_create','DESC')->paginate($request->query('paginate'));
+        $hiringRequests = HiringRequest::where('school_id', '=', $id)->with('school')->with('contractType')->orderBy('created_at','DESC')->paginate($request->query('paginate'));
         $this->RegisterAction("El usuario ha consultado todas las solicitudes de contratación", "medium");
         return response($hiringRequests, 200);
     }

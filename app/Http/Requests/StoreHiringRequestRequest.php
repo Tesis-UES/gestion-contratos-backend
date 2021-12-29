@@ -27,7 +27,7 @@ class StoreHiringRequestRequest extends FormRequest
         return [
             'contract_type_id'  => 'required|exists:contract_types,id',
             'school_id'         => 'required|exists:schools,id',
-            'type_modality'     => ['required', Rule::in(['Modalidad Presencial', 'Modalidad en Linea'])],
+            'modality'          => ['required', Rule::in(['Modalidad Presencial', 'Modalidad en Linea'])],
             'message'           => 'required|string',
         ];
     }
@@ -36,13 +36,13 @@ class StoreHiringRequestRequest extends FormRequest
         {
             return [
                 'contract_type_id.required' => 'El tipo de contrato es requerido',
-                'contract_type_id.exists'  => 'El tipo de contrato no existe en los registros',
-                'school_id.required'       => 'La escuela o unidad es requerida',
-                'school_id.exists'         => 'La escuela o unidad no existe en los registros',
-                'type_modality.required'   => 'El tipo de modalidad es requerido',
-                'type_modality.in'         => 'El tipo de modalidad no es válido, los validos son: Modalidad Presencial y Modalidad en Linea',
-                'message.required'         => 'El mensaje de la solicitud es requerido',
-                'message.string'           => 'El mensaje debe ser una cadena de caracteres',
+                'contract_type_id.exists'   => 'El tipo de contrato no existe en los registros',
+                'school_id.required'        => 'La escuela o unidad es requerida',
+                'school_id.exists'          => 'La escuela o unidad no existe en los registros',
+                'modality.required'         => 'El tipo de modalidad es requerido',
+                'modality.in'               => 'El tipo de modalidad no es válido, los validos son: Modalidad Presencial y Modalidad en Linea',
+                'message.required'          => 'El mensaje de la solicitud es requerido',
+                'message.string'            => 'El mensaje debe ser una cadena de caracteres',
             ];
         }
 }

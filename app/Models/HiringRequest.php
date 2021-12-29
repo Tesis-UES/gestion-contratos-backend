@@ -8,18 +8,14 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class HiringRequest extends Model
 {
-    use HasFactory,softdeletes;
+    use HasFactory, SoftDeletes;
     protected $fillable = [
         'id',
-        'hiring_request_code',
+        'code',
+        'modality',
+        'message',
         'contract_type_id',
         'school_id',
-        'type_modality',
-        'message',
-        'status',
-        'request_create',
-        'request_send',
-
     ];
 
     public function school()

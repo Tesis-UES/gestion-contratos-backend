@@ -15,16 +15,13 @@ class CreateHiringRequestsTable extends Migration
     {
         Schema::create('hiring_requests', function (Blueprint $table) {
             $table->id();
-            $table->string('hiring_request_code',120)->nonullable()->unique();
-            $table->enum('type_modality', ['Modalidad Presencial', 'Modalidad en Linea']);
-            $table->enum('status', ['En creacion', 'Enviado a Junta', 'Aprobada','Con Observaciones']);
-            $table->date('request_create')->nullable();
-            $table->date('request_send')->nullable();
+            $table->string('code',120)->nonullable()->unique();
+            $table->enum('modality', ['Modalidad Presencial', 'Modalidad en Linea']);
+            $table->longText('message')->nonullable();
             $table->bigInteger('contract_type_id')->unsigned()->nonullable();
             $table->foreign('contract_type_id')->references('id')->on('contract_types')->onDelete('cascade')->nonullable();
             $table->bigInteger('school_id')->unsigned()->nonullable();
             $table->foreign('school_id')->references('id')->on('schools')->onDelete('cascade')->nonullable();
-            $table->longText('message')->nonullable();
             $table->timestamps();
             $table->softDeletes();
         });
