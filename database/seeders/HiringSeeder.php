@@ -21,13 +21,14 @@ class HiringSeeder extends Seeder
          
         for ($i=0; $i < $hrQty ; $i++) { 
             $faker = \Faker\Factory::create();
-            HiringRequest::create([
+           $rq =  HiringRequest::create([
                 'code' =>$this->generateRequestCode(mt_rand(1,9)), 
                 'contract_type_id' => mt_rand(1,3), 
                 'school_id' =>mt_rand(1,9), 
                 'modality' => 'Modalidad Presencial', 
                 'message' => $faker->text, 
             ]);
+            $rq->status()->attach(['status_id'=>'1'],['comments'=>'Creado']);
         }
         
       
