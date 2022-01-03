@@ -18,6 +18,12 @@ class HiringRequest extends Model
         'school_id',
     ];
 
+    protected $appends = ['last_status',];
+    public function getLastStatusAttribute()
+    {
+        return $this->status->last()->makeHidden(['pivot']);
+    }
+
     public function school()
     {
         return $this->belongsTo(School::class);
