@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\HiringRequest;
+use App\Models\Status;
 use App\Http\Requests\StoreHiringRequestRequest;
 use App\Http\Requests\UpdateHiringRequestRequest;
 use App\Http\Traits\WorklogTrait;
@@ -18,8 +19,10 @@ class HiringRequestController extends Controller
     public function store(StoreHiringRequestRequest $request)
     {  
         $newHiringRequest = HiringRequest::create(array_merge($request->all(),[
-            'hiring_request_code'   =>$this->generateRequestCode($request->school_id),
+            'code'   =>$this->generateRequestCode($request->school_id),
         ]));
+        $status = Status::where('code','CSC')->first();
+        $newHiringRequest->status()->attach(['status_id'=> $status->id]);
         $this->RegisterAction("El usuario ha registrado una nueva solicitud de contratación", "high");
         return response(['hiringRequest' => $newHiringRequest], 201);
     }
@@ -27,7 +30,7 @@ class HiringRequestController extends Controller
     
     public function show($id)
     {
-        $hiringRequest = HiringRequest::with('school')->with('contractType')->findOrFail($id);
+        $hiringRequest = HiringRequest::with('school')->with('contractType')->with('status')->findOrFail($id);
         return response(['hiringRequest' => $hiringRequest], 200);
     }
    
@@ -51,6 +54,7 @@ class HiringRequestController extends Controller
     public function getAllHiringRequests(Request $request)
     {
         $hiringRequests = HiringRequest::with('school')->with('contractType')->orderBy('created_at','DESC')->paginate($request->query('paginate'));
+        $hiringRequests->makeHidden('status');
         $this->RegisterAction("El usuario ha consultado todas las solicitudes de contratación", "medium");
         return response($hiringRequests, 200);
     }
@@ -58,6 +62,7 @@ class HiringRequestController extends Controller
     public function getAllHiringRequestBySchool($id,Request $request)
     {
         $hiringRequests = HiringRequest::where('school_id', '=', $id)->with('school')->with('contractType')->orderBy('created_at','DESC')->paginate($request->query('paginate'));
+        $hiringRequests->makeHidden('status');
         $this->RegisterAction("El usuario ha consultado todas las solicitudes de contratación", "medium");
         return response($hiringRequests, 200);
     }

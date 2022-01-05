@@ -18,6 +18,12 @@ class HiringRequest extends Model
         'school_id',
     ];
 
+    protected $appends = ['last_status',];
+    public function getLastStatusAttribute()
+    {
+        return $this->status->last()->makeHidden(['pivot']);
+    }
+
     public function school()
     {
         return $this->belongsTo(School::class);
@@ -26,5 +32,9 @@ class HiringRequest extends Model
     public function contractType()
     {
         return $this->belongsTo(ContractType::class);
+    }
+
+    public function status(){
+        return $this->belongsToMany(Status::class,'status_history','hiring_request_id','status_id')->withTimeStamps();
     }
 }
