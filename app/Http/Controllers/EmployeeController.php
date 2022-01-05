@@ -19,7 +19,9 @@ class EmployeeController extends Controller
     public function store(Request $request)
     {   
         $fields = $request->validate([
-            'journey_type'      =>['required', Rule::in(['tiempo-completo', 'medio-tiempo', 'cuarto-tiempo'])],
+            'partida'           => 'string|max:50',
+            'sub_partida'       => 'string|max:50',
+            'journey_type'      =>['required', Rule::in(['tiempo-completo', 'medio-tiempo', 'cuarto-tiempo', 'tiempo-parcial', 'tiempo-eventual'])],
             'faculty_id'        => 'required|integer|gte:1',
             'escalafon_id'      => 'required|integer|gte:1',
             'employee_types'    => 'required|array|min:1',
