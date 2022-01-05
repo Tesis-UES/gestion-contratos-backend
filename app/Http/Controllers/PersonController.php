@@ -115,9 +115,11 @@ class PersonController extends Controller
 
         if($request->input('is_employee') == true) {
             $employeeFields = $request->validate([
-                'journey_type'     => 'required|string' ,
-                'faculty_id'       => 'required|integer|gte:1',
-                'escalafon_id'     => 'required|integer|gte:1',
+                'partida'           => 'string|max:50',
+                'sub_partida'       => 'string|max:50',
+                'journey_type'      => ['required|',Rule::in(['tiempo-completo', 'medio-tiempo', 'cuarto-tiempo', 'tiempo-parcial', 'tiempo-eventual'])],
+                'faculty_id'        => 'required|integer|gte:1',
+                'escalafon_id'      => 'required|integer|gte:1',
                 'employee_types'    => 'required|array|min:1',
                 'employee_types.*'  => 'required|integer|distinct|gte:1',
             ]);
@@ -259,7 +261,9 @@ class PersonController extends Controller
 
         if($request->input('is_employee') == true) {
             $employeeFields = $request->validate([
-                'journey_type'      => 'required|string' ,
+                'partida'           => 'string|max:50',
+                'sub_partida'       => 'string|max:50',
+                'journey_type'      => ['required|',Rule::in(['tiempo-completo', 'medio-tiempo', 'cuarto-tiempo', 'tiempo-parcial', 'tiempo-eventual'])],
                 'faculty_id'        => 'required|integer|gte:1',
                 'escalafon_id'      => 'required|integer|gte:1',
                 'employee_types'    => 'required|array|min:1',
