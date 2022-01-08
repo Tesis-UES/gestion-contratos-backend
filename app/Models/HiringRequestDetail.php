@@ -37,4 +37,8 @@ class HiringRequestDetail extends Model
     public function groups() {
         return $this->belongsToMany(Group::class, 'hiring_groups');
     }
+
+    public function activities() {
+        return $this->belongsToMany(Activity::class, 'hiring_activities');
+    }
 }

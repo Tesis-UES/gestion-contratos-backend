@@ -26,4 +26,8 @@ class Activity extends Model
     {
         return $this->belongsToMany(StaySchedule::class, 'stay_schedule_activities');
     }
+
+    public function hiring_requests() {
+        return $this->belongsToMany(Activity::class, 'hiring_activities');
+    }
 }
