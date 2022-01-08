@@ -89,7 +89,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
         Route::group(['middleware' => ['can:read_banks']], function () {
             Route::get('/banks', [BankController::class, 'all']);
             Route::get('/banks/{id}', [BankController::class, 'show']);
-        });
+    });
 
     // Rutas que manejan el catalogo de escalafones 
     Route::group(['middleware' => ['can:write_escalafones']], function () {
@@ -190,13 +190,10 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
         Route::get('/persons/changes',[PersonController::class, 'myChanges']);
     });
     Route::group(['middleware' => ['can:read_persons']], function () {
-       
         Route::get('/persons/me', [PersonController::class, 'showMyInfo']);
         Route::get('/persons/me/validations', [PersonValidationController::class, 'myValidationStatus']);
         Route::get('/persons/files/{type}/view', [PersonController::class, 'getMenu']);
         Route::get('/persons/files/options', [PersonController::class, 'getDocumentsByCase']);
-       
-        
     });
 
     // Rutas que manejan las validaciones de personas
@@ -204,8 +201,6 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
         Route::get('/persons/{id}/validations', [PersonValidationController::class, 'getValidations']);
         Route::get('/persons/{person}/validations/{type}', [PersonValidationController::class, 'validationData']);
         Route::get('/persons/{id}', [PersonController::class, 'show']);
-       
-        
     });
     Route::group(['middleware' => ['can:write_personValidations']], function () {
         Route::post('/persons/{person}/validations/{type}/store', [PersonValidationController::class, 'validationStore']);
@@ -357,5 +352,4 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::get('/candidates/all',[PersonController::class,'getCandidates']);
     Route::get('/hiringRequest/groups/notAssigned',[GroupController::class,'getAllGroupsWhitoutProfessors']);
     Route::get('/candidate/{Person}/ActualInfo',[PersonController::class,'getInfoCandidate']);
-   
 });
