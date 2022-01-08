@@ -20,6 +20,8 @@ class HiringRequestDetail extends Model
         'hourly_rate',
         'work_weeks',
         'weekly_hours',
+        'person_id',
+        'stay_schedule_id',
     ];
 
     public function person()
@@ -32,5 +34,7 @@ class HiringRequestDetail extends Model
         return $this->belongsTo(StaySchedule::class);
     }
 
-
+    public function groups() {
+        return $this->belongsToMany(Group::class, 'hiring_groups');
+    }
 }

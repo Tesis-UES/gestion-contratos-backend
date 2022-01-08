@@ -23,8 +23,8 @@ class CreateHiringRequestDetailsTable extends Migration
             $table->integer('work_months')->nullable();
             $table->float('salariy_percentage')->nullable();
             $table->float('hourly_rate')->nullable();
-            $table->integer('work_weeks')->nullable();
-            $table->integer('weekly_hours')->nullable();
+            $table->float('work_weeks')->nullable();
+            $table->float('weekly_hours')->nullable();
             $table->bigInteger('person_id')->unsigned()->nonullable();
             $table->foreign('person_id')->references('id')->on('people')->nonullable();
             $table->bigInteger('stay_schedule_id')->unsigned()->nullable();
