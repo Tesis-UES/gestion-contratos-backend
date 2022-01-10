@@ -20,8 +20,8 @@ class CreateHiringGroupsTable extends Migration
             $table->float('weekly_hours')->nullable();
             $table->bigInteger('group_id')->unsigned()->nullable();
             $table->foreign('group_id')->references('id')->on('groups')->nonullable();
-            $table->bigInteger('hiring_request_details_id')->unsigned()->nullable();
-            $table->foreign('hiring_request_details_id')->references('id')->on('hiring_request_details')->nonullable();
+            $table->bigInteger('hiring_request_detail_id')->unsigned()->nullable();
+            $table->foreign('hiring_request_detail_id')->references('id')->on('hiring_request_details')->nonullable();
             $table->timestamps();
         });
     }

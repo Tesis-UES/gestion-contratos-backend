@@ -17,7 +17,7 @@ class CreateHiringRequestDetailsTable extends Migration
             $table->id();
             $table->date('start_date');
             $table->date('finish_date');
-            $table->string('schedule_file');
+            $table->string('schedule_file')->nullable();
             $table->string('position')->nullable();
             $table->string('goal')->nullable();
             $table->integer('work_months')->nullable();
