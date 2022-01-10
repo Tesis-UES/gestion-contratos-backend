@@ -8,7 +8,7 @@ use App\Models\Escalafon;
 use App\Models\Faculty;
 use App\Models\Person;
 use App\Models\PersonValidation;
-use App\Models\{PersonChange,CentralAuthority,StaySchedule};
+use App\Models\{PersonChange, CentralAuthority, StaySchedule};
 use Illuminate\Http\Request;
 use App\Http\Traits\{WorklogTrait, ValidationTrait};
 use Illuminate\Support\Facades\Auth;
@@ -22,12 +22,12 @@ class PersonController extends Controller
 
     public function allCandidates()
     {
-       
+
         $result = Person::all();
         foreach ($result as $rest) {
             $candidate = [
                 'id'        => $rest->id,
-                'name'      => $rest->first_name." ".$rest->middle_name,
+                'name'      => $rest->first_name . " " . $rest->middle_name,
                 'last_name' => $rest->last_name,
                 'status'    => $rest->status,
                 'school_id' => $rest->user->school_id,
@@ -40,13 +40,14 @@ class PersonController extends Controller
         return response($candiates, 200);
     }
 
-    public function allCandidatesProfessor(){
+    public function allCandidatesProfessor()
+    {
         //ESTA FUNCION PODRA SER MODIFICADA MAS ADELANTE DEPENDIENDO DE LOS REQUERIMIENTOS
         $result = Person::all();
         foreach ($result as $rest) {
             $candidate = [
                 'id'        => $rest->id,
-                'name'      => $rest->first_name." ".$rest->middle_name." ".$rest->last_name,
+                'name'      => $rest->first_name . " " . $rest->middle_name . " " . $rest->last_name,
             ];
             $candiates[] = $candidate;
         }
@@ -77,18 +78,18 @@ class PersonController extends Controller
             'bank_account_number'   => 'string|max:120',
             'is_employee'           => 'required|boolean',
             'is_nationalized'       => 'required|boolean',
-            'other_title'           =>'required|boolean',
-            
-            
+            'other_title'           => 'required|boolean',
+
+
         ]);
 
-        if($request->input('bank_id') != null) {
+        if ($request->input('bank_id') != null) {
             Bank::findOrFail($request->input('bank_id'));
         }
 
-        if($request->input('nationality') == 'El Salvador') {
-            
-            if ($request->input('is_nationalized') == true ) {
+        if ($request->input('nationality') == 'El Salvador') {
+
+            if ($request->input('is_nationalized') == true) {
                 $request->validate([
                     'city'                  => 'required|string|max:120',
                     'department'            => 'required|string|max:120',
@@ -97,7 +98,7 @@ class PersonController extends Controller
                     'resident_card_number'  => 'required|string|max:120',
                     'resident_expiration_date'   => 'required|date|after:today',
                     'nit_number'            => 'required|string|max:120',
-                    ]);
+                ]);
             } else {
                 $request->validate([
                     'city'                  => 'required|string|max:120',
@@ -107,63 +108,63 @@ class PersonController extends Controller
                     'dui_number'            => 'required|string|max:120',
                     'dui_expiration_date'   => 'required|date|after:today',
                     'nit_number'            => 'required|string|max:120',
-                    ]);
+                ]);
             }
         } else {
             $request->validate(['passport_number' => 'required|string|max:120']);
         }
 
-        if($request->input('is_employee') == true) {
+        if ($request->input('is_employee') == true) {
             $employeeFields = $request->validate([
                 'partida'           => 'string|max:50',
                 'sub_partida'       => 'string|max:50',
-                'journey_type'      => ['required|',Rule::in(['tiempo-completo', 'medio-tiempo', 'cuarto-tiempo', 'tiempo-parcial', 'tiempo-eventual'])],
+                'journey_type'      => ['required|', Rule::in(['tiempo-completo', 'medio-tiempo', 'cuarto-tiempo', 'tiempo-parcial', 'tiempo-eventual'])],
                 'faculty_id'        => 'required|integer|gte:1',
                 'escalafon_id'      => 'required|integer|gte:1',
                 'employee_types'    => 'required|array|min:1',
                 'employee_types.*'  => 'required|integer|distinct|gte:1',
             ]);
 
-            Escalafon::findOrFail( $employeeFields['escalafon_id']);
+            Escalafon::findOrFail($employeeFields['escalafon_id']);
             Faculty::findOrFail($employeeFields['faculty_id']);
-            foreach ($employeeFields['employee_types'] as $typeId ) {
+            foreach ($employeeFields['employee_types'] as $typeId) {
                 $employeeTypes[] = EmployeeType::findOrFail($typeId);
             }
-        } 
+        }
         if ($request->input('other_title') == true) {
             $request->validate([
                 'other_title_name'                 => 'required|string|max:120',
-                ]);
+            ]);
         }
 
         $user = Auth::user();
         $person = Person::where('user_id', $user->id)->first();
-        if($person) {
-            return response(['message' => "El usuario ya ha registrado sus datos personales",], 400);        
+        if ($person) {
+            return response(['message' => "El usuario ya ha registrado sus datos personales",], 400);
         }
 
-        $newPerson = new Person ($request->all());
+        $newPerson = new Person($request->all());
         $newPerson->user_id = $user->id;
-        if($newPerson->nationality == 'El Salvador') {
+        if ($newPerson->nationality == 'El Salvador') {
 
             if ($request->input('is_nationalized') == true) {
                 $newPerson->resident_card_text = $this->carnetToText($newPerson->resident_card_number);
                 $newPerson->nit_text = $this->nitToText($newPerson->nit_number);
-            }else{
-            $newPerson->dui_text = $this->duiToText($newPerson->dui_number);
-            $newPerson->nit_text = $this->nitToText($newPerson->nit_number);
+            } else {
+                $newPerson->dui_text = $this->duiToText($newPerson->dui_number);
+                $newPerson->nit_text = $this->nitToText($newPerson->nit_number);
             }
         }
         $newPerson->save();
 
-        PersonChange::create(['person_id'=>$newPerson->id,'change'=>"Se registraron los datos personales generales."]);
+        PersonChange::create(['person_id' => $newPerson->id, 'change' => "Se registraron los datos personales generales."]);
         $this->RegisterAction("El usuario he registrado sus datos personales generales", "medium");
 
-        if($request->input('is_employee') == true) {
+        if ($request->input('is_employee') == true) {
             $newEmployee = $newPerson->employee()->create($employeeFields);
             $newEmployee->employeeTypes()->saveMany($employeeTypes);
 
-            PersonChange::create(['person_id'=>$newPerson->id,'change'=>"Se registraron los datos del profesor."]);
+            PersonChange::create(['person_id' => $newPerson->id, 'change' => "Se registraron los datos del profesor."]);
             $this->RegisterAction("El usuario he registrado como profesor", "medium");
         }
 
@@ -175,10 +176,12 @@ class PersonController extends Controller
 
     public function show($id)
     {
-        $person = Person::where('id',$id)
-        ->with('bank')
-        ->with('employee',function($query) { $query->with(['faculty', 'escalafon', 'employeeTypes']); })
-        ->firstOrFail();
+        $person = Person::where('id', $id)
+            ->with('bank')
+            ->with('employee', function ($query) {
+                $query->with(['faculty', 'escalafon', 'employeeTypes']);
+            })
+            ->firstOrFail();
 
         return response(['person' => $person,], 200);
     }
@@ -186,10 +189,12 @@ class PersonController extends Controller
     public function showMyInfo()
     {
         $user = Auth::user();
-        $person = Person::where('user_id',$user->id)
-        ->with('bank')
-        ->with('employee', function($query) { $query->with(['faculty', 'escalafon', 'employeeTypes']); })
-        ->firstOrFail();
+        $person = Person::where('user_id', $user->id)
+            ->with('bank')
+            ->with('employee', function ($query) {
+                $query->with(['faculty', 'escalafon', 'employeeTypes']);
+            })
+            ->firstOrFail();
 
         return response($person, 200);
     }
@@ -198,7 +203,7 @@ class PersonController extends Controller
     {
         $user = Auth::user();
         $person = Person::where('user_id', $user->id)->first();
-        if($person) {
+        if ($person) {
             return response(['has_registered' => true], 200);
         }
         return response(['has_registered' => false], 200);
@@ -226,15 +231,15 @@ class PersonController extends Controller
             'bank_account_number'   => 'string|max:120',
             'is_employee'           => 'required|boolean',
             'is_nationalized'       => 'required|boolean',
-            'other_title'           =>'required|boolean',
+            'other_title'           => 'required|boolean',
         ]);
 
-        if($request->input('bank_id') != null) {
+        if ($request->input('bank_id') != null) {
             Bank::findOrFail($request->input('bank_id'));
         }
 
-        if($request->input('nationality') == 'El Salvador') {
-            if ($request->input('is_nationalized') == true ) {
+        if ($request->input('nationality') == 'El Salvador') {
+            if ($request->input('is_nationalized') == true) {
                 $request->validate([
                     'city'                  => 'required|string|max:120',
                     'department'            => 'required|string|max:120',
@@ -243,7 +248,7 @@ class PersonController extends Controller
                     'resident_card_number'  => 'required|string|max:120',
                     'resident_expiration_date'   => 'required|date|after:today',
                     'nit_number'            => 'required|string|max:120',
-                    ]);
+                ]);
             } else {
                 $request->validate([
                     'city'                  => 'required|string|max:120',
@@ -253,66 +258,66 @@ class PersonController extends Controller
                     'dui_number'            => 'required|string|max:120',
                     'dui_expiration_date'   => 'required|date|after:today',
                     'nit_number'            => 'required|string|max:120',
-                    ]);
+                ]);
             }
         } else {
             $request->validate(['passport_number' => 'required|string|max:120']);
         }
 
-        if($request->input('is_employee') == true) {
+        if ($request->input('is_employee') == true) {
             $employeeFields = $request->validate([
                 'partida'           => 'string|max:50',
                 'sub_partida'       => 'string|max:50',
-                'journey_type'      => ['required|',Rule::in(['tiempo-completo', 'medio-tiempo', 'cuarto-tiempo', 'tiempo-parcial', 'tiempo-eventual'])],
+                'journey_type'      => ['required|', Rule::in(['tiempo-completo', 'medio-tiempo', 'cuarto-tiempo', 'tiempo-parcial', 'tiempo-eventual'])],
                 'faculty_id'        => 'required|integer|gte:1',
                 'escalafon_id'      => 'required|integer|gte:1',
                 'employee_types'    => 'required|array|min:1',
                 'employee_types.*'  => 'required|integer|distinct|gte:1',
             ]);
 
-            Escalafon::findOrFail( $employeeFields['escalafon_id']);
+            Escalafon::findOrFail($employeeFields['escalafon_id']);
             Faculty::findOrFail($employeeFields['faculty_id']);
-            foreach ($employeeFields['employee_types'] as $typeId ) {
+            foreach ($employeeFields['employee_types'] as $typeId) {
                 $employeeTypes[] = EmployeeType::findOrFail($typeId);
             }
         }
         if ($request->input('other_title') == true) {
             $request->validate([
                 'other_title_name'                 => 'required|string|max:120',
-                ]);
+            ]);
         }
-        
+
         $user = Auth::user();
         $person = Person::where('user_id', $user->id)->firstOrFail();
 
         $person->update($request->all());
-        if($person->nationality == 'El Salvador') {
+        if ($person->nationality == 'El Salvador') {
             if ($request->input('is_nationalized') == true) {
                 $person->resident_card_text = $this->carnetToText($person->resident_card_number);
                 $person->nit_text = $this->nitToText($person->nit_number);
-            }else{
-            $person->dui_text = $this->duiToText($person->dui_number);
-            $person->nit_text = $this->nitToText($person->nit_number);
+            } else {
+                $person->dui_text = $this->duiToText($person->dui_number);
+                $person->nit_text = $this->nitToText($person->nit_number);
             }
         }
         $person->save();
-        PersonChange::create(['person_id'=>$person->id,'change'=>"Se actualizo la información general de datos personales"]);
+        PersonChange::create(['person_id' => $person->id, 'change' => "Se actualizo la información general de datos personales"]);
         $this->RegisterAction("El usuario ha actualizado sus datos personales generales", "medium");
 
-        if($request->input('is_employee') == true) {
+        if ($request->input('is_employee') == true) {
             $employee = $person->employee;
-            if($employee == null) {
+            if ($employee == null) {
                 $newEmployee = $person->employee()->create($employeeFields);
                 $newEmployee->employeeTypes()->saveMany($employeeTypes);
 
-                PersonChange::create(['person_id'=>$person->id,'change'=>"Se registraron los datos del profesor."]);
+                PersonChange::create(['person_id' => $person->id, 'change' => "Se registraron los datos del profesor."]);
                 $this->RegisterAction("El usuario he registrado como profesor", "medium");
             } else {
                 $employee->update($employeeFields);
                 $employee->employeeTypes()->detach();
                 $employee->employeeTypes()->saveMany($employeeTypes);
 
-                PersonChange::create(['person_id'=>$person->id,'change'=>"Se actualizaron los datos del profesor."]);
+                PersonChange::create(['person_id' => $person->id, 'change' => "Se actualizaron los datos del profesor."]);
                 $this->RegisterAction("El usuario ha actualizado sus datos de profesor", "medium");
             }
         }
@@ -330,7 +335,8 @@ class PersonController extends Controller
         return response(null, 204);
     }
 
-    public function storeMenu(Request $request){
+    public function storeMenu(Request $request)
+    {
         $type = $request['type'];
         switch ($type) {
             case 'dui':
@@ -363,7 +369,7 @@ class PersonController extends Controller
             case 'carnet':
                 $person =  $this->storeResident($request);
                 break;
-            
+
             case 'otro_titulo':
                 $person =  $this->storeOtherTitle($request);
                 break;
@@ -375,130 +381,138 @@ class PersonController extends Controller
         return response(['person' => $person,], 200);
     }
 
-    public function storeDui(Request $request){
+    public function storeDui(Request $request)
+    {
         $user = Auth::user();
-        $person = Person::where('user_id',$user->id)->firstOrFail();
+        $person = Person::where('user_id', $user->id)->firstOrFail();
         $file = $request->file('dui');
-        $nombre_archivo = $person->first_name." ".$person->middle_name." ".$person->last_name."-DUI.pdf";
+        $nombre_archivo = $person->first_name . " " . $person->middle_name . " " . $person->last_name . "-DUI.pdf";
         $person->dui = $nombre_archivo;
         $person->save();
-        PersonChange::create(['person_id'=>$person->id,'change'=>"Se subio y guardo el archivo que contiene el DUI"]);
+        PersonChange::create(['person_id' => $person->id, 'change' => "Se subio y guardo el archivo que contiene el DUI"]);
         \Storage::disk('personalFiles')->put($nombre_archivo, \File::get($file));
-        $this->RegisterAction("El usuario ha guardado el archivo pdf que contiene la imagen del DUI", "medium"); 
+        $this->RegisterAction("El usuario ha guardado el archivo pdf que contiene la imagen del DUI", "medium");
         return $person;
     }
 
-    public function storeResident(Request $request){
+    public function storeResident(Request $request)
+    {
         $user = Auth::user();
-        $person = Person::where('user_id',$user->id)->firstOrFail();
+        $person = Person::where('user_id', $user->id)->firstOrFail();
         $file = $request->file('carnet');
-        $nombre_archivo = $person->first_name." ".$person->middle_name." ".$person->last_name."-CARNET_RESIDENTE.pdf";
+        $nombre_archivo = $person->first_name . " " . $person->middle_name . " " . $person->last_name . "-CARNET_RESIDENTE.pdf";
         $person->resident_card = $nombre_archivo;
         $person->save();
-        PersonChange::create(['person_id'=>$person->id,'change'=>"Se subio y guardo el archivo que contiene el Carnet de Residencia"]);
+        PersonChange::create(['person_id' => $person->id, 'change' => "Se subio y guardo el archivo que contiene el Carnet de Residencia"]);
         \Storage::disk('personalFiles')->put($nombre_archivo, \File::get($file));
-        $this->RegisterAction("El usuario ha guardado el archivo pdf que contiene la imagen del Carnet de Residencia", "medium"); 
+        $this->RegisterAction("El usuario ha guardado el archivo pdf que contiene la imagen del Carnet de Residencia", "medium");
         return $person;
     }
 
-    public function storePassport(Request $request){
+    public function storePassport(Request $request)
+    {
         $user = Auth::user();
-        $person = Person::where('user_id',$user->id)->firstOrFail();
+        $person = Person::where('user_id', $user->id)->firstOrFail();
         $file = $request->file('pass');
-        $nombre_archivo = $person->first_name." ".$person->middle_name." ".$person->last_name."-PASAPORTE.pdf";
+        $nombre_archivo = $person->first_name . " " . $person->middle_name . " " . $person->last_name . "-PASAPORTE.pdf";
         $person->passport = $nombre_archivo;
         $person->save();
-        PersonChange::create(['person_id'=>$person->id,'change'=>"Se subio y guardo el archivo que contiene el Pasaporte"]);
+        PersonChange::create(['person_id' => $person->id, 'change' => "Se subio y guardo el archivo que contiene el Pasaporte"]);
         \Storage::disk('personalFiles')->put($nombre_archivo, \File::get($file));
-        $this->RegisterAction("El usuario ha guardado el archivo pdf que contiene la imagen del Pasaporte", "medium"); 
+        $this->RegisterAction("El usuario ha guardado el archivo pdf que contiene la imagen del Pasaporte", "medium");
         return  $person;
     }
 
-    public function storeNit(Request $request){
+    public function storeNit(Request $request)
+    {
         $user = Auth::user();
-        $person = Person::where('user_id',$user->id)->firstOrFail();
+        $person = Person::where('user_id', $user->id)->firstOrFail();
         $file = $request->file('nit');
-        $nombre_archivo = $person->first_name." ".$person->middle_name." ".$person->last_name."-NIT.pdf";
+        $nombre_archivo = $person->first_name . " " . $person->middle_name . " " . $person->last_name . "-NIT.pdf";
         $person->nit = $nombre_archivo;
         $person->save();
-        PersonChange::create(['person_id'=>$person->id,'change'=>"Se subio y guardo el archivo que contiene el NIT"]);
-        \Storage::disk('personalFiles')->put($nombre_archivo, \File::get($file)); 
-        $this->RegisterAction("El usuario ha guardado el archivo pdf que contiene la imagen del NIT", "medium"); 
+        PersonChange::create(['person_id' => $person->id, 'change' => "Se subio y guardo el archivo que contiene el NIT"]);
+        \Storage::disk('personalFiles')->put($nombre_archivo, \File::get($file));
+        $this->RegisterAction("El usuario ha guardado el archivo pdf que contiene la imagen del NIT", "medium");
         return $person;
     }
 
-    public function storeBank(Request $request){
+    public function storeBank(Request $request)
+    {
         $user = Auth::user();
-        $person = Person::where('user_id',$user->id)->firstOrFail();
+        $person = Person::where('user_id', $user->id)->firstOrFail();
         $file = $request->file('banco');
-        $nombre_archivo = $person->first_name." ".$person->middle_name." ".$person->last_name."-CuentaDeBanco.pdf";
+        $nombre_archivo = $person->first_name . " " . $person->middle_name . " " . $person->last_name . "-CuentaDeBanco.pdf";
         $person->bank_account = $nombre_archivo;
         $person->save();
-        PersonChange::create(['person_id'=>$person->id,'change'=>"Se subio y guardo el archivo que contiene la Cuenta Bancaria"]);
-        \Storage::disk('personalFiles')->put($nombre_archivo, \File::get($file)); 
-        $this->RegisterAction("El usuario ha guardado el archivo pdf que contiene la imagen de su cuenta de banco", "medium"); 
+        PersonChange::create(['person_id' => $person->id, 'change' => "Se subio y guardo el archivo que contiene la Cuenta Bancaria"]);
+        \Storage::disk('personalFiles')->put($nombre_archivo, \File::get($file));
+        $this->RegisterAction("El usuario ha guardado el archivo pdf que contiene la imagen de su cuenta de banco", "medium");
         return $person;
-
     }
 
-    public function storeTitle(Request $request){
+    public function storeTitle(Request $request)
+    {
         $user = Auth::user();
-        $person = Person::where('user_id',$user->id)->firstOrFail();
+        $person = Person::where('user_id', $user->id)->firstOrFail();
         $file = $request->file('titulo');
-        $nombre_archivo = $person->first_name." ".$person->middle_name." ".$person->last_name."-Titulo.pdf";
+        $nombre_archivo = $person->first_name . " " . $person->middle_name . " " . $person->last_name . "-Titulo.pdf";
         $person->professional_title_scan = $nombre_archivo;
         $person->save();
-        PersonChange::create(['person_id'=>$person->id,'change'=>"Se subio y guardo el archivo que contiene el Titulo Univesitario"]);
-        \Storage::disk('personalFiles')->put($nombre_archivo, \File::get($file)); 
-        $this->RegisterAction("El usuario ha guardado el archivo pdf que contiene la imagen de su titulo Universitario", "medium"); 
+        PersonChange::create(['person_id' => $person->id, 'change' => "Se subio y guardo el archivo que contiene el Titulo Univesitario"]);
+        \Storage::disk('personalFiles')->put($nombre_archivo, \File::get($file));
+        $this->RegisterAction("El usuario ha guardado el archivo pdf que contiene la imagen de su titulo Universitario", "medium");
         return  $person;
     }
 
-    public function storeOtherTitle(Request $request){
+    public function storeOtherTitle(Request $request)
+    {
         $user = Auth::user();
-        $person = Person::where('user_id',$user->id)->firstOrFail();
+        $person = Person::where('user_id', $user->id)->firstOrFail();
         $file = $request->file('otro_titulo');
-        $nombre_archivo = $person->first_name." ".$person->middle_name." ".$person->last_name."-Titulo_extra.pdf";
+        $nombre_archivo = $person->first_name . " " . $person->middle_name . " " . $person->last_name . "-Titulo_extra.pdf";
         $person->other_title_doc = $nombre_archivo;
         $person->save();
-        PersonChange::create(['person_id'=>$person->id,'change'=>"Se subio y guardo el archivo que contiene el titulo Extra (Doctorado/Maestria)"]);
-        \Storage::disk('personalFiles')->put($nombre_archivo, \File::get($file)); 
-        $this->RegisterAction("El usuario ha guardado el archivo pdf que contiene la imagen de su  titulo Extra (Doctorado/Maestria)", "medium"); 
+        PersonChange::create(['person_id' => $person->id, 'change' => "Se subio y guardo el archivo que contiene el titulo Extra (Doctorado/Maestria)"]);
+        \Storage::disk('personalFiles')->put($nombre_archivo, \File::get($file));
+        $this->RegisterAction("El usuario ha guardado el archivo pdf que contiene la imagen de su  titulo Extra (Doctorado/Maestria)", "medium");
         return  $person;
     }
 
-    public function storeCurriculum(Request $request){
+    public function storeCurriculum(Request $request)
+    {
         $user = Auth::user();
-        $person = Person::where('user_id',$user->id)->firstOrFail();
+        $person = Person::where('user_id', $user->id)->firstOrFail();
         $file = $request->file('cv');
-        $nombre_archivo = $person->first_name." ".$person->middle_name." ".$person->last_name."-Curriculum.pdf";
+        $nombre_archivo = $person->first_name . " " . $person->middle_name . " " . $person->last_name . "-Curriculum.pdf";
         $person->curriculum = $nombre_archivo;
         $person->save();
-        PersonChange::create(['person_id'=>$person->id,'change'=>"Se subio y guardo el archivo que contiene el curriculum"]);
-        \Storage::disk('personalFiles')->put($nombre_archivo, \File::get($file)); 
-        $this->RegisterAction("El usuario ha guardado el  archivo pdf que contiene su curriculum", "medium"); 
+        PersonChange::create(['person_id' => $person->id, 'change' => "Se subio y guardo el archivo que contiene el curriculum"]);
+        \Storage::disk('personalFiles')->put($nombre_archivo, \File::get($file));
+        $this->RegisterAction("El usuario ha guardado el  archivo pdf que contiene su curriculum", "medium");
         return  $person;
     }
 
     public function storePermission(Request $request)
     {
         $user = Auth::user();
-        $person = Person::where('user_id',$user->id)->firstOrFail();
+        $person = Person::where('user_id', $user->id)->firstOrFail();
         $file = $request->file('permiso');
-        $nombre_archivo = $person->first_name." ".$person->middle_name." ".$person->last_name."-permission.pdf";
+        $nombre_archivo = $person->first_name . " " . $person->middle_name . " " . $person->last_name . "-permission.pdf";
         $person->work_permission = $nombre_archivo;
         $person->save();
-        PersonChange::create(['person_id'=>$person->id,'change'=>"Se subio y guardo el archivo que contiene el Permiso de laborar en la facultad"]);
-        \Storage::disk('personalFiles')->put($nombre_archivo, \File::get($file)); 
-        $this->RegisterAction("El usuario ha guardado el  archivo pdf que contiene su permiso de trabajo"); 
+        PersonChange::create(['person_id' => $person->id, 'change' => "Se subio y guardo el archivo que contiene el Permiso de laborar en la facultad"]);
+        \Storage::disk('personalFiles')->put($nombre_archivo, \File::get($file));
+        $this->RegisterAction("El usuario ha guardado el  archivo pdf que contiene su permiso de trabajo");
         return $person;
     }
 
-    public function updateMenu(Request $request){
+    public function updateMenu(Request $request)
+    {
         $type = $request['type'];
         switch ($type) {
             case 'dui':
-               $person =  $this->updateDui($request);
+                $person =  $this->updateDui($request);
                 break;
 
             case 'nit':
@@ -526,7 +540,7 @@ class PersonController extends Controller
             case 'carnet':
                 $person =  $this->updateResident($request);
                 break;
-            
+
             case 'otro_titulo':
                 $person =  $this->updateOtherTitle($request);
                 break;
@@ -538,16 +552,17 @@ class PersonController extends Controller
         return response(['person' => $person,], 200);
     }
 
-    public function updateDui(Request $request){
+    public function updateDui(Request $request)
+    {
         $user = Auth::user();
-        $person = Person::where('user_id',$user->id)->firstOrFail();
+        $person = Person::where('user_id', $user->id)->firstOrFail();
         $file = $request->file('dui');
-        $nombre_archivo = $person->first_name." ".$person->middle_name." ".$person->last_name."-DUI.pdf";
+        $nombre_archivo = $person->first_name . " " . $person->middle_name . " " . $person->last_name . "-DUI.pdf";
         //Se elimina el archivo antiguo
         \Storage::disk('personalFiles')->delete($person->dui);
         $person->dui = $nombre_archivo;
         $person->save();
-        PersonChange::create(['person_id'=>$person->id,'change'=>"Se Actualizo el archivo que contiene el DUI"]);
+        PersonChange::create(['person_id' => $person->id, 'change' => "Se Actualizo el archivo que contiene el DUI"]);
         \Storage::disk('personalFiles')->put($nombre_archivo, \File::get($file));
         $personValidations = $person->personValidations;
         $personValidations->update([
@@ -560,45 +575,47 @@ class PersonController extends Controller
             'dui_unexpired'     =>  false,
             'dui_address'       =>  false,
             'dui'               =>  false
-        ]); 
-        $this->RegisterAction("El usuario ha actualizado el archivo pdf que contiene la imagen del DUI", "medium"); 
+        ]);
+        $this->RegisterAction("El usuario ha actualizado el archivo pdf que contiene la imagen del DUI", "medium");
         return $person;
     }
 
-    public function updateResident(Request $request){
+    public function updateResident(Request $request)
+    {
         $user = Auth::user();
-        $person = Person::where('user_id',$user->id)->firstOrFail();
+        $person = Person::where('user_id', $user->id)->firstOrFail();
         $file = $request->file('carnet');
-        $nombre_archivo = $person->first_name." ".$person->middle_name." ".$person->last_name."-CARNET_RESIDENTE.pdf";
+        $nombre_archivo = $person->first_name . " " . $person->middle_name . " " . $person->last_name . "-CARNET_RESIDENTE.pdf";
         //Se elimina el archivo antiguo
         \Storage::disk('personalFiles')->delete($person->resident_card);
         $person->resident_card = $nombre_archivo;
         $person->save();
-        PersonChange::create(['person_id'=>$person->id,'change'=>"Se Actualizo el archivo que contiene el carnet de residente"]);
+        PersonChange::create(['person_id' => $person->id, 'change' => "Se Actualizo el archivo que contiene el carnet de residente"]);
         \Storage::disk('personalFiles')->put($nombre_archivo, \File::get($file));
         $personValidations = $person->personValidations;
         $personValidations->update([
-                'carnet'            => false,
-                'carnet_readable'   => false,
-                'carnet_name'       => false,
-                'carnet_number'     => false,
-                'carnet_unexpired'  => false
-        ]); 
-        $this->RegisterAction("El usuario ha actualizado el archivo pdf que contiene la imagen del Carnet de residente", "medium"); 
+            'carnet'            => false,
+            'carnet_readable'   => false,
+            'carnet_name'       => false,
+            'carnet_number'     => false,
+            'carnet_unexpired'  => false
+        ]);
+        $this->RegisterAction("El usuario ha actualizado el archivo pdf que contiene la imagen del Carnet de residente", "medium");
         return $person;
     }
 
-    public function updateNit(Request $request){
+    public function updateNit(Request $request)
+    {
         $user = Auth::user();
-        $person = Person::where('user_id',$user->id)->firstOrFail();
+        $person = Person::where('user_id', $user->id)->firstOrFail();
         $file = $request->file('nit');
-        $nombre_archivo = $person->first_name." ".$person->middle_name." ".$person->last_name."-NIT.pdf";
+        $nombre_archivo = $person->first_name . " " . $person->middle_name . " " . $person->last_name . "-NIT.pdf";
         //Se elimina el archivo antiguo
         \Storage::disk('personalFiles')->delete($person->nit);
         $person->nit = $nombre_archivo;
         $person->save();
-        PersonChange::create(['person_id'=>$person->id,'change'=>"Se Actualizo el archivo que contiene el NIT"]);
-        \Storage::disk('personalFiles')->put($nombre_archivo, \File::get($file)); 
+        PersonChange::create(['person_id' => $person->id, 'change' => "Se Actualizo el archivo que contiene el NIT"]);
+        \Storage::disk('personalFiles')->put($nombre_archivo, \File::get($file));
         $personValidations = $person->personValidations;
         $personValidations->update([
             'nit_readable'      =>  false,
@@ -606,43 +623,45 @@ class PersonController extends Controller
             'nit_number'        =>  false,
             'nit'               =>  false,
 
-        ]); 
+        ]);
         $this->RegisterAction("El usuario ha actualizado el archivo pdf que contiene la imagen del NIT", "medium");
         return  $person;
     }
 
-    public function updateBank(Request $request){
+    public function updateBank(Request $request)
+    {
         $user = Auth::user();
-        $person = Person::where('user_id',$user->id)->firstOrFail();
+        $person = Person::where('user_id', $user->id)->firstOrFail();
         $file = $request->file('banco');
-        $nombre_archivo = $person->first_name." ".$person->middle_name." ".$person->last_name."-CuentaDeBanco.pdf";
+        $nombre_archivo = $person->first_name . " " . $person->middle_name . " " . $person->last_name . "-CuentaDeBanco.pdf";
         //Se elimina el archivo antiguo
         \Storage::disk('personalFiles')->delete($person->bank_account);
         $person->bank_account = $nombre_archivo;
         $person->save();
-        PersonChange::create(['person_id'=>$person->id,'change'=>"Se Actualizo el archivo que contiene la cuenta bancaria"]);
-        \Storage::disk('personalFiles')->put($nombre_archivo, \File::get($file)); 
-         $personValidations = $person->personValidations;
+        PersonChange::create(['person_id' => $person->id, 'change' => "Se Actualizo el archivo que contiene la cuenta bancaria"]);
+        \Storage::disk('personalFiles')->put($nombre_archivo, \File::get($file));
+        $personValidations = $person->personValidations;
         $personValidations->update([
             'bank_readable'        =>  false,
             'bank_number'          =>  false,
             'bank'          =>  false,
-        ]); 
-        $this->RegisterAction("El usuario ha actualizado el  archivo pdf que contiene la imagen de su cuenta de banco", "medium"); 
+        ]);
+        $this->RegisterAction("El usuario ha actualizado el  archivo pdf que contiene la imagen de su cuenta de banco", "medium");
         return $person;
     }
 
-    public function updateTitle(Request $request){
+    public function updateTitle(Request $request)
+    {
         $user = Auth::user();
-        $person = Person::where('user_id',$user->id)->firstOrFail();
+        $person = Person::where('user_id', $user->id)->firstOrFail();
         $file = $request->file('titulo');
-        $nombre_archivo = $person->first_name." ".$person->middle_name." ".$person->last_name."-Titulo.pdf";
+        $nombre_archivo = $person->first_name . " " . $person->middle_name . " " . $person->last_name . "-Titulo.pdf";
         //Se elimina el archivo antiguo
         \Storage::disk('personalFiles')->delete($person->professional_title_scan);
         $person->professional_title_scan = $nombre_archivo;
         $person->save();
-        PersonChange::create(['person_id'=>$person->id,'change'=>"Se Actualizo el archivo que contiene el Titulo Universitario"]);
-        \Storage::disk('personalFiles')->put($nombre_archivo, \File::get($file)); 
+        PersonChange::create(['person_id' => $person->id, 'change' => "Se Actualizo el archivo que contiene el Titulo Universitario"]);
+        \Storage::disk('personalFiles')->put($nombre_archivo, \File::get($file));
         $personValidations = $person->personValidations;
         $personValidations->update([
             'title_readable'        =>  false,
@@ -651,101 +670,106 @@ class PersonController extends Controller
             'title_apostilled_readable'         =>   false,
             'title_authentic'                   =>   false,
             'title'                   =>   false,
-        ]); 
-        $this->RegisterAction("El usuario ha actualizado el  archivo pdf que contiene la imagen de su titulo Universitario", "medium"); 
+        ]);
+        $this->RegisterAction("El usuario ha actualizado el  archivo pdf que contiene la imagen de su titulo Universitario", "medium");
         return  $person;
     }
 
-    public function updateOtherTitle(Request $request){
+    public function updateOtherTitle(Request $request)
+    {
         $user = Auth::user();
-        $person = Person::where('user_id',$user->id)->firstOrFail();
+        $person = Person::where('user_id', $user->id)->firstOrFail();
         $file = $request->file('otro_titulo');
-        $nombre_archivo = $person->first_name." ".$person->middle_name." ".$person->last_name."-Titulo_extra.pdf";
+        $nombre_archivo = $person->first_name . " " . $person->middle_name . " " . $person->last_name . "-Titulo_extra.pdf";
         //Se elimina el archivo antiguo
         \Storage::disk('personalFiles')->delete($person->other_title_doc);
         $person->other_title_doc = $nombre_archivo;
         $person->save();
-        PersonChange::create(['person_id'=>$person->id,'change'=>"Se Actualizo el archivo que contiene  el titulo Extra (Doctorado/Maestria)"]);
-        \Storage::disk('personalFiles')->put($nombre_archivo, \File::get($file)); 
+        PersonChange::create(['person_id' => $person->id, 'change' => "Se Actualizo el archivo que contiene  el titulo Extra (Doctorado/Maestria)"]);
+        \Storage::disk('personalFiles')->put($nombre_archivo, \File::get($file));
         $personValidations = $person->personValidations;
         $personValidations->update([
-        'other_title'                       =>false,
-        'other_title_readable'              =>false,
-        'other_title_apostilled'            =>false,
-        'other_title_apostilled_readable'   =>false,
-        'other_title_authentic'             =>false
-        ]); 
-        $this->RegisterAction("El usuario ha actualizado el  archivo pdf que contiene la imagen de su titulo Extra (Doctorado/Maestria)", "medium"); 
+            'other_title'                       => false,
+            'other_title_readable'              => false,
+            'other_title_apostilled'            => false,
+            'other_title_apostilled_readable'   => false,
+            'other_title_authentic'             => false
+        ]);
+        $this->RegisterAction("El usuario ha actualizado el  archivo pdf que contiene la imagen de su titulo Extra (Doctorado/Maestria)", "medium");
         return  $person;
     }
 
-    public function updateCurriculum(Request $request){
+    public function updateCurriculum(Request $request)
+    {
         $user = Auth::user();
-        $person = Person::where('user_id',$user->id)->firstOrFail();
+        $person = Person::where('user_id', $user->id)->firstOrFail();
         $file = $request->file('cv');
-        $nombre_archivo = $person->first_name." ".$person->middle_name." ".$person->last_name."-curriculum.pdf";
+        $nombre_archivo = $person->first_name . " " . $person->middle_name . " " . $person->last_name . "-curriculum.pdf";
         //Se elimina el archivo antiguo
         \Storage::disk('personalFiles')->delete($person->curriculum);
         $person->curriculum = $nombre_archivo;
         $person->save();
-        PersonChange::create(['person_id'=>$person->id,'change'=>"Se Actualizo el archivo que contiene el curriculum"]);
-        \Storage::disk('personalFiles')->put($nombre_archivo, \File::get($file)); 
+        PersonChange::create(['person_id' => $person->id, 'change' => "Se Actualizo el archivo que contiene el curriculum"]);
+        \Storage::disk('personalFiles')->put($nombre_archivo, \File::get($file));
         $personValidations = $person->personValidations;
         $personValidations->update([
             'curriculum_readable'      => false,
             'curriculum'      => false,
-        ]); 
-        $this->RegisterAction("El usuario ha actualizado el archivo pdf que contiene su curriculum", "medium"); 
+        ]);
+        $this->RegisterAction("El usuario ha actualizado el archivo pdf que contiene su curriculum", "medium");
         return $person;
     }
 
-    public function updatePermisssion(Request $request) {
+    public function updatePermisssion(Request $request)
+    {
         $user = Auth::user();
-        $person = Person::where('user_id',$user->id)->firstOrFail();
+        $person = Person::where('user_id', $user->id)->firstOrFail();
         $file = $request->file('permiso');
-        $nombre_archivo = $person->first_name." ".$person->middle_name." ".$person->last_name."-permission.pdf";
+        $nombre_archivo = $person->first_name . " " . $person->middle_name . " " . $person->last_name . "-permission.pdf";
         //Se elimina el archivo antiguo
         \Storage::disk('personalFiles')->delete($person->work_permission);
         $person->work_permission = $nombre_archivo;
         $person->save();
-        PersonChange::create(['person_id'=>$person->id,'change'=>"Se Actualizo el archivo que contiene el permiso de trabajo"]);
-        \Storage::disk('personalFiles')->put($nombre_archivo, \File::get($file)); 
+        PersonChange::create(['person_id' => $person->id, 'change' => "Se Actualizo el archivo que contiene el permiso de trabajo"]);
+        \Storage::disk('personalFiles')->put($nombre_archivo, \File::get($file));
         $personValidations = $person->personValidations;
         $personValidations->update([
             'work_permission_readable'      =>  false,
             'work'      =>  false,
-        ]); 
-        $this->RegisterAction("El usuario ha guardado el  archivo pdf que contiene su permiso de trabajo"); 
+        ]);
+        $this->RegisterAction("El usuario ha guardado el  archivo pdf que contiene su permiso de trabajo");
         return  $person;
     }
 
-    public function updatePassport(Request $request) {
+    public function updatePassport(Request $request)
+    {
         $user = Auth::user();
-        $person = Person::where('user_id',$user->id)->firstOrFail();
+        $person = Person::where('user_id', $user->id)->firstOrFail();
         $file = $request->file('pass');
-        $nombre_archivo = $person->first_name." ".$person->middle_name." ".$person->last_name."-PASAPORTE.pdf";
+        $nombre_archivo = $person->first_name . " " . $person->middle_name . " " . $person->last_name . "-PASAPORTE.pdf";
         //Se elimina el archivo antiguo
         \Storage::disk('personalFiles')->delete($person->passport);
         $person->passport = $nombre_archivo;
         $person->save();
-        PersonChange::create(['person_id'=>$person->id,'change'=>"Se Actualizo el archivo que contiene el Pasaporte"]);
-        \Storage::disk('personalFiles')->put($nombre_archivo, \File::get($file)); 
+        PersonChange::create(['person_id' => $person->id, 'change' => "Se Actualizo el archivo que contiene el Pasaporte"]);
+        \Storage::disk('personalFiles')->put($nombre_archivo, \File::get($file));
         $personValidations = $person->personValidations;
         $personValidations->update([
             'passport_readable'      =>  false,
             'passport_name'          =>  false,
             'passport_number'        =>  false,
             'passport'        =>  false,
-        ]); 
-        $this->RegisterAction("El usuario ha Actualizado el  archivo pdf que contiene su Pasaporte"); 
+        ]);
+        $this->RegisterAction("El usuario ha Actualizado el  archivo pdf que contiene su Pasaporte");
         return  $person;
     }
 
-    public function getMenu($type){
-        
+    public function getMenu($type)
+    {
+
         switch ($type) {
             case 'dui':
-               $person =  $this->getDui();
+                $person =  $this->getDui();
                 break;
 
             case 'nit':
@@ -770,10 +794,10 @@ class PersonController extends Controller
             case 'pass':
                 $person =  $this->getPassport();
                 break;
-             case 'carnet':
+            case 'carnet':
                 $person =  $this->getResident();
                 break;
-            
+
             case 'otro_titulo':
                 $person =  $this->getOtherTitle();
                 break;
@@ -785,9 +809,10 @@ class PersonController extends Controller
     }
 
 
-    public function getDui(){
+    public function getDui()
+    {
         $user = Auth::user();
-        $person = Person::where('user_id',$user->id)->firstOrFail();
+        $person = Person::where('user_id', $user->id)->firstOrFail();
         $validations = [
             'dui_readable'      =>  $person->personValidations->dui_readable,
             'dui_name'          =>  $person->personValidations->dui_name,
@@ -799,66 +824,81 @@ class PersonController extends Controller
             'dui_address'       =>  $person->personValidations->dui_address
         ];
         $pdf = base64_encode(\Storage::disk('personalFiles')->get($person->dui));
-        return ['pdfDui' => $pdf,
-                'validations'=> $validations ];
+        return [
+            'pdfDui' => $pdf,
+            'validations' => $validations
+        ];
     }
 
-    public function getResident(){
+    public function getResident()
+    {
         $user = Auth::user();
-        $person = Person::where('user_id',$user->id)->firstOrFail();
+        $person = Person::where('user_id', $user->id)->firstOrFail();
         $validations = [
-           
+
             'carnet_readable'   => $person->personValidations->carnet_readable,
             'carnet_name'       => $person->personValidations->carnet_name,
             'carnet_number'     => $person->personValidations->carnet_number,
             'carnet_unexpired'  => $person->personValidations->carnet_unexpired,
         ];
         $pdf = base64_encode(\Storage::disk('personalFiles')->get($person->resident_card));
-        return ['pdfResident' => $pdf,
-                'validations'=> $validations ];
+        return [
+            'pdfResident' => $pdf,
+            'validations' => $validations
+        ];
     }
 
-    public function getPassport(){
+    public function getPassport()
+    {
         $user = Auth::user();
-        $person = Person::where('user_id',$user->id)->firstOrFail();
+        $person = Person::where('user_id', $user->id)->firstOrFail();
         $validations = [
             'passport_readable'      =>  $person->personValidations->passport_readable,
             'passport_name'          =>  $person->personValidations->passport_name,
             'passport_number'        =>  $person->personValidations->passport_number,
         ];
         $pdf = base64_encode(\Storage::disk('personalFiles')->get($person->passport));
-        return ['pdfPassport' => $pdf,
-        'validations'=> $validations ];
+        return [
+            'pdfPassport' => $pdf,
+            'validations' => $validations
+        ];
     }
 
-    public function getNit(){
+    public function getNit()
+    {
         $user = Auth::user();
-        $person = Person::where('user_id',$user->id)->firstOrFail();
+        $person = Person::where('user_id', $user->id)->firstOrFail();
         $validations = [
             'nit_readable'      =>  $person->personValidations->nit_readable,
             'nit_name'          =>  $person->personValidations->nit_name,
             'nit_number'        =>  $person->personValidations->nit_number,
         ];
         $pdf = base64_encode(\Storage::disk('personalFiles')->get($person->nit));
-        return ['pdfNit' => $pdf,
-        'validations'=> $validations];
+        return [
+            'pdfNit' => $pdf,
+            'validations' => $validations
+        ];
     }
 
-    public function getBank(){
+    public function getBank()
+    {
         $user = Auth::user();
-        $person = Person::where('user_id',$user->id)->firstOrFail();
+        $person = Person::where('user_id', $user->id)->firstOrFail();
         $validations = [
             'bank_readable'      =>  $person->personValidations->bank_readable,
             'bank_number'          =>  $person->personValidations->bank_number,
         ];
         $pdf = base64_encode(\Storage::disk('personalFiles')->get($person->bank_account));
-        return ['pdfBank' => $pdf,
-        'validations'=> $validations];
+        return [
+            'pdfBank' => $pdf,
+            'validations' => $validations
+        ];
     }
 
-    public function getTitle(){
+    public function getTitle()
+    {
         $user = Auth::user();
-        $person = Person::where('user_id',$user->id)->firstOrFail();
+        $person = Person::where('user_id', $user->id)->firstOrFail();
         if ($person->nationality == 'El Salvador') {
             $validations = [
                 'title_readable'      =>  $person->personValidations->title_readable,
@@ -872,269 +912,287 @@ class PersonController extends Controller
                 'title_authentic'      =>  $person->personValidations->title_authentic,
             ];
         }
-        
+
         $pdf = base64_encode(\Storage::disk('personalFiles')->get($person->professional_title_scan));
-        return ['pdfTitle' => $pdf,
-        'validations'=> $validations];
+        return [
+            'pdfTitle' => $pdf,
+            'validations' => $validations
+        ];
     }
 
-    public function getOtherTitle(){
+    public function getOtherTitle()
+    {
         $user = Auth::user();
-        $person = Person::where('user_id',$user->id)->firstOrFail();
-      
-            $validations = [
-                'other_title_readable'              =>$person->personValidations->other_title_readable,
-                'other_title_apostilled'            =>$person->personValidations->other_title_apostilled,
-                'other_title_apostilled_readable'   =>$person->personValidations->other_title_apostilled_readable,
-                'other_title_authentic'             =>$person->personValidations->other_title_authentic
-               
-            ];
-        
-        
+        $person = Person::where('user_id', $user->id)->firstOrFail();
+
+        $validations = [
+            'other_title_readable'              => $person->personValidations->other_title_readable,
+            'other_title_apostilled'            => $person->personValidations->other_title_apostilled,
+            'other_title_apostilled_readable'   => $person->personValidations->other_title_apostilled_readable,
+            'other_title_authentic'             => $person->personValidations->other_title_authentic
+
+        ];
+
+
         $pdf = base64_encode(\Storage::disk('personalFiles')->get($person->other_title_doc));
-        return ['pdfOtherTitle' => $pdf,
-        'validations'=> $validations];
+        return [
+            'pdfOtherTitle' => $pdf,
+            'validations' => $validations
+        ];
     }
 
-    public function getCurriculum(){
+    public function getCurriculum()
+    {
         $user = Auth::user();
-        $person = Person::where('user_id',$user->id)->firstOrFail();
+        $person = Person::where('user_id', $user->id)->firstOrFail();
         $validations = [
             'curriculum_readable'      =>  $person->personValidations->curriculum_readable,
         ];
         $pdf = base64_encode(\Storage::disk('personalFiles')->get($person->curriculum));
-        return ['pdfCurriculum' => $pdf,
-        'validations'=> $validations];
+        return [
+            'pdfCurriculum' => $pdf,
+            'validations' => $validations
+        ];
     }
 
-    public function getPermission() {
+    public function getPermission()
+    {
         $user = Auth::user();
-        $person = Person::where('user_id',$user->id)->firstOrFail();
+        $person = Person::where('user_id', $user->id)->firstOrFail();
         $validations = [
             'work_permission_readable'      =>  $person->personValidations->work_permission_readable,
         ];
         $pdf = base64_encode(\Storage::disk('personalFiles')->get($person->work_permission));
-        return ['pdfPermission' => $pdf,
-        'validations'=> $validations];
+        return [
+            'pdfPermission' => $pdf,
+            'validations' => $validations
+        ];
     }
 
-    public function duiToText($dui){
+    public function duiToText($dui)
+    {
         $formatter = new NumeroALetras();
-        if (substr($dui,0,-9) == 0 && substr($dui,1,-8) == !0) {
-          return  $textDui = "CERO ".$formatter->toString(substr($dui,0,-2))."GUION ".$formatter->toString(substr($dui,-1))."";
-        } if(substr($dui,1,-8) == 0 && substr($dui,2,-7) == !0) {
-            return $textDui = "CERO CERO ".$formatter->toString(substr($dui,0,-2))."GUION ".$formatter->toString(substr($dui,-1))."";
-        }if(substr($dui,2,-7) == 0 && substr($dui,3,-6) == !0){
-            return $textDui = "CERO CERO CERO ".$formatter->toString(substr($dui,0,-2))."GUION ".$formatter->toString(substr($dui,-1))."";
-        }else{
-           return $textDui = "CERO CERO CERO CERO ".$formatter->toString(substr($dui,0,-2))."GUION ".$formatter->toString(substr($dui,-1))."";
+        if (substr($dui, 0, -9) == 0 && substr($dui, 1, -8) == !0) {
+            return  $textDui = "CERO " . $formatter->toString(substr($dui, 0, -2)) . "GUION " . $formatter->toString(substr($dui, -1)) . "";
         }
-    }
-
-    public function carnetToText($carnet){
-        $formatter = new NumeroALetras();
-          return  $textCarnet = $formatter->toString($carnet);
-    }
-
-    public function nitToText($nit){
-        $formatter = new NumeroALetras();
-        $nitParts = explode("-",$nit);
-        
-         if (substr($nitParts[0],0,-3) == 0 && substr($nitParts[0],1,-2) == !0) {
-            $part1 ="CERO ".$formatter->toString($nitParts[0])."";
+        if (substr($dui, 1, -8) == 0 && substr($dui, 2, -7) == !0) {
+            return $textDui = "CERO CERO " . $formatter->toString(substr($dui, 0, -2)) . "GUION " . $formatter->toString(substr($dui, -1)) . "";
+        }
+        if (substr($dui, 2, -7) == 0 && substr($dui, 3, -6) == !0) {
+            return $textDui = "CERO CERO CERO " . $formatter->toString(substr($dui, 0, -2)) . "GUION " . $formatter->toString(substr($dui, -1)) . "";
         } else {
-            $part1 ="CERO CERO ".$formatter->toString($nitParts[0])."";
+            return $textDui = "CERO CERO CERO CERO " . $formatter->toString(substr($dui, 0, -2)) . "GUION " . $formatter->toString(substr($dui, -1)) . "";
         }
-        
-        if (substr($nitParts[1],0,-5) == 0 && substr($nitParts[1],1,-4) == !0) {
-             $part2 ="CERO ".$formatter->toString($nitParts[1])."";
-        } if(substr($nitParts[1],1,-4) == 0){
-             $part2 ="CERO CERO ".$formatter->toString($nitParts[1])."";
-        }else{
-             $part2 = $formatter->toString($nitParts[1]);
+    }
+
+    public function carnetToText($carnet)
+    {
+        $formatter = new NumeroALetras();
+        return  $textCarnet = $formatter->toString($carnet);
+    }
+
+    public function nitToText($nit)
+    {
+        $formatter = new NumeroALetras();
+        $nitParts = explode("-", $nit);
+
+        if (substr($nitParts[0], 0, -3) == 0 && substr($nitParts[0], 1, -2) == !0) {
+            $part1 = "CERO " . $formatter->toString($nitParts[0]) . "";
+        } else {
+            $part1 = "CERO CERO " . $formatter->toString($nitParts[0]) . "";
         }
 
-        if (substr($nitParts[2],0,-2) == 0 && substr($nitParts[2],1,-1) == !0) {
-             $part3 ="CERO ".$formatter->toString($nitParts[2])."";
-        } if(substr($nitParts[2],1,-1) == 0){
-             $part3 ="CERO CERO ".$formatter->toString($nitParts[2])."";
-        }else{
-             $part3 = $formatter->toString($nitParts[2]);
+        if (substr($nitParts[1], 0, -5) == 0 && substr($nitParts[1], 1, -4) == !0) {
+            $part2 = "CERO " . $formatter->toString($nitParts[1]) . "";
+        }
+        if (substr($nitParts[1], 1, -4) == 0) {
+            $part2 = "CERO CERO " . $formatter->toString($nitParts[1]) . "";
+        } else {
+            $part2 = $formatter->toString($nitParts[1]);
+        }
+
+        if (substr($nitParts[2], 0, -2) == 0 && substr($nitParts[2], 1, -1) == !0) {
+            $part3 = "CERO " . $formatter->toString($nitParts[2]) . "";
+        }
+        if (substr($nitParts[2], 1, -1) == 0) {
+            $part3 = "CERO CERO " . $formatter->toString($nitParts[2]) . "";
+        } else {
+            $part3 = $formatter->toString($nitParts[2]);
         }
         $part4 =  $formatter->toString($nitParts[3]);
-        return $textNIt = "".$part1."-".$part2."-".$part3."-".$part4."";
-        
+        return $textNIt = "" . $part1 . "-" . $part2 . "-" . $part3 . "-" . $part4 . "";
     }
 
     public function myChanges()
     {
         $user = Auth::user();
-        $person = Person::where('user_id',$user->id)->firstOrFail();
-        $changes = PersonChange::where('person_id',$person->id)->get();
+        $person = Person::where('user_id', $user->id)->firstOrFail();
+        $changes = PersonChange::where('person_id', $person->id)->get();
         return response(['changes' => $changes,], 200);
     }
 
     public function getDocumentsByCase()
     {
         $user = Auth::user();
-        $person = Person::where('user_id',$user->id)->firstOrFail();
-        
+        $person = Person::where('user_id', $user->id)->firstOrFail();
+
 
         if ($person->employee == null) {
             //Si no es empleado verificamos que sea nacional o extanjero
             if ($person->nationality == 'El Salvador') {
-                $archivos = ['nit','banco','cv','titulo'];
+                $archivos = ['nit', 'banco', 'cv', 'titulo'];
                 if ($person->is_nationalized == true) {
-                    array_push($archivos,'carnet');
+                    array_push($archivos, 'carnet');
                 } else {
-                    array_push($archivos,'dui');
+                    array_push($archivos, 'dui');
                 }
                 if ($person->other_title == true) {
-                    array_push($archivos,'otro_titulo');
+                    array_push($archivos, 'otro_titulo');
                 }
-                return response(['archivos' => $archivos],200);
-
+                return response(['archivos' => $archivos], 200);
             } else {
                 //EXTRANJERO
-                $archivo =  ['banco','cv','titulo','pass'];
+                $archivo =  ['banco', 'cv', 'titulo', 'pass'];
                 if ($person->other_title == true) {
-                    array_push($archivos,'otro_titulo');
+                    array_push($archivos, 'otro_titulo');
                 }
-                return  response(['archivos' =>  $archivo  ], 200);
+                return  response(['archivos' =>  $archivo], 200);
             }
         } else {
             //Candidato - Trabajador
             if ($person->nationality == 'El Salvador') {
                 //Candidato - Trabajador - Nacional
-                $archivos = ['nit','banco','cv','titulo'];
+                $archivos = ['nit', 'banco', 'cv', 'titulo'];
                 if ($person->is_nationalized == true) {
-                    array_push($archivos,'carnet');
+                    array_push($archivos, 'carnet');
                 } else {
-                    array_push($archivos,'dui');
+                    array_push($archivos, 'dui');
                 }
                 if ($person->other_title == true) {
-                    array_push($archivos,'otro_titulo');
+                    array_push($archivos, 'otro_titulo');
                 }
                 if (!($person->employee->faculty_id == 1)) {
-                    array_push($archivos,'permiso');
+                    array_push($archivos, 'permiso');
                 }
 
-                return response(['archivos' => $archivos],200);
+                return response(['archivos' => $archivos], 200);
             } else {
                 //Candidato - Trabajador - Internacional 
-                $archivos = ['banco','cv','titulo','pass'];
+                $archivos = ['banco', 'cv', 'titulo', 'pass'];
                 if (!($person->employee->faculty_id == 1)) {
-                    array_push($archivos,'permiso');
-                } 
-                if ($person->other_title == true) {
-                    array_push($archivos,'otro_titulo');
+                    array_push($archivos, 'permiso');
                 }
-                return response(['archivos' => $archivos],200);
-                
+                if ($person->other_title == true) {
+                    array_push($archivos, 'otro_titulo');
+                }
+                return response(['archivos' => $archivos], 200);
             }
         }
     }
-    
-    public function calculaedad($fechanacimiento){
-        list($ano,$mes,$dia) = explode("-",$fechanacimiento);
+
+    public function calculaedad($fechanacimiento)
+    {
+        list($ano, $mes, $dia) = explode("-", $fechanacimiento);
         $ano_diferencia  = date("Y") - $ano;
         $mes_diferencia = date("m") - $mes;
         $dia_diferencia   = date("d") - $dia;
         if ($dia_diferencia < 0 || $mes_diferencia < 0)
-          $ano_diferencia--;
+            $ano_diferencia--;
         return $ano_diferencia;
     }
 
-    public function wordExample($id){
-     $rector = CentralAuthority::where('position','=','Rector')->get()->first();
-     
-     //Preparando los datos del rector
-     $formatter = new NumeroALetras();
-     $edad = $this->calculaedad($rector->birth_date);
-     $numeroAcuerdo = 'FIA-666-2021';
-     $nombreRector = "".$rector->firstName." ".$rector->middleName." ".$rector->lastName."";
-     $firmaRector = $rector->reading_signature;
-     $edadRector = $formatter->toString($edad);
-     $profesionRector = $rector->profession;
-     $duiTextoRector = $rector->text_dui;
-     $nitTextoRector = $rector->text_nit;
-     
-     //Preparando la Información del candidato
-     $candidato = Person::findOrFail($id);
-     $edadC = $this->calculaedad($candidato->birth_date);
-     $nombreCandidato = "".$candidato->first_name." ".$candidato->middle_name." ".$candidato->last_name."";
-     $candidatoEdad = $formatter->toString($edadC);
-     $candidatoProfesion = $candidato->professional_title;
-     $candidatoCiudad = $candidato->city;
-     $candidatoDepartamento = $candidato->department;
-     $duiTextoCandidato = $candidato->dui_text;
-     $nitTextoCandidato = $candidato->nit_text;
-     $date = Carbon::now()->locale('es');
-     $fecha = "A LOS  ".$formatter->toString($date->day)." DIAS DEL MES DE  ".$date->monthName." DE ".$formatter->toString($date->year)."";
-     try {
-        $phpWord = new \PhpOffice\PhpWord\TemplateProcessor(\Storage::disk('formats')->path('/SPNP.docx'));
-        $phpWord->setValue('numeroAcuerdo',$numeroAcuerdo);
-        $phpWord->setValue('nombreRector',strtoupper($nombreRector));
-        $phpWord->setValue('firmaRector',$firmaRector);
-        $phpWord->setValue('edadRector',strtoupper($edadRector));
-        $phpWord->setValue('duiTextoRector',strtoupper($duiTextoRector));
-        $phpWord->setValue('nitTextoRector',strtoupper($nitTextoRector));
-        $phpWord->setValue('profesionRector',strtoupper($profesionRector));
-        $phpWord->setValue('nombreCandidato',strtoupper($nombreCandidato));
+    public function wordExample($id)
+    {
+        $rector = CentralAuthority::where('position', '=', 'Rector')->get()->first();
 
-        $phpWord->setValue('candidatoEdad',strtoupper($candidatoEdad));
-        $phpWord->setValue('candidatoProfesion',strtoupper($candidatoProfesion));
-        $phpWord->setValue('candidatoCiudad',strtoupper($candidatoCiudad));
-        $phpWord->setValue('candidatoDepartamento',strtoupper($candidatoDepartamento));
-        $phpWord->setValue('candidatoDui',strtoupper($duiTextoCandidato));
-        $phpWord->setValue('candidatoNit',strtoupper($nitTextoCandidato));
-        $phpWord->setValue('fecha',strtoupper($fecha));
-       
-        $tenpFile = tempnam(sys_get_temp_dir(),'PHPWord');
-        $phpWord->saveAs($tenpFile);
-        
-        $header = [
-            "Content-Type: application/octet-stream",
-      ]; 
-        return response()->download($tenpFile, 'Contrato Generado Servicios Profesionales.docx', $header)->deleteFileAfterSend($shouldDelete = true);
+        //Preparando los datos del rector
+        $formatter = new NumeroALetras();
+        $edad = $this->calculaedad($rector->birth_date);
+        $numeroAcuerdo = 'FIA-666-2021';
+        $nombreRector = "" . $rector->firstName . " " . $rector->middleName . " " . $rector->lastName . "";
+        $firmaRector = $rector->reading_signature;
+        $edadRector = $formatter->toString($edad);
+        $profesionRector = $rector->profession;
+        $duiTextoRector = $rector->text_dui;
+        $nitTextoRector = $rector->text_nit;
+
+        //Preparando la Información del candidato
+        $candidato = Person::findOrFail($id);
+        $edadC = $this->calculaedad($candidato->birth_date);
+        $nombreCandidato = "" . $candidato->first_name . " " . $candidato->middle_name . " " . $candidato->last_name . "";
+        $candidatoEdad = $formatter->toString($edadC);
+        $candidatoProfesion = $candidato->professional_title;
+        $candidatoCiudad = $candidato->city;
+        $candidatoDepartamento = $candidato->department;
+        $duiTextoCandidato = $candidato->dui_text;
+        $nitTextoCandidato = $candidato->nit_text;
+        $date = Carbon::now()->locale('es');
+        $fecha = "A LOS  " . $formatter->toString($date->day) . " DIAS DEL MES DE  " . $date->monthName . " DE " . $formatter->toString($date->year) . "";
+        try {
+            $phpWord = new \PhpOffice\PhpWord\TemplateProcessor(\Storage::disk('formats')->path('/SPNP.docx'));
+            $phpWord->setValue('numeroAcuerdo', $numeroAcuerdo);
+            $phpWord->setValue('nombreRector', strtoupper($nombreRector));
+            $phpWord->setValue('firmaRector', $firmaRector);
+            $phpWord->setValue('edadRector', strtoupper($edadRector));
+            $phpWord->setValue('duiTextoRector', strtoupper($duiTextoRector));
+            $phpWord->setValue('nitTextoRector', strtoupper($nitTextoRector));
+            $phpWord->setValue('profesionRector', strtoupper($profesionRector));
+            $phpWord->setValue('nombreCandidato', strtoupper($nombreCandidato));
+
+            $phpWord->setValue('candidatoEdad', strtoupper($candidatoEdad));
+            $phpWord->setValue('candidatoProfesion', strtoupper($candidatoProfesion));
+            $phpWord->setValue('candidatoCiudad', strtoupper($candidatoCiudad));
+            $phpWord->setValue('candidatoDepartamento', strtoupper($candidatoDepartamento));
+            $phpWord->setValue('candidatoDui', strtoupper($duiTextoCandidato));
+            $phpWord->setValue('candidatoNit', strtoupper($nitTextoCandidato));
+            $phpWord->setValue('fecha', strtoupper($fecha));
+
+            $tenpFile = tempnam(sys_get_temp_dir(), 'PHPWord');
+            $phpWord->saveAs($tenpFile);
+
+            $header = [
+                "Content-Type: application/octet-stream",
+            ];
+            return response()->download($tenpFile, 'Contrato Generado Servicios Profesionales.docx', $header)->deleteFileAfterSend($shouldDelete = true);
         } catch (\PhpOffice\PhpWord\Exception\Exception $e) {
             //throw $th;
             return back($e->getCode());
         }
-
     }
 
-    public function getCandidates(Request $request){
+    public function getCandidates(Request $request)
+    {
         $candidates = Person::select('id', DB::raw("CONCAT(first_name,' ',middle_name,' ',last_name) as name"));
         switch ($request->hiringType) {
             case 'SPNP':
-                $candidates = $candidates->where('is_employee',false);
+                $candidates = $candidates->where('is_employee', false);
                 break;
             default:
-                $candidates = $candidates->where('is_employee',true);
+                $candidates = $candidates->where('is_employee', true);
                 break;
         }
         $candidates = $candidates->get();
-        return response(['candidates' => $candidates],200);
-    }  
+        return response(['candidates' => $candidates], 200);
+    }
 
-    public function getInfoCandidate($person){
+    public function getInfoCandidate($person)
+    {
         $person = Person::findOrFail($person);
         $lastStaySchedule = StaySchedule::select('stay_schedules.*')
-        ->with(['scheduleDetails', 'scheduleActivities'])
-        ->join('semesters', 'stay_schedules.semester_id', '=', 'semesters.id')
-        ->where('stay_schedules.employee_id', $person->employee->id)->get()->last();
+            ->with(['scheduleDetails', 'scheduleActivities'])
+            ->join('semesters', 'stay_schedules.semester_id', '=', 'semesters.id')
+            ->where('stay_schedules.employee_id', $person->employee->id)->get()->last();
         $lastStaySchedule->makeHidden(['employee_id', 'created_at', 'updated_at']);
         $lastStaySchedule->scheduleDetails->makeHidden(['id', 'stay_schedule_id', 'created_at', 'updated_at']);
         $lastStaySchedule->scheduleActivities->makeHidden(['id', 'created_at', 'updated_at', 'deleted_at']);
         $candidate = [
             'id'                => $person->id,
-            'name'              => $person->first_name.' '.$person->middle_name.' '.$person->last_name,
+            'name'              => $person->first_name . ' ' . $person->middle_name . ' ' . $person->last_name,
             'escalafon_code'    => $person->employee->escalafon->code,
             'escalafon_name'    => $person->employee->escalafon->name,
             'salary'            => $person->employee->escalafon->salary,
             'details'           => $lastStaySchedule
         ];
-        return response(['candidate' => $candidate],200);
+        return response(['candidate' => $candidate], 200);
     }
 }
