@@ -25,9 +25,8 @@ use App\Http\Controllers\SchoolAuthorityController;
 use App\Http\Controllers\GroupController;
 use App\Http\Controllers\EmployeeTypeController;
 use App\Http\Controllers\HiringRequestController;
-use Illuminate\Http\Request;
+use App\Http\Controllers\HiringRequestDetailController;
 use Illuminate\Support\Facades\Route;
-use Illuminate\Support\Facades\Auth;
 
 /*
 |--------------------------------------------------------------------------
@@ -81,15 +80,15 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     });
 
     // Rutas que manejan el catalogo de bancos 
-        Route::group(['middleware' => ['can:write_banks']], function () {
-            Route::post('/banks', [BankController::class, 'store']);
-            Route::put('/banks/{id}', [BankController::class, 'update']);
-            Route::delete('/banks/{id}', [BankController::class, 'destroy']);
-        });
-        Route::group(['middleware' => ['can:read_banks']], function () {
-            Route::get('/banks', [BankController::class, 'all']);
-            Route::get('/banks/{id}', [BankController::class, 'show']);
-        });
+    Route::group(['middleware' => ['can:write_banks']], function () {
+        Route::post('/banks', [BankController::class, 'store']);
+        Route::put('/banks/{id}', [BankController::class, 'update']);
+        Route::delete('/banks/{id}', [BankController::class, 'destroy']);
+    });
+    Route::group(['middleware' => ['can:read_banks']], function () {
+        Route::get('/banks', [BankController::class, 'all']);
+        Route::get('/banks/{id}', [BankController::class, 'show']);
+    });
 
     // Rutas que manejan el catalogo de escalafones 
     Route::group(['middleware' => ['can:write_escalafones']], function () {
@@ -185,18 +184,15 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
         Route::post('/persons', [PersonController::class, 'store']);
         Route::put('/persons/me', [PersonController::class, 'update']);
         Route::delete('/persons/me', [PersonController::class, 'destroy']);
-        Route::post('/persons/files',[PersonController::class, 'storeMenu']);
-        Route::post('/persons/files/update',[PersonController::class, 'updateMenu']);
-        Route::get('/persons/changes',[PersonController::class, 'myChanges']);
+        Route::post('/persons/files', [PersonController::class, 'storeMenu']);
+        Route::post('/persons/files/update', [PersonController::class, 'updateMenu']);
+        Route::get('/persons/changes', [PersonController::class, 'myChanges']);
     });
     Route::group(['middleware' => ['can:read_persons']], function () {
-       
         Route::get('/persons/me', [PersonController::class, 'showMyInfo']);
         Route::get('/persons/me/validations', [PersonValidationController::class, 'myValidationStatus']);
         Route::get('/persons/files/{type}/view', [PersonController::class, 'getMenu']);
         Route::get('/persons/files/options', [PersonController::class, 'getDocumentsByCase']);
-       
-        
     });
 
     // Rutas que manejan las validaciones de personas
@@ -204,19 +200,17 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
         Route::get('/persons/{id}/validations', [PersonValidationController::class, 'getValidations']);
         Route::get('/persons/{person}/validations/{type}', [PersonValidationController::class, 'validationData']);
         Route::get('/persons/{id}', [PersonController::class, 'show']);
-       
-        
     });
     Route::group(['middleware' => ['can:write_personValidations']], function () {
         Route::post('/persons/{person}/validations/{type}/store', [PersonValidationController::class, 'validationStore']);
     });
 
     // Rutas que manejan el catalogo de empleados
-    Route::group(['middleware' => ['can:write_employee']], function() {
+    Route::group(['middleware' => ['can:write_employee']], function () {
         Route::post('/employees/me', [EmployeeController::class, 'store']);
     });
-    Route::group(['middleware' => ['can:read_employee']], function() {
-        Route::get('/employees/me/has-registered',[EmployeeController::class, 'hasRegistered']);
+    Route::group(['middleware' => ['can:read_employee']], function () {
+        Route::get('/employees/me/has-registered', [EmployeeController::class, 'hasRegistered']);
     });
 
     // Rutas que maneja el catalogo tipos de emepleado 
@@ -231,22 +225,22 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     });
 
     // Rutas que manejan el catalogo de horario de permanencia 
-    Route::group(['middleware' => ['can:write_staySchedule']], function() {
+    Route::group(['middleware' => ['can:write_staySchedule']], function () {
         Route::post('/employees/me/stay-schedules', [StayScheduleController::class, 'registerForActiveSemester']);
-    });  
-    Route::group(['middleware' => ['can:read_staySchedule']], function() {
+    });
+    Route::group(['middleware' => ['can:read_staySchedule']], function () {
         Route::get('/employees/me/stay-schedules', [StayScheduleController::class, 'allMine']);
         Route::get('/employees/me/stay-schedules/last', [StayScheduleController::class, 'last']);
         Route::get('/employees/me/stay-schedules/{id}', [StayScheduleController::class, 'show']);
     });
 
     // Rutas que manejan el catalogo de horario de permanencia 
-    Route::group(['middleware' => ['can:write_staySchedule']], function() {
+    Route::group(['middleware' => ['can:write_staySchedule']], function () {
         Route::put('/employees/me/stay-schedules/{id}/details', [StayScheduleDetailController::class, 'store']);
-    });  
-    Route::group(['middleware' => ['can:read_staySchedule']], function() {
     });
-    
+    Route::group(['middleware' => ['can:read_staySchedule']], function () {
+    });
+
     // Rutas que manejan el catalogo de usuarios
     Route::group(['middleware' => ['can:write_users']], function () {
         Route::post('/users', [AuthController::class, 'createUser']);
@@ -257,8 +251,8 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
         Route::get('/users/{id}', [AuthController::class, 'getUser']);
     });
 
-     // Rutas que maneja el catalogo de planes de estudio de las carreras que maneja el sistema
-     Route::group(['middleware' => ['can:write_plans']], function () {
+    // Rutas que maneja el catalogo de planes de estudio de las carreras que maneja el sistema
+    Route::group(['middleware' => ['can:write_plans']], function () {
         Route::post('/study-plans', [StudyPlanController::class, 'store']);
         Route::put('/study-plans/{id}', [StudyPlanController::class, 'update']);
         Route::delete('/study-plans/{id}', [StudyPlanController::class, 'destroy']);
@@ -287,75 +281,79 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
         Route::put('/schools/authority/{id}/info', [SchoolAuthorityController::class, 'update']);
         Route::delete('/schools/authority/{id}/info', [SchoolAuthorityController::class, 'destroy']);
     });
-    Route::group(['middleware' => ['can:read_schoolAuth']], function () {   
+    Route::group(['middleware' => ['can:read_schoolAuth']], function () {
         Route::get('/schools/all/authorities', [SchoolAuthorityController::class, 'all']);
         Route::get('/schools/{id}/authorities', [SchoolAuthorityController::class, 'authoritiesBySchool']);
         Route::get('/schools/authority/{id}/info', [SchoolAuthorityController::class, 'show']);
     });
 
     // Rutas que manejan el catalogo de ciclos academicos
-    Route::group(['middleware' => ['can:write_semesters']], function () {   
+    Route::group(['middleware' => ['can:write_semesters']], function () {
         Route::post('/semesters', [SemesterController::class, 'store']);
         Route::put('/semesters/{id}', [SemesterController::class, 'update']);
         Route::delete('/semesters/{id}', [SemesterController::class, 'destroy']);
     });
-    Route::group(['middleware' => ['can:read_semesters']], function () {   
+    Route::group(['middleware' => ['can:read_semesters']], function () {
         Route::get('/semesters', [SemesterController::class, 'all']);
         Route::get('/semesters/actives', [SemesterController::class, 'allActives']);
         Route::get('/semesters/{id}', [SemesterController::class, 'show']);
     });
-    
+
     // Rutas que manejan el catalogo de tipos de grupo de clases
-    Route::group(['middleware' => ['can:write_groupsType']], function () {   
+    Route::group(['middleware' => ['can:write_groupsType']], function () {
         Route::post('/groupTypes', [GroupTypeController::class, 'store']);
         Route::put('/groupTypes/{id}', [GroupTypeController::class, 'update']);
         Route::delete('/groupTypes/{id}', [GroupTypeController::class, 'destroy']);
     });
-    Route::group(['middleware' => ['can:read_groupsType']], function () {   
+    Route::group(['middleware' => ['can:read_groupsType']], function () {
         Route::get('/groupTypes', [GroupTypeController::class, 'all']);
         Route::get('/groupTypes/{id}', [GroupTypeController::class, 'show']);
     });
 
     // Rutas que manejan la carga academica 
-    Route::group(['middleware' => ['can:write_academicLoad']], function () {   
+    Route::group(['middleware' => ['can:write_academicLoad']], function () {
         Route::post('/academicLoad', [AcademicLoadController::class, 'store']);
     });
-    Route::group(['middleware' => ['can:read_academicLoad']], function () {   
+    Route::group(['middleware' => ['can:read_academicLoad']], function () {
         Route::get('/academicLoad', [AcademicLoadController::class, 'indexAdmin']);
         Route::get('/academicLoad/{id}', [AcademicLoadController::class, 'show']);
         Route::get('/academicLoad/all/bySchool', [AcademicLoadController::class, 'academicLoadsSchool']);
     });
 
     // Rutas que manejan el catalogo de grupos asignados en carga academica
-    Route::group(['middleware' => ['can:write_groups']], function () {  
+    Route::group(['middleware' => ['can:write_groups']], function () {
         Route::post('/academicLoad/{id}/groups', [GroupController::class, 'store']);
         Route::post('/importGroups/{academicLoadId}', [GroupController::class, 'importGroups']);
         Route::put('/groups/{id}', [GroupController::class, 'update']);
         Route::put('/groups/{id}/professor', [GroupController::class, 'setProfessor']);
         Route::get('/professors', [PersonController::class, 'allCandidatesProfessor']);
     });
-    Route::group(['middleware' => ['can:read_groups']], function () {   
+    Route::group(['middleware' => ['can:read_groups']], function () {
         Route::get('/groups/{id}', [GroupController::class, 'show']);
         Route::get('/academicLoad/{id}/groups', [GroupController::class, 'showByAcademicLoad']);
     });
 
     //Rutas que manejan las fuciones de RRHH
-    Route::group(['middleware' => ['can:view_candidates']], function () {   
+    Route::group(['middleware' => ['can:view_candidates']], function () {
         Route::get('/persons', [PersonController::class, 'allCandidates']);
         Route::get('/Word/{id}', [PersonController::class, 'wordExample']);
     });
 
     //Pendiente por definir los permisos
     Route::post('/hiringRequest', [HiringRequestController::class, 'store']);
-    Route::get('/hiringRequest/{id}', [HiringRequestController::class, 'show']);    
+    Route::get('/hiringRequest/{id}', [HiringRequestController::class, 'show']);
     Route::put('/hiringRequest/{id}', [HiringRequestController::class, 'update']);
     Route::delete('/hiringRequest/{id}', [HiringRequestController::class, 'destroy']);
-    Route::get('/hiringRequest/all/peticions',[HiringRequestController::class, 'getAllHiringRequests']);
-    Route::get('/hiringRequest/school/{id}',[HiringRequestController::class, 'getAllHiringRequestBySchool']);
+    Route::get('/hiringRequest/all/peticions', [HiringRequestController::class, 'getAllHiringRequests']);
+    Route::get('/hiringRequest/school/{id}', [HiringRequestController::class, 'getAllHiringRequestBySchool']);
 
     //Rutas que manejan los select de las solicitudes de contratacion
-    Route::get('/candidates/all',[PersonController::class,'getCandidates']);
-    Route::get('/hiringRequest/groups/notAssigned',[GroupController::class,'getAllGroupsWhitoutProfessors']);
-    Route::get('/candidate/{Person}/ActualInfo',[PersonController::class,'getInfoCandidate']);
-   
+    Route::get('/candidates/all', [PersonController::class, 'getCandidates']);
+    Route::get('/hiringRequest/groups/notAssigned', [GroupController::class, 'getAllGroupsWhitoutProfessors']);
+    Route::get('/candidate/{Person}/ActualInfo', [PersonController::class, 'getInfoCandidate']);
+
+    // Rutas que manejan los detalles de las solicitudes de contratacion
+    Route::group(['middleware' => ['can:write_hiringRequest']], function () {
+        Route::put('/hiringRequest/{id}/details/SPNP', [HiringRequestDetailController::class, 'addSPNPRequestDetails']);
+    });
 });

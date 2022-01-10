@@ -2,11 +2,10 @@
 
 namespace Database\Seeders;
 
-use Illuminate\Database\Seeder;
 use App\Models\HiringRequest;
 use App\Http\Traits\GeneratorTrait;
-use Carbon\Carbon;
-use Illuminate\Database\Eloquent\Factories\Factory;
+use Illuminate\Database\Seeder;
+
 class HiringSeeder extends Seeder
 {
     use GeneratorTrait;
@@ -16,21 +15,20 @@ class HiringSeeder extends Seeder
      * @return void
      */
     public function run()
-    { 
-         $hrQty = 1000;
-         
-        for ($i=0; $i < $hrQty ; $i++) { 
-            $faker = \Faker\Factory::create();
-           $rq =  HiringRequest::create([
-                'code' =>$this->generateRequestCode(mt_rand(1,9)), 
-                'contract_type_id' => mt_rand(1,3), 
-                'school_id' =>mt_rand(1,9), 
-                'modality' => 'Modalidad Presencial', 
-                'message' => $faker->text, 
+    {
+        $hrQty = 1000;
+        $faker = \Faker\Factory::create();
+
+        for ($i = 0; $i < $hrQty; $i++) {
+            $schoolId = mt_rand(1, 9);
+            $rq =  HiringRequest::create([
+                'code' => $this->generateRequestCode($schoolId),
+                'contract_type_id' => mt_rand(1, 3),
+                'school_id' => $schoolId,
+                'modality' => 'Modalidad Presencial',
+                'message' => $faker->text,
             ]);
-            $rq->status()->attach(['status_id'=>'1'],['comments'=>'Creado']);
+            $rq->status()->attach(['status_id' => '1'], ['comments' => 'Creado']);
         }
-        
-      
     }
 }

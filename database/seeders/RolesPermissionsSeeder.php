@@ -114,7 +114,7 @@ class RolesPermissionsSeeder extends Seeder
 
         Permission::create(['name' => 'write_personValidations']);
         Permission::create(['name' => 'read_personValidations']);
-        
+
         Permission::create(['name' => 'write_employee']);
         Permission::create(['name' => 'read_employee']);
 
@@ -126,7 +126,10 @@ class RolesPermissionsSeeder extends Seeder
 
         Permission::create(['name' => 'read_banks']);
         Permission::create(['name' => 'write_banks']);
-      
+
+        Permission::create(['name' => 'read_hiringRequest']);
+        Permission::create(['name' => 'write_hiringRequest']);
+
         //Permisos visuales
         Permission::create(['name' => 'view_activities']);
         Permission::create(['name' => 'view_users']);
@@ -144,7 +147,7 @@ class RolesPermissionsSeeder extends Seeder
         Permission::create(['name' => 'view_Personal_changes']);
         Permission::create(['name' => 'view_rrhh']);
         Permission::create(['name' => 'view_candidates']);
-     
+
         //CREACION DE ROLES
         $admin = Role::create(['name' => 'Administrador']);
         $profesor = Role::create(['name' => 'Candidato']);
@@ -199,6 +202,7 @@ class RolesPermissionsSeeder extends Seeder
             'view_academicLoad',
             'read_banks',
             'write_banks',
+            'read_hiringRequest',
         ]);
 
         $profesor->givePermissionTo([
@@ -214,7 +218,7 @@ class RolesPermissionsSeeder extends Seeder
             'read_persons',
             'write_persons',
             'read_plans',
-            'read_facultyAuth',   
+            'read_facultyAuth',
             'read_schoolAuth',
             'read_semesters',
             'read_groupsType',
@@ -241,10 +245,10 @@ class RolesPermissionsSeeder extends Seeder
             'write_activities',
             'read_positions',
             'read_courses',
-           /*  'write_courses', */
+            // 'write_courses', 
             'read_contractTypes',
             'read_persons',
-            'read_plans',  
+            'read_plans',
             'read_facultyAuth',
             'read_schoolAuth',
             'read_semesters',
@@ -255,6 +259,8 @@ class RolesPermissionsSeeder extends Seeder
             'read_groups',
             'view_solicitudeDirector',
             'view_academicLoadDirector',
+            'read_hiringRequest',
+            'write_hiringRequest',
         ]);
 
         $asistenteAdmin->givePermissionTo([

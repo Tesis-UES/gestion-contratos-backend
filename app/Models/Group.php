@@ -43,5 +43,8 @@ class Group extends Model
     {
         return $this->hasMany(Schedule::class);
     }
-    
+
+    public function hiringRequestDetails() {
+        return $this->belongsToMany(HiringRequestDetails::class, 'hiring_groups');
+    }
 }

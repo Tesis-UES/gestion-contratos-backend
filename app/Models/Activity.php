@@ -17,13 +17,18 @@ class Activity extends Model
 
     protected $hidden = ['pivot'];
 
-    public function positions() 
+    public function positions()
     {
         return $this->belongsToMany(Position::class, 'position_activities');
     }
 
-    public function staySchedules() 
+    public function staySchedules()
     {
         return $this->belongsToMany(StaySchedule::class, 'stay_schedule_activities');
+    }
+
+    public function hiringRequests()
+    {
+        return $this->belongsToMany(HiringRequest::class, 'hiring_activities');
     }
 }
