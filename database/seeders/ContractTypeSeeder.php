@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Constants\ContractType as ConstantsContractType;
 use Illuminate\Database\Seeder;
 use App\Models\ContractType;
 
@@ -14,8 +15,8 @@ class ContractTypeSeeder extends Seeder
      */
     public function run()
     {
-        ContractType::create(['name'=>'Contrato de Tiempo Adicional','description'=>'---']);
-        ContractType::create(['name'=>'Contrato de Tiempo Integral','description'=>'---']);
-        ContractType::create(['name'=>'Contrato por Servicios Profesionales','description'=>'---']);
+        ContractType::create(['name' => ConstantsContractType::TA, 'description' => '---']);
+        ContractType::create(['name' => ConstantsContractType::TI, 'description' => '---']);
+        ContractType::create(['name' => ConstantsContractType::SPNP, 'description' => '---']);
     }
 }
