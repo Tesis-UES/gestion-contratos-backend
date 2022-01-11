@@ -189,7 +189,7 @@ class GroupController extends Controller
         $semester = Semester::where('status',1)->firstOrFail();
         $school = $user = Auth::user()->school_id;
         $academicLoad = AcademicLoad::where([['semester_id',$semester->id],['school_id',$school]])->first();
-        $groups = Group::with('course')->with('grupo')->with('schedule')->where([['academic_load_id',$academicLoad->id],['people_id',null]])->get();
+        $groups = Group::with('course')->with('grupo')->with('schedule')->where([['academic_load_id',$academicLoad->id],['status','SDA']])->get();
         return $groups;
     }
 }
