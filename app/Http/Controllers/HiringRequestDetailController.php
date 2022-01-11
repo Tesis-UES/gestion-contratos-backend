@@ -2,7 +2,10 @@
 
 namespace App\Http\Controllers;
 
+use App\Constants\ContractType;
+use App\Constants\PersonValidationStatus;
 use App\Http\Requests\UpdateSPNPRequestDetails;
+use App\Http\Requests\UpdateTIRequestDetails;
 use App\Http\Traits\WorklogTrait;
 use App\Models\Activity;
 use App\Models\Group;
@@ -26,6 +29,9 @@ class HiringRequestDetailController extends Controller
             if ($person->is_employee) {
                 DB::rollBack();
                 return response(['message' => 'Un empleado de la universidad no puede ser contratado por esta modalidad (SPNP)'], 400);
+            } elseif ($person->status != PersonValidationStatus::Validado) {
+                DB::rollBack();
+                return response(['message' => 'No se han validado los datos de la persona con id' . $person->id], 400);
             }
 
             $totalWorkHours = array_reduce($detail['groups'], function ($pv, $group) {
@@ -37,12 +43,10 @@ class HiringRequestDetailController extends Controller
             }
         }
 
-
         $user = Auth::user();
-
         $hiringRequest = HiringRequest::with(['contractType', 'school',])->findOrFail($id);
         $requestStatus = $hiringRequest->getLastStatusAttribute();
-        if ($hiringRequest->contractType->name != 'Contrato por Servicios Profesionales') {
+        if ($hiringRequest->contractType->name != ContractType::SPNP) {
             DB::rollBack();
             return response(['message' => 'Debe seleccionar un contrato del tipo "Contrato por Servicios Profesionales"'], 400);
         } elseif ($user->school->id != $hiringRequest->school->id) {
