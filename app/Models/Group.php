@@ -15,7 +15,8 @@ class Group extends Model
         'group_type_id',
         'academic_load_id',
         'course_id',
-        'people_id'
+        'people_id',
+        'status',
     ];
 
     public function grupo()
