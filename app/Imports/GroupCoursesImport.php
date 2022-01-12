@@ -134,6 +134,7 @@ class GroupCoursesImport implements ToCollection, WithHeadingRow
                                 'group_type_id'         => $groupType->id,
                                 'course_id'             => $course->id,
                                 'academic_load_id'      => $academicLoad,
+                                'status'                => 'SDA',
                                 ]);
                             $GroupRegister->schedule()->createMany($details);
                             $grupoB = [

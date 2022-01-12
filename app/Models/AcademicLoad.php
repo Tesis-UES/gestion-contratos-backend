@@ -24,4 +24,9 @@ class AcademicLoad extends Model
     {
         return $this->belongsTo(Semester::class);
     }
+
+    public function groups()
+    {
+        return $this->hasMany(Group::class, 'academic_load_id');
+    }
 }

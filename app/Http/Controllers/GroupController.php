@@ -10,6 +10,7 @@ use App\Imports\GroupCoursesImport;
 use Illuminate\Http\Request;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\Auth;
+use DB;
 
 class GroupController extends Controller
 {
@@ -22,7 +23,7 @@ class GroupController extends Controller
             'number'                => 'required|integer',
             'group_type_id'         => 'required|integer',
             'course_id'             => 'required|integer',
-            'people_id'             => 'integer',
+            'people_id'             => 'nullable|integer',
             'details'               => 'required|array|min:1',
             'details.*.day'         => 'required|string',
             'details.*.start_hour'  => 'required|date_format:H:i',
@@ -35,18 +36,14 @@ class GroupController extends Controller
                                 'number'            =>$fields['number'],
                                 'course_id'         =>$fields['course_id']])->get();
         if ($result->isEmpty()) {
-            $Group = Group::create(array_merge($fields, ['academic_load_id' => $academicLoadId]));
+            $Group = Group::create(array_merge($fields, ['academic_load_id' => $academicLoadId],['status' => (array_key_exists('people_id',$fields)) ? 'SDA' :'DA']));
             $Group->schedule()->createMany($fields['details']);
-            
              $newGroup = [
-                'id'                =>  $Group->id,
                 'number'            =>  $Group->number,          
-                'group_type_id'     =>  $Group->group_type_id,
                 'type_group'        =>  $Group->grupo->name,  
-                'academic_load_id'  =>  $academicLoadId, 
-                'course_id'         =>  $Group->course_id,
-                'nombre_curso'      =>  $Group->course->name,                   
-                'people_id'         =>  $Group->people_id, 
+                'curse_code'        =>  $Group->course->code,
+                'course_name'       =>  $Group->course->name,                   
+                'assigned_people'   =>  $retVal = ($Group->people_id == null) ? 'Sin Asignar Docente' :$Group->candidato->first_name." ".$Group->candidato->middle_name." ".$Group->candidato->last_name." ",
                 'schedules'         =>  $Group->schedule()->get()
             ];
     
@@ -55,8 +52,6 @@ class GroupController extends Controller
             $message = "ya existe un grupo registrado con ese numero de grupo registrado en el sistema";
             return response($message, 400);
         }
-        
-        
     }
 
    
@@ -94,49 +89,29 @@ class GroupController extends Controller
     }
 
     public function showByAcademicLoad($id){
-        $academicLoad = AcademicLoad::where('id',$id)->with('semester')->firstOrFail();
-        $group = Group::with('course')->with('grupo')->with('schedule')->where('academic_load_id','=',$id)->get();
-        $groups = [];
-        foreach ($group as $gp) {
-           
-            $horario =[];
-            foreach ($gp->schedule as $sch) {
-                $hr =[
-                    'day'           =>$sch->day,
-                    'start_hour'    =>$sch->start_hour,
-                    'finish_hour'   =>$sch->finish_hour,
-                ];
-                array_push($horario,$hr);
-                
-            }
-            if ($gp->candidato == null) {
-                $grp =[
-                    'id'    => $gp->id,
-                    'number'=> $gp->number,
-                    'group_type_name' =>$gp->grupo->name,
-                    'course_code'     =>$gp->course->code,
-                    'course_name'     =>$gp->course->name,
-                    'people_name'     =>"Sin Docente Asignado",
-                    'schedule'        =>$horario
-                ];
-            }else{
-                $grp =[
-                    'id'    => $gp->id,
-                    'number'=> $gp->number,
-                    'group_type_name' =>$gp->grupo->name,
-                    'course_code'     =>$gp->course->code,
-                    'course_name'     =>$gp->course->name,
-                    'people_name'     =>" ".$gp->candidato->first_name." ".$gp->candidato->middle_name." ".$gp->candidato->last_name." ",
-                    'schedule'        =>$horario
-                ];
-            }
-            
-           array_push($groups,$grp);
-        }
-       
+        $academicLoad = AcademicLoad::where('id',$id)->select('id','semester_id')
+        ->with(['semester'=> function($query){
+            $query->select('id','status');
+        }])
+        ->with(['groups'=> function ($query) { 
+                    $query->with(['grupo'=>function($query){
+                        $query->select('id','name AS group_type_name');
+                    }])
+                    ->with(['course'=>function($query){
+                        $query->select('id', 'name AS course_name', 'code AS curse_code');
+                    }])
+                    ->with(['candidato'=>function($query){
+                        $query->select('id', DB::raw("CONCAT(first_name,' ',middle_name,' ',last_name) AS people_name"));
+                    }])
+                    ->with('schedule');
+                }
+        ])->firstOrFail();
+         $academicLoad->groups->makeHidden(['created_at','updated_at','group_type_id','academic_load_id','course_id','people_id','deleted_at']);
+         $academicLoad->groups->each(function($group){
+             $group->schedule->makeHidden(['created_at','updated_at','group_id','deleted_at']);
+            });
         return response([
-            'groups' =>  $groups, 
-            'semesterActive'=> $academicLoad->semester->status
+            'academic_load' => $academicLoad
         ], 200);
     }
 
@@ -154,7 +129,7 @@ class GroupController extends Controller
         ]);
 
         $Group = Group::findorFail($id);
-        $Group->update($fields);
+        $Group->update(array_merge($fields,['status' => 'DA']));
         
         Schedule::where('group_id',$id)->delete();
         $Group->schedule()->createMany($fields['details']);
@@ -185,11 +160,11 @@ class GroupController extends Controller
     public function setProfessor(Request $request, $id){
         $fields = $request->validate([ 
             'people_id'             => 'required|integer',
-           
         ]);
 
         $Group = Group::findorFail($id);
         $Group->people_id = $fields['people_id'];
+        $Group->status = 'DA';
         $Group->save();
     
 
@@ -213,7 +188,7 @@ class GroupController extends Controller
         $semester = Semester::where('status',1)->firstOrFail();
         $school = $user = Auth::user()->school_id;
         $academicLoad = AcademicLoad::where([['semester_id',$semester->id],['school_id',$school]])->first();
-        $groups = Group::with('course')->with('grupo')->with('schedule')->where([['academic_load_id',$academicLoad->id],['people_id',null]])->get();
+        $groups = Group::with('course')->with('grupo')->with('schedule')->where([['academic_load_id',$academicLoad->id],['status','SDA']])->get();
         return $groups;
     }
 }
