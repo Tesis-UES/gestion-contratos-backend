@@ -22,7 +22,7 @@ class AcademicLoadSeeder extends Seeder
         
 
         //creacmos las cargas academicas para los ciclos anteriormente creados
-        AcademicLoad::create(['semester_id'=>2,'school_id'=>8]);
+        AcademicLoad::create(['semester_id'=>6,'school_id'=>8]);
         Group::create(['status'=>'DA','number'=>1,'group_type_id'=>1,'academic_load_id'=>1,'course_id'=>1,'people_id'=>1]);
         Schedule::create(['day'=>'Lunes','start_hour'=>"8:00",'finish_hour'=>"9:45",'group_id'=>1]);
         Schedule::create(['day'=>'Martes','start_hour'=>"8:00",'finish_hour'=>"9:45",'group_id'=>1]);
@@ -39,7 +39,7 @@ class AcademicLoadSeeder extends Seeder
         Group::create(['status'=>'DA','number'=>2,'group_type_id'=>2,'academic_load_id'=>1,'course_id'=>2,'people_id'=>3]);
         Schedule::create(['day'=>'Martes','start_hour'=>"8:00",'finish_hour'=>"9:45",'group_id'=>6]);
         
-        AcademicLoad::create(['semester_id'=>3,'school_id'=>8]);
+        AcademicLoad::create(['semester_id'=>5,'school_id'=>8]);
 
         Group::create(['status'=>'DA','number'=>1,'group_type_id'=>1,'academic_load_id'=>2,'course_id'=>3,'people_id'=>1]);
         Schedule::create(['day'=>'Lunes','start_hour'=>"8:00",'finish_hour'=>"9:45",'group_id'=>6]);
@@ -61,7 +61,7 @@ class AcademicLoadSeeder extends Seeder
 
 
 
-        AcademicLoad::create(['semester_id'=>5,'school_id'=>8]);
+        AcademicLoad::create(['semester_id'=>4,'school_id'=>8]);
 
         Group::create(['status'=>'DA','number'=>1,'group_type_id'=>1,'academic_load_id'=>3,'course_id'=>5,'people_id'=>1]);
         Schedule::create(['day'=>'Lunes','start_hour'=>"8:00",'finish_hour'=>"9:45",'group_id'=>12]);
@@ -80,7 +80,7 @@ class AcademicLoadSeeder extends Seeder
         Schedule::create(['day'=>'Martes','start_hour'=>"8:00",'finish_hour'=>"9:45",'group_id'=>16]);
 
 
-        AcademicLoad::create(['semester_id'=>6,'school_id'=>8]);
+        AcademicLoad::create(['semester_id'=>3,'school_id'=>8]);
 
         Group::create(['status'=>'DA','number'=>1,'group_type_id'=>1,'academic_load_id'=>4,'course_id'=>7,'people_id'=>1]);
         Schedule::create(['day'=>'Lunes','start_hour'=>"8:00",'finish_hour'=>"9:45",'group_id'=>16]);
@@ -98,7 +98,7 @@ class AcademicLoadSeeder extends Seeder
         Group::create(['status'=>'DA','number'=>2,'group_type_id'=>2,'academic_load_id'=>4,'course_id'=>12,'people_id'=>3]);
         Schedule::create(['day'=>'Martes','start_hour'=>"8:00",'finish_hour'=>"9:45",'group_id'=>20]);
 
-        AcademicLoad::create(['semester_id'=>1,'school_id'=>8]);
+        AcademicLoad::create(['semester_id'=>2,'school_id'=>8]);
 
         Group::create(['status'=>'DA','number'=>1,'group_type_id'=>1,'academic_load_id'=>5,'course_id'=>13,'people_id'=>1]);
         Schedule::create(['day'=>'Lunes','start_hour'=>"8:00",'finish_hour'=>"9:45",'group_id'=>21]);
@@ -116,7 +116,7 @@ class AcademicLoadSeeder extends Seeder
         Group::create(['status'=>'DA','number'=>2,'group_type_id'=>2,'academic_load_id'=>5,'course_id'=>18,'people_id'=>3]);
         Schedule::create(['day'=>'Martes','start_hour'=>"8:00",'finish_hour'=>"9:45",'group_id'=>26]);   
 
-        AcademicLoad::create(['semester_id'=>4,'school_id'=>8]);
+        AcademicLoad::create(['semester_id'=>1,'school_id'=>8]);
 
         Group::create(['status'=>'DA','number'=>1,'group_type_id'=>1,'academic_load_id'=>6,'course_id'=>19,'people_id'=>1]);
         Schedule::create(['day'=>'Lunes','start_hour'=>"8:00",'finish_hour'=>"9:45",'group_id'=>27]);
@@ -133,5 +133,21 @@ class AcademicLoadSeeder extends Seeder
         Schedule::create(['day'=>'Lunes','start_hour'=>"8:00",'finish_hour'=>"9:45",'group_id'=>30]);
         Group::create(['status'=>'DA','number'=>2,'group_type_id'=>2,'academic_load_id'=>6,'course_id'=>24,'people_id'=>5]);
         Schedule::create(['day'=>'Martes','start_hour'=>"8:00",'finish_hour'=>"9:45",'group_id'=>30]);   
+
+        Group::create(['status'=>'SDA','number'=>12,'group_type_id'=>3,'academic_load_id'=>6,'course_id'=>19]);
+        Schedule::create(['day'=>'Lunes','start_hour'=>"8:00",'finish_hour'=>"9:45",'group_id'=>31]);
+        Schedule::create(['day'=>'Martes','start_hour'=>"8:00",'finish_hour'=>"9:45",'group_id'=>31]);
+        Group::create(['status'=>'SDA','number'=>13,'group_type_id'=>2,'academic_load_id'=>6,'course_id'=>20]);
+        Schedule::create(['day'=>'Lunes','start_hour'=>"8:00",'finish_hour'=>"9:45",'group_id'=>32]);
+        Group::create(['status'=>'SDA','number'=>24,'group_type_id'=>3,'academic_load_id'=>6,'course_id'=>21]);
+        Schedule::create(['day'=>'Martes','start_hour'=>"8:00",'finish_hour'=>"9:45",'group_id'=>33]);
+
+        Group::create(['status'=>'SDA','number'=>15,'group_type_id'=>3,'academic_load_id'=>6,'course_id'=>22]);
+        Schedule::create(['day'=>'Lunes','start_hour'=>"8:00",'finish_hour'=>"9:45",'group_id'=>34]);
+        Schedule::create(['day'=>'Martes','start_hour'=>"8:00",'finish_hour'=>"9:45",'group_id'=>34]);
+        Group::create(['status'=>'SDA','number'=>13,'group_type_id'=>2,'academic_load_id'=>6,'course_id'=>23]);
+        Schedule::create(['day'=>'Lunes','start_hour'=>"8:00",'finish_hour'=>"9:45",'group_id'=>35]);
+        Group::create(['status'=>'SDA','number'=>24,'group_type_id'=>3,'academic_load_id'=>6,'course_id'=>24]);
+        Schedule::create(['day'=>'Martes','start_hour'=>"8:00",'finish_hour'=>"9:45",'group_id'=>36]);   
     }
 }
