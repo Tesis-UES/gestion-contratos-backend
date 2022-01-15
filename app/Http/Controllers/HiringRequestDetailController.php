@@ -11,6 +11,7 @@ use App\Http\Requests\UpdateTIRequestDetails;
 use App\Http\Traits\WorklogTrait;
 use App\Models\Activity;
 use App\Models\Group;
+use App\Models\HiringGroup;
 use App\Models\HiringRequest;
 use App\Models\HiringRequestDetail;
 use App\Models\Person;
@@ -57,7 +58,7 @@ class HiringRequestDetailController extends Controller
             return response(['message' => 'No puede agregar detalles a una solicitud de contratacion con estado: "' . $requestStatus->name . '"'], 400);
         }
 
-        $savedDetail = HiringRequestDetail::create($validatedDetail);
+        $savedDetail = HiringRequestDetail::create(array_merge($validatedDetail, ['hiring_request_id' => $id]));
 
         foreach ($validatedDetail['activities'] as $activityName) {
             $activity = Activity::where('name', 'ilike', $activityName)->first();
@@ -70,7 +71,7 @@ class HiringRequestDetailController extends Controller
         $savedDetail->activities = $activities;
 
         foreach ($validatedDetail['groups'] as $hiringGroup) {
-            $group = Group::findOrFail($hiringGroup['id']);
+            $group = Group::findOrFail($hiringGroup['group_id']);
             if ($group->status != GroupStatus::SDA) {
                 DB::rollBack();
                 return response(['message' => 'El grupo con id ' . $group['id'] . ' ya tiene un docente asignado'], 400);
@@ -78,12 +79,13 @@ class HiringRequestDetailController extends Controller
             $group->people_id = $validatedDetail['person_id'];
             $group->status = GroupStatus::DASC;
             $group->save();
-            $groups[] = $group;
+
+            $savedHiringGroup = HiringGroup::create($hiringGroup);
+
+            $groups[] = $savedHiringGroup;
         }
-        $savedDetail->groups()->saveMany($groups);
         $savedDetail->groups = $groups;
 
-        $hiringRequest->details()->save($savedDetail);
         $this->RegisterAction("El usuario ha agregado a un docente a la solicitud de contratación con id: " . $id, "high");
         DB::commit();
         return response($savedDetail);
@@ -104,7 +106,7 @@ class HiringRequestDetailController extends Controller
             return response(['message' => 'No se han validado los datos de la persona con id' . $person->id], 400);
         }
 
-        $savedDetail = HiringRequestDetail::create($validatedDetail);
+        $savedDetail = HiringRequestDetail::create(array_merge($validatedDetail, ['hiring_request_id' => $id]));
 
         foreach ($validatedDetail['activities'] as $activityName) {
             $activity = Activity::where('name', 'ilike', $activityName)->first();
@@ -157,7 +159,6 @@ class HiringRequestDetailController extends Controller
             return response(['message' => 'No puede agregar detalles a una solicitud de contratacion con estado: "' . $requestStatus->name . '"'], 400);
         }
 
-        $hiringRequest->details()->save($savedDetail);
         $this->RegisterAction("El usuario ha agregado a un docente a la solicitud de contratación con id: " . $id, "high");
         DB::commit();
         return response($savedDetail);
@@ -178,7 +179,7 @@ class HiringRequestDetailController extends Controller
             return response(['message' => 'No se han validado los datos de la persona con id' . $person->id], 400);
         }
 
-        $savedDetail = HiringRequestDetail::create($validatedDetail);
+        $savedDetail = HiringRequestDetail::create(array_merge($validatedDetail, ['hiring_request_id' => $id]));
 
         foreach ($validatedDetail['activities'] as $activityName) {
             $activity = Activity::where('name', 'ilike', $activityName)->first();
@@ -231,7 +232,6 @@ class HiringRequestDetailController extends Controller
             return response(['message' => 'No puede agregar detalles a una solicitud de contratacion con estado: "' . $requestStatus->name . '"'], 400);
         }
 
-        $hiringRequest->details()->save($savedDetail);
         $this->RegisterAction("El usuario ha agregado a un docente a la solicitud de contratación con id: " . $id, "high");
         DB::commit();
         return response($savedDetail);
