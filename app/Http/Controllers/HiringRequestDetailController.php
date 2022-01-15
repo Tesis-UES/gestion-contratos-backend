@@ -236,4 +236,22 @@ class HiringRequestDetailController extends Controller
         DB::commit();
         return response($savedDetail);
     }
+
+    public function deleteRequestDetails($id)
+    {
+        $requestDetails = HiringRequestDetail::with('hiringRequest')->findOrFail($id);
+
+        $requestStatus = $requestDetails->hiringRequest->getLastStatusAttribute();
+        $user = Auth::user();
+
+        if ($user->school_id != $requestDetails->hiringRequest->school_id) {
+            return response(['message' => 'No puede editar solicitudes de contratacion de otra escuela'], 400);
+        } elseif ($requestStatus->order > 2) {
+            return response(['message' => 'No puede agregar detalles a una solicitud de contratacion con estado: "' . $requestStatus->name . '"'], 400);
+        }
+
+        $requestDetails->delete();
+        $this->RegisterAction("El usuario ha eliminado a un docente a la solicitud de contratación con id: " . $id, "high");
+        return response(null, 204);
+    }
 }
