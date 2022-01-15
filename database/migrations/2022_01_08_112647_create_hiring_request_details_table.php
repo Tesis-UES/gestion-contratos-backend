@@ -22,7 +22,7 @@ class CreateHiringRequestDetailsTable extends Migration
             $table->string('goal')->nullable();
             $table->integer('work_months')->nullable();
             $table->float('monthly_salary')->nullable();
-            $table->float('salariy_percentage')->nullable();
+            $table->float('salary_percentage')->nullable();
             $table->float('hourly_rate')->nullable();
             $table->float('work_weeks')->nullable();
             $table->float('weekly_hours')->nullable();
@@ -30,6 +30,8 @@ class CreateHiringRequestDetailsTable extends Migration
             $table->foreign('person_id')->references('id')->on('people')->nonullable();
             $table->bigInteger('stay_schedule_id')->unsigned()->nullable();
             $table->foreign('stay_schedule_id')->references('id')->on('stay_schedules')->nonullable();
+            $table->bigInteger('hiring_request_id')->unsigned()->nullable();
+            $table->foreign('hiring_request_id')->references('id')->on('hiring_requests')->nonullable();
             $table->timestamps();
         });
     }

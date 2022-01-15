@@ -83,6 +83,7 @@ class HiringRequestDetailController extends Controller
         $savedDetail->groups()->saveMany($groups);
         $savedDetail->groups = $groups;
 
+        $hiringRequest->details()->save($savedDetail);
         $this->RegisterAction("El usuario ha agregado a un docente a la solicitud de contratación con id: " . $id, "high");
         DB::commit();
         return response($savedDetail);
@@ -156,6 +157,7 @@ class HiringRequestDetailController extends Controller
             return response(['message' => 'No puede agregar detalles a una solicitud de contratacion con estado: "' . $requestStatus->name . '"'], 400);
         }
 
+        $hiringRequest->details()->save($savedDetail);
         $this->RegisterAction("El usuario ha agregado a un docente a la solicitud de contratación con id: " . $id, "high");
         DB::commit();
         return response($savedDetail);
@@ -229,6 +231,7 @@ class HiringRequestDetailController extends Controller
             return response(['message' => 'No puede agregar detalles a una solicitud de contratacion con estado: "' . $requestStatus->name . '"'], 400);
         }
 
+        $hiringRequest->details()->save($savedDetail);
         $this->RegisterAction("El usuario ha agregado a un docente a la solicitud de contratación con id: " . $id, "high");
         DB::commit();
         return response($savedDetail);
