@@ -354,7 +354,8 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
 
     // Rutas que manejan los detalles de las solicitudes de contratacion
     Route::group(['middleware' => ['can:write_hiringRequest']], function () {
-        Route::put('/hiringRequest/{id}/details/SPNP', [HiringRequestDetailController::class, 'addSPNPRequestDetails']);
-        Route::put('/hiringRequest/{id}/details/TI', [HiringRequestDetailController::class, 'addTIRequestDetails']);
+        Route::post('/hiringRequest/{id}/details/SPNP', [HiringRequestDetailController::class, 'addSPNPRequestDetails']);
+        Route::post('/hiringRequest/{id}/details/TI', [HiringRequestDetailController::class, 'addTIRequestDetails']);
+        Route::post('/hiringRequest/{id}/details/TA', [HiringRequestDetailController::class, 'addTARequestDetails']);
     });
 });

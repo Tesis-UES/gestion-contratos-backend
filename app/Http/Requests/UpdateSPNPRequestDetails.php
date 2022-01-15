@@ -24,17 +24,17 @@ class UpdateSPNPRequestDetails extends FormRequest
     public function rules()
     {
         return [
-            '*.start_date'        => 'required|date_format:Y-m-d',
-            '*.finish_date'       => 'required|date_format:Y-m-d|after:*.start_date',
-            '*.position'          => 'required|string',
-            '*.person_id'         => 'required|integer|gte:1',
-            '*.activities'        => 'required|array|min:2',
-            '*.activities.*'      => 'required|string|distinct',
-            '*.groups'            => 'required|array|min:1',
-            '*.groups.*.id'           => 'required|integer|distinct|gte:1',
-            '*.groups.*.hourly_rate'  => 'required|numeric|gte:1',
-            '*.groups.*.work_weeks'   => 'required|numeric|gte:1',
-            '*.groups.*.weekly_hours' => 'required|numeric|gte:1',
+            'start_date'        => 'required|date_format:Y-m-d',
+            'finish_date'       => 'required|date_format:Y-m-d|after:start_date',
+            'position'          => 'required|string',
+            'person_id'         => 'required|integer|gte:1',
+            'activities'        => 'required|array|min:2',
+            'activities.*'      => 'required|string|distinct',
+            'groups'            => 'required|array|min:1',
+            'groups.*.id'           => 'required|integer|distinct|gte:1',
+            'groups.*.hourly_rate'  => 'required|numeric|gte:1',
+            'groups.*.work_weeks'   => 'required|numeric|gte:1',
+            'groups.*.weekly_hours' => 'required|numeric|gte:1',
         ];
     }
 }
