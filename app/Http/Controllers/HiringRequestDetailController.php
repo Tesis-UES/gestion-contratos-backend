@@ -237,6 +237,20 @@ class HiringRequestDetailController extends Controller
         return response($savedDetail);
     }
 
+    public function getRequestDetails($id)
+    {
+        $requestDetails = HiringRequestDetail::with(['groups', 'activities'])->findOrFail($id);
+
+        $user = Auth::user();
+
+        if ($user->school_id != $requestDetails->hiringRequest->school_id) {
+            return response(['message' => 'No puede ver solicitudes de contratacion de otra escuela'], 400);
+        }
+
+        $this->RegisterAction("El usuario ha consultado un detalle de la solicitud de contratación con id: " . $id, "medium");
+        return response($requestDetails);
+    }
+
     public function deleteRequestDetails($id)
     {
         $requestDetails = HiringRequestDetail::with('hiringRequest')->findOrFail($id);
