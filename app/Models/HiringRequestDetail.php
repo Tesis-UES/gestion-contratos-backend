@@ -25,6 +25,8 @@ class HiringRequestDetail extends Model
         'hiring_request_id',
     ];
 
+    protected $hidden = ['pivot'];
+
     public function person()
     {
         return $this->belongsTo(Person::class);
