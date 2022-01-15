@@ -6,6 +6,7 @@ use App\Constants\ContractType;
 use App\Constants\GroupStatus;
 use App\Constants\PersonValidationStatus;
 use App\Http\Requests\UpdateSPNPRequestDetails;
+use App\Http\Requests\UpdateTARequestDetails;
 use App\Http\Requests\UpdateTIRequestDetails;
 use App\Http\Traits\WorklogTrait;
 use App\Models\Activity;
@@ -135,13 +136,11 @@ class HiringRequestDetailController extends Controller
         }
         if ($weeklyHours > 5) {
             DB::rollBack();
-            return response(['message' => 'Un empleado no puede trabajar mas de 5 horas por semana por esta modalidad'], 400);
+            return response(['message' => 'Un empleado no puede trabajar mas de 5 horas por semana en esta modalidad'], 400);
         }
 
         $savedDetail->groups()->saveMany($groups);
         $savedDetail->groups = $groups;
-
-        $savedDetails[] = $savedDetail;
 
         $user = Auth::user();
         $hiringRequest = HiringRequest::with(['contractType', 'school',])->findOrFail($id);
@@ -157,9 +156,81 @@ class HiringRequestDetailController extends Controller
             return response(['message' => 'No puede agregar detalles a una solicitud de contratacion con estado: "' . $requestStatus->name . '"'], 400);
         }
 
-        $this->RegisterAction("El usuario ha actualizado los detalles de la solicitud de contratación con id: " . $id, "high");
         $this->RegisterAction("El usuario ha agregado a un docente a la solicitud de contratación con id: " . $id, "high");
         DB::commit();
-        return response($savedDetails);
+        return response($savedDetail);
+    }
+
+    public function addTARequestDetails($id, UpdateTARequestDetails $request)
+    {
+        DB::beginTransaction();
+        $validatedDetail = $request->validated();
+
+        $person = Person::with(['employee', 'employee.staySchedules'])->findOrFail($validatedDetail['person_id']);
+        // TODO: Verificar que tipo de empleado puede agregarse en solicitudes de tiempo integral
+        if (false) {
+            DB::rollBack();
+            return response(['message' => 'Solo empleados del tipo <TIPO> pueden contratarse por esta modalidad (Tiempo Adicional)'], 400);
+        } elseif ($person->status != PersonValidationStatus::Validado) {
+            DB::rollBack();
+            return response(['message' => 'No se han validado los datos de la persona con id' . $person->id], 400);
+        }
+
+        $savedDetail = HiringRequestDetail::create($validatedDetail);
+
+        foreach ($validatedDetail['activities'] as $activityName) {
+            $activity = Activity::where('name', 'ilike', $activityName)->first();
+            if (!$activity) {
+                $activity = Activity::create(['name' => $activityName]);
+            }
+            $activities[] = $activity;
+        }
+        $savedDetail->activities()->saveMany($activities);
+        $savedDetail->activities = $activities;
+
+        $weeklyHours = 0;
+        foreach ($validatedDetail['group_ids'] as $groupId) {
+            $group = Group::with('schedule')->findOrFail($groupId);
+            array_reduce($group->schedule->toArray(), function ($pv, $schedule) {
+                return $pv + (strtotime($schedule['finish_hour']) - strtotime($schedule['start_hour'])) / 3600;
+            }, $weeklyHours);
+
+            if ($group->status != GroupStatus::SDA) {
+                DB::rollBack();
+                return response(['message' => 'El grupo con id ' . $groupId . ' ya tiene un docente asignado'], 400);
+            }
+            $scheduleDetails = $person->employee->staySchedules->last()->scheduleDetails;
+
+            // TODO: Validar que los grupos a contratar no choquen con permanencia
+            $group->people_id = $validatedDetail['person_id'];
+            $group->status = GroupStatus::DASC;
+            $group->save();
+            $groups[] = $group;
+        }
+        if ($weeklyHours > 10) {
+            DB::rollBack();
+            return response(['message' => 'Un empleado no puede trabajar mas de 40 horas por mes en esta modalidad'], 400);
+        }
+
+        $savedDetail->groups()->saveMany($groups);
+        $savedDetail->groups = $groups;
+
+        $user = Auth::user();
+        $hiringRequest = HiringRequest::with(['contractType', 'school',])->findOrFail($id);
+        $requestStatus = $hiringRequest->getLastStatusAttribute();
+        if ($hiringRequest->contractType->name != ContractType::TA) {
+            DB::rollBack();
+            return response(['message' => 'Debe seleccionar un contrato del tipo "' . ContractType::TA . '"'], 400);
+        } elseif ($user->school->id != $hiringRequest->school->id) {
+            DB::rollBack();
+            return response(['message' => 'No puede agregar detalles a una solicitud de contratacion de otra escuela'], 400);
+        } elseif ($requestStatus->order > 2) {
+            DB::rollBack();
+            return response(['message' => 'No puede agregar detalles a una solicitud de contratacion con estado: "' . $requestStatus->name . '"'], 400);
+        }
+
+        $this->RegisterAction("El usuario ha agregado a un docente a la solicitud de contratación con id: " . $id, "high");
+        DB::commit();
+        return response($savedDetail);
     }
 }
