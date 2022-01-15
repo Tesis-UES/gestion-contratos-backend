@@ -11,6 +11,7 @@ use App\Http\Requests\UpdateTIRequestDetails;
 use App\Http\Traits\WorklogTrait;
 use App\Models\Activity;
 use App\Models\Group;
+use App\Models\HiringGroup;
 use App\Models\HiringRequest;
 use App\Models\HiringRequestDetail;
 use App\Models\Person;
@@ -57,7 +58,7 @@ class HiringRequestDetailController extends Controller
             return response(['message' => 'No puede agregar detalles a una solicitud de contratacion con estado: "' . $requestStatus->name . '"'], 400);
         }
 
-        $savedDetail = HiringRequestDetail::create($validatedDetail);
+        $savedDetail = HiringRequestDetail::create(array_merge($validatedDetail, ['hiring_request_id' => $id]));
 
         foreach ($validatedDetail['activities'] as $activityName) {
             $activity = Activity::where('name', 'ilike', $activityName)->first();
@@ -70,7 +71,7 @@ class HiringRequestDetailController extends Controller
         $savedDetail->activities = $activities;
 
         foreach ($validatedDetail['groups'] as $hiringGroup) {
-            $group = Group::findOrFail($hiringGroup['id']);
+            $group = Group::findOrFail($hiringGroup['group_id']);
             if ($group->status != GroupStatus::SDA) {
                 DB::rollBack();
                 return response(['message' => 'El grupo con id ' . $group['id'] . ' ya tiene un docente asignado'], 400);
@@ -78,9 +79,11 @@ class HiringRequestDetailController extends Controller
             $group->people_id = $validatedDetail['person_id'];
             $group->status = GroupStatus::DASC;
             $group->save();
-            $groups[] = $group;
+
+            $savedHiringGroup = HiringGroup::create($hiringGroup);
+
+            $groups[] = $savedHiringGroup;
         }
-        $savedDetail->groups()->saveMany($groups);
         $savedDetail->groups = $groups;
 
         $this->RegisterAction("El usuario ha agregado a un docente a la solicitud de contratación con id: " . $id, "high");
@@ -103,7 +106,7 @@ class HiringRequestDetailController extends Controller
             return response(['message' => 'No se han validado los datos de la persona con id' . $person->id], 400);
         }
 
-        $savedDetail = HiringRequestDetail::create($validatedDetail);
+        $savedDetail = HiringRequestDetail::create(array_merge($validatedDetail, ['hiring_request_id' => $id]));
 
         foreach ($validatedDetail['activities'] as $activityName) {
             $activity = Activity::where('name', 'ilike', $activityName)->first();
@@ -176,7 +179,7 @@ class HiringRequestDetailController extends Controller
             return response(['message' => 'No se han validado los datos de la persona con id' . $person->id], 400);
         }
 
-        $savedDetail = HiringRequestDetail::create($validatedDetail);
+        $savedDetail = HiringRequestDetail::create(array_merge($validatedDetail, ['hiring_request_id' => $id]));
 
         foreach ($validatedDetail['activities'] as $activityName) {
             $activity = Activity::where('name', 'ilike', $activityName)->first();
@@ -232,5 +235,37 @@ class HiringRequestDetailController extends Controller
         $this->RegisterAction("El usuario ha agregado a un docente a la solicitud de contratación con id: " . $id, "high");
         DB::commit();
         return response($savedDetail);
+    }
+
+    public function getRequestDetails($id)
+    {
+        $requestDetails = HiringRequestDetail::with(['groups', 'activities'])->findOrFail($id);
+
+        $user = Auth::user();
+
+        if ($user->school_id != $requestDetails->hiringRequest->school_id) {
+            return response(['message' => 'No puede ver solicitudes de contratacion de otra escuela'], 400);
+        }
+
+        $this->RegisterAction("El usuario ha consultado un detalle de la solicitud de contratación con id: " . $id, "medium");
+        return response($requestDetails);
+    }
+
+    public function deleteRequestDetails($id)
+    {
+        $requestDetails = HiringRequestDetail::with('hiringRequest')->findOrFail($id);
+
+        $requestStatus = $requestDetails->hiringRequest->getLastStatusAttribute();
+        $user = Auth::user();
+
+        if ($user->school_id != $requestDetails->hiringRequest->school_id) {
+            return response(['message' => 'No puede editar solicitudes de contratacion de otra escuela'], 400);
+        } elseif ($requestStatus->order > 2) {
+            return response(['message' => 'No puede agregar detalles a una solicitud de contratacion con estado: "' . $requestStatus->name . '"'], 400);
+        }
+
+        $requestDetails->delete();
+        $this->RegisterAction("El usuario ha eliminado a un docente a la solicitud de contratación con id: " . $id, "high");
+        return response(null, 204);
     }
 }

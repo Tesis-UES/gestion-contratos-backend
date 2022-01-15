@@ -21,7 +21,7 @@ class CreateHiringGroupsTable extends Migration
             $table->bigInteger('group_id')->unsigned()->nullable();
             $table->foreign('group_id')->references('id')->on('groups')->nonullable();
             $table->bigInteger('hiring_request_detail_id')->unsigned()->nullable();
-            $table->foreign('hiring_request_detail_id')->references('id')->on('hiring_request_details')->nonullable();
+            $table->foreign('hiring_request_detail_id')->references('id')->on('hiring_request_details')->onDelete('cascade')->nonullable();
             $table->timestamps();
         });
     }

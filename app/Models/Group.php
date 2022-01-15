@@ -19,6 +19,8 @@ class Group extends Model
         'status',
     ];
 
+    protected $hidden = ['pivot'];
+
     public function grupo()
     {
         return $this->belongsTo(GroupType::class, 'group_type_id');
@@ -32,7 +34,7 @@ class Group extends Model
 
     public function academicLoad()
     {
-        return $this->belongsTo(AcademicLoad::class,'academic_load_id');
+        return $this->belongsTo(AcademicLoad::class, 'academic_load_id');
     }
 
     public function course()
@@ -45,7 +47,8 @@ class Group extends Model
         return $this->hasMany(Schedule::class);
     }
 
-    public function hiringRequestDetails() {
+    public function hiringRequestDetails()
+    {
         return $this->belongsToMany(HiringRequestDetails::class, 'hiring_groups');
     }
 }

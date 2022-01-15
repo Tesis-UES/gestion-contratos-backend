@@ -34,7 +34,13 @@ class HiringRequest extends Model
         return $this->belongsTo(ContractType::class);
     }
 
-    public function status(){
-        return $this->belongsToMany(Status::class,'status_history','hiring_request_id','status_id')->withTimeStamps();
+    public function status()
+    {
+        return $this->belongsToMany(Status::class, 'status_history', 'hiring_request_id', 'status_id')->withTimeStamps();
+    }
+
+    public function details()
+    {
+        return $this->hasMany(HiringRequestDetail::class);
     }
 }
