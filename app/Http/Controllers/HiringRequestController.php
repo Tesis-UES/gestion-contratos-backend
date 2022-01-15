@@ -17,23 +17,24 @@ class HiringRequestController extends Controller
     use WorklogTrait, GeneratorTrait;
 
     public function store(StoreHiringRequestRequest $request)
-    {  
-        $newHiringRequest = HiringRequest::create(array_merge($request->all(),[
-            'code'   =>$this->generateRequestCode($request->school_id),
+    {
+        $newHiringRequest = HiringRequest::create(array_merge($request->all(), [
+            'code'   => $this->generateRequestCode($request->school_id),
         ]));
-        $status = Status::where('code','CSC')->first();
-        $newHiringRequest->status()->attach(['status_id'=> $status->id]);
+        $status = Status::whereIn('code', ['CSC', 'RDC'])->orderBy('order')->get();
+        $newHiringRequest->status()->attach(['status_id' => $status[0]->id]);
+        $newHiringRequest->status()->attach(['status_id' => $status[1]->id]);
         $this->RegisterAction("El usuario ha registrado una nueva solicitud de contratación", "high");
         return response(['hiringRequest' => $newHiringRequest], 201);
     }
 
-    
+
     public function show($id)
     {
         $hiringRequest = HiringRequest::with('school')->with('contractType')->with('status')->findOrFail($id);
         return response(['hiringRequest' => $hiringRequest], 200);
     }
-   
+
 
     public function update(UpdateHiringRequestRequest $request, $id)
     {
@@ -48,20 +49,20 @@ class HiringRequestController extends Controller
         $hiringRequest = HiringRequest::findOrFail($id);
         $hiringRequest->delete();
         $this->RegisterAction("El usuario ha eliminado la solicitud de contratación", "high");
-        return response(null,204);
+        return response(null, 204);
     }
 
     public function getAllHiringRequests(Request $request)
     {
-        $hiringRequests = HiringRequest::with('school')->with('contractType')->orderBy('created_at','DESC')->paginate($request->query('paginate'));
+        $hiringRequests = HiringRequest::with('school')->with('contractType')->orderBy('created_at', 'DESC')->paginate($request->query('paginate'));
         $hiringRequests->makeHidden('status');
         $this->RegisterAction("El usuario ha consultado todas las solicitudes de contratación", "medium");
         return response($hiringRequests, 200);
     }
 
-    public function getAllHiringRequestBySchool($id,Request $request)
+    public function getAllHiringRequestBySchool($id, Request $request)
     {
-        $hiringRequests = HiringRequest::where('school_id', '=', $id)->with('school')->with('contractType')->orderBy('created_at','DESC')->paginate($request->query('paginate'));
+        $hiringRequests = HiringRequest::where('school_id', '=', $id)->with('school')->with('contractType')->orderBy('created_at', 'DESC')->paginate($request->query('paginate'));
         $hiringRequests->makeHidden('status');
         $this->RegisterAction("El usuario ha consultado todas las solicitudes de contratación", "medium");
         return response($hiringRequests, 200);
