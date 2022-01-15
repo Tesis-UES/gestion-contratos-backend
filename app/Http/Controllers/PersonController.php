@@ -12,6 +12,7 @@ use App\Models\{PersonChange, CentralAuthority, StaySchedule};
 use Illuminate\Http\Request;
 use App\Http\Traits\{WorklogTrait, ValidationTrait};
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\Rule;
 use Luecano\NumeroALetras\NumeroALetras;
 use DB;
 use Carbon\Carbon;
@@ -22,7 +23,6 @@ class PersonController extends Controller
 
     public function allCandidates()
     {
-
         $result = Person::all();
         foreach ($result as $rest) {
             $candidate = [
@@ -79,8 +79,6 @@ class PersonController extends Controller
             'is_employee'           => 'required|boolean',
             'is_nationalized'       => 'required|boolean',
             'other_title'           => 'required|boolean',
-
-
         ]);
 
         if ($request->input('bank_id') != null) {
@@ -118,7 +116,7 @@ class PersonController extends Controller
             $employeeFields = $request->validate([
                 'partida'           => 'string|max:50',
                 'sub_partida'       => 'string|max:50',
-                'journey_type'      => ['required|', Rule::in(['tiempo-completo', 'medio-tiempo', 'cuarto-tiempo', 'tiempo-parcial', 'tiempo-eventual'])],
+                'journey_type'      => ['required', Rule::in(['tiempo-completo', 'medio-tiempo', 'cuarto-tiempo', 'tiempo-parcial', 'tiempo-eventual'])],
                 'faculty_id'        => 'required|integer|gte:1',
                 'escalafon_id'      => 'required|integer|gte:1',
                 'employee_types'    => 'required|array|min:1',
