@@ -36,7 +36,7 @@ class GroupController extends Controller
                                 'number'            =>$fields['number'],
                                 'course_id'         =>$fields['course_id']])->get();
         if ($result->isEmpty()) {
-            $Group = Group::create(array_merge($fields, ['academic_load_id' => $academicLoadId],['status' => (array_key_exists('people_id',$fields)) ? 'SDA' :'DA']));
+            $Group = Group::create(array_merge($fields, ['academic_load_id' => $academicLoadId],['status' => (array_key_exists('people_id',$fields)) ? 'DA' :'SDA']));
             $Group->schedule()->createMany($fields['details']);
              $newGroup = [
                 'number'            =>  $Group->number,          
