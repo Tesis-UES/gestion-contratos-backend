@@ -360,6 +360,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
         Route::get('/hiringRequest/details/{id}', [HiringRequestDetailController::class, 'getRequestDetails']);
         Route::put('/hiringRequest/details/{id}/SPNP', [HiringRequestDetailController::class, 'updateSPNPRequestDetail']);
         Route::put('/hiringRequest/details/{id}/TI', [HiringRequestDetailController::class, 'updateTIRequestDetails']);
+        Route::put('/hiringRequest/details/{id}/TA', [HiringRequestDetailController::class, 'updateTARequestDetails']);
         Route::delete('/hiringRequest/details/{id}', [HiringRequestDetailController::class, 'deleteRequestDetails']);
     });
 });
