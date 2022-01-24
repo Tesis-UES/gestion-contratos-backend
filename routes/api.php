@@ -360,4 +360,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
         Route::get('/hiringRequest/details/{id}', [HiringRequestDetailController::class, 'getRequestDetails']);
         Route::delete('/hiringRequest/details/{id}', [HiringRequestDetailController::class, 'deleteRequestDetails']);
     });
+
+    //Ruta de secretaria para ver las solicitudes de contratacion enviadas para aprobacion
+    Route::get('/hiringRequest/all/peticions/secretary', [HiringRequestController::class, 'getAllHiringRequestsSecretary']);
 });

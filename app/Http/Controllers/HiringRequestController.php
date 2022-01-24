@@ -67,4 +67,13 @@ class HiringRequestController extends Controller
         $this->RegisterAction("El usuario ha consultado todas las solicitudes de contratación", "medium");
         return response($hiringRequests, 200);
     }
+
+    public function getAllHiringRequestsSecretary()
+    {
+        $hiringRequests = HiringRequest::whereHas('status', function ($query) {
+            $query->where('status_id', '=', 4);
+        })->with('school')->with('contractType')->orderBy('created_at', 'DESC')->get();
+        $this->RegisterAction("El usuario ha consultado todas las solicitudes de contratacion enviadas a secretaria", "medium");
+        return response($hiringRequests, 200);
+    }
 }
