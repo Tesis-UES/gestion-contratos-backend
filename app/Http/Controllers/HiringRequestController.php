@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 use App\Constants\HiringRequestStatusCode;
-
+use Illuminate\Support\Facades\DB;
 class HiringRequestController extends Controller
 {
     use WorklogTrait, GeneratorTrait;
@@ -77,5 +77,15 @@ class HiringRequestController extends Controller
         })->with('school')->with('contractType')->orderBy('created_at', 'DESC')->paginate(10);
         $this->RegisterAction("El usuario ha consultado todas las solicitudes de contratacion enviadas a secretaria", "medium");
         return response($hiringRequests, 200);
+    }
+
+    public function secretaryReceptionHiringRequest(Request $request){
+        $hiringRequest = HiringRequest::findOrFail($request->hiring_request_id);
+        DB::beginTransaction();
+        if ($hiringRequest->status->last()->code != HiringRequestStatusCode::EDS) {
+            DB::rollBack();
+            return response(['message' => 'Solo las solicitudes que tengan el estado de enviadas pueden ser dadas por recibidas por secretaria'], 400);
+        }
+        return "Si se puede dar por recibidas por secretaria";
     }
 }
