@@ -11,6 +11,7 @@ use App\Http\Traits\GeneratorTrait;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
+use App\Constants\HiringRequestStatusCode;
 
 class HiringRequestController extends Controller
 {
@@ -70,9 +71,10 @@ class HiringRequestController extends Controller
 
     public function getAllHiringRequestsSecretary()
     {
+        $status = Status::where('code',HiringRequestStatusCode::EDS)->first();
         $hiringRequests = HiringRequest::whereHas('status', function ($query) {
-            $query->where('status_id', '=', 4);
-        })->with('school')->with('contractType')->orderBy('created_at', 'DESC')->get();
+            $query->where('status_id', '=', $status->id);
+        })->with('school')->with('contractType')->orderBy('created_at', 'DESC')->paginate(10);
         $this->RegisterAction("El usuario ha consultado todas las solicitudes de contratacion enviadas a secretaria", "medium");
         return response($hiringRequests, 200);
     }
