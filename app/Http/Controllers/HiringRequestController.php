@@ -79,8 +79,11 @@ class HiringRequestController extends Controller
         return response($hiringRequests, 200);
     }
 
-    public function secretaryReceptionHiringRequest(Request $request){
-        $hiringRequest = HiringRequest::findOrFail($request->hiring_request_id);
+    public function secretaryReceptionHiringRequest(HiringRequest $hiringRequest, Request $request){
+        $request->validate([
+            'approved'          => 'required|boolean',
+            'observations'       => 'string|nullable',
+        ]);
         DB::beginTransaction();
         if ($hiringRequest->status->last()->code != HiringRequestStatusCode::EDS) {
             DB::rollBack();
