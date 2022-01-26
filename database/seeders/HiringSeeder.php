@@ -29,8 +29,8 @@ class HiringSeeder extends Seeder
                 'modality' => 'Modalidad Presencial',
                 'message' => $faker->text,
             ]);
-            $rq->status()->attach(['status_id' => '1'], ['comments' => 'Creado']);
-            $rq->status()->attach(['status_id' => '2'], ['comments' => 'LLenado de datos de solicitud']);
+            $rq->status()->attach(['status_id' => '1'], ['comments' => 'Registro de solicitud']);
+            $rq->status()->attach(['status_id' => '2'], ['comments' => 'Llenado de datos de solicitud de contratación']);
         }
 
         for ($i = 0; $i < $hrQrySec; $i++) {
@@ -42,10 +42,10 @@ class HiringSeeder extends Seeder
                 'modality' => 'Modalidad Presencial',
                 'message' => $faker->text,
             ]);
-            $rq->status()->attach(['status_id' => '1'], ['comments' => 'Creado']);
-            $rq->status()->attach(['status_id' => '2'], ['comments' => 'LLenado de datos de solicitud']);
+            $rq->status()->attach(['status_id' => '1'], ['comments' => 'Registro de solicitud']);
+            $rq->status()->attach(['status_id' => '2'], ['comments' => 'Llenado de datos de solicitud']);
             $rq->status()->attach(['status_id' => '3'], ['comments' => 'Finalizacion del llenado de la solicitud']);
-            $rq->status()->attach(['status_id' => '4'], ['comments' => 'SOlicitud enviada a Secretaria de Decanato']);
+            $rq->status()->attach(['status_id' => '4'], ['comments' => 'Solicitud enviada a Secretaria de Decanato']);
         }
     }
 }

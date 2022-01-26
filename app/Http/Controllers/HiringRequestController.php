@@ -86,6 +86,15 @@ class HiringRequestController extends Controller
             DB::rollBack();
             return response(['message' => 'Solo las solicitudes que tengan el estado de enviadas pueden ser dadas por recibidas por secretaria'], 400);
         }
-        return "Si se puede dar por recibidas por secretaria";
+        if($request->approved){
+            $status = Status::where('code',HiringRequestStatusCode::RDS)->first();
+            $comment = 'La solicitud fue aceptada por secretaria y pasara a ser agendada para ser vista en junta directiva';            
+        }else{
+            $status = Status::where('code',HiringRequestStatusCode::ODS)->first();
+            $comment = $request->observations;
+        }
+        $hiringRequest->status()->attach(['status_id' => $status->id], ['comments' => $comment]);
+        DB::commit();
+        return response(200);
     }
 }
