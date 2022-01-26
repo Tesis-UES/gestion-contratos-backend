@@ -14,6 +14,6 @@ class HiringGroup extends Model
         'work_weeks',
         'weekly_hours',
         'group_id',
-        'hiring_request_details_id',
+        'hiring_request_detail_id',
     ];
 }

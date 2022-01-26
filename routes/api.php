@@ -358,6 +358,9 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
         Route::post('/hiringRequest/{id}/details/TI', [HiringRequestDetailController::class, 'addTIRequestDetails']);
         Route::post('/hiringRequest/{id}/details/TA', [HiringRequestDetailController::class, 'addTARequestDetails']);
         Route::get('/hiringRequest/details/{id}', [HiringRequestDetailController::class, 'getRequestDetails']);
+        Route::put('/hiringRequest/details/{id}/SPNP', [HiringRequestDetailController::class, 'updateSPNPRequestDetail']);
+        Route::put('/hiringRequest/details/{id}/TI', [HiringRequestDetailController::class, 'updateTIRequestDetails']);
+        Route::put('/hiringRequest/details/{id}/TA', [HiringRequestDetailController::class, 'updateTARequestDetails']);
         Route::delete('/hiringRequest/details/{id}', [HiringRequestDetailController::class, 'deleteRequestDetails']);
     });
 
