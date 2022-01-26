@@ -541,7 +541,7 @@ class HiringRequestDetailController extends Controller
             return response(['message' => 'No puede agregar detalles a una solicitud de contratacion con estado: "' . $requestStatus->name . '"'], 400);
         }
 
-        $this->RegisterAction("El usuario ha agregado a un docente a la solicitud de contratación con id: " . $id, "high");
+        $this->RegisterAction("El usuario ha actualizado el detalle de la solicitud de contratación TA con id: " . $id, "high");
         DB::commit();
         return response($detail);
     }
