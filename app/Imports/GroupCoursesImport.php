@@ -112,21 +112,27 @@ class GroupCoursesImport implements ToCollection, WithHeadingRow
                         'tipo_de_grupo'        =>$row['tipo'],
                         'numero_grupo'         =>$group,
                         'horarios'             =>$details,   
+                        'modalidad'            =>$row['modalidad'],
                         'Error'=>''        
                     ];
-                 if ($course == null || $groupType == null) {
+                    $os = array("Presencial","En Linea");
+                 if ($course == null || $groupType == null ||in_array($row['modalidad'], $os) == false) {
                     if ($course == null) {
                         $grupo['Error' ] = 'El codigo de la materia ingresado No existe';               
-                    } else {
+                    } elseif($groupType == null){
                         $grupo['Error' ] = 'El tipo de Grupo ingresado  No existe';
+                    }else{
+                        $grupo['Error' ] = 'La modalidad ingresada no es valida';
                     }
+                    
                     array_push($errorGroups, $grupo);
                  } else {
                     $result = Group::where([
                         'number'                => $group ,
                         'group_type_id'         => $groupType->id,
                         'course_id'             => $course->id,
-                        'academic_load_id'      => $academicLoad,])->get();
+                        'academic_load_id'      => $academicLoad,
+                        'modality'              =>$row['modalidad']])->get();
                     if ($result->isEmpty()&&$errorDetail == 0) {           
                         //Creamos el Grupo
                             $GroupRegister = Group::create([
@@ -135,6 +141,7 @@ class GroupCoursesImport implements ToCollection, WithHeadingRow
                                 'course_id'             => $course->id,
                                 'academic_load_id'      => $academicLoad,
                                 'status'                => 'SDA',
+                                'modality'              => $row['modalidad'],
                                 ]);
                             $GroupRegister->schedule()->createMany($details);
                             $grupoB = [
@@ -149,7 +156,7 @@ class GroupCoursesImport implements ToCollection, WithHeadingRow
                     $grupo['Error' ] = 'Las horas de este grupo son incongruentes';
                     array_push( $grupo,$var);
                    } else {
-                    $grupo['Error' ] = "Ya existe un grupo ".$row['tipo']." de esta materia resgistrado con el numero de ".$row['tipo']." ".$group."";
+                    $grupo['Error' ] = "Ya existe un grupo en la modalidad  ".$row['modalidad']." del tipo de grupo ".$row['tipo']." de esta materia resgistrado con el numero de ".$row['tipo']." ".$group."";
                     
                    }
                    array_push($errorGroups, $grupo);

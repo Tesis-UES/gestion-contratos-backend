@@ -349,7 +349,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
 
     //Rutas que manejan los select de las solicitudes de contratacion
     Route::get('/candidates/all', [PersonController::class, 'getCandidates']);
-    Route::get('/hiringRequest/groups/notAssigned', [GroupController::class, 'getAllGroupsWhitoutProfessors']);
+    Route::get('/hiringRequest/{modality}/groups/notAssigned', [GroupController::class, 'getAllGroupsWhitoutProfessors']);
     Route::get('/candidate/{Person}/ActualInfo', [PersonController::class, 'getInfoCandidate']);
 
     // Rutas que manejan los detalles de las solicitudes de contratacion

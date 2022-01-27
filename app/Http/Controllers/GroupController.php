@@ -10,6 +10,7 @@ use App\Imports\GroupCoursesImport;
 use Illuminate\Http\Request;
 use Maatwebsite\Excel\Facades\Excel;
 use Illuminate\Support\Facades\Auth;
+use Illuminate\Validation\Rule;
 use DB;
 
 class GroupController extends Controller
@@ -28,13 +29,15 @@ class GroupController extends Controller
             'details.*.day'         => 'required|string',
             'details.*.start_hour'  => 'required|date_format:H:i',
             'details.*.finish_hour' => 'required|date_format:H:i|after:details.*.start_hour',
+            'modality'              => ['required', Rule::in(['Presencial','En Linea'])],
         ]);
        
         $academicLoad = AcademicLoad::where('id', $academicLoadId)->firstOrFail();
         $result = Group::where(['academic_load_id'  => $academicLoadId,
                                 'group_type_id'     =>$fields['group_type_id'],
                                 'number'            =>$fields['number'],
-                                'course_id'         =>$fields['course_id']])->get();
+                                'course_id'         =>$fields['course_id'],
+                                'modality'          =>$fields['modality']])->get();
         if ($result->isEmpty()) {
             $Group = Group::create(array_merge($fields, ['academic_load_id' => $academicLoadId],['status' => (array_key_exists('people_id',$fields)) ? 'DA' :'SDA']));
             $Group->schedule()->createMany($fields['details']);
@@ -42,14 +45,15 @@ class GroupController extends Controller
                 'number'            =>  $Group->number,          
                 'type_group'        =>  $Group->grupo->name,  
                 'curse_code'        =>  $Group->course->code,
-                'course_name'       =>  $Group->course->name,                   
+                'course_name'       =>  $Group->course->name, 
+                'modality'          =>  $Group->modality,                 
                 'assigned_people'   =>  $retVal = ($Group->people_id == null) ? 'Sin Asignar Docente' :$Group->candidato->first_name." ".$Group->candidato->middle_name." ".$Group->candidato->last_name." ",
                 'schedules'         =>  $Group->schedule()->get()
             ];
     
             return response($newGroup, 200); 
         } else {
-            $message = "ya existe un grupo registrado con ese numero de grupo registrado en el sistema";
+            $message = "ya existe un grupo registrado con ese numero de grupo registrado en el sistema en la modalidad ".$fields['modality']."";
             return response($message, 400);
         }
     }
@@ -68,6 +72,7 @@ class GroupController extends Controller
                 'course_id'         =>  $group->course_id,
                 'nombre_curso'      =>  $group->course->name,                   
                 'people_id'         =>  $group->people_id, 
+                'modality'          =>  $group->modality,
                 'people_name'       =>  "Sin Asignar",
                 'schedules'         =>  $group->schedule()->get()
             ]; 
@@ -81,6 +86,7 @@ class GroupController extends Controller
                 'course_id'         =>  $group->course_id,
                 'nombre_curso'      =>  $group->course->name,                   
                 'people_id'         =>  $group->people_id, 
+                'modality'          =>  $group->modality,
                 'people_name'     =>" ".$group->candidato->first_name." ".$group->candidato->middle_name." ".$group->candidato->last_name." ",
                 'schedules'         =>  $group->schedule()->get()
             ]; 
@@ -177,6 +183,7 @@ class GroupController extends Controller
             'course_id'         =>  $Group->course_id,
             'nombre_curso'      =>  $Group->course->name,                   
             'people_id'         =>  $Group->people_id, 
+            'modality'          =>  $Group->modality,
             'people_name'     =>" ".$Group->candidato->first_name." ".$Group->candidato->middle_name." ".$Group->candidato->last_name." ",
             'schedules'         =>  $Group->schedule()->get(),
         ];
@@ -184,11 +191,11 @@ class GroupController extends Controller
         return response($updateGroup, 200); 
     }
 
-    public function getAllGroupsWhitoutProfessors(){
+    public function getAllGroupsWhitoutProfessors($modality){
         $semester = Semester::where('status',1)->firstOrFail();
         $school = $user = Auth::user()->school_id;
         $academicLoad = AcademicLoad::where([['semester_id',$semester->id],['school_id',$school]])->first();
-        $groups = Group::with('course')->with('grupo')->with('schedule')->where([['academic_load_id',$academicLoad->id],['status','SDA']])->get();
+        $groups = Group::with('course')->with('grupo')->with('schedule')->where([['academic_load_id',$academicLoad->id],['status','SDA'],['modality',$modality]])->get();
         return $groups;
     }
 }
