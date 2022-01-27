@@ -365,6 +365,9 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     });
 
     //Ruta de secretaria para ver las solicitudes de contratacion enviadas para aprobacion
-    Route::get('/hiringRequest/all/petitions/secretary', [HiringRequestController::class, 'getAllHiringRequestsSecretary']);
-    Route::put('/hiringRequest/{hiringRequest}/secretary/reception',[HiringRequestController::class, 'secretaryReceptionHiringRequest']);
+    Route::group(['middleware' => ['can:view_request_asis']], function () {
+        Route::get('/hiringRequest/all/petitions/secretary', [HiringRequestController::class, 'getAllHiringRequestsSecretary']);
+        Route::put('/hiringRequest/{hiringRequest}/secretary/reception',[HiringRequestController::class, 'secretaryReceptionHiringRequest'])->middleware('can:accept_request_asis');
+    });
+    
 });

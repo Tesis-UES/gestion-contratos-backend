@@ -147,6 +147,8 @@ class RolesPermissionsSeeder extends Seeder
         Permission::create(['name' => 'view_Personal_changes']);
         Permission::create(['name' => 'view_rrhh']);
         Permission::create(['name' => 'view_candidates']);
+        Permission::create(['name' => 'view_request_asis']);
+        Permission::create(['name' => 'accept_request_asis']);
 
         //CREACION DE ROLES
         $admin = Role::create(['name' => 'Administrador']);
@@ -264,7 +266,7 @@ class RolesPermissionsSeeder extends Seeder
         ]);
 
         $asistenteAdmin->givePermissionTo([
-            'read_employeeType',
+           /*  'read_employeeType',
             'read_escalafones',
             'write_escalafones',
             'read_faculties',
@@ -290,7 +292,9 @@ class RolesPermissionsSeeder extends Seeder
             'read_personValidations',
             'view_personInfo',
             'view_contracSolicitude',
-            'view_candidates',
+            'view_candidates', */
+            'view_request_asis',
+            'accept_request_asis'
         ]);
 
         $rrhh->givePermissionTo([
