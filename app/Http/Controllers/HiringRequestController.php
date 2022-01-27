@@ -98,6 +98,7 @@ class HiringRequestController extends Controller
         }
         $hiringRequest->status()->attach(['status_id' => $status->id], ['comments' => $comment]);
         DB::commit();
+        $this->RegisterAction("El usuario ha dado por recibida una solicitud de contratacion", "high");
         return response(200);
     }
 }
