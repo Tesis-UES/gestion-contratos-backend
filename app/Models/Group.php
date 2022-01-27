@@ -17,6 +17,7 @@ class Group extends Model
         'course_id',
         'people_id',
         'status',
+        'modality',
     ];
 
     protected $hidden = ['pivot'];
