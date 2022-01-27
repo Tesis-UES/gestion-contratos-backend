@@ -12,7 +12,7 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Http\Request;
 use Carbon\Carbon;
 use App\Constants\HiringRequestStatusCode;
-
+use Illuminate\Support\Facades\DB;
 class HiringRequestController extends Controller
 {
     use WorklogTrait, GeneratorTrait;
@@ -77,5 +77,27 @@ class HiringRequestController extends Controller
         })->with('school')->with('contractType')->orderBy('created_at', 'DESC')->paginate(10);
         $this->RegisterAction("El usuario ha consultado todas las solicitudes de contratacion enviadas a secretaria", "medium");
         return response($hiringRequests, 200);
+    }
+
+    public function secretaryReceptionHiringRequest(HiringRequest $hiringRequest, Request $request){
+        $request->validate([
+            'approved'          => 'required|boolean',
+            'observations'       => 'string|nullable',
+        ]);
+        DB::beginTransaction();
+        if ($hiringRequest->status->last()->code != HiringRequestStatusCode::EDS) {
+            DB::rollBack();
+            return response(['message' => 'Solo las solicitudes que tengan el estado de enviadas pueden ser dadas por recibidas por secretaria'], 400);
+        }
+        if($request->approved){
+            $status = Status::where('code',HiringRequestStatusCode::RDS)->first();
+            $comment = 'La solicitud fue aceptada por secretaria y pasara a ser agendada para ser vista en junta directiva';            
+        }else{
+            $status = Status::where('code',HiringRequestStatusCode::ODS)->first();
+            $comment = $request->observations;
+        }
+        $hiringRequest->status()->attach(['status_id' => $status->id], ['comments' => $comment]);
+        DB::commit();
+        return response(200);
     }
 }

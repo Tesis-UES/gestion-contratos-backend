@@ -18,7 +18,7 @@ class CreateStatusTable extends Migration
             $table->string('code')->unique();
             $table->string('name');
             $table->string('description');
-            $table->integer('order');
+            $table->float('order');
             $table->timestamps();
         });
     }
