@@ -130,6 +130,9 @@ class RolesPermissionsSeeder extends Seeder
         Permission::create(['name' => 'read_hiringRequest']);
         Permission::create(['name' => 'write_hiringRequest']);
 
+        // Permisos individuales 
+        Permission::create(['name' => 'read_myHiringRequests']);
+
         //Permisos visuales
         Permission::create(['name' => 'view_activities']);
         Permission::create(['name' => 'view_users']);
@@ -236,6 +239,7 @@ class RolesPermissionsSeeder extends Seeder
             'view_updateDocs',
             'view_Personal_changes',
             'read_banks',
+            'read_myHiringRequests',
         ]);
 
         $directorEscuela->givePermissionTo([
@@ -266,7 +270,7 @@ class RolesPermissionsSeeder extends Seeder
         ]);
 
         $asistenteAdmin->givePermissionTo([
-           /*  'read_employeeType',
+            /*  'read_employeeType',
             'read_escalafones',
             'write_escalafones',
             'read_faculties',

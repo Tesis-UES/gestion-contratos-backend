@@ -103,4 +103,28 @@ class HiringRequestController extends Controller
         $this->RegisterAction("El usuario ha dado por recibida una solicitud de contratacion", "high");
         return response(200);
     }
+
+    public function getMyHiringRequests(Request $request)
+    {
+        $user = Auth::user();
+
+        $hiringRequestIds = HiringRequestDetail::select('hiring_request_id')->distinct()->where('person_id', $user->person->id)->get();
+        $hiringRequestIds = array_map(function ($item) {
+            return $item['hiring_request_id'];
+        }, $hiringRequestIds->toArray());
+
+        $queryBuilder = HiringRequest::with(['school', 'contractType'])
+            ->orderBy('created_at', 'DESC')
+            ->whereIn('id', $hiringRequestIds);
+
+        if ($request->query('active') == 'true') {
+            $queryBuilder->where('request_status', '!=', HiringRequestStatusCode::GDC);
+        }
+
+        $hiringRequests = $queryBuilder->paginate($request->query('paginate'));
+        $hiringRequests->makeHidden('status');
+
+        $this->RegisterAction("El usuario ha consultado las solicitudes de  contratación que lo incluyen", "medium");
+        return response($hiringRequests, 200);
+    }
 }

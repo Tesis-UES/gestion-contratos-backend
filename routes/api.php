@@ -339,6 +339,11 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
         Route::get('/Word/{id}', [PersonController::class, 'wordExample']);
     });
 
+    // Rutas para ver mis solicitudes de contratacion
+    Route::group(['middleware' => ['can:read_myHiringRequests']], function () {
+        Route::get('/hiringRequest/mine', [HiringRequestController::class, 'getMyHiringRequests']);
+    });
+
     //Pendiente por definir los permisos
     Route::post('/hiringRequest', [HiringRequestController::class, 'store']);
     Route::get('/hiringRequest/{id}', [HiringRequestController::class, 'show']);
@@ -367,7 +372,6 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     //Ruta de secretaria para ver las solicitudes de contratacion enviadas para aprobacion
     Route::group(['middleware' => ['can:view_request_asis']], function () {
         Route::get('/hiringRequest/all/petitions/secretary', [HiringRequestController::class, 'getAllHiringRequestsSecretary']);
-        Route::put('/hiringRequest/{hiringRequest}/secretary/reception',[HiringRequestController::class, 'secretaryReceptionHiringRequest'])->middleware('can:accept_request_asis');
+        Route::put('/hiringRequest/{hiringRequest}/secretary/reception', [HiringRequestController::class, 'secretaryReceptionHiringRequest'])->middleware('can:accept_request_asis');
     });
-    
 });
