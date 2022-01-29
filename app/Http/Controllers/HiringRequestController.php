@@ -35,8 +35,22 @@ class HiringRequestController extends Controller
 
     public function show($id)
     {
-        $hiringRequest = HiringRequest::with('school')->with('contractType')->with('status')->findOrFail($id);
-        return response(['hiringRequest' => $hiringRequest], 200);
+        $relations = [
+            'school',
+            'contractType',
+            'status',
+            'details',
+            'details.staySchedule',
+            'details.groups',
+            'details.activities',
+            'details.person',
+            'details.person.employee',
+            'details.person.employee.escalafon',
+            'details.person.employee.employeeTypes',
+        ];
+        $hiringRequest = HiringRequest::with($relations)->findOrFail($id);
+
+        return response($hiringRequest, 200);
     }
 
 
