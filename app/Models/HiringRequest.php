@@ -12,6 +12,7 @@ class HiringRequest extends Model
     protected $fillable = [
         'id',
         'code',
+        'request_status',
         'modality',
         'message',
         'contract_type_id',

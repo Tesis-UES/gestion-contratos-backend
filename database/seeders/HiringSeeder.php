@@ -2,6 +2,7 @@
 
 namespace Database\Seeders;
 
+use App\Constants\HiringRequestStatusCode;
 use App\Models\HiringRequest;
 use App\Http\Traits\GeneratorTrait;
 use Illuminate\Database\Seeder;
@@ -17,7 +18,7 @@ class HiringSeeder extends Seeder
     public function run()
     {
         $hrQty = 100;
-        $hrQrySec = 100;        
+        $hrQrySec = 100;
         $faker = \Faker\Factory::create();
 
         for ($i = 0; $i < $hrQty; $i++) {
@@ -28,6 +29,7 @@ class HiringSeeder extends Seeder
                 'school_id' => $schoolId,
                 'modality' => 'Modalidad Presencial',
                 'message' => $faker->text,
+                'request_status' => HiringRequestStatusCode::RDC,
             ]);
             $rq->status()->attach(['status_id' => '1'], ['comments' => 'Registro de solicitud']);
             $rq->status()->attach(['status_id' => '2'], ['comments' => 'Llenado de datos de solicitud de contratación']);
@@ -41,6 +43,7 @@ class HiringSeeder extends Seeder
                 'school_id' => $schoolId,
                 'modality' => 'Modalidad Presencial',
                 'message' => $faker->text,
+                'request_status' => HiringRequestStatusCode::EDS,
             ]);
             $rq->status()->attach(['status_id' => '1'], ['comments' => 'Registro de solicitud']);
             $rq->status()->attach(['status_id' => '2'], ['comments' => 'Llenado de datos de solicitud']);

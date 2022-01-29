@@ -15,7 +15,8 @@ class CreateHiringRequestsTable extends Migration
     {
         Schema::create('hiring_requests', function (Blueprint $table) {
             $table->id();
-            $table->string('code',120)->nonullable()->unique();
+            $table->string('code', 120)->nonullable()->unique();
+            $table->string('request_status', 10)->nonullable();
             $table->enum('modality', ['Modalidad Presencial', 'Modalidad en Linea']);
             $table->longText('message')->nonullable();
             $table->bigInteger('contract_type_id')->unsigned()->nonullable();
