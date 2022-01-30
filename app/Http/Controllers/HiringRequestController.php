@@ -14,6 +14,7 @@ use Carbon\Carbon;
 use App\Constants\HiringRequestStatusCode;
 use App\Models\HiringRequestDetail;
 use Illuminate\Support\Facades\DB;
+use PDF;
 
 class HiringRequestController extends Controller
 {
@@ -126,5 +127,12 @@ class HiringRequestController extends Controller
 
         $this->RegisterAction("El usuario ha consultado las solicitudes de  contratación que lo incluyen", "medium");
         return response($hiringRequests, 200);
+    }
+
+    public function MakeHiringRequestPDF()
+    {
+        $pdf = PDF::loadView('hiringRequest.HiringRequest');
+        $this->RegisterAction("El usuario ha generado una solicitud de contratación en PDF", "high");
+        return $pdf->download('solicitud_de_contratacion.pdf');
     }
 }

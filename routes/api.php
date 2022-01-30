@@ -374,4 +374,5 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
         Route::get('/hiringRequest/all/petitions/secretary', [HiringRequestController::class, 'getAllHiringRequestsSecretary']);
         Route::put('/hiringRequest/{hiringRequest}/secretary/reception', [HiringRequestController::class, 'secretaryReceptionHiringRequest'])->middleware('can:accept_request_asis');
     });
+    Route::get('/hiringRequest/create/PDF', [HiringRequestController::class, 'MakeHiringRequestPDF']);
 });
