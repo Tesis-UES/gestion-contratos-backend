@@ -17,10 +17,14 @@
     }
 
     .container-images{
-      display: block;
+      display: flex;
       border: none;
-      border-bottom: 4px solid #ff0000;
       text-align: center;
+      justify-items: center;
+    }
+
+    .header-solicitud{
+      border-bottom: 4px solid #ff0000;
     }
 
     span{
@@ -33,7 +37,7 @@
     }
 
     img{
-      display: inline;
+      display: left;
     }
 
     .fecha{
@@ -65,36 +69,24 @@
       font-size: 14px;
 
     }
-  
-    .container-tabla {
-      display: block;
-      text-align: right;
-      margin: 0 8%;
-      height: 240px;
-      font-size: 13px;
-    }
-
-    .container-tabla-D{
-      display: block;
-      border: none;
-      font-family: Arial, Helvetica, sans-serif;
-     
-    }
       /* Solo Diosito sabe como funciona esto :V
        */
     table, th, td {
       border: 1px solid black;
       border-collapse: collapse;
     }
-
+ 
  </style>
   <body>
     <div class="container-header">
       <div class="container-images">
-        <img  src="/iconos/LOGO_MINERVA.jpg" alt="ueslogo" width="35" height="50"/>
-        <div>UNIVERSIDAD DE EL SALVADOR</div>
-        <div>FACULTAD DE INGENIERÍA Y ARQUITECTURA </div>
-        <div>ESCUELA DE INGENIERÍA MECANICA</div>
+        <img  src="iconos/LOGO_MINERVA.jpg" alt="ueslogo" width="55" height="75"/>
+        <div class="header-solicitud">
+          <div>UNIVERSIDAD DE EL SALVADOR</div>
+          <div>FACULTAD DE INGENIERÍA Y ARQUITECTURA </div>
+          <div>ESCUELA DE INGENIERÍA MECANICA</div>
+          <br>
+        </div>
         
       </div>
       <br>
@@ -117,49 +109,5 @@
       </div>
     </div>
     <br>
-    <div class="container-tabla">
-      <div class="container-tabla-D">
-        <table style="width:100%">
-          <tr>
-            <th>Grupo de Estudiantes</th>
-            <th>Carnet</th>
-            <th>Docentes Asesores Propuestos</th>
-          </tr>
-          <tr>
-            <td>
-              
-            </td>
-            <td>
-              
-            </td>
-            <td>
-              
-            </td>
-          </tr>
-        </table>
-        <br>
-        <p>Agradeciendo la atención a la presente y quedando a la espera de una respuesta favorable.</p>
-      </div>
-    </div>
-    <div class="container-cuerpo-JD">
-      <div class="container-saludo-JD">
-        <br>
-        <div>Atentamente,</div>
-        <br>
-        <br>
-        <br>
-        <br>
-        <br>
-        <div><b></b></div>
-          <div>Directora del Centro de Investigaciones y</div>
-          <div>Coordinadora de Procesos de Grado</div>
-          <div>Facultad de Odontologia</div>
-          <div>Universidad de El Salvador</div>
-          <br>
-      </div>
-    </div>
-    
-    
-
   </body>
 </html>
