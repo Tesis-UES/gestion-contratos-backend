@@ -131,7 +131,12 @@ class HiringRequestController extends Controller
 
     public function MakeHiringRequestPDF()
     {
-        $pdf = PDF::loadView('hiringRequest.HiringRequest');
+        //Se crea la fecha con el formato que se requiere para el pdf
+        $date = Carbon::now()->locale('es');
+        $fecha = "Ciudad Universitaria Dr. Fabio Castillo Figueroa, ".$date->day." de ".$date->monthName." de ".$date->year.".";
+        $hiringRequest = HiringRequest::with('school')->with('contractType')->with('status')->findOrFail(151);
+        $escuela = "Escuela de ".$hiringRequest->school->name;
+        $pdf = PDF::loadView('hiringRequest.HiringRequest',compact('fecha','escuela','hiringRequest'));
         $this->RegisterAction("El usuario ha generado una solicitud de contratación en PDF", "high");
         return $pdf->download('solicitud_de_contratacion.pdf');
     }
