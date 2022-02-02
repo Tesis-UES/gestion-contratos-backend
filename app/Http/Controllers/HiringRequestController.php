@@ -127,4 +127,9 @@ class HiringRequestController extends Controller
         $this->RegisterAction("El usuario ha consultado las solicitudes de  contratación que lo incluyen", "medium");
         return response($hiringRequests, 200);
     }
+
+    public function getAllStatus(){
+        $status = Status::all();
+        return response($status, 200);
+    }
 }

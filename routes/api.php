@@ -351,6 +351,8 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::delete('/hiringRequest/{id}', [HiringRequestController::class, 'destroy']);
     Route::get('/hiringRequest/all/peticions', [HiringRequestController::class, 'getAllHiringRequests']);
     Route::get('/hiringRequest/school/{id}', [HiringRequestController::class, 'getAllHiringRequestBySchool']);
+    Route::get('/hiringRequest/status/all', [HiringRequestController::class, 'getAllStatus']);
+
 
     //Rutas que manejan los select de las solicitudes de contratacion
     Route::get('/candidates/all', [PersonController::class, 'getCandidates']);
