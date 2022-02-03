@@ -111,7 +111,59 @@
             <br>
             <p>Estimados Señores:</p>
             <br>
-            <p>{!! $hiringRequest->message !!}</p>
+            <p>{!! $hiringRequest->message !!}
+                <br>
+                <br>
+                <style>
+                    .demo {
+                        border: 1px sólido #C0C0C0;
+                        border-collapse: colapso;
+                        padding: 5px;
+                    }
+
+                    .demo th {
+                        border: 1px sólido #C0C0C0;
+                        padding: 5px;
+                        background: #F0F0F0;
+                    }
+
+                    .demo td {
+                        border: 1px sólido #C0C0C0;
+                        padding: 5px;
+                    }
+
+                </style>
+            <div>
+                <table class="demo">
+                    <caption>Personas a Contratar</caption>
+                    <thead>
+                        <tr>
+                            <th>Nombre</th>
+                            <th>Monto Ciclo</th>
+                        </tr>
+                    </thead>
+                    <tbody>
+                        @foreach ($hiringRequest->details as $item)
+                            <tr>
+                                <td>{{ $item->person->first_name . ' ' . $item->person->middle_name . ' ' . $item->person->last_name }}
+                                </td>
+                                <td>{{($item->hourly_rate*$item->work)}}</td>
+                            </tr>
+
+                        @endforeach
+
+                    <tfoot>
+                        <tr>
+                            <td><strong>Sum</strong></td>
+                            <td>$1600</td>
+                        </tr>
+                    </tfoot>
+
+                    </tbody>
+                </table>
+            </div>
+
+
         </div>
     </div>
     <br>
