@@ -36,8 +36,29 @@ class HiringRequestController extends Controller
 
     public function show($id)
     {
-        $hiringRequest = HiringRequest::with('school')->with('contractType')->with('status')->findOrFail($id);
-        return response(['hiringRequest' => $hiringRequest], 200);
+        $relations = [
+            'school',
+            'contractType',
+            'status',
+            'details',
+            'details.staySchedule',
+            'details.staySchedule.semester',
+            'details.staySchedule.scheduleDetails',
+            'details.staySchedule.scheduleActivities',
+            'details.groups',
+            'details.groups.course',
+            'details.groups.schedule',
+            'details.groups.grupo',
+            'details.groups',
+            'details.activities',
+            'details.person',
+            'details.person.employee',
+            'details.person.employee.escalafon',
+            'details.person.employee.employeeTypes',
+        ];
+        $hiringRequest = HiringRequest::with($relations)->findOrFail($id);
+
+        return response($hiringRequest, 200);
     }
 
 
@@ -139,5 +160,9 @@ class HiringRequestController extends Controller
         $pdf = PDF::loadView('hiringRequest.HiringRequest',compact('fecha','escuela','hiringRequest'));
         $this->RegisterAction("El usuario ha generado una solicitud de contratación en PDF", "high");
         return $pdf->download('solicitud_de_contratacion.pdf');
+    }
+    public function getAllStatus(){
+        $status = Status::all();
+        return response($status, 200);
     }
 }

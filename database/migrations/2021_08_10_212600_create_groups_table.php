@@ -24,8 +24,8 @@ class CreateGroupsTable extends Migration
             $table->foreign('course_id')->references('id')->on('courses')->onDelete('cascade')->nonullable();
             $table->bigInteger('people_id')->unsigned()->nullable();
             $table->foreign('people_id')->references('id')->on('people')->onDelete('cascade')->nonullable();
-            $table->enum('status', ['SDA','DA','DASC'])->default('SDA');
-            $table->enum('modality', ['Presencial','En Linea'])->default('SDA');//SDA (Sin Docente Asignado), DA (Docente Asignado), DASC (Docente Asignado en Solicitd de Contrato)
+            $table->enum('status', ['SDA', 'DA', 'DASC'])->default('SDA');
+            $table->enum('modality', ['Presencial', 'En Linea']); //SDA (Sin Docente Asignado), DA (Docente Asignado), DASC (Docente Asignado en Solicitd de Contrato)
             $table->softDeletes();
             $table->timestamps();
         });

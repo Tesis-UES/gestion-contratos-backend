@@ -20,8 +20,6 @@ class Group extends Model
         'modality',
     ];
 
-    protected $hidden = ['pivot'];
-
     public function grupo()
     {
         return $this->belongsTo(GroupType::class, 'group_type_id');
