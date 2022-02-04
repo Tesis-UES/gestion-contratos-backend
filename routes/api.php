@@ -347,6 +347,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     //Pendiente por definir los permisos
     Route::post('/hiringRequest', [HiringRequestController::class, 'store']);
     Route::get('/hiringRequest/{id}', [HiringRequestController::class, 'show']);
+    Route::get('/hiringRequest/{id}/base', [HiringRequestController::class, 'showBase']);
     Route::put('/hiringRequest/{id}', [HiringRequestController::class, 'update']);
     Route::delete('/hiringRequest/{id}', [HiringRequestController::class, 'destroy']);
     Route::get('/hiringRequest/all/peticions', [HiringRequestController::class, 'getAllHiringRequests']);

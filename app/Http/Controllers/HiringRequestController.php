@@ -57,6 +57,22 @@ class HiringRequestController extends Controller
         ];
         $hiringRequest = HiringRequest::with($relations)->findOrFail($id);
 
+        $this->registerAction('El usuario ha consultado los detalles de la solicitud de contratacion con id: ' . $id, 'medium');
+        return response($hiringRequest, 200);
+    }
+
+    public function showBase($id)
+    {
+        $relations = [
+            'school',
+            'contractType',
+            'status',
+            'details',
+            'details.person',
+        ];
+        $hiringRequest = HiringRequest::with($relations)->findOrFail($id);
+
+        $this->registerAction('El usuario ha consultado los detalles base de la solicitud de contratacion con id: ' . $id, 'medium');
         return response($hiringRequest, 200);
     }
 
@@ -149,7 +165,8 @@ class HiringRequestController extends Controller
         return response($hiringRequests, 200);
     }
 
-    public function getAllStatus(){
+    public function getAllStatus()
+    {
         $status = Status::all();
         return response($status, 200);
     }
