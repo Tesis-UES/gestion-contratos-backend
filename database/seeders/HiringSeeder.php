@@ -22,7 +22,7 @@ class HiringSeeder extends Seeder
         $faker = \Faker\Factory::create();
 
         for ($i = 0; $i < $hrQty; $i++) {
-            $schoolId = mt_rand(1, 9);
+            $schoolId = 8;//mt_rand(1, 9);
             $rq =  HiringRequest::create([
                 'code' => $this->generateRequestCode($schoolId),
                 'contract_type_id' => mt_rand(1, 3),
@@ -36,7 +36,7 @@ class HiringSeeder extends Seeder
         }
 
         for ($i = 0; $i < $hrQrySec; $i++) {
-            $schoolId = mt_rand(1, 9);
+            $schoolId = 8; //mt_rand(1, 9);
             $rq =  HiringRequest::create([
                 'code' => $this->generateRequestCode($schoolId),
                 'contract_type_id' => mt_rand(1, 3),

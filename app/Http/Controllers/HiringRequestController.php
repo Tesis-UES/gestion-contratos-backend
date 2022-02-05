@@ -61,6 +61,21 @@ class HiringRequestController extends Controller
         return $hiringRequest;
     }
 
+    public function showBase($id)
+    {
+        $relations = [
+            'school',
+            'contractType',
+            'status',
+            'details',
+            'details.person',
+        ];
+        $hiringRequest = HiringRequest::with($relations)->findOrFail($id);
+
+        $this->registerAction('El usuario ha consultado los detalles base de la solicitud de contratacion con id: ' . $id, 'medium');
+        return response($hiringRequest, 200);
+    }
+
 
     public function update(UpdateHiringRequestRequest $request, $id)
     {
