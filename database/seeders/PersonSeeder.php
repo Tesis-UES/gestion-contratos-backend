@@ -151,6 +151,7 @@ class PersonSeeder extends Seeder
         //Ingresando Datos de Un Candidato NACIONAL
         $datosNacional = Person::create([
             'user_id'       => $Nacional->id,
+            'status'        => 'Validado',
             'first_name'    => 'Guillermo',
             'middle_name'   => 'Alexander',
             'last_name'     => 'Cornejo Argueta',
@@ -183,6 +184,7 @@ class PersonSeeder extends Seeder
         //Ingresando Datos Nacionalizado//
         $datosNacionalizado = Person::create([
             'user_id'       => $Nacionalizado->id,
+            'status'        => 'Validado',
             'first_name'    => 'JOSE',
             'middle_name'   => 'Alexander',
             'last_name'     => 'Cornejo',
@@ -223,6 +225,7 @@ class PersonSeeder extends Seeder
         //Ingresando datos de candidato Nacional - Trabajador UES - FIA
         $datosNacionalUesFia =  Person::create([
             'user_id'       => $NacionalE->id,
+            'status'        => 'Validado',
             'first_name'    => 'Jose',
             'middle_name'   => 'Maria',
             'last_name'     => 'Aguilar Argueta',
@@ -270,6 +273,7 @@ class PersonSeeder extends Seeder
         //Ingresando datos de candidato Nacional - Trabajador UES - Otra Facultad
         $datosNacionalEOtra = Person::create([
             'user_id'       => $NacionalEOtra->id,
+            'status'        => 'Validado',
             'first_name'    => 'Jose',
             'middle_name'   => 'bennet',
             'last_name'     => 'Corderjo Argueta',
@@ -317,6 +321,7 @@ class PersonSeeder extends Seeder
         //Ingresando Datos de Candidato Extranjero
         $DatosInternacional =  Person::create([
             'user_id'       => $Internacional->id,
+            'status'        => 'Validado',
             'first_name'    => 'Vladimir',
             'middle_name'   => 'irvetzeliv',
             'last_name'     => 'bliat',
@@ -339,6 +344,7 @@ class PersonSeeder extends Seeder
 
         $DatosInternacionalE =  Person::create([
             'user_id'       => $InternacionalE->id,
+            'status'        => 'Validado',
             'first_name'    => 'Vladimir',
             'middle_name'   => 'irvetzeliv',
             'last_name'     => 'bliat',
@@ -377,6 +383,7 @@ class PersonSeeder extends Seeder
         
         $DatosInternacionalEO =  Person::create([
             'user_id'       => $InternacionalEOtra->id,
+            'status'        => 'Validado',
             'first_name'    => 'Cordelio',
             'middle_name'   => 'irvetzeliv',
             'last_name'     => 'bliat',
