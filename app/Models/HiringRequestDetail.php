@@ -16,13 +16,14 @@ class HiringRequestDetail extends Model
         'position',
         'goal',
         'work_months',
-        'salariy_percentage',
+        'salary_percentage',
         'hourly_rate',
         'work_weeks',
         'weekly_hours',
         'person_id',
         'stay_schedule_id',
         'hiring_request_id',
+        'monthly_salary'
     ];
 
     protected $hidden = ['pivot'];
