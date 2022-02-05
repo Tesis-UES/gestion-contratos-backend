@@ -17,8 +17,8 @@ class HiringSeeder extends Seeder
      */
     public function run()
     {
-        $hrQty = 100;
-        $hrQrySec = 100;
+        $hrQty = 25;
+        $hrQrySec = 25;
         $faker = \Faker\Factory::create();
 
         for ($i = 0; $i < $hrQty; $i++) {
