@@ -14,6 +14,7 @@ use Carbon\Carbon;
 use App\Constants\HiringRequestStatusCode;
 use App\Models\HiringRequestDetail;
 use Illuminate\Support\Facades\DB;
+use PDF;
 
 class HiringRequestController extends Controller
 {
@@ -57,23 +58,7 @@ class HiringRequestController extends Controller
         ];
         $hiringRequest = HiringRequest::with($relations)->findOrFail($id);
 
-        $this->registerAction('El usuario ha consultado los detalles de la solicitud de contratacion con id: ' . $id, 'medium');
-        return response($hiringRequest, 200);
-    }
-
-    public function showBase($id)
-    {
-        $relations = [
-            'school',
-            'contractType',
-            'status',
-            'details',
-            'details.person',
-        ];
-        $hiringRequest = HiringRequest::with($relations)->findOrFail($id);
-
-        $this->registerAction('El usuario ha consultado los detalles base de la solicitud de contratacion con id: ' . $id, 'medium');
-        return response($hiringRequest, 200);
+        return $hiringRequest;
     }
 
 
@@ -165,8 +150,21 @@ class HiringRequestController extends Controller
         return response($hiringRequests, 200);
     }
 
-    public function getAllStatus()
+   
+    public function MakeHiringRequestPDF()
     {
+        //Se crea la fecha con el formato que se requiere para el pdf
+        $date = Carbon::now()->locale('es');
+        $fecha = "Ciudad Universitaria Dr. Fabio Castillo Figueroa, ".$date->day." de ".$date->monthName." de ".$date->year.".";
+        $hiringRequest = $this->show(101);
+        //return $hiringRequest->details;
+        $escuela = "Escuela de ".$hiringRequest->school->name;
+
+        $pdf = PDF::loadView('hiringRequest.HiringRequestSPNP',compact('fecha','escuela','hiringRequest'));
+        $this->RegisterAction("El usuario ha generado una solicitud de contratación en PDF", "high");
+        return $pdf->download('solicitud_de_contratacion.pdf');
+    }
+    public function getAllStatus(){
         $status = Status::all();
         return response($status, 200);
     }
