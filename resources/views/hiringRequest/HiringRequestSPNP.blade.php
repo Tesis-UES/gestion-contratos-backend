@@ -74,15 +74,13 @@
 
     }
 
-    /* Solo Diosito sabe como funciona esto :V
-       */
+
     table,
     th,
     td {
         border: 1px solid black;
         border-collapse: collapse;
     }
-
 </style>
 
 <body>
@@ -131,7 +129,6 @@
                         border: 1px sólido #C0C0C0;
                         padding: 5px;
                     }
-
                 </style>
             <div>
                 <table class="demo">
@@ -144,18 +141,17 @@
                     </thead>
                     <tbody>
                         @foreach ($hiringRequest->details as $item)
-                            <tr>
-                                <td>{{ $item->person->first_name . ' ' . $item->person->middle_name . ' ' . $item->person->last_name }}
-                                </td>
-                                <td>{{($item->hourly_rate*$item->work)}}</td>
-                            </tr>
+                        <tr>
+                            <td>{{ $item->person->first_name . ' ' . $item->person->middle_name . ' ' . $item->person->last_name }}</td>
+                            <td>{{($item->subtotal)}}</td>
+                        </tr>
 
                         @endforeach
 
                     <tfoot>
                         <tr>
-                            <td><strong>Sum</strong></td>
-                            <td>$1600</td>
+                            <td><strong>Total: </strong></td>
+                            <td>{{$hiringRequest->total}}</td>
                         </tr>
                     </tfoot>
 

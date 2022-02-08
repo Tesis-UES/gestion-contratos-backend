@@ -37,6 +37,11 @@ class HiringRequestDetail extends Model
         return $this->belongsTo(StaySchedule::class);
     }
 
+    public function hiringGroups()
+    {
+        return $this->hasMany(HiringGroup::class);
+    }
+
     public function groups()
     {
         return $this->belongsToMany(Group::class, 'hiring_groups');
