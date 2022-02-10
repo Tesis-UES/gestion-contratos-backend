@@ -117,7 +117,7 @@ class HrSeeder extends Seeder
         Schedule::create(['day' => 'Jueves', 'start_hour' => "18:35", 'finish_hour' => "20:15", 'group_id' => $grupo25->id]);
 
         $grupo26 = Group::create(['status' => 'SDA', 'modality' => 'Presencial', 'number' => 2, 'group_type_id' => 3, 'academic_load_id' => 6, 'course_id' => 33]);
-        Schedule::create(['day' => 'Viernes', 'start_hour' => "9:50", 'finish_hour' => "11:30", 'group_id' => $grupo25->id]);
+        Schedule::create(['day' => 'sabado', 'start_hour' => "9:50", 'finish_hour' => "11:30", 'group_id' => $grupo25->id]);
 
         //SYP
         $grupo27 = Group::create(['status' => 'SDA', 'modality' => 'Presencial', 'number' => 1, 'group_type_id' => 1, 'academic_load_id' => 6, 'course_id' => 10]);
@@ -244,6 +244,63 @@ class HrSeeder extends Seeder
                 $gps = [];
                 
         } 
+
+          //solicitud por Tiempo Adicional
+          $rqi =  HiringRequest::create([
+            'code' => $this->generateRequestCode(8),
+            'contract_type_id' => 3,
+            'school_id' => 8,
+            'modality' => 'Modalidad Presencial',
+            'message' => '<p>Estimados se&ntilde;ores:</p> <p>Les saludo deseando que gocen de &eacute;xitos personales y profesionales.</p> <p>Por este medio amablemente les solicito contratar al personal que se especifica a continuaci&oacute;n,<br />para realizar las funciones especificadas en los archivos anexos.</p>',
+            'request_status' => HiringRequestStatusCode::RDC,
+        ]);
+        $rqi->status()->attach(['status_id' => '1'], ['comments' => 'Registro de solicitud']);
+        $rqi->status()->attach(['status_id' => '2'], ['comments' => 'Llenado de datos de solicitud de contratación']);
+        $perso= [6, 7];
+
+        foreach ($perso as $p) {
+            if($p == 6){
+                $stay = 3;
+            }else{
+                $stay = 4;}
+            $savedDetail = HiringRequestDetail::create([
+                'start_date'        => '2022-01-17',
+                'finish_date'       => '2022-06-1',
+                'stay_schedule_id' =>$stay,
+                'weekly_hours'      => 8,
+                'work_weeks'        => 20,
+                'hourly_rate'       => 10,
+                'position'         => 'Dar Clases asignadas y laboratorios de las materias antes mencionadas.',
+                'person_id'         => $p,
+                'hiring_request_id' => $rqi->id]);
+
+                $act = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20];
+                
+                foreach ($act as $activityName) {
+                    $activity = Activity::where('id', $activityName)->first();
+                    $activities[] = $activity;
+                }
+                $savedDetail->activities()->saveMany($activities);
+                
+                if ($p == 3) {
+                    $groups = [$grupo27->id, $grupo28->id, $grupo29->id, $grupo12->id];
+                } else{
+                    $groups = [$grupo21->id, $grupo22->id, $grupo23->id, $grupo13->id];
+                } 
+
+                foreach ($groups as $hiringGroup) {
+                    $group = Group::findOrFail($hiringGroup);
+                    $group->people_id = $p;
+                    $group->status = GroupStatus::DASC;
+                    $group->save();
+                    $gps[] = $group;
+                }
+                $savedDetail->groups()->saveMany($gps);
+                $activities = [];
+                $gps = [];
+                
+        } 
+    
     
     }
 }
