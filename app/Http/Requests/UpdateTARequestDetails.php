@@ -28,6 +28,7 @@ class UpdateTARequestDetails extends FormRequest
       'finish_date'    => 'required|date_format:Y-m-d|after:start_date',
       'position'       => 'required|string',
       'weekly_hours'   => 'required|numeric|gt:1.0|max:10',
+      'stay_schedule_id' =>'required|integer|gte:1',
       'work_weeks'     => 'required|numeric|gt:1',
       'hourly_rate'    => 'required|numeric|gt:0.0',
       'person_id'      => 'required|integer|gte:1',

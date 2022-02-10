@@ -23,6 +23,7 @@ class HiringRequestDetail extends Model
         'person_id',
         'stay_schedule_id',
         'hiring_request_id',
+        'justification',
     ];
 
     protected $hidden = ['pivot'];

@@ -16,6 +16,7 @@ use App\Models\HiringRequestDetail;
 use Illuminate\Support\Facades\DB;
 use PDF;
 use PhpOffice\PhpSpreadsheet\Calculation\MathTrig\Subtotal;
+use iio\libmergepdf\Merger;
 
 class HiringRequestController extends Controller
 {
@@ -170,11 +171,22 @@ class HiringRequestController extends Controller
             $total += $subtotal;
         }
         $hiringRequest->total = $total;
-
-      
         $pdf = PDF::loadView('hiringRequest.HiringRequestSPNP', compact('fecha', 'escuela', 'hiringRequest'));
         $this->RegisterAction("El usuario ha generado una solicitud de contratación en PDF", "high");
+        
         return $pdf->download('solicitud_de_contratacion.pdf');
+        //Ejemplo de como se hace merge de pdfs
+       /*  $m = new Merger();
+        $pdf1 = PDF::loadView('hiringRequest.HiringRequestSPNP', compact('fecha', 'escuela', 'hiringRequest'));
+        $pdf2 = PDF::loadView('hiringRequest.HiringRequestSPNP', compact('fecha', 'escuela', 'hiringRequest'));
+        $pdf2->setPaper('A4', 'landscape');
+        $pdf1->render();
+        $pdf2->render();
+        $m->addRaw($pdf1->output());
+        $m->addRaw($pdf2->output());
+        $createdPdf = $m->merge(); 
+        
+        return response($createdPdf, 200)->header('Content-Type', 'application/pdf')->header('Content-Disposition', 'inline; filename="Solicitud de contratación.pdf"');  */  
     }
     public function getAllStatus()
     {
