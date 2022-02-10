@@ -21,6 +21,7 @@
         }
         body{
             padding: 10px 0;
+            margin: 1cm;
         }
         table,
         th,
