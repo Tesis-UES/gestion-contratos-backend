@@ -157,7 +157,7 @@ class HiringRequestController extends Controller
         //Se crea la fecha con el formato que se requiere para el pdf
         $date = Carbon::now()->locale('es');
         $fecha = "Ciudad Universitaria Dr. Fabio Castillo Figueroa, " . $date->day . " de " . $date->monthName . " de " . $date->year . ".";
-        $hiringRequest = $this->show(7);
+        $hiringRequest = $this->show(201);
         $escuela = "Escuela de " . $hiringRequest->school->name;
         $total = 0;
 
@@ -171,7 +171,7 @@ class HiringRequestController extends Controller
         }
         $hiringRequest->total = $total;
 
-
+      
         $pdf = PDF::loadView('hiringRequest.HiringRequestSPNP', compact('fecha', 'escuela', 'hiringRequest'));
         $this->RegisterAction("El usuario ha generado una solicitud de contratación en PDF", "high");
         return $pdf->download('solicitud_de_contratacion.pdf');
