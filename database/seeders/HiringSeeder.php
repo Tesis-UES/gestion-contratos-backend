@@ -17,12 +17,12 @@ class HiringSeeder extends Seeder
      */
     public function run()
     {
-        $hrQty = 100;
-        $hrQrySec = 100;
+        $hrQty = 25;
+        $hrQrySec = 25;
         $faker = \Faker\Factory::create();
 
         for ($i = 0; $i < $hrQty; $i++) {
-            $schoolId = mt_rand(1, 9);
+            $schoolId = 8;//mt_rand(1, 9);
             $rq =  HiringRequest::create([
                 'code' => $this->generateRequestCode($schoolId),
                 'contract_type_id' => mt_rand(1, 3),
@@ -36,7 +36,7 @@ class HiringSeeder extends Seeder
         }
 
         for ($i = 0; $i < $hrQrySec; $i++) {
-            $schoolId = mt_rand(1, 9);
+            $schoolId = 8; //mt_rand(1, 9);
             $rq =  HiringRequest::create([
                 'code' => $this->generateRequestCode($schoolId),
                 'contract_type_id' => mt_rand(1, 3),

@@ -16,7 +16,7 @@ class HiringRequestDetail extends Model
         'position',
         'goal',
         'work_months',
-        'salariy_percentage',
+        'salary_percentage',
         'hourly_rate',
         'work_weeks',
         'weekly_hours',
@@ -24,6 +24,8 @@ class HiringRequestDetail extends Model
         'stay_schedule_id',
         'hiring_request_id',
         'justification',
+        'monthly_salary'
+
     ];
 
     protected $hidden = ['pivot'];
