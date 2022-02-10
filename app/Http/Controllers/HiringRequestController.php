@@ -191,7 +191,7 @@ class HiringRequestController extends Controller
         $this->RegisterAction("El usuario ha generado una solicitud de contratación en PDF", "high");
         $pdf2 = PDF::loadView('hiringRequest.HiringRequestSPNPDetails');
         $pdf2->setPaper('A4', 'landscape');
-        return $pdf2->download('solicitud_de_contratacion.pdf');
+        return $pdf->download('solicitud_de_contratacion.pdf');
         //Ejemplo de como se hace merge de pdfs
        /*  $m = new Merger();
         $pdf1 = PDF::loadView('hiringRequest.HiringRequestSPNP', compact('fecha', 'escuela', 'hiringRequest'));
