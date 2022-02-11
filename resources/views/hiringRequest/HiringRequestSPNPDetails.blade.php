@@ -9,7 +9,7 @@
 
         body {
             font-size: 1.3rem;
-            margin: 3cm 0.01cm;
+            margin: 3cm 0.01cm 0.5cm 0.01cm;
 
             font-family: Arial, Helvetica, sans-serif;
         }
@@ -136,20 +136,20 @@
                 <tbody>
                     @foreach ($hiringRequest->details as $detail)
                         <tr style="page-break-inside: avoid !important;">
-                            <td rowspan={{ count($detail->mappedGroups) }}>{{ $detail->fullName }}</td>
+                            <td rowspan={{ count($detail->mappedGroups) + 1 }}>{{ $detail->fullName }}</td>
                             <td>{{ $detail->mappedGroups[0]->name }}</td>
                             <td>{{ $detail->mappedGroups[0]->groupType }}</td>
                             <td>{{ $detail->mappedGroups[0]->days }}</td>
                             <td>{{ $detail->mappedGroups[0]->time }}</td>
                             <td>{{ $detail->period }}</td>
-                            <td>Anexo n</td>
-                            <td>{{ $detail->mappedGroups[0]->hourly_rate }}</td>
+                            <td>Anexo 2</td>
+                            <td>$ {{ $detail->mappedGroups[0]->hourly_rate }}</td>
                             <td>{{ $detail->mappedGroups[0]->work_weeks }}</td>
                             <td>{{ $detail->mappedGroups[0]->weekly_hours }}</td>
-                            <td>{{ $detail->mappedGroups[0]->work_weeks * $detail->mappedGroups[0]->weekly_hours }}
-                            </td>
-                            <td>{{ $detail->mappedGroups[0]->work_weeks *$detail->mappedGroups[0]->weekly_hours *$detail->mappedGroups[0]->hourly_rate }}</td>
+                            <td>{{ $detail->mappedGroups[0]->work_weeks * $detail->mappedGroups[0]->weekly_hours }}</td>
+                            <td>$ {{ $detail->mappedGroups[0]->work_weeks *$detail->mappedGroups[0]->weekly_hours *$detail->mappedGroups[0]->hourly_rate }}</td>
                         </tr>
+                       
                         @for ($i = 1; $i < count($detail->mappedGroups); $i++)
                             <tr>
                                 <td>{{ $detail->mappedGroups[$i]->name }}</td>
@@ -158,15 +158,21 @@
                                 <td>{{ $detail->mappedGroups[$i]->time }}</td>
                                 <td>{{ $detail->period }}</td>
                                 <td>Anexo n</td>
-                                <td>{{ $detail->mappedGroups[$i]->hourly_rate }}</td>
+                                <td>$ {{ $detail->mappedGroups[$i]->hourly_rate }}</td>
                                 <td>{{ $detail->mappedGroups[$i]->work_weeks }}</td>
                                 <td>{{ $detail->mappedGroups[$i]->weekly_hours }}</td>
-                                <td>{{ $detail->mappedGroups[$i]->work_weeks * $detail->mappedGroups[$i]->weekly_hours }}
-                                </td>
-                                <td>{{ $detail->mappedGroups[$i]->work_weeks *$detail->mappedGroups[$i]->weekly_hours *$detail->mappedGroups[$i]->hourly_rate }}
-                                </td>
+                                <td>{{ $detail->mappedGroups[$i]->work_weeks * $detail->mappedGroups[$i]->weekly_hours }}</td>
+                                <td>$ {{ $detail->mappedGroups[$i]->work_weeks *$detail->mappedGroups[$i]->weekly_hours *$detail->mappedGroups[$i]->hourly_rate }}</td>
                             </tr>
+                           
+                           
                         @endfor
+                        <tr>
+                            <td style="font-weight: bold; background-color: rgb(192, 192, 192, 0.5); text-align: center;" colspan="9">Sub Total</td>
+                            <td style="font-weight: bold; background-color: rgb(192, 192, 192, 0.5);">{{$detail->subtotalHoras}}</td> 
+                            <td style="font-weight: bold; background-color: rgb(192, 192, 192, 0.5);"> ${{$detail->subtotal}}</td>
+                            
+                          </tr>
                     @endforeach
                 </tbody>
         </table>

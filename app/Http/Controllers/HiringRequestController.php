@@ -180,11 +180,18 @@ class HiringRequestController extends Controller
 
         foreach ($hiringRequest->details as $detail) {
             $subtotal = 0;
+            $total = 0;
+            $subtiempo = 0;
+            $totalHoras = 0;
             foreach ($detail->hiringGroups as $group) {
                 $subtotal += $group->hourly_rate * $group->work_weeks * $group->weekly_hours;
+                $subtiempo += $group->weekly_hours * $group->work_weeks;
             }
             $detail->subtotal = $subtotal;
             $total += $subtotal;
+            $totalHoras += $subtiempo;
+            $detail->subtotalHoras = $totalHoras;
+            
         }
         $hiringRequest->total = $total;
         $pdf = PDF::loadView('hiringRequest.HiringRequestSPNP', compact('fecha', 'escuela', 'hiringRequest'));
