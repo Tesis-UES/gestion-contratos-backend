@@ -168,7 +168,7 @@ class HiringRequestController extends Controller
         return response($hiringRequests, 200);
     }
 
-   
+
     public function MakeHiringRequestPDF()
     {
         //Se crea la fecha con el formato que se requiere para el pdf
@@ -189,21 +189,69 @@ class HiringRequestController extends Controller
         $hiringRequest->total = $total;
         $pdf = PDF::loadView('hiringRequest.HiringRequestSPNP', compact('fecha', 'escuela', 'hiringRequest'));
         $this->RegisterAction("El usuario ha generado una solicitud de contratación en PDF", "high");
-        $pdf2 = PDF::loadView('hiringRequest.HiringRequestSPNPDetails');
+        //return date("g:ia", strtotime( $hiringRequest->details[0]->hiringGroups[0]->group->schedule[0]->start_hour));
+        // return $hiringRequest->details;
+        foreach ($hiringRequest->details as $detail) {
+
+            $detail->fullName = $detail->person->first_name . " " . $detail->person->middle_name . " " . $detail->person->last_name;
+            $detail->period = $detail->start_date . "-" . $detail->finish_date;
+
+            $mappedActivities = [];
+            foreach ($detail->activities as $act) {
+                $mappedActivities[] = $act->name;
+            }
+            $detail->mappedActivities = $mappedActivities;
+
+            $mappedGroups = [];
+            foreach ($detail->hiringGroups as $hg) {
+                $days = [];
+                $times = [];
+                foreach ($hg->group->schedule as $schedule) {
+                    array_push($days, $schedule->day);
+                    $horario = date("g:ia", strtotime($schedule->start_hour)) . '-' . date("g:ia", strtotime($schedule->finish_hour));
+                    if (!in_array($horario, $times)) array_push($times, $horario);
+                }
+
+                $times = implode($times);
+
+                if (sizeof($days) == 2) {
+                    $days = implode(' y ', $days);
+                } else {
+                    $days = implode(',', $days);
+                }
+
+
+                $mappedGroups[] = (object)[
+                    "name" => $hg->group->course->name,
+                    "groupType" => $hg->group->grupo->name . "-" . $hg->group->number,
+                    'days' => $days,
+                    'time' => $times,
+                    "hourly_rate" => $hg->hourly_rate,
+                    "weekly_hours" => $hg->weekly_hours,
+                    "work_weeks" => $hg->work_weeks,
+                ];
+            }
+            $detail->mappedGroups = $mappedGroups;
+        }
+        /* 
+        $pdf2 = PDF::loadView('hiringRequest.HiringRequestSPNPDetails', compact('hiringRequest'));
         $pdf2->setPaper('A4', 'landscape');
-        return $pdf2->download('solicitud_de_contratacion.pdf');
+        return $pdf2->download('solicitud_de_contratacion.pdf'); */
+
+
         //Ejemplo de como se hace merge de pdfs
-       /*  $m = new Merger();
-        $pdf1 = PDF::loadView('hiringRequest.HiringRequestSPNP', compact('fecha', 'escuela', 'hiringRequest'));
-        $pdf2 = PDF::loadView('hiringRequest.HiringRequestSPNP', compact('fecha', 'escuela', 'hiringRequest'));
+        $m = new Merger();
+        $pdf = PDF::loadView('hiringRequest.HiringRequestSPNP', compact('fecha', 'escuela', 'hiringRequest'));
+        $pdf2 = PDF::loadView('hiringRequest.HiringRequestSPNPDetails', compact('hiringRequest'));
         $pdf2->setPaper('A4', 'landscape');
-        $pdf1->render();
+        $pdf->setPaper('A4', 'portrait');
+        $pdf->render();
         $pdf2->render();
-        $m->addRaw($pdf1->output());
+        $m->addRaw($pdf->output());
         $m->addRaw($pdf2->output());
-        $createdPdf = $m->merge(); 
-        
-        return response($createdPdf, 200)->header('Content-Type', 'application/pdf')->header('Content-Disposition', 'inline; filename="Solicitud de contratación.pdf"');  */  
+        $createdPdf = $m->merge();
+
+        return response($createdPdf, 200)->header('Content-Type', 'application/pdf')->header('Content-Disposition', 'inline; filename="Solicitud de contratación.pdf"');
     }
     public function getAllStatus()
     {

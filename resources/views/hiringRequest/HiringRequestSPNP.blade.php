@@ -1,352 +1,212 @@
-<!DOCTYPE html>
-<html lang="en">
+<html>
 
 <head>
-    <meta charset="UTF-8" />
-    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="style.css" />
-    <title>Solicitud de Docente Asesor Para tesis Grupo</title>
+    <style>
+        html {
+            font-size: 62.5%;
+            /*10 px */
+        }
+
+        body {
+            font-size: 1.3rem;
+            margin-top: 3cm;
+            margin-left: 1cm;
+            margin-right: 1cm;
+            margin-bottom: 3cm;
+            font-family: Arial, Helvetica, sans-serif;
+        }
+
+        header {
+            font-size: 1.4rem;
+            position: fixed;
+            top: 0px;
+            left: 0px;
+            right: 0px;
+            height: 100px;
+            /** Extra personal styles **/
+            font-family: Arial, Helvetica, sans-serif;
+            text-align: center;
+            margin-top: 20px;
+            padding: 0px 7.2rem;
+
+        }
+
+        header::after {
+            content: '';
+            position: absolute;
+            bottom: 3rem;
+            left: 0;
+            height: 0.2rem;
+            background: red;
+            width: 75vw;
+            margin: 0 auto;
+
+        }
+
+        footer {
+            position: fixed;
+            bottom: 0px;
+            left: 0px;
+            right: 0%;
+            height: 20px;
+            /** Extra personal styles **/
+            text-align: center;
+        }
+
+        .header-container {
+            display: flex;
+            align-items: center;
+            justify-content: space-between;
+        }
+
+        .header-text {
+            position: relative;
+        }
+
+        .header-text p {
+            display: block;
+            margin: 0 auto;
+        }
+
+        .header-text p:last-of-type {
+            margin-bottom: 1.75rem
+        }
+
+        .title-details {
+            width: 100%;
+            position: absolute;
+            bottom: 2.5rem;
+            margin: 0 auto;
+            clear: both;
+        }
+
+        .title-details span {
+            transform: translate(-50%, -50%);
+            display: inline-block;
+        }
+
+        .fecha {
+            display: inline-block;
+            margin: 0 auto;
+            text-align: right;
+            width: 100%;
+            position: absolute;
+            top: 10rem;
+            right: 1rem;
+        }
+
+        .saludo-container {
+            margin-top: 4.5rem;
+            margin-bottom: 2.5rem;
+        }
+
+        .saludo {
+            text-transform: uppercase;
+            display: block;
+            text-align: left;
+
+        }
+        .despedida{
+            display: block;
+            text-align: center;
+        }
+
+        .demo {
+            border: 1px sólido #C0C0C0;
+            border-collapse: colapso;
+            padding: 5px;
+        }
+
+        .demo th {
+            border: 1px sólido #C0C0C0;
+            padding: 5px;
+            background: #F0F0F0;
+        }
+
+        .demo td {
+            border: 1px sólido #C0C0C0;
+            padding: 5px;
+        }
+
+        table,
+        th,
+        td {
+            border: 1px solid black;
+            border-collapse: collapse;
+        }
+
+    </style>
 </head>
-<style type="text/css">
-    .container-header {
-        display: block;
-        text-align: right;
-        margin: 0 8%;
-        height: 150px;
-        font-family: Arial, Helvetica, sans-serif;
-    }
-
-    .container-images {
-        display: flex;
-        border: none;
-        text-align: center;
-        justify-items: center;
-        font-family: Arial, Helvetica, sans-serif;
-    }
-
-    .header-solicitud {
-        border-bottom: 4px solid #ff0000;
-    }
-
-    span {
-        display: block;
-        font-family: Arial, Helvetica, sans-serif;
-        font-size: 22px;
-        color: #05317c;
-        margin-top: none;
-        margin-block-start: none;
-    }
-
-    img {
-        display: left;
-    }
-
-    .fecha {
-        display: block;
-        font-family: Arial, Helvetica, sans-serif;
-        font-size: 14px;
-        color: #000000;
-        margin-top: none;
-        margin-block-start: none;
-
-    }
-
-    .container-cuerpo-JD {
-        display: block;
-        text-align: left;
-        margin: 0 8%;
-        height: 250px;
-        font-size: 14px;
-    }
-
-    .container-saludo-JD {
-        display: block;
-        border: none;
-        font-family: Arial, Helvetica, sans-serif;
-
-    }
-
-    p {
-        display: block;
-        text-align: justify;
-        font-size: 14px;
-
-    }
-
-
-    table,
-    th,
-    td {
-        border: 1px solid black;
-        border-collapse: collapse;
-    }
-</style>
 
 <body>
-    <div class="container-header">
-        <div class="container-images">
-            <img src="iconos/LOGO_MINERVA.jpg" alt="ueslogo" width="55" height="75" />
-            <div class="header-solicitud">
-                <div>UNIVERSIDAD DE EL SALVADOR</div>
-                <div>FACULTAD DE INGENIERÍA Y ARQUITECTURA </div>
-                <div>{{ mb_strtoupper($escuela) }}</div>
-                <br>
-            </div>
 
+    <header>
+        <div class="header-container">
+            <img src="iconos/Minerva-01.png" alt="ueslogo" width="55" height="75" class="ueslogo" />
+            <div class="header-text">
+                <p>UNIVERSIDAD DE EL SALVADOR</p>
+                <p>FACULTAD DE INGENIERÍA Y ARQUITECTURA</p>
+                <p>{{ mb_strtoupper($escuela) }}</p>
+            </div>
         </div>
-        <br>
+    </header>
+    <footer>
+       Facultad de Ingeniería y Arquitectura - Universidad de El Salvador
+    </footer>
+    <main style="page-break-after: auto; margin-top:10px;">
         <span class="fecha">{{ $fecha }}</span>
-        <br>
-        <br>
-    </div>
-    <div class="container-cuerpo-JD">
-        <div class="container-saludo-JD">
-            <div>SEÑORES MIEMBROS DE JUNTA DIRECTIVA</div>
-            <div>FACULTAD DE INGENIERÍA Y ARQUITECTURA</div>
-            <div>UNIVERSIDAD DE EL SALVADOR</div>
-            <div>PRESENTE.</div>
-            <br>
-            <p>Estimados Señores:</p>
-            <br>
-            <p>{!! $hiringRequest->message !!}
-                <br>
-                <br>
-                <style>
-                    .demo {
-                        border: 1px sólido #C0C0C0;
-                        border-collapse: colapso;
-                        padding: 5px;
-                    }
 
-                    .demo th {
-                        border: 1px sólido #C0C0C0;
-                        padding: 5px;
-                        background: #F0F0F0;
-                    }
+        <div class="saludo-container">
+            <span class="saludo">SEÑORES MIEMBROS DE JUNTA DIRECTIVA</span>
+            <span class="saludo">FACULTAD DE INGENIERÍA Y ARQUITECTURA</span>
+            <span class="saludo">UNIVERSIDAD DE EL SALVADOR</span>
+            <span class="saludo">PRESENTE.</span>
 
-                    .demo td {
-                        border: 1px sólido #C0C0C0;
-                        padding: 5px;
-                    }
-                </style>
-            <div>
-                <table class="demo" width="100%">
-                    <caption>Personas a Contratar</caption>
-                    <thead>
-                        <tr>
-                            <th>Nombre</th>
-                            <th>Monto Ciclo</th>
-                        </tr>
-                    </thead>
-                    <tbody>
-                        @foreach ($hiringRequest->details as $item)
-                        <tr>
-                            <td>{{ $item->person->first_name . ' ' . $item->person->middle_name . ' ' . $item->person->last_name }}</td>
-                            <td>{{($item->subtotal)}}</td>
-                        </tr>
+            {!! $hiringRequest->message !!}
+        </div>
 
-                        @endforeach
-
-                    <tfoot>
-                        <tr>
-                            <td><strong>Total: </strong></td>
-                            <td>{{$hiringRequest->total}}</td>
-                        </tr>
-                    </tfoot>
-
-                    </tbody>
-                </table>
-            </div>
-            <table width="100%" page-break-inside: auto;>
+        <div>
+            <table class="demo" width="100%">
+                <caption>Personas a Contratar</caption>
                 <thead>
                     <tr>
-                        <th>prueba</th>
-                        <th>prueba</th>
-                        <th>prueba</th>
-                        <th>prueba</th>
-                        <th>prueba</th>
-                   </tr>
-               <thead>
+                        <th>Nombre</th>
+                        <th>Monto Ciclo</th>
+                    </tr>
+                </thead>
                 <tbody>
-                  
-                    <tr>
-                        <td>a</td>
-                        <td>b</td>
-                        <td>c</td>
-                        <td>d</td>
-                        <td>e</td>
-                    </tr>
-                    <tr>
-                        <td>a</td>
-                        <td>b</td>
-                        <td>c</td>
-                        <td>d</td>
-                        <td>e</td>
-                    </tr>
-                    <tr>
-                        <td>a</td>
-                        <td>b</td>
-                        <td>c</td>
-                        <td>d</td>
-                        <td>e</td>
-                    </tr>
-                    <tr>
-                        <td>a</td>
-                        <td>b</td>
-                        <td>c</td>
-                        <td>d</td>
-                        <td>e</td>
-                    </tr>
-                    <tr>
-                        <td>a</td>
-                        <td>b</td>
-                        <td>c</td>
-                        <td>d</td>
-                        <td>e</td>
-                    </tr>
-                    <tr>
-                        <td>a</td>
-                        <td>b</td>
-                        <td>c</td>
-                        <td>d</td>
-                        <td>e</td>
-                    </tr>
-                    <tr>
-                        <td>a</td>
-                        <td>b</td>
-                        <td>c</td>
-                        <td>d</td>
-                        <td>e</td>
-                    </tr>
-                    <tr>
-                        <td>a</td>
-                        <td>b</td>
-                        <td>c</td>
-                        <td>d</td>
-                        <td>e</td>
-                    </tr>
-                    <tr>
-                        <td>a</td>
-                        <td>b</td>
-                        <td>c</td>
-                        <td>d</td>
-                        <td>e</td>
-                    </tr>
-                    <tr>
-                        <td>a</td>
-                        <td>b</td>
-                        <td>c</td>
-                        <td>d</td>
-                        <td>e</td>
-                    </tr>
-                    <tr>
-                        <td>a</td>
-                        <td>b</td>
-                        <td>c</td>
-                        <td>d</td>
-                        <td>e</td>
-                    </tr>
-                    <tr>
-                        <td>a</td>
-                        <td>b</td>
-                        <td>c</td>
-                        <td>d</td>
-                        <td>e</td>
-                    </tr>
-                    <tr>
-                        <td>a</td>
-                        <td>b</td>
-                        <td>c</td>
-                        <td>d</td>
-                        <td>e</td>
-                    </tr>
-                    <tr>
-                        <td>a</td>
-                        <td>b</td>
-                        <td>c</td>
-                        <td>d</td>
-                        <td>e</td>
-                    </tr>
-                    <tr>
-                        <td>a</td>
-                        <td>b</td>
-                        <td>c</td>
-                        <td>d</td>
-                        <td>e</td>
-                    </tr>
-                    <tr>
-                        <td>a</td>
-                        <td>b</td>
-                        <td>c</td>
-                        <td>d</td>
-                        <td>e</td>
-                    </tr>
-                    <tr>
-                        <td>a</td>
-                        <td>b</td>
-                        <td>c</td>
-                        <td>d</td>
-                        <td>e</td>
-                    </tr>
-                    <tr>
-                        <td>a</td>
-                        <td>b</td>
-                        <td>c</td>
-                        <td>d</td>
-                        <td>e</td>
-                    </tr>
-                    <tr>
-                        <td>a</td>
-                        <td>b</td>
-                        <td>c</td>
-                        <td>d</td>
-                        <td>e</td>
-                    </tr>
-                    <tr>
-                        <td>a</td>
-                        <td>b</td>
-                        <td>c</td>
-                        <td>d</td>
-                        <td>e</td>
-                    </tr>
-                    <tr>
-                        <td>a</td>
-                        <td>b</td>
-                        <td>c</td>
-                        <td>d</td>
-                        <td>e</td>
-                    </tr>
-                    <tr>
-                        <td>a</td>
-                        <td>b</td>
-                        <td>c</td>
-                        <td>d</td>
-                        <td>e</td>
-                    </tr>
-                    <tr>
-                        <td>a</td>
-                        <td>b</td>
-                        <td>c</td>
-                        <td>d</td>
-                        <td>e</td>
-                    </tr>
-                    <tr>
-                        <td>a</td>
-                        <td>b</td>
-                        <td>c</td>
-                        <td>d</td>
-                        <td>e</td>
-                    </tr>
+                    @foreach ($hiringRequest->details as $item)
+                        <tr>
+                            <td>{{ $item->person->first_name . ' ' . $item->person->middle_name . ' ' . $item->person->last_name }}
+                            </td>
+                            <td>$ {{ $item->subtotal }}</td>
+                        </tr>
+                    @endforeach
 
+                <tfoot>
+                    <tr>
+                        <td><strong>Total: </strong></td>
+                        <td>$ {{ $hiringRequest->total }}</td>
+                    </tr>
+                </tfoot>
 
                 </tbody>
             </table>
-
-
+            <br>
+            <br>
+            <div class="despedida">
+                <span class="despedida">Atentamente,</span>
+                <span class="despedida">HACIA LA LIBERTAD POR LA CULTURA</span>
+                <br>
+                <br>
+                <br>
+                <span class="despedida">Ing. Rudy Wilfredo Chicas Villegas</span>
+                <span class="despedida">Director</span>
+                <span class="despedida">{{ ucfirst($escuela) }}</span>
+            </div>
         </div>
-    </div>
-    <br>
-</body>
 
+    </main>
+</body>
 </html>
+

@@ -21,4 +21,8 @@ class HiringGroup extends Model
     {
         return $this->belongsTo(HiringRequestDetail::class);
     }
+    public function group()
+    {
+        return $this->belongsTo(Group::class);
+    }
 }

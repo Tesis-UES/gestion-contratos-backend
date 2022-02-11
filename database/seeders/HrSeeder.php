@@ -34,100 +34,7 @@ class HrSeeder extends Seeder
 
         //-----------------------MATERIIAS----------------------------------//
 
-        //candidato 1 - Servicios Profesionales No personales ANS
-        $grupo1 = Group::create(['status' => 'SDA', 'modality' => 'Presencial', 'number' => 1, 'group_type_id' => 1, 'academic_load_id' => 6, 'course_id' => 8]);
-        Schedule::create(['day' => 'Lunes', 'start_hour' => "6:00", 'finish_hour' => "8:05", 'group_id' => $grupo1->id], ['day' => 'Miercoles', 'start_hour' => "6:00", 'finish_hour' => "8:45", 'group_id' => $grupo1->id]);
-
-        $grupo2 = Group::create(['status' => 'SDA', 'modality' => 'Presencial', 'number' => 1, 'group_type_id' => 3, 'academic_load_id' => 6, 'course_id' => 8]);
-        Schedule::create(['day' => 'Lunes', 'start_hour' => "8:05", 'finish_hour' => "9:45", 'group_id' => $grupo2->id]);
-
-        //Candidato 2 - Servicios Profesionales No personales BAD
-        $grupo3 = Group::create(['status' => 'SDA', 'modality' => 'Presencial', 'number' => 1, 'group_type_id' => 1, 'academic_load_id' => 6, 'course_id' => 23]);
-        Schedule::create(['day' => 'Martes', 'start_hour' => "16:50", 'finish_hour' => "18:30", 'group_id' => $grupo3->id], ['day' => 'Viernes', 'start_hour' => "16:50", 'finish_hour' => "18:30", 'group_id' => $grupo3->id]);
-
-        $grupo4 = Group::create(['status' => 'SDA', 'modality' => 'Presencial', 'number' => 1, 'group_type_id' => 2, 'academic_load_id' => 6, 'course_id' => 23]);
-        Schedule::create(['day' => 'Martes', 'start_hour' => "18:35", 'finish_hour' => "20:15", 'group_id' => $grupo4->id]);
-
-        $grupo5 = Group::create(['status' => 'SDA', 'modality' => 'Presencial', 'number' => 2, 'group_type_id' => 2, 'academic_load_id' => 6, 'course_id' => 23]);
-        Schedule::create(['day' => 'Miercoles', 'start_hour' => "18:35", 'finish_hour' => "20:15", 'group_id' => $grupo5->id]);
-
-        $grupo6 = Group::create(['status' => 'SDA', 'modality' => 'Presencial', 'number' => 3, 'group_type_id' => 2, 'academic_load_id' => 6, 'course_id' => 23]);
-        Schedule::create(['day' => 'Sabado', 'start_hour' => "8:05", 'finish_hour' => "9:45", 'group_id' => $grupo6->id]);
-
-        //Candidato 3 - Servicios Profesionales No personales DSI
-        $grupo7 = Group::create(['status' => 'SDA', 'modality' => 'Presencial', 'number' => 1, 'group_type_id' => 1, 'academic_load_id' => 6, 'course_id' => 17]);
-        Schedule::create(['day' => 'Martes', 'start_hour' => "18:35", 'finish_hour' => "20:15", 'group_id' => $grupo7->id], ['day' => 'Viernes', 'start_hour' => "18:35", 'finish_hour' => "20:15", 'group_id' => $grupo7->id]);
-
-        $grupo8 = Group::create(['status' => 'SDA', 'modality' => 'Presencial', 'number' => 1, 'group_type_id' => 3, 'academic_load_id' => 6, 'course_id' => 17]);
-        Schedule::create(['day' => 'Sabado', 'start_hour' => "6:20", 'finish_hour' => "8:00", 'group_id' => $grupo8->id]);
-
-        $grupo9 = Group::create(['status' => 'SDA', 'modality' => 'Presencial', 'number' => 2, 'group_type_id' => 2, 'academic_load_id' => 6, 'course_id' => 17]);
-        Schedule::create(['day' => 'Sabado', 'start_hour' => "8:05", 'finish_hour' => "9:45", 'group_id' => $grupo9->id]);
-
-        //materias para tiempo Adicional  MIP
-        $grupo10 = Group::create(['status' => 'SDA', 'modality' => 'Presencial', 'number' => 1, 'group_type_id' => 1, 'academic_load_id' => 6, 'course_id' => 15]);
-        Schedule::create(['day' => 'Martes', 'start_hour' => "18:35", 'finish_hour' => "20:15", 'group_id' => $grupo10->id], ['day' => 'Viernes', 'start_hour' => "18:35", 'finish_hour' => "20:15", 'group_id' => $grupo10->id]);
-
-        $grupo11 = Group::create(['status' => 'SDA', 'modality' => 'Presencial', 'number' => 1, 'group_type_id' => 2, 'academic_load_id' => 6, 'course_id' => 15]);
-        Schedule::create(['day' => 'Jueves', 'start_hour' => "18:35", 'finish_hour' => "20:15", 'group_id' => $grupo11->id]);
-
-        $grupo12 = Group::create(['status' => 'SDA', 'modality' => 'Presencial', 'number' => 2, 'group_type_id' => 2, 'academic_load_id' => 6, 'course_id' => 15]);
-        Schedule::create(['day' => 'Sabado', 'start_hour' => "6:20", 'finish_hour' => "8:00", 'group_id' => $grupo12->id]);
-
-        $grupo13 = Group::create(['status' => 'SDA', 'modality' => 'Presencial', 'number' => 3, 'group_type_id' => 2, 'academic_load_id' => 6, 'course_id' => 15]);
-        Schedule::create(['day' => 'Sabado', 'start_hour' => "8:05", 'finish_hour' => "9:45", 'group_id' => $grupo13->id]);
-
-        //materias para tiempo Adicional  PRN2 
-        $grupo14 = Group::create(['status' => 'SDA', 'modality' => 'Presencial', 'number' => 1, 'group_type_id' => 1, 'academic_load_id' => 6, 'course_id' => 3]);
-        Schedule::create(['day' => 'Lunes', 'start_hour' => "16:50", 'finish_hour' => "18:30", 'group_id' => $grupo14->id], ['day' => 'Miercoles', 'start_hour' => "16:50", 'finish_hour' => "18:30", 'group_id' => $grupo14->id]);
-
-        $grupo15 = Group::create(['status' => 'SDA', 'modality' => 'Presencial', 'number' => 1, 'group_type_id' => 3, 'academic_load_id' => 6, 'course_id' => 3]);
-        Schedule::create(['day' => 'Martes', 'start_hour' => "16:50", 'finish_hour' => "18:30", 'group_id' => $grupo15->id]);
-
-        $grupo16 = Group::create(['status' => 'SDA', 'modality' => 'Presencial', 'number' => 2, 'group_type_id' => 3, 'academic_load_id' => 6, 'course_id' => 3]);
-        Schedule::create(['day' => 'Lunes', 'start_hour' => "18:35", 'finish_hour' => "20:15", 'group_id' => $grupo16->id]);
-        //RHU
-        $grupo17 = Group::create(['status' => 'SDA', 'modality' => 'Presencial', 'number' => 1, 'group_type_id' => 1, 'academic_load_id' => 6, 'course_id' => 22]);
-        Schedule::create(['day' => 'Lunes', 'start_hour' => "16:50", 'finish_hour' => "18:30", 'group_id' => $grupo17->id], ['day' => 'Miercoles', 'start_hour' => "16:50", 'finish_hour' => "18:30", 'group_id' => $grupo17->id]);
-
-        $grupo18 = Group::create(['status' => 'SDA', 'modality' => 'Presencial', 'number' => 1, 'group_type_id' => 3, 'academic_load_id' => 6, 'course_id' => 3]);
-        Schedule::create(['day' => 'Jueves', 'start_hour' => "6:20", 'finish_hour' => "8:00", 'group_id' => $grupo18->id]);
-
-        $grupo19 = Group::create(['status' => 'SDA', 'modality' => 'Presencial', 'number' => 2, 'group_type_id' => 3, 'academic_load_id' => 6, 'course_id' => 3]);
-        Schedule::create(['day' => 'Jueves', 'start_hour' => "8:05", 'finish_hour' => "9:45", 'group_id' => $grupo19->id]);
-
-        $grupo20 = Group::create(['status' => 'SDA', 'modality' => 'Presencial', 'number' => 3, 'group_type_id' => 3, 'academic_load_id' => 6, 'course_id' => 3]);
-        Schedule::create(['day' => 'Jueves', 'start_hour' => "15:05", 'finish_hour' => "16:45", 'group_id' => $grupo20->id]);
-
-        //SGG
-        $grupo21 = Group::create(['status' => 'SDA', 'modality' => 'Presencial', 'number' => 1, 'group_type_id' => 1, 'academic_load_id' => 6, 'course_id' => 38]);
-        Schedule::create(['day' => 'Lunes', 'start_hour' => "16:50", 'finish_hour' => "18:30", 'group_id' => $grupo21->id], ['day' => 'Miercoles', 'start_hour' => "16:50", 'finish_hour' => "18:30", 'group_id' => $grupo21->id]);
-
-        $grupo22 = Group::create(['status' => 'SDA', 'modality' => 'Presencial', 'number' => 1, 'group_type_id' => 3, 'academic_load_id' => 6, 'course_id' => 38]);
-        Schedule::create(['day' => 'Martes', 'start_hour' => "16:50", 'finish_hour' => "18:30", 'group_id' => $grupo22->id]);
-
-        $grupo23 = Group::create(['status' => 'SDA', 'modality' => 'Presencial', 'number' => 2, 'group_type_id' => 3, 'academic_load_id' => 6, 'course_id' => 38]);
-        Schedule::create(['day' => 'Jueves', 'start_hour' => "16:50", 'finish_hour' => "18:30", 'group_id' => $grupo23->id]);
-
-        //SIF 
-        $grupo24 = Group::create(['status' => 'SDA', 'modality' => 'Presencial', 'number' => 1, 'group_type_id' => 1, 'academic_load_id' => 6, 'course_id' => 33]);
-        Schedule::create(['day' => 'Lunes', 'start_hour' => "18:35", 'finish_hour' => "20:15", 'group_id' => $grupo24->id], ['day' => 'Miercoles', 'start_hour' => "18:35", 'finish_hour' => "20:15", 'group_id' => $grupo24->id]);
-
-        $grupo25 = Group::create(['status' => 'SDA', 'modality' => 'Presencial', 'number' => 1, 'group_type_id' => 3, 'academic_load_id' => 6, 'course_id' => 33]);
-        Schedule::create(['day' => 'Jueves', 'start_hour' => "18:35", 'finish_hour' => "20:15", 'group_id' => $grupo25->id]);
-
-        $grupo26 = Group::create(['status' => 'SDA', 'modality' => 'Presencial', 'number' => 2, 'group_type_id' => 3, 'academic_load_id' => 6, 'course_id' => 33]);
-        Schedule::create(['day' => 'sabado', 'start_hour' => "9:50", 'finish_hour' => "11:30", 'group_id' => $grupo25->id]);
-
-        //SYP
-        $grupo27 = Group::create(['status' => 'SDA', 'modality' => 'Presencial', 'number' => 1, 'group_type_id' => 1, 'academic_load_id' => 6, 'course_id' => 10]);
-        Schedule::create(['day' => 'Lunes', 'start_hour' => "18:35", 'finish_hour' => "20:15", 'group_id' => $grupo27->id], ['day' => 'Miercoles', 'start_hour' => "18:35", 'finish_hour' => "20:15", 'group_id' => $grupo27->id]);
-
-        $grupo28 = Group::create(['status' => 'SDA', 'modality' => 'Presencial', 'number' => 1, 'group_type_id' => 3, 'academic_load_id' => 6, 'course_id' => 10]);
-        Schedule::create(['day' => 'Martes', 'start_hour' => "18:35", 'finish_hour' => "20:15", 'group_id' => $grupo25->id]);
-
-        $grupo29 = Group::create(['status' => 'SDA', 'modality' => 'Presencial', 'number' => 2, 'group_type_id' => 3, 'academic_load_id' => 6, 'course_id' => 10]);
-        Schedule::create(['day' => 'Viernes', 'start_hour' => "18:35", 'finish_hour' => "20:15", 'group_id' => $grupo25->id]);
+       
         //-----------------------SOLICITUDES--------------------------------//
         //solicitud por Servicios Profesionales no personles
         $rq =  HiringRequest::create([
@@ -159,11 +66,11 @@ class HrSeeder extends Seeder
             }
             $savedDetail->activities()->saveMany($activities);
             if ($p == 1) {
-                $groups = [$grupo1->id, $grupo2->id];
+                $groups = [55, 56];
             } elseif ($p == 2) {
-                $groups = [$grupo3->id, $grupo4->id, $grupo5->id, $grupo6->id];
+                $groups = [57,58,59, 60];
             } else {
-                $groups = [$grupo7->id, $grupo8->id, $grupo9->id];
+                $groups = [61,62, 63];
             }
             foreach ($groups as $hiringGroup) {
                 $group = Group::findOrFail($hiringGroup);
@@ -227,9 +134,9 @@ class HrSeeder extends Seeder
                 $savedDetail->activities()->saveMany($activities);
                 
                 if ($p == 3) {
-                    $groups = [$grupo7->id, $grupo8->id, $grupo5->id, $grupo9->id];
+                    $groups = [68, 69, 70, 71];
                 } else{
-                    $groups = [$grupo10->id, $grupo11->id, $grupo12->id, $grupo13->id];
+                    $groups = [64,65,66,67];
                 } 
 
                 foreach ($groups as $hiringGroup) {
@@ -283,9 +190,9 @@ class HrSeeder extends Seeder
                 $savedDetail->activities()->saveMany($activities);
                 
                 if ($p == 3) {
-                    $groups = [$grupo27->id, $grupo28->id, $grupo29->id, $grupo12->id];
+                    $groups = [81, 82, 83];
                 } else{
-                    $groups = [$grupo21->id, $grupo22->id, $grupo23->id, $grupo13->id];
+                    $groups = [75,76,77];
                 } 
 
                 foreach ($groups as $hiringGroup) {
