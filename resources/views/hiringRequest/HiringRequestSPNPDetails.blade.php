@@ -119,7 +119,7 @@
             <!-- <table style ="page-break-inside: avoid !important; margin-top:10px;" class="demo" width="100%"> -->
             <thead>
                 <tr>
-                    <th>Nombre del Docente</th>
+                  {{--   <th>Nombre del Docente</th> --}}
                     <th>Asignatura</th>
                     <th>Numero de Grupo</th>
                     <th>Dias a Impartir</th>
@@ -135,8 +135,11 @@
                 <thead>
                 <tbody>
                     @foreach ($hiringRequest->details as $detail)
+                    <tr>
+                        <td style="font-weight: bold; background-color: rgba(190, 100, 100, 0.5); text-align: center;" colspan="11">Nombre del Docente:<b> {{ $detail->fullName }}</b>  </td>
+                      </tr>
                         <tr style="page-break-inside: avoid !important;">
-                            <td rowspan={{ count($detail->mappedGroups) + 1 }}>{{ $detail->fullName }}</td>
+                           {{-- <td rowspan={{ count($detail->mappedGroups) + 1 }}>{{ $detail->fullName }}</td> --}} 
                             <td>{{ $detail->mappedGroups[0]->name }}</td>
                             <td>{{ $detail->mappedGroups[0]->groupType }}</td>
                             <td>{{ $detail->mappedGroups[0]->days }}</td>
