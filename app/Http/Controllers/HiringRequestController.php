@@ -169,18 +169,18 @@ class HiringRequestController extends Controller
     }
 
 
-    public function MakeHiringRequestPDF()
-    {
+    public function MakeHiringRequestSPNP()
+    {   
+        
+        $hiringRequest = $this->show(51);
         //Se crea la fecha con el formato que se requiere para el pdf
         $date = Carbon::now()->locale('es');
         $fecha = "Ciudad Universitaria Dr. Fabio Castillo Figueroa, " . $date->day . " de " . $date->monthName . " de " . $date->year . ".";
-        $hiringRequest = $this->show(51);
+        $fechaDetalle = $date->day . " de " . $date->monthName . " de " . $date->year . ".";
         $escuela = "Escuela de " . $hiringRequest->school->name;
         $total = 0;
-
         foreach ($hiringRequest->details as $detail) {
             $subtotal = 0;
-            $total = 0;
             $subtiempo = 0;
             $totalHoras = 0;
             foreach ($detail->hiringGroups as $group) {
@@ -191,24 +191,16 @@ class HiringRequestController extends Controller
             $total += $subtotal;
             $totalHoras += $subtiempo;
             $detail->subtotalHoras = $totalHoras;
-            
         }
         $hiringRequest->total = $total;
-        $pdf = PDF::loadView('hiringRequest.HiringRequestSPNP', compact('fecha', 'escuela', 'hiringRequest'));
-        $this->RegisterAction("El usuario ha generado una solicitud de contratación en PDF", "high");
-        //return date("g:ia", strtotime( $hiringRequest->details[0]->hiringGroups[0]->group->schedule[0]->start_hour));
-        // return $hiringRequest->details;
         foreach ($hiringRequest->details as $detail) {
-
             $detail->fullName = $detail->person->first_name . " " . $detail->person->middle_name . " " . $detail->person->last_name;
             $detail->period = $detail->start_date . "-" . $detail->finish_date;
-
             $mappedActivities = [];
             foreach ($detail->activities as $act) {
                 $mappedActivities[] = $act->name;
             }
             $detail->mappedActivities = $mappedActivities;
-
             $mappedGroups = [];
             foreach ($detail->hiringGroups as $hg) {
                 $days = [];
@@ -218,16 +210,12 @@ class HiringRequestController extends Controller
                     $horario = date("g:ia", strtotime($schedule->start_hour)) . '-' . date("g:ia", strtotime($schedule->finish_hour));
                     if (!in_array($horario, $times)) array_push($times, $horario);
                 }
-
                 $times = implode($times);
-
                 if (sizeof($days) == 2) {
                     $days = implode(' y ', $days);
                 } else {
                     $days = implode(',', $days);
                 }
-
-
                 $mappedGroups[] = (object)[
                     "name" => $hg->group->course->name,
                     "groupType" => $hg->group->grupo->name . "-" . $hg->group->number,
@@ -240,26 +228,62 @@ class HiringRequestController extends Controller
             }
             $detail->mappedGroups = $mappedGroups;
         }
-        /* 
-        $pdf2 = PDF::loadView('hiringRequest.HiringRequestSPNPDetails', compact('hiringRequest'));
-        $pdf2->setPaper('A4', 'landscape');
-        return $pdf2->download('solicitud_de_contratacion.pdf'); */
-
-
         //Ejemplo de como se hace merge de pdfs
         $m = new Merger();
-        $pdf = PDF::loadView('hiringRequest.HiringRequestSPNP', compact('fecha', 'escuela', 'hiringRequest'));
-        $pdf2 = PDF::loadView('hiringRequest.HiringRequestSPNPDetails', compact('hiringRequest'));
-        $pdf2->setPaper('A4', 'landscape');
-        $pdf->setPaper('A4', 'portrait');
-        $pdf->render();
-        $pdf2->render();
-        $m->addRaw($pdf->output());
-        $m->addRaw($pdf2->output());
+        $pdf    = PDF::loadView('hiringRequest.HiringRequestSPNP', compact('fecha', 'escuela', 'hiringRequest'));
+        $pdf2   = PDF::loadView('hiringRequest.HiringRequestSPNPDetails', compact('hiringRequest', 'escuela', 'fechaDetalle'));
+        $pdf3   = PDF::loadView('hiringRequest.HiringRequestSPNPFunctions', compact('escuela', 'hiringRequest'));
+        $pdf    ->setPaper('letter', 'portrait');
+        $pdf2   ->setPaper('letter', 'landscape');
+        $pdf3   ->setPaper('letter', 'portrait');
+        $pdf    ->render();
+        $pdf2   ->render();
+        $pdf3   ->render();
+        //NUMERAMOS LAS PAGINAS DE LOS DETALLES
+        $dom_pdf    = $pdf2->getDomPDF();
+        $canvas     = $dom_pdf->get_canvas();
+        $canvas ->page_text(670, 570, "Pagina {PAGE_NUM} de {PAGE_COUNT}", null, 10, array(0, 0, 0));
+        //UNIMOS LOS PDFS
+        $m  ->addRaw($pdf->output());
+        $m  ->addRaw($pdf2->output());
+        $m  ->addRaw($pdf3->output());
         $createdPdf = $m->merge();
-
-        return response($createdPdf, 200)->header('Content-Type', 'application/pdf')->header('Content-Disposition', 'inline; filename="Solicitud de contratación.pdf"');
+        return response($createdPdf, 200)->header('Content-Type', 'application/pdf')->header('Content-Disposition', 'inline; filename="Solicitud de contratación de servicios profesionales - Presencial.pdf"');
     }
+
+    public function MakeHiringRequestTiempoIntegral(){
+        $hiringRequest = $this->show(52);
+        $date = Carbon::now()->locale('es');
+        $fecha = "Ciudad Universitaria Dr. Fabio Castillo Figueroa, " . $date->day . " de " . $date->monthName . " de " . $date->year . ".";
+        $escuela = "Escuela de " . $hiringRequest->school->name;
+        $fechaDetalle = $date->day . " de " . $date->monthName . " de " . $date->year . ".";
+        $escuela = "Escuela de " . $hiringRequest->school->name;
+        //Calculamos el total a pagar por persona
+        
+        foreach ($hiringRequest->details as $detail) {
+        
+           $detail->fullName = $detail->person->first_name . " " . $detail->person->middle_name . " " . $detail->person->last_name;
+           $detail->total = $detail->work_months * $detail->monthly_salary * $detail->salary_percentage;
+           $hiringRequest->total += $detail->total;
+        }
+        $m = new Merger();
+        $pdf    = PDF::loadView('hiringRequest.HiringRequestTI', compact('fecha', 'escuela', 'hiringRequest'));
+        $pdf    ->setPaper('letter', 'portrait');
+        $pdf    ->render();
+        $pdf2   = PDF::loadView('hiringRequest.HiringRequestTIDetails', compact('hiringRequest', 'escuela', 'fechaDetalle'));
+        $pdf2   ->setPaper('letter', 'landscape');
+        $pdf2   ->render();
+        $dom_pdf    = $pdf2->getDomPDF();
+        $canvas     = $dom_pdf->get_canvas();
+        $canvas ->page_text(670, 570, "Pagina {PAGE_NUM} de {PAGE_COUNT}", null, 10, array(0, 0, 0));
+        //UNIMOS LOS PDFS
+        $m  ->addRaw($pdf->output());
+        $m  ->addRaw($pdf2->output());
+        $createdPdf = $m->merge();
+        return response($createdPdf, 200)->header('Content-Type', 'application/pdf')->header('Content-Disposition', 'inline; filename="Solicitud de contratación de Tiempo Integral.pdf"');
+        
+    }
+
     public function getAllStatus()
     {
         $status = Status::all();

@@ -167,7 +167,7 @@
         </div>
 
         <div>
-            <table class="demo" width="100%">
+             <table class="demo" width="100%">
                 <caption><b>Personas a Contratar en {{$hiringRequest->contractType->name}}</b></caption>
                 <thead>
                     <tr>
@@ -180,7 +180,7 @@
                         <tr>
                             <td>{{ $item->person->first_name . ' ' . $item->person->middle_name . ' ' . $item->person->last_name }}
                             </td>
-                            <td style="text-align: center;">$ {{ sprintf("%.2f",$item->subtotal) }}</td>
+                            <td style="text-align: center;">$  {{sprintf("%.2f",$item->total)}}</td>
                         </tr>
                     @endforeach
 
@@ -192,7 +192,7 @@
                 </tfoot>
 
                 </tbody>
-            </table>
+            </table> 
             <br>
             <br>
             <div class="despedida">
