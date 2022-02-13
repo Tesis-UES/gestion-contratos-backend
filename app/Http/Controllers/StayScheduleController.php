@@ -28,8 +28,7 @@ class StayScheduleController extends Controller
 
         $staySchedules = StaySchedule::where('employee_id', $employee->id)
             ->with('semester')
-            ->join('semesters', 'stay_schedules.semester_id', '=', 'semesters.id')
-            ->orderBy('semesters.end_date', 'DESC')
+            ->orderBy('created_at', 'desc')
             ->paginate($request->query('paginate'));
 
         $this->RegisterAction('El empleado ha consultado el catalogo de sus horarios de permanencia');
