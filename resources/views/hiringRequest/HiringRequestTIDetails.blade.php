@@ -121,43 +121,25 @@
         <span><b>Docente:</b> {{ $detail->fullName }}</span>
         <span style="float:right "><b>Escalafon: {{ $detail->person->employee->escalafon->code }}</b></span>
         <table style="margin-top:10px; " class="demo" width="100%">
-            <tbody >
+            <tbody>
                 <tr>
                     <td style="font-weight: bold; background-color: rgba(190, 100, 100, 0.5); text-align: center;"
                         colspan="12">Actividades en Horario normal</b> </td>
                 </tr>
                 <tr>
-                    <td style="font-weight: bold; background-color: rgb(255, 255, 255); text-align: center;"
+                    <td style="font-weight: bold; background-color: rgb(192, 192, 192, 0.5); text-align: center;"
                         colspan="6"><b>Funciones en Jornada Normal</b> </td>
-                    <td style="font-weight: bold; background-color: rgb(255, 255, 255); text-align: center;"
+                    <td style="font-weight: bold; background-color: rgb(192, 192, 192, 0.5); text-align: center;"
                         colspan="6"><b>Horario de Permanencia en Jornada Normal</b> </td>
                 </tr>
                 <tr>
                     <td style="font-weight: bold; background-color: rgb(255, 255, 255); text-align: center;"
                         colspan="6">
-                        <ol>
-                            <li>prueba</li>
-                            <li>prueba</li>
-                            <li>prueba</li>
-                            <li>prueba</li>
-                            <li>prueba</li>
-                            <li>prueba</li>
-                            <li>prueba</li>
-                            <li>prueba</li>
-                        </ol>
+                        Ver Anexo
                     </td>
                     <td style="font-weight: bold; background-color: rgb(255, 255, 255); text-align: center;"
                         colspan="6">
-                        <ol>
-                            <li>prueba</li>
-                            <li>prueba</li>
-                            <li>prueba</li>
-                            <li>prueba</li>
-                            <li>prueba</li>
-                            <li>prueba</li>
-                            <li>prueba</li>
-                            <li>prueba</li>
-                        </ol>
+                        Ver Anexo
                     </td>
 
                 </tr>
@@ -210,7 +192,7 @@
                     <td style="font-weight: bold; text-align: center;" colspan="3"><b>Lunes Y Viernes 6:30pm-8:05pm</b>
                     </td>
                 </tr>
-                
+
                 <tr>
                     <td style="font-weight: bold;  text-align: center;" colspan="3"><b>Diseño de Sistemas I</b> </td>
                     <td style="font-weight: bold; text-align: center;" colspan="3"><b>Teorioco</b> </td>
@@ -219,79 +201,153 @@
                     </td>
                 </tr>
                 <tr>
-                    <td style="font-weight: bold; background-color: rgb(192, 192, 192, 0.5); text-align: Left;" colspan="2"><b>Funciones en tiempo Integral:</b>
-                        </td>
-                    <td style="font-weight: bold;  text-align: Left; word-wrap: break-word" colspan="10"><b>Ver Anexo</b>
-                        </td>
-
-                </tr>
-                <tr>
-                    <td style="font-weight: bold; background-color: rgb(192, 192, 192, 0.5);  text-align: Left;" colspan="2"><b>Justifiacion:</b></td>
-                    <td style="font-weight: bold;  text-align: Left; word-wrap: break-word" colspan="10"><b>fghdfghgsfdfghdfghdfghdfghdfgdgfhgjfghfghjfghjfghjfghjfghjfghjfghjfghjfghjfghjfghjfghjfghjfghjjfghjffhgjghjsdfgsdfgsdfgdsfsdfgsdfsdfgsdfgsdfgsdfgsdfggsdfgsdfgsdfgsdfgsdfggñlkajh </td>
-
-                </tr>
-                <tr>
-                    <td style="font-weight: bold; background-color: rgb(192, 192, 192, 0.5);  text-align: Left;" colspan="2"><b>Meta</b>
+                    <td style="font-weight: bold; background-color: rgb(192, 192, 192, 0.5); text-align: Left;"
+                        colspan="3"><b>Funciones en tiempo Integral:</b>
                     </td>
-                    <td style="font-weight: bold;  text-align: Left; word-wrap: break-word" colspan="10"><b>fvgbfdgsdfgdfgdsfgsdfgsdfgsd</b>
-                        </td>
-
-                </tr>
-                <tr>
-                    <td style="font-weight: bold;  text-align: Left; background-color: rgba(148, 255, 134, 0.5);" colspan="2"><b>Periodo de Contratación</b>
+                    <td style="font-weight: bold;  text-align: Left; word-wrap: break-word" colspan="9"><b>Ver Anexo</b>
                     </td>
-                    <td style="font-weight: bold;  text-align: Left; word-wrap: break-word" colspan="10"><b>fecha</b>
-                        </td>
 
                 </tr>
                 <tr>
-                    <td style="font-weight: bold;  text-align: Left; background-color: rgba(148, 255, 134, 0.5);" colspan="2"><b>Periodo de Contratación en meses</b>
+                    <td style="font-weight: bold; background-color: rgb(192, 192, 192, 0.5);  text-align: Left;"
+                        colspan="3"><b>Justifiacion:</b></td>
+                    <td style="font-weight: bold;  text-align: Left; word-wrap: break-word" colspan="9">
+                        <b>fghdfghgsfdfghdfghdfghdfghdfgdgfhgjfghfghjfghjfghjfghjfghjfghjfghjfghjfghjfghjfghjfghjfghjfghjjfghjffhgjghjsdfgsdfgsdfgdsfsdfgsdfsdfgsdfgsdfgsdfgsdfggsdfgsdfgsdfgsdfgsdfggñlkajh
                     </td>
-                    <td style="font-weight: bold;  text-align: Left; word-wrap: break-word" colspan="10"><b>fecha</b>
-                        </td>
 
                 </tr>
                 <tr>
-                    <td style="font-weight: bold;  text-align: Left; background-color: rgba(148, 255, 134, 0.5);" colspan="2"><b>Salario Mensual en Jornada Norma</b>
+                    <td style="font-weight: bold; background-color: rgb(192, 192, 192, 0.5);  text-align: Left;"
+                        colspan="3"><b>Meta</b>
                     </td>
-                    <td style="font-weight: bold;  text-align: Left; word-wrap: break-word" colspan="10"><b>fecha</b>
-                        </td>
-
-                </tr>
-                <tr>
-                    <td style="font-weight: bold;  text-align: Left; background-color: rgba(148, 255, 134, 0.5);" colspan="2"><b>Indicador de Procentaje a pagar</b>
+                    <td style="font-weight: bold;  text-align: Left; word-wrap: break-word" colspan="9">
+                        <b>fvgbfdgsdfgdfgdsfgsdfgsdfgsd</b>
                     </td>
-                    <td style="font-weight: bold;  text-align: Left; word-wrap: break-word" colspan="10"><b>fecha</b>
-                        </td>
 
                 </tr>
                 <tr>
-                    <td style="font-weight: bold;  text-align: Left; background-color: rgba(2, 247, 255, 0.5);" colspan="3"><b>Indicador de Procentaje a pagar</b>
+                    <td style="font-weight: bold;  text-align: Left; background-color: rgb(192, 192, 192, 0.5);"
+                        colspan="3"><b>Periodo de Contratación</b>
+                    </td>
+                    <td style="font-weight: bold;  text-align: Left; word-wrap: break-word" colspan="9"><b>fecha</b>
+                    </td>
+
+                </tr>
+                <tr>
+                    <td style="font-weight: bold;  text-align: Left; background-color: rgb(192, 192, 192, 0.5);"
+                        colspan="3"><b>Periodo de Contratación en meses</b>
+                    </td>
+                    <td style="font-weight: bold;  text-align: Left; word-wrap: break-word" colspan="9"><b>fecha</b>
+                    </td>
+
+                </tr>
+                <tr>
+                    <td style="font-weight: bold;  text-align: Left; background-color: rgb(192, 192, 192, 0.5);"
+                        colspan="3"><b>Salario Mensual en Jornada Norma</b>
+                    </td>
+                    <td style="font-weight: bold;  text-align: Left; word-wrap: break-word" colspan="9"><b>fecha</b>
+                    </td>
+
+                </tr>
+                <tr>
+                    <td style="font-weight: bold;  text-align: Left; background-color:rgb(192, 192, 192, 0.5);"
+                        colspan="3"><b>Indicador de Procentaje a pagar</b>
+                    </td>
+                    <td style="font-weight: bold;  text-align: Left; word-wrap: break-word" colspan="9"><b>fecha</b>
+                    </td>
+
+                </tr>
+                <tr>
+                    <td style="font-weight: bold;  text-align: Left; background-color:rgba(190, 100, 100, 0.5);"
+                        colspan="3"><b>Valor a pagar por mes </b>
                     </td>
                     <td style="font-weight: bold;  text-align: Left; word-wrap: break-word" colspan="3"><b>fecha</b>
-                        </td>
-                        <td style="font-weight: bold;  text-align: Left; background-color: rgba(2, 247, 255, 0.5);" colspan="3"><b>Indicador de Procentaje a pagar</b>
-                        </td>
-                        <td style="font-weight: bold;  text-align: Left; word-wrap: break-word" colspan="3"><b>fecha</b>
-                            </td>
+                    </td>
+                    <td style="font-weight: bold;  text-align: Left; background-color: rgba(190, 100, 100, 0.5);"
+                        colspan="3"><b>Total a pagar</b>
+                    </td>
+                    <td style="font-weight: bold;  text-align: Left; word-wrap: break-word" colspan="3"><b>fecha</b>
+                    </td>
 
                 </tr>
             </tbody>
         </table>
-
-
-
-
-
-
-
+            <div style="page-break-before: always;">
+                <span><b>Anexo de Funciones y horario de permanencia del docente: </b> {{ $detail->fullName }}</span>
+                {{-- make a list --}}
+                <div>
+                    <table class="table table-bordered"  width="100%">
+                        <thead>
+                            <tr>
+                                <th style="font-weight: bold; text-align: center; background-color: rgba(190, 100, 100, 0.5);"
+                                    colspan="2"><b>Horario de Permanencia en Jornada Normal</b>
+                                </th>
+                            </tr>
+    
+                        </thead>
+                        <tbody>
+                            @foreach ($detail->staySchedule as $stay)
+                                <tr>
+                                    <td style="font-weight: bold; text-align: left;" colspan="2"><b>{{ $stay }}</b></td>
+                                </tr>
+                            @endforeach
+    
+    
+    
+                        </tbody>
+                    </table>
+                    <br>
+                    <table class="table table-bordered" width="100%">
+                        <thead>
+                            <tr>
+                                <th style="font-weight: bold; text-align: center; background-color: rgba(190, 100, 100, 0.5);"
+                                    colspan="2"><b>Funciones en Jornada Normal</b>
+                                </th>
+                            </tr>
+    
+                        </thead>
+                        <tbody>
+                            @foreach ($detail->mappedActivities as $act)
+                                <tr>
+                                    <td style="font-weight: bold; text-align: left;" colspan="2"><b>{{ $act }}</b></td>
+                                </tr>
+                            @endforeach
+    
+    
+    
+                        </tbody>
+                    </table>
+                    <br>
+                    <table class="table table-bordered" width="100%">
+                        <thead>
+                            <tr>
+                                <th style="font-weight: bold; text-align: center; background-color: rgba(190, 100, 100, 0.5);"
+                                    colspan="2"><b>Funciones en tiempo Integral</b>
+                                </th>
+                            </tr>
+    
+                        </thead>
+                        <tbody>
+                            @foreach ($detail->mappedActivities as $act)
+                                <tr>
+                                    <td style="font-weight: bold; text-align: left;" colspan="2"><b>{{ $act }}</b></td>
+                                </tr>
+                            @endforeach
+    
+    
+    
+                        </tbody>
+                    </table>
+                </div>
+               
+            </div>
         </div>
 
         @endforeach
 
         <br>
         <br>
-        {{-- <div class="despedida">
+        <div class="despedida">
             <br>
             <br>
             <br>
@@ -300,7 +356,7 @@
                 class="despedida">{{ $hiringRequest->school->SchoolAuthority->where('position', 'DIRECTOR')->first()->name }}</span>
             <span class="despedida">Director</span>
             <span class="despedida">{{ ucfirst($escuela) }}</span>
-        </div> --}}
+        </div>
     </main>
 </body>
 

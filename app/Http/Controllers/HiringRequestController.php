@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\HiringRequest;
 use App\Models\Status;
+use App\Models\StaySchedule;
 use App\Http\Requests\StoreHiringRequestRequest;
 use App\Http\Requests\UpdateHiringRequestRequest;
 use App\Http\Traits\WorklogTrait;
@@ -170,8 +171,8 @@ class HiringRequestController extends Controller
 
 
     public function MakeHiringRequestSPNP()
-    {   
-        
+    {
+
         $hiringRequest = $this->show(51);
         //Se crea la fecha con el formato que se requiere para el pdf
         $date = Carbon::now()->locale('es');
@@ -233,25 +234,26 @@ class HiringRequestController extends Controller
         $pdf    = PDF::loadView('hiringRequest.HiringRequestSPNP', compact('fecha', 'escuela', 'hiringRequest'));
         $pdf2   = PDF::loadView('hiringRequest.HiringRequestSPNPDetails', compact('hiringRequest', 'escuela', 'fechaDetalle'));
         $pdf3   = PDF::loadView('hiringRequest.HiringRequestSPNPFunctions', compact('escuela', 'hiringRequest'));
-        $pdf    ->setPaper('letter', 'portrait');
-        $pdf2   ->setPaper('letter', 'landscape');
-        $pdf3   ->setPaper('letter', 'portrait');
-        $pdf    ->render();
-        $pdf2   ->render();
-        $pdf3   ->render();
+        $pdf->setPaper('letter', 'portrait');
+        $pdf2->setPaper('letter', 'landscape');
+        $pdf3->setPaper('letter', 'portrait');
+        $pdf->render();
+        $pdf2->render();
+        $pdf3->render();
         //NUMERAMOS LAS PAGINAS DE LOS DETALLES
         $dom_pdf    = $pdf2->getDomPDF();
         $canvas     = $dom_pdf->get_canvas();
-        $canvas ->page_text(670, 570, "Pagina {PAGE_NUM} de {PAGE_COUNT}", null, 10, array(0, 0, 0));
+        $canvas->page_text(670, 570, "Pagina {PAGE_NUM} de {PAGE_COUNT}", null, 10, array(0, 0, 0));
         //UNIMOS LOS PDFS
-        $m  ->addRaw($pdf->output());
-        $m  ->addRaw($pdf2->output());
-        $m  ->addRaw($pdf3->output());
+        $m->addRaw($pdf->output());
+        $m->addRaw($pdf2->output());
+        $m->addRaw($pdf3->output());
         $createdPdf = $m->merge();
         return response($createdPdf, 200)->header('Content-Type', 'application/pdf')->header('Content-Disposition', 'inline; filename="Solicitud de contratación de servicios profesionales - Presencial.pdf"');
     }
 
-    public function MakeHiringRequestTiempoIntegral(){
+    public function MakeHiringRequestTiempoIntegral()
+    {
         $hiringRequest = $this->show(52);
         $date = Carbon::now()->locale('es');
         $fecha = "Ciudad Universitaria Dr. Fabio Castillo Figueroa, " . $date->day . " de " . $date->monthName . " de " . $date->year . ".";
@@ -259,29 +261,42 @@ class HiringRequestController extends Controller
         $fechaDetalle = $date->day . " de " . $date->monthName . " de " . $date->year . ".";
         $escuela = "Escuela de " . $hiringRequest->school->name;
         //Calculamos el total a pagar por persona
-        
+
         foreach ($hiringRequest->details as $detail) {
-        
-           $detail->fullName = $detail->person->first_name . " " . $detail->person->middle_name . " " . $detail->person->last_name;
-           $detail->total = $detail->work_months * $detail->monthly_salary * $detail->salary_percentage;
-           $hiringRequest->total += $detail->total;
+
+            $detail->fullName = $detail->person->first_name . " " . $detail->person->middle_name . " " . $detail->person->last_name;
+            $detail->total = $detail->work_months * $detail->monthly_salary * $detail->salary_percentage;
+            $hiringRequest->total += $detail->total;
+
+            foreach ($detail->activities as $act) {
+                $mappedActivities[] = $act->name;
+            }
+            $detail->mappedActivities = $mappedActivities;
+
+            //Obtenemos los horarios de permanencia de la persona   
+            $staySchedule = StaySchedule::where(['id'=> $detail->stay_schedule_id ])->with(['semester', 'scheduleDetails', 'scheduleActivities'])->firstOrFail();
+           // return $staySchedule->scheduleDetails;
+            $hrStay = [];
+            foreach ($staySchedule->scheduleDetails as $schedule) {
+                array_push($hrStay,$horario = $schedule->day." - ".date("g:ia", strtotime($schedule->start_time)) . ' a ' . date("g:ia", strtotime($schedule->finish_time)));
+            }
+           $detail->staySchedule =  $hrStay;
         }
         $m = new Merger();
         $pdf    = PDF::loadView('hiringRequest.HiringRequestTI', compact('fecha', 'escuela', 'hiringRequest'));
-        $pdf    ->setPaper('letter', 'portrait');
-        $pdf    ->render();
+        $pdf->setPaper('letter', 'portrait');
+        $pdf->render();
         $pdf2   = PDF::loadView('hiringRequest.HiringRequestTIDetails', compact('hiringRequest', 'escuela', 'fechaDetalle'));
-        $pdf2   ->setPaper('letter', 'landscape');
-        $pdf2   ->render();
+        $pdf2->setPaper('letter', 'landscape');
+        $pdf2->render();
         $dom_pdf    = $pdf2->getDomPDF();
         $canvas     = $dom_pdf->get_canvas();
-        $canvas ->page_text(670, 570, "Pagina {PAGE_NUM} de {PAGE_COUNT}", null, 10, array(0, 0, 0));
+        $canvas->page_text(670, 570, "Pagina {PAGE_NUM} de {PAGE_COUNT}", null, 10, array(0, 0, 0));
         //UNIMOS LOS PDFS
-        $m  ->addRaw($pdf->output());
-        $m  ->addRaw($pdf2->output());
+        $m->addRaw($pdf->output());
+        $m->addRaw($pdf2->output());
         $createdPdf = $m->merge();
         return response($createdPdf, 200)->header('Content-Type', 'application/pdf')->header('Content-Disposition', 'inline; filename="Solicitud de contratación de Tiempo Integral.pdf"');
-        
     }
 
     public function getAllStatus()

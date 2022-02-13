@@ -57,7 +57,7 @@ class HrSeeder extends Seeder
                 'position'          => 'Dar Clases de las materias analisis numerico, progrmación 2 e impartir laboratorios de las materias antes mencionadas.',
                 'person_id'         => $p
             ]);
-
+            $act = [];
             $act = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20];
             
             foreach ($act as $activityName) {
