@@ -39,7 +39,7 @@ class HrSeeder extends Seeder
         //solicitud por Servicios Profesionales no personles
         $rq =  HiringRequest::create([
             'code' => $this->generateRequestCode(8),
-            'contract_type_id' => 1,
+            'contract_type_id' => 3,
             'school_id' => 8,
             'modality' => 'Modalidad Presencial',
             'message' => '<p>Estimados se&ntilde;ores:</p> <p>Les saludo deseando que gocen de &eacute;xitos personales y profesionales.</p> <p>Por este medio amablemente les solicito contratar al personal que se especifica a continuaci&oacute;n,<br />para realizar las funciones especificadas en los archivos anexos.</p>',
@@ -155,7 +155,7 @@ class HrSeeder extends Seeder
           //solicitud por Tiempo Adicional
           $rqi =  HiringRequest::create([
             'code' => $this->generateRequestCode(8),
-            'contract_type_id' => 3,
+            'contract_type_id' => 1,
             'school_id' => 8,
             'modality' => 'Modalidad Presencial',
             'message' => '<p>Estimados se&ntilde;ores:</p> <p>Les saludo deseando que gocen de &eacute;xitos personales y profesionales.</p> <p>Por este medio amablemente les solicito contratar al personal que se especifica a continuaci&oacute;n,<br />para realizar las funciones especificadas en los archivos anexos.</p>',

@@ -97,7 +97,7 @@
             <div class="header-text">
                 <p>UNIVERSIDAD DE EL SALVADOR</p>
                 <p>FACULTAD DE INGENIERÍA Y ARQUITECTURA </p>
-                <p> FORMATO CONTRATACIONES PARA TIEMPO INTEGRAL</p>
+                <p> FORMATO CONTRATACIONES PARA TIEMPO ADICIONAL</p>
             </div>
         </div>
     </header>
@@ -169,29 +169,13 @@
                     @endforeach
                 <tr>
                     <td style="font-weight: bold; background-color: rgb(192, 192, 192, 0.5); text-align: Left;"
-                        colspan="3"><b>Funciones en tiempo Integral:</b>
+                        colspan="3"><b>Funciones en jornada tiempo Adicional:</b>
                     </td>
                     <td style="font-weight: bold;  text-align: Left; word-wrap: break-word" colspan="9"><b>Ver Anexo</b>
                     </td>
 
                 </tr>
-                <tr>
-                    <td style="font-weight: bold; background-color: rgb(192, 192, 192, 0.5);  text-align: Left;"
-                        colspan="3"><b>Justifiacion:</b></td>
-                    <td style="font-weight: bold;  text-align: Left; word-wrap: break-word" colspan="9">
-                        <b>{{$detail->justification}}</b>
-                    </td>
-
-                </tr>
-                <tr>
-                    <td style="font-weight: bold; background-color: rgb(192, 192, 192, 0.5);  text-align: Left;"
-                        colspan="3"><b>Meta</b>
-                    </td>
-                    <td style="font-weight: bold;  text-align: Left; word-wrap: break-word" colspan="9">
-                        <b>{{$detail->goal}}</b>
-                    </td>
-
-                </tr>
+               
                 <tr>
                     <td style="font-weight: bold;  text-align: Left; background-color: rgb(192, 192, 192, 0.5);"
                         colspan="3"><b>Periodo de Contratación</b>
@@ -202,38 +186,39 @@
                 </tr>
                 <tr>
                     <td style="font-weight: bold;  text-align: Left; background-color: rgb(192, 192, 192, 0.5);"
-                        colspan="3"><b>Periodo de Contratación en meses</b>
+                        colspan="3"><b>Cantidad de horas por semana</b>
                     </td>
-                    <td style="font-weight: bold;  text-align: Left; word-wrap: break-word" colspan="9"><b>{{$detail->work_months}}</b>
-                    </td>
-
-                </tr>
-                <tr>
-                    <td style="font-weight: bold;  text-align: Left; background-color: rgb(192, 192, 192, 0.5);"
-                        colspan="3"><b>Salario Mensual en Jornada Normal</b>
-                    </td>
-                    <td style="font-weight: bold;  text-align: Left; word-wrap: break-word" colspan="9"><b>$ {{sprintf('%.2f', $detail->monthly_salary)}}</b>
+                    <td style="font-weight: bold;  text-align: Left; word-wrap: break-word" colspan="9"><b>{{$detail->weekly_hours}}</b>
                     </td>
 
                 </tr>
                 <tr>
-                    <td style="font-weight: bold;  text-align: Left; background-color:rgb(192, 192, 192, 0.5);"
-                        colspan="3"><b>Indicador de Procentaje a pagar</b>
+                    <td style="font-weight: bold; background-color: rgb(192, 192, 192, 0.5);  text-align: Left;"
+                        colspan="3"><b>Cantidad de semanas a pagar:</b></td>
+                    <td style="font-weight: bold;  text-align: Left; word-wrap: break-word" colspan="9">
+                        <b>{{$detail->work_weeks}}</b>
                     </td>
-                    <td style="font-weight: bold;  text-align: Left; word-wrap: break-word" colspan="9"><b>{{sprintf('%.2f', $detail->salary_percentage * 100)}}%</b>
+
+                </tr>
+                <tr>
+                    <td style="font-weight: bold; background-color: rgb(192, 192, 192, 0.5);  text-align: Left;"
+                        colspan="3"><b>total de horas por periodo</b>
+                    </td>
+                    <td style="font-weight: bold;  text-align: Left; word-wrap: break-word" colspan="9">
+                        <b>{{$detail->weekly_hours*$detail->work_weeks }}</b>
                     </td>
 
                 </tr>
                 <tr>
                     <td style="font-weight: bold;  text-align: Left; background-color:rgba(190, 100, 100, 0.5);"
-                        colspan="3"><b>Valor a pagar por mes </b>
+                        colspan="3"><b>Valor a pagar por hora </b>
                     </td>
-                    <td style="font-weight: bold;  text-align: Left; word-wrap: break-word" colspan="3"><b>${{sprintf('%.2f',$detail->monthly_salary * $detail->salary_percentage)}}</b>
+                    <td style="font-weight: bold;  text-align: Left; word-wrap: break-word" colspan="3"><b>${{sprintf('%.2f',$detail->hourly_rate)}}</b>
                     </td>
                     <td style="font-weight: bold;  text-align: Left; background-color: rgba(190, 100, 100, 0.5);"
-                        colspan="3"><b>Total a pagar</b>
+                        colspan="3"><b>Total a pagar por el periodo</b>
                     </td>
-                    <td style="font-weight: bold;  text-align: Left; word-wrap: break-word" colspan="3"><b>${{sprintf('%.2f',$detail->work_months * $detail->monthly_salary * $detail->salary_percentage)}}</b>
+                    <td style="font-weight: bold;  text-align: Left; word-wrap: break-word" colspan="3"><b>${{sprintf('%.2f',$detail->total)}}</b>
                     </td>
 
                 </tr>

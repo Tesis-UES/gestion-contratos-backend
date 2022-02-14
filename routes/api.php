@@ -379,4 +379,5 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     });
     Route::get('/hiringRequestSPNP/create/PDF', [HiringRequestController::class, 'MakeHiringRequestSPNP']);
     Route::get('/hiringRequestTI/create/PDF', [HiringRequestController::class, 'MakeHiringRequestTiempoIntegral']);
+    Route::get('/hiringRequestTA/create/PDF', [HiringRequestController::class, 'MakeHiringRequestTiempoAdicional']);
 });
