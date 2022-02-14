@@ -178,6 +178,12 @@ class HiringRequestController extends Controller
         $date = Carbon::now()->locale('es');
         $fecha = "Ciudad Universitaria Dr. Fabio Castillo Figueroa, " . $date->day . " de " . $date->monthName . " de " . $date->year . ".";
         $fechaDetalle = $date->day . " de " . $date->monthName . " de " . $date->year . ".";
+        if ($hiringRequest->school->id == 9) {
+            $escuela =  $hiringRequest->school->name;
+        } else {
+            $escuela = "Escuela de " . $hiringRequest->school->name;
+        }
+        
         $escuela = "Escuela de " . $hiringRequest->school->name;
         $total = 0;
         foreach ($hiringRequest->details as $detail) {
@@ -257,9 +263,12 @@ class HiringRequestController extends Controller
         $hiringRequest = $this->show(52);
         $date = Carbon::now()->locale('es');
         $fecha = "Ciudad Universitaria Dr. Fabio Castillo Figueroa, " . $date->day . " de " . $date->monthName . " de " . $date->year . ".";
-        $escuela = "Escuela de " . $hiringRequest->school->name;
         $fechaDetalle = $date->day . " de " . $date->monthName . " de " . $date->year . ".";
-        $escuela = "Escuela de " . $hiringRequest->school->name;
+        if ($hiringRequest->school->id == 9) {
+            $escuela =  $hiringRequest->school->name;
+        } else {
+            $escuela = "Escuela de " . $hiringRequest->school->name;
+        }
         //Calculamos el total a pagar por persona
 
         foreach ($hiringRequest->details as $detail) {
@@ -333,9 +342,12 @@ class HiringRequestController extends Controller
         $hiringRequest = $this->show(53);
         $date = Carbon::now()->locale('es');
         $fecha = "Ciudad Universitaria Dr. Fabio Castillo Figueroa, " . $date->day . " de " . $date->monthName . " de " . $date->year . ".";
-        $escuela = "Escuela de " . $hiringRequest->school->name;
         $fechaDetalle = $date->day . " de " . $date->monthName . " de " . $date->year . ".";
-        $escuela = "Escuela de " . $hiringRequest->school->name;
+        if ($hiringRequest->school->id == 9) {
+            $escuela =  $hiringRequest->school->name;
+        } else {
+            $escuela = "Escuela de " . $hiringRequest->school->name;
+        }
         //Calculamos el total a pagar por persona
 
         foreach ($hiringRequest->details as $detail) {
