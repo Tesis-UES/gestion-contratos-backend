@@ -1,6 +1,7 @@
 /node_modules
 /public/hot
 public/personalFiles
+public/requestDetailSchedules
 /public/storage
 /storage/*.key
 /vendor

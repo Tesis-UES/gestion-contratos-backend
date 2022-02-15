@@ -38,20 +38,26 @@ return [
         'public' => [
             'driver' => 'local',
             'root' => storage_path('app/public'),
-            'url' => env('APP_URL').'/storage',
+            'url' => env('APP_URL') . '/storage',
             'visibility' => 'public',
         ],
 
         /* Driver que contiene la ubicacion de los archivos personales de los candidatos*/
-        'personalFiles'=>[
+        'personalFiles' => [
             'driver'    =>  'local',
-            'root'      =>  public_path().'/personalFiles',
+            'root'      =>  public_path() . '/personalFiles',
         ],
 
         /* Driver que contiene la ubicacion de los formatos*/
-        'formats'=>[
+        'formats' => [
             'driver'    =>  'local',
-            'root'      =>  public_path().'/formats',
+            'root'      =>  public_path() . '/formats',
+        ],
+
+        /* Driver que contiene la ubicacion de los horarios de detalle de solicitud de contratacion*/
+        'requestDetailSchedules' => [
+            'driver'    =>  'local',
+            'root'      =>  public_path() . '/requestDetailSchedules',
         ],
 
         's3' => [
