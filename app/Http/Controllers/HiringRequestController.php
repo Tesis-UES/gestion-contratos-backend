@@ -170,10 +170,16 @@ class HiringRequestController extends Controller
     }
 
 
-    public function MakeHiringRequestSPNP()
+    public function MakeHiringRequestSPNP($id, $option)
     {
 
-        $hiringRequest = $this->show(51);
+        //Primero se verifica el id y si la solicitud tiene almenos una persona aignada a la solicitud
+        $hri = HiringRequest::findOrFail($id);
+        if ($hri->details->count() == 0) {
+            return response(['message' => 'La solicitud de contratacion no tiene detalles, por lo cual no se puede generar el pdf'], 400);
+        };
+
+        $hiringRequest = $this->show($hri->id);
         //Se crea la fecha con el formato que se requiere para el pdf
         $date = Carbon::now()->locale('es');
         $fecha = "Ciudad Universitaria Dr. Fabio Castillo Figueroa, " . $date->day . " de " . $date->monthName . " de " . $date->year . ".";
@@ -183,9 +189,8 @@ class HiringRequestController extends Controller
         } else {
             $escuela = "Escuela de " . $hiringRequest->school->name;
         }
-        
-        $escuela = "Escuela de " . $hiringRequest->school->name;
         $total = 0;
+
         foreach ($hiringRequest->details as $detail) {
             $subtotal = 0;
             $subtiempo = 0;
@@ -200,15 +205,18 @@ class HiringRequestController extends Controller
             $detail->subtotalHoras = $totalHoras;
         }
         $hiringRequest->total = $total;
+
         foreach ($hiringRequest->details as $detail) {
             $detail->fullName = $detail->person->first_name . " " . $detail->person->middle_name . " " . $detail->person->last_name;
             $detail->period = $detail->start_date . "-" . $detail->finish_date;
             $mappedActivities = [];
+
             foreach ($detail->activities as $act) {
                 $mappedActivities[] = $act->name;
             }
             $detail->mappedActivities = $mappedActivities;
             $mappedGroups = [];
+
             foreach ($detail->hiringGroups as $hg) {
                 $days = [];
                 $times = [];
@@ -218,6 +226,7 @@ class HiringRequestController extends Controller
                     if (!in_array($horario, $times)) array_push($times, $horario);
                 }
                 $times = implode($times);
+
                 if (sizeof($days) == 2) {
                     $days = implode(' y ', $days);
                 } else {
@@ -255,12 +264,20 @@ class HiringRequestController extends Controller
         $m->addRaw($pdf2->output());
         $m->addRaw($pdf3->output());
         $createdPdf = $m->merge();
-        return response($createdPdf, 200)->header('Content-Type', 'application/pdf')->header('Content-Disposition', 'inline; filename="Solicitud de contratación de servicios profesionales - Presencial.pdf"');
+        if ($option == "show") {
+            return response($createdPdf, 200)->header('Content-Type', 'application/pdf')->header('Content-Disposition', 'inline; filename="Solicitud de contratación de servicios profesionales.pdf"');
+        } else {
+            return $createdPdf;
+        }
     }
 
-    public function MakeHiringRequestTiempoIntegral()
+    public function MakeHiringRequestTiempoIntegral($id, $option)
     {
-        $hiringRequest = $this->show(52);
+        $hri = HiringRequest::findOrFail($id);
+        if ($hri->details->count() == 0) {
+            return response(['message' => 'La solicitud de contratacion no tiene detalles, por lo cual no se puede generar el pdf'], 400);
+        };
+        $hiringRequest = $this->show($hri->id);
         $date = Carbon::now()->locale('es');
         $fecha = "Ciudad Universitaria Dr. Fabio Castillo Figueroa, " . $date->day . " de " . $date->monthName . " de " . $date->year . ".";
         $fechaDetalle = $date->day . " de " . $date->monthName . " de " . $date->year . ".";
@@ -281,19 +298,19 @@ class HiringRequestController extends Controller
             }
             $detail->mappedActivities = $mappedActivities;
             //Obtenemos los horarios de permanencia y funciones en tiempo normal de la persona   
-            $staySchedule = StaySchedule::where(['id'=> $detail->stay_schedule_id ])->with(['semester', 'scheduleDetails', 'scheduleActivities'])->firstOrFail();
+            $staySchedule = StaySchedule::where(['id' => $detail->stay_schedule_id])->with(['semester', 'scheduleDetails', 'scheduleActivities'])->firstOrFail();
             $hrStay = [];
             foreach ($staySchedule->scheduleDetails as $schedule) {
-                array_push($hrStay,$horario = $schedule->day." - ".date("g:ia", strtotime($schedule->start_time)) . ' a ' . date("g:ia", strtotime($schedule->finish_time)));
+                array_push($hrStay, $horario = $schedule->day . " - " . date("g:ia", strtotime($schedule->start_time)) . ' a ' . date("g:ia", strtotime($schedule->finish_time)));
             }
             $hrAct = [];
             foreach ($staySchedule->scheduleActivities as $act) {
-                array_push($hrAct,$act->name);
+                array_push($hrAct, $act->name);
             }
-           $detail->stayActivities = $hrAct; 
-           $detail->staySchedule =  $hrStay;
-           //obtenemos los grupos de contratacion
-           $mappedGroups = [];
+            $detail->stayActivities = $hrAct;
+            $detail->staySchedule =  $hrStay;
+            //obtenemos los grupos de contratacion
+            $mappedGroups = [];
             foreach ($detail->hiringGroups as $hg) {
                 $days = [];
                 $times = [];
@@ -310,15 +327,14 @@ class HiringRequestController extends Controller
                 }
                 $mappedGroups[] = (object)[
                     "name" => $hg->group->course->name,
-                    "groupType" => $hg->group->grupo->name ,
+                    "groupType" => $hg->group->grupo->name,
                     "number" => $hg->group->number,
                     'days' => $days,
                     'time' => $times,
-                    
+
                 ];
             }
             $detail->mappedGroups = $mappedGroups;
-           
         }
         $m = new Merger();
         $pdf    = PDF::loadView('hiringRequest.HiringRequestTI', compact('fecha', 'escuela', 'hiringRequest'));
@@ -334,12 +350,20 @@ class HiringRequestController extends Controller
         $m->addRaw($pdf->output());
         $m->addRaw($pdf2->output());
         $createdPdf = $m->merge();
-        return response($createdPdf, 200)->header('Content-Type', 'application/pdf')->header('Content-Disposition', 'inline; filename="Solicitud de contratación de Tiempo Integral.pdf"');
+        if ($option == "show") {
+            return response($createdPdf, 200)->header('Content-Type', 'application/pdf')->header('Content-Disposition', 'inline; filename="Solicitud de contratación de Tiempo Integral.pdf"');
+        } else {
+            return $createdPdf;
+        }
     }
 
-    public function MakeHiringRequestTiempoAdicional()
+    public function MakeHiringRequestTiempoAdicional($id, $option)
     {
-        $hiringRequest = $this->show(53);
+        $hri = HiringRequest::findOrFail($id);
+        if ($hri->details->count() == 0) {
+            return response(['message' => 'La solicitud de contratacion no tiene detalles, por lo cual no se puede generar el pdf'], 400);
+        };
+        $hiringRequest = $this->show($hri->id);
         $date = Carbon::now()->locale('es');
         $fecha = "Ciudad Universitaria Dr. Fabio Castillo Figueroa, " . $date->day . " de " . $date->monthName . " de " . $date->year . ".";
         $fechaDetalle = $date->day . " de " . $date->monthName . " de " . $date->year . ".";
@@ -351,7 +375,7 @@ class HiringRequestController extends Controller
         //Calculamos el total a pagar por persona
 
         foreach ($hiringRequest->details as $detail) {
-           
+
             $detail->fullName = $detail->person->first_name . " " . $detail->person->middle_name . " " . $detail->person->last_name;
             $detail->total = $detail->hourly_rate * $detail->work_weeks * $detail->weekly_hours;
             foreach ($detail->activities as $act) {
@@ -359,19 +383,19 @@ class HiringRequestController extends Controller
             }
             $detail->mappedActivities = $mappedActivities;
             //Obtenemos los horarios de permanencia y funciones en tiempo normal de la persona   
-            $staySchedule = StaySchedule::where(['id'=> $detail->stay_schedule_id ])->with(['semester', 'scheduleDetails', 'scheduleActivities'])->firstOrFail();
+            $staySchedule = StaySchedule::where(['id' => $detail->stay_schedule_id])->with(['semester', 'scheduleDetails', 'scheduleActivities'])->firstOrFail();
             $hrStay = [];
             foreach ($staySchedule->scheduleDetails as $schedule) {
-                array_push($hrStay,$horario = $schedule->day." - ".date("g:ia", strtotime($schedule->start_time)) . ' a ' . date("g:ia", strtotime($schedule->finish_time)));
+                array_push($hrStay, $horario = $schedule->day . " - " . date("g:ia", strtotime($schedule->start_time)) . ' a ' . date("g:ia", strtotime($schedule->finish_time)));
             }
             $hrAct = [];
             foreach ($staySchedule->scheduleActivities as $act) {
-                array_push($hrAct,$act->name);
+                array_push($hrAct, $act->name);
             }
-           $detail->stayActivities = $hrAct; 
-           $detail->staySchedule =  $hrStay;
-           //obtenemos los grupos de contratacion
-           $mappedGroups = [];
+            $detail->stayActivities = $hrAct;
+            $detail->staySchedule =  $hrStay;
+            //obtenemos los grupos de contratacion
+            $mappedGroups = [];
             foreach ($detail->hiringGroups as $hg) {
                 $days = [];
                 $times = [];
@@ -388,15 +412,14 @@ class HiringRequestController extends Controller
                 }
                 $mappedGroups[] = (object)[
                     "name" => $hg->group->course->name,
-                    "groupType" => $hg->group->grupo->name ,
+                    "groupType" => $hg->group->grupo->name,
                     "number" => $hg->group->number,
                     'days' => $days,
                     'time' => $times,
-                    
+
                 ];
             }
             $detail->mappedGroups = $mappedGroups;
-           
         }
         $m = new Merger();
         $pdf    = PDF::loadView('hiringRequest.HiringRequestTA', compact('fecha', 'escuela', 'hiringRequest'));
@@ -412,7 +435,18 @@ class HiringRequestController extends Controller
         $m->addRaw($pdf->output());
         $m->addRaw($pdf2->output());
         $createdPdf = $m->merge();
-        return response($createdPdf, 200)->header('Content-Type', 'application/pdf')->header('Content-Disposition', 'inline; filename="Solicitud de contratación de Tiempo Adicional.pdf"');
+
+        if ($option == "show") {
+            return response($createdPdf, 200)->header('Content-Type', 'application/pdf')->header('Content-Disposition', 'inline; filename="Solicitud de contratación de Tiempo Adicional.pdf"');
+        } else {
+            return $createdPdf;
+        }
+    }
+
+    public function sendHiringRequest($id)
+    {
+       $pdf = $this->MakeHiringRequestSPNP($id, 'send');
+       return $pdf;
     }
 
     public function getAllStatus()

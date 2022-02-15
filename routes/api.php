@@ -377,7 +377,8 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
         Route::get('/hiringRequest/all/petitions/secretary', [HiringRequestController::class, 'getAllHiringRequestsSecretary']);
         Route::put('/hiringRequest/{hiringRequest}/secretary/reception', [HiringRequestController::class, 'secretaryReceptionHiringRequest'])->middleware('can:accept_request_asis');
     });
-    Route::get('/hiringRequestSPNP/create/PDF', [HiringRequestController::class, 'MakeHiringRequestSPNP']);
-    Route::get('/hiringRequestTI/create/PDF', [HiringRequestController::class, 'MakeHiringRequestTiempoIntegral']);
-    Route::get('/hiringRequestTA/create/PDF', [HiringRequestController::class, 'MakeHiringRequestTiempoAdicional']);
+    Route::get('/hiringRequestSPNP/{id}/create/PDF/{show}', [HiringRequestController::class, 'MakeHiringRequestSPNP']);
+    Route::get('/hiringRequestTI/{id}/create/PDF/{show}', [HiringRequestController::class, 'MakeHiringRequestTiempoIntegral']);
+    Route::get('/hiringRequestTA/{id}/create/PDF/{show}', [HiringRequestController::class, 'MakeHiringRequestTiempoAdicional']);
+    ROute::put('/hiringRequest/{id}/sendRequest', [HiringRequestController::class, 'SendHiringRequest']);
 });
