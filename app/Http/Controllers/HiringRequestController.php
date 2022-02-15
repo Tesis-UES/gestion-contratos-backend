@@ -185,6 +185,18 @@ class HiringRequestController extends Controller
         ];
     }
 
+    public function storeHiringRequest($id,$pdf){
+        $hiringRequest = HiringRequest::findOrFail($id);
+        $hiringName = $hiringRequest->code . "-Solicitud.pdf";
+        \Storage::disk('hiringRequest')->put($hiringName, $pdf);
+        $hiringRequest->fileName = $hiringName;
+        $status = Status::whereIn('code', [HiringRequestStatusCode::FSC,HiringRequestStatusCode::EDS])->get();
+        $hiringRequest->request_status = HiringRequestStatusCode::EDS;
+        $hiringRequest->save();
+        $hiringRequest->status()->attach($status);
+        return 'Se Ha guardado con Exito el PDF';
+    }
+
     public function MakeHiringRequestSPNP($id, $option)
     {
 
@@ -273,7 +285,8 @@ class HiringRequestController extends Controller
         if ($option == "show") {
             return response($createdPdf, 200)->header('Content-Type', 'application/pdf')->header('Content-Disposition', 'inline; filename="Solicitud de contratación de servicios profesionales.pdf"');
         } else {
-            return $createdPdf;
+            $resultado = $this->storeHiringRequest($hiringRequest->id,$createdPdf);
+            return response($resultado, 200);
         }
     }
 
@@ -352,7 +365,10 @@ class HiringRequestController extends Controller
         if ($option == "show") {
             return response($createdPdf, 200)->header('Content-Type', 'application/pdf')->header('Content-Disposition', 'inline; filename="Solicitud de contratación de Tiempo Integral.pdf"');
         } else {
-            return $createdPdf;
+           
+            $resultado = $this->storeHiringRequest($hiringRequest->id,$createdPdf);
+            return response($resultado, 200);
+            
         }
     }
 
@@ -432,7 +448,8 @@ class HiringRequestController extends Controller
         if ($option == "show") {
             return response($createdPdf, 200)->header('Content-Type', 'application/pdf')->header('Content-Disposition', 'inline; filename="Solicitud de contratación de Tiempo Adicional.pdf"');
         } else {
-            return $createdPdf;
+            $resultado = $this->storeHiringRequest($hiringRequest->id,$createdPdf);
+            return response($resultado, 200);
         }
     }
 

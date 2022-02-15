@@ -48,6 +48,10 @@ return [
             'root'      =>  public_path().'/personalFiles',
         ],
 
+        'hiringRequest'=>[
+            'driver'    =>  'local',
+            'root'      =>  public_path().'/hiringRequest',
+        ],
         /* Driver que contiene la ubicacion de los formatos*/
         'formats'=>[
             'driver'    =>  'local',

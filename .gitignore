@@ -1,5 +1,6 @@
 /node_modules
 /public/hot
+public/hiringRequest
 public/personalFiles
 /public/storage
 /storage/*.key

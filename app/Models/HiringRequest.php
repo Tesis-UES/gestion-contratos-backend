@@ -17,6 +17,7 @@ class HiringRequest extends Model
         'message',
         'contract_type_id',
         'school_id',
+        'fileName',
     ];
 
     protected $appends = ['last_status',];
