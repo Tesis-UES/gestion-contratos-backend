@@ -147,7 +147,7 @@
             <div class="header-text">
                 <p>UNIVERSIDAD DE EL SALVADOR</p>
                 <p>FACULTAD DE INGENIERÍA Y ARQUITECTURA</p>
-                <p>{{ mb_strtoupper($escuela) }}</p>
+                <p>{{ mb_strtoupper($header->escuela) }}</p>
             </div>
         </div>
     </header>
@@ -155,7 +155,7 @@
         Facultad de Ingeniería y Arquitectura - Universidad de El Salvador
     </footer>
     <main style="page-break-after: auto; margin-top:10px;">
-        <span class="fecha">{{ $fecha }}</span>
+        <span class="fecha">{{ $header->fecha }}</span>
 
         <div class="saludo-container">
             <span class="saludo">SEÑORES MIEMBROS DE JUNTA DIRECTIVA</span>
@@ -203,7 +203,7 @@
                 <br>
                 <span class="despedida">{{$hiringRequest->school->SchoolAuthority->where('position', 'DIRECTOR')->first()->name;}}</span>
                 <span class="despedida">Director</span>
-                <span class="despedida">{{ ucfirst($escuela) }}</span>
+                <span class="despedida">{{ ucfirst($header->escuela) }}</span>
             </div>
         </div>
 

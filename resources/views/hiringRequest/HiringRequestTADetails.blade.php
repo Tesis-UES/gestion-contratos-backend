@@ -117,7 +117,7 @@
             @else
                 style="text-align: center;"
         @endif >
-        <span style="float: left;"><b>{{ $escuela }}</b></span>
+        <span style="float: left;"><b>{{ $header->escuela }}</b></span>
         <span><b>Docente:</b> {{ $detail->fullName }}</span>
         <span style="float:right "><b>Escalafon: {{ $detail->person->employee->escalafon->code }}</b></span>
         <table style="margin-top:10px; " class="demo" width="100%">
@@ -307,7 +307,7 @@
             <span
                 class="despedida">{{ $hiringRequest->school->SchoolAuthority->where('position', 'DIRECTOR')->first()->name }}</span>
             <span class="despedida">Director</span>
-            <span class="despedida">{{ ucfirst($escuela) }}</span>
+            <span class="despedida">{{ ucfirst($header->escuela) }}</span>
         </div>
     </main>
 </body>

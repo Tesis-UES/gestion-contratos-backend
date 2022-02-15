@@ -89,7 +89,7 @@
             <div class="header-text">
                 <p>UNIVERSIDAD DE EL SALVADOR</p>
                 <p>FACULTAD DE INGENIERÍA Y ARQUITECTURA</p>
-                <p>{{ mb_strtoupper($escuela) }}</p>
+                <p>{{ mb_strtoupper($header->escuela) }}</p>
             </div>
         </div>
     </header>

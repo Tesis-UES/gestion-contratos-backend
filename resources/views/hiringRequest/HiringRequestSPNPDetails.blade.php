@@ -111,8 +111,8 @@
             </div>
         </div>
         <div class="title-details">
-            <span style="position:absolute; top:1rem;left:10rem; text-align:right;">{{ $escuela }}</span>
-            <span style="position:absolute; top:1rem;right:1rem;">{{ $fechaDetalle }}</span>
+            <span style="position:absolute; top:1rem;left:10rem; text-align:right;">{{ $header->escuela }}</span>
+            <span style="position:absolute; top:1rem;right:1rem;">{{ $header->fechaDetalle }}</span>
         </div>
     </header>
     <footer>
@@ -195,7 +195,7 @@
             <span
                 class="despedida">{{ $hiringRequest->school->SchoolAuthority->where('position', 'DIRECTOR')->first()->name }}</span>
             <span class="despedida">Director</span>
-            <span class="despedida">{{ ucfirst($escuela) }}</span>
+            <span class="despedida">{{ ucfirst($header->escuela) }}</span>
         </div>
 
     </main>
