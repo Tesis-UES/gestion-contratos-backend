@@ -453,10 +453,14 @@ class HiringRequestController extends Controller
         }
     }
 
-    public function sendHiringRequest($id)
-    {
-       $pdf = $this->MakeHiringRequestSPNP($id, 'send');
-       return $pdf;
+    public function getPdf($id){
+
+        $hiringRequest = HiringRequest::findOrFail($id);
+        if($hiringRequest->fileName == null){
+            return response(['message' => 'No se ha generado el archivo pdf de la solicitud'], 400);
+        }
+        $pdf = \Storage::disk('hiringRequest')->get($hiringRequest->fileName);
+        return response($pdf, 200)->header('Content-Type', 'application/pdf')->header('Content-Disposition', 'inline; filename="Solicitud de contratación.pdf"');
     }
 
     public function getAllStatus()

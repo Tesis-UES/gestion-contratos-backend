@@ -380,5 +380,5 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::get('/hiringRequestSPNP/{id}/create/PDF/{show}', [HiringRequestController::class, 'MakeHiringRequestSPNP']);
     Route::get('/hiringRequestTI/{id}/create/PDF/{show}', [HiringRequestController::class, 'MakeHiringRequestTiempoIntegral']);
     Route::get('/hiringRequestTA/{id}/create/PDF/{show}', [HiringRequestController::class, 'MakeHiringRequestTiempoAdicional']);
-    ROute::put('/hiringRequest/{id}/sendRequest', [HiringRequestController::class, 'SendHiringRequest']);
+    Route::get('/hiringRequest/{id}/pdf', [HiringRequestController::class, 'getPdf']);
 });
