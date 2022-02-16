@@ -289,7 +289,7 @@ class AcademicLoadSeeder extends Seeder
          Schedule::create(['day' => 'Jueves', 'start_hour' => "18:35", 'finish_hour' => "20:15", 'group_id' => $grupo25->id]);
         //80
          $grupo26 = Group::create(['status' => 'SDA', 'modality' => 'Presencial', 'number' => 2, 'group_type_id' => 3, 'academic_load_id' => 6, 'course_id' => 33]);
-         Schedule::create(['day' => 'sabado', 'start_hour' => "9:50", 'finish_hour' => "11:30", 'group_id' => $grupo25->id]);
+         Schedule::create(['day' => 'sabado', 'start_hour' => "9:50", 'finish_hour' => "11:30", 'group_id' => $grupo26->id]);
  
          //SYP
          //81
@@ -298,10 +298,10 @@ class AcademicLoadSeeder extends Seeder
          Schedule::create(['day' => 'Miercoles', 'start_hour' => "18:35", 'finish_hour' => "20:15", 'group_id' => $grupo27->id]);
          //82
          $grupo28 = Group::create(['status' => 'SDA', 'modality' => 'Presencial', 'number' => 1, 'group_type_id' => 3, 'academic_load_id' => 6, 'course_id' => 10]);
-         Schedule::create(['day' => 'Martes', 'start_hour' => "18:35", 'finish_hour' => "20:15", 'group_id' => $grupo25->id]);
+         Schedule::create(['day' => 'Martes', 'start_hour' => "18:35", 'finish_hour' => "20:15", 'group_id' => $grupo28->id]);
         //83
          $grupo29 = Group::create(['status' => 'SDA', 'modality' => 'Presencial', 'number' => 2, 'group_type_id' => 3, 'academic_load_id' => 6, 'course_id' => 10]);
-         Schedule::create(['day' => 'Viernes', 'start_hour' => "18:35", 'finish_hour' => "20:15", 'group_id' => $grupo25->id]);
+         Schedule::create(['day' => 'Viernes', 'start_hour' => "18:35", 'finish_hour' => "20:15", 'group_id' => $grupo28->id]);
     }
 
     }
