@@ -16,6 +16,8 @@ use Illuminate\Validation\Rule;
 use Luecano\NumeroALetras\NumeroALetras;
 use DB;
 use Carbon\Carbon;
+use iio\libmergepdf\Merger;
+
 
 class PersonController extends Controller
 {
@@ -1029,16 +1031,19 @@ class PersonController extends Controller
         return response(['changes' => $changes,], 200);
     }
 
-    public function getDocumentsByCase()
+    public function getDocumentsByCase($id = null)
     {
-        $user = Auth::user();
-        $person = Person::where('user_id', $user->id)->firstOrFail();
-
-
+       
+        if($id == null){
+            $user = Auth::user();
+            $person = Person::where('user_id', $user->id)->firstOrFail();
+        }else{
+            $person = Person::where('user_id',$id)->firstOrFail();
+        }
         if ($person->employee == null) {
             //Si no es empleado verificamos que sea nacional o extanjero
             if ($person->nationality == 'El Salvador') {
-                $archivos = ['nit', 'banco', 'cv', 'titulo'];
+                $archivos = [ 'cv','nit', 'banco', 'titulo'];
                 if ($person->is_nationalized == true) {
                     array_push($archivos, 'carnet');
                 } else {
@@ -1047,20 +1052,18 @@ class PersonController extends Controller
                 if ($person->other_title == true) {
                     array_push($archivos, 'otro_titulo');
                 }
-                return response(['archivos' => $archivos], 200);
             } else {
                 //EXTRANJERO
-                $archivo =  ['banco', 'cv', 'titulo', 'pass'];
+                $archivos =  [ 'cv','banco', 'titulo', 'pass'];
                 if ($person->other_title == true) {
                     array_push($archivos, 'otro_titulo');
                 }
-                return  response(['archivos' =>  $archivo], 200);
             }
         } else {
             //Candidato - Trabajador
             if ($person->nationality == 'El Salvador') {
                 //Candidato - Trabajador - Nacional
-                $archivos = ['nit', 'banco', 'cv', 'titulo'];
+                $archivos = ['cv','nit', 'banco',  'titulo'];
                 if ($person->is_nationalized == true) {
                     array_push($archivos, 'carnet');
                 } else {
@@ -1072,20 +1075,70 @@ class PersonController extends Controller
                 if (!($person->employee->faculty_id == 1)) {
                     array_push($archivos, 'permiso');
                 }
-
-                return response(['archivos' => $archivos], 200);
             } else {
                 //Candidato - Trabajador - Internacional 
-                $archivos = ['banco', 'cv', 'titulo', 'pass'];
+                $archivos = ['cv','banco',  'titulo', 'pass'];
                 if (!($person->employee->faculty_id == 1)) {
                     array_push($archivos, 'permiso');
                 }
                 if ($person->other_title == true) {
                     array_push($archivos, 'otro_titulo');
                 }
-                return response(['archivos' => $archivos], 200);
             }
         }
+        if($id == null){
+            return response(['archivos' => $archivos], 200);
+        }else{
+            return $archivos;
+        }
+       
+    }
+
+    public  function mergePersonalDoc($id){
+      $respuesta =   $this->getDocumentsByCase($id);
+      $person = Person::where('user_id',$id)->firstOrFail();
+       $m = new Merger();
+       foreach($respuesta as $archivo){
+           switch ($archivo) {
+               case 'cv':
+                $m->addRaw(\Storage::disk('personalFiles')->get($person->curriculum));
+                   break;
+
+                case 'dui':
+                $m->addRaw(\Storage::disk('personalFiles')->get($person->dui));
+                   break;
+                case 'nit':
+                $m->addRaw(\Storage::disk('personalFiles')->get($person->nit));
+                     break;
+                case 'carnet':
+                $m->addRaw(\Storage::disk('personalFiles')->get($person->resident_card));
+                    break;
+                case 'banco':
+                $m->addRaw(\Storage::disk('personalFiles')->get($person->bank_account));
+                    break;
+                case 'titulo':
+                $m->addRaw(\Storage::disk('personalFiles')->get($person->professional_title_scan));
+                    break;
+                case 'otro_titulo':
+                $m->addRaw(\Storage::disk('personalFiles')->get($person->other_title_doc));
+                    break;
+                case 'permiso':
+                $m->addRaw(\Storage::disk('personalFiles')->get($person->work_permission));
+                    break;
+                case 'pass':
+                $m->addRaw(\Storage::disk('personalFiles')->get($person->passport));
+                    break;
+               
+               default:
+                   # code...
+                   break;
+           }
+       }
+       $createdPdf = $m->merge();
+       return response($createdPdf, 200)->header('Content-Type', 'application/pdf')->header('Content-Disposition', 'inline; filename="Documentos.pdf"');
+       //return response(['pdf' => $createdPdf], 200);
+       
+       
     }
 
     public function calculaedad($fechanacimiento)
