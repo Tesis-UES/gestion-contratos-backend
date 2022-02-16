@@ -16,4 +16,13 @@ class HiringGroup extends Model
         'group_id',
         'hiring_request_detail_id',
     ];
+
+    public function hiringRequestDetail()
+    {
+        return $this->belongsTo(HiringRequestDetail::class);
+    }
+    public function group()
+    {
+        return $this->belongsTo(Group::class);
+    }
 }

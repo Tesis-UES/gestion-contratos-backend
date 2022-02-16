@@ -26,6 +26,7 @@ class UpdateTIRequestDetails extends FormRequest
     return [
       'start_date'        => 'required|date_format:Y-m-d',
       'finish_date'       => 'required|date_format:Y-m-d|after:start_date',
+      'stay_schedule_id' =>'required|integer|gte:1',
       'position'          => 'required|string',
       'goal'              => 'required|string',
       'justification'     => 'required|string',

@@ -23,7 +23,9 @@ class HiringRequestDetail extends Model
         'person_id',
         'stay_schedule_id',
         'hiring_request_id',
+        'justification',
         'monthly_salary'
+
     ];
 
     protected $hidden = ['pivot'];
@@ -36,6 +38,11 @@ class HiringRequestDetail extends Model
     public function staySchedule()
     {
         return $this->belongsTo(StaySchedule::class);
+    }
+
+    public function hiringGroups()
+    {
+        return $this->hasMany(HiringGroup::class);
     }
 
     public function groups()

@@ -13,6 +13,11 @@ class School extends Model
     {
         return $this->belongsTo(Faculty::class);
     }
+
+    public function SchoolAuthority()
+    {
+        return $this->hasMany(SchoolAuthority::class);
+    }
     protected $fillable = [
         'faculty_id',
         'name',

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\HiringRequest;
 use App\Models\Status;
+use App\Models\StaySchedule;
 use App\Http\Requests\StoreHiringRequestRequest;
 use App\Http\Requests\UpdateHiringRequestRequest;
 use App\Http\Traits\WorklogTrait;
@@ -15,6 +16,8 @@ use App\Constants\HiringRequestStatusCode;
 use App\Models\HiringRequestDetail;
 use Illuminate\Support\Facades\DB;
 use PDF;
+use PhpOffice\PhpSpreadsheet\Calculation\MathTrig\Subtotal;
+use iio\libmergepdf\Merger;
 
 class HiringRequestController extends Controller
 {
@@ -50,6 +53,7 @@ class HiringRequestController extends Controller
             'details.groups.schedule',
             'details.groups.grupo',
             'details.groups',
+            'details.hiringGroups',
             'details.activities',
             'details.person',
             'details.person.employee',
@@ -165,21 +169,302 @@ class HiringRequestController extends Controller
         return response($hiringRequests, 200);
     }
 
-   
-    public function MakeHiringRequestPDF()
-    {
-        //Se crea la fecha con el formato que se requiere para el pdf
+    public function headerPDF($hiringRequest){
         $date = Carbon::now()->locale('es');
-        $fecha = "Ciudad Universitaria Dr. Fabio Castillo Figueroa, ".$date->day." de ".$date->monthName." de ".$date->year.".";
-        $hiringRequest = $this->show(101);
-        //return $hiringRequest->details;
-        $escuela = "Escuela de ".$hiringRequest->school->name;
-
-        $pdf = PDF::loadView('hiringRequest.HiringRequestSPNP',compact('fecha','escuela','hiringRequest'));
-        $this->RegisterAction("El usuario ha generado una solicitud de contratación en PDF", "high");
-        return $pdf->download('solicitud_de_contratacion.pdf');
+        $fecha = "Ciudad Universitaria Dr. Fabio Castillo Figueroa, " . $date->day . " de " . $date->monthName . " de " . $date->year . ".";
+        $fechaDetalle = $date->day . " de " . $date->monthName . " de " . $date->year . ".";
+        if ($hiringRequest->school->id == 9) {
+            $escuela =  $hiringRequest->school->name;
+        } else {
+            $escuela = "Escuela de " . $hiringRequest->school->name;
+        }
+        return $detalle[] = (object)[ 
+            'fecha' => $fecha,
+            'fechaDetalle' => $fechaDetalle,
+            'escuela' => $escuela
+        ];
     }
-    public function getAllStatus(){
+
+    public function storeHiringRequest($id,$pdf){
+        $hiringRequest = HiringRequest::findOrFail($id);
+        $hiringName = $hiringRequest->code . "-Solicitud.pdf";
+        \Storage::disk('hiringRequest')->put($hiringName, $pdf);
+        $hiringRequest->fileName = $hiringName;
+        $status = Status::whereIn('code', [HiringRequestStatusCode::FSC,HiringRequestStatusCode::EDS])->get();
+        $hiringRequest->request_status = HiringRequestStatusCode::EDS;
+        $hiringRequest->save();
+        $hiringRequest->status()->attach($status);
+        return 'Se Ha guardado con Exito el PDF';
+    }
+
+    public function MakeHiringRequestSPNP($id, $option)
+    {
+
+        //Primero se verifica el id y si la solicitud tiene almenos una persona aignada a la solicitud
+        $hri = HiringRequest::findOrFail($id);
+        if ($hri->details->count() == 0) {
+            return response(['message' => 'La solicitud de contratacion no tiene detalles, por lo cual no se puede generar el pdf'], 400);
+        };
+        $hiringRequest = $this->show($hri->id);
+        $header = $this->headerPDF($hiringRequest);
+        $total = 0;
+
+        foreach ($hiringRequest->details as $detail) {
+            $subtotal = 0;
+            $subtiempo = 0;
+            $totalHoras = 0;
+            foreach ($detail->hiringGroups as $group) {
+                $subtotal += $group->hourly_rate * $group->work_weeks * $group->weekly_hours;
+                $subtiempo += $group->weekly_hours * $group->work_weeks;
+            }
+            $detail->subtotal = $subtotal;
+            $total += $subtotal;
+            $totalHoras += $subtiempo;
+            $detail->subtotalHoras = $totalHoras;
+        }
+        $hiringRequest->total = $total;
+
+        foreach ($hiringRequest->details as $detail) {
+            $detail->fullName = $detail->person->first_name . " " . $detail->person->middle_name . " " . $detail->person->last_name;
+            $detail->period = $detail->start_date . "-" . $detail->finish_date;
+            $mappedActivities = [];
+
+            foreach ($detail->activities as $act) {
+                $mappedActivities[] = $act->name;
+            }
+            $detail->mappedActivities = $mappedActivities;
+            $mappedGroups = [];
+
+            foreach ($detail->hiringGroups as $hg) {
+                $days = [];
+                $times = [];
+                foreach ($hg->group->schedule as $schedule) {
+                    array_push($days, $schedule->day);
+                    $horario = date("g:ia", strtotime($schedule->start_hour)) . '-' . date("g:ia", strtotime($schedule->finish_hour));
+                    if (!in_array($horario, $times)) array_push($times, $horario);
+                }
+                $times = implode($times);
+
+                if (sizeof($days) == 2) {
+                    $days = implode(' y ', $days);
+                } else {
+                    $days = implode(',', $days);
+                }
+                $mappedGroups[] = (object)[
+                    "name" => $hg->group->course->name,
+                    "groupType" => $hg->group->grupo->name . "-" . $hg->group->number,
+                    'days' => $days,
+                    'time' => $times,
+                    "hourly_rate" => $hg->hourly_rate,
+                    "weekly_hours" => $hg->weekly_hours,
+                    "work_weeks" => $hg->work_weeks,
+                ];
+            }
+            $detail->mappedGroups = $mappedGroups;
+        }
+        //Ejemplo de como se hace merge de pdfs
+        $m = new Merger();
+        $pdf    = PDF::loadView('hiringRequest.HiringRequestSPNP', compact('header', 'hiringRequest'));
+        $pdf2   = PDF::loadView('hiringRequest.HiringRequestSPNPDetails', compact('hiringRequest','header'));
+        $pdf3   = PDF::loadView('hiringRequest.HiringRequestSPNPFunctions', compact('header', 'hiringRequest'));
+        $pdf->setPaper('letter', 'portrait');
+        $pdf2->setPaper('letter', 'landscape');
+        $pdf3->setPaper('letter', 'portrait');
+        $pdf->render();
+        $pdf2->render();
+        $pdf3->render();
+        //NUMERAMOS LAS PAGINAS DE LOS DETALLES
+        $dom_pdf    = $pdf2->getDomPDF();
+        $canvas     = $dom_pdf->get_canvas();
+        $canvas->page_text(670, 570, "Pagina {PAGE_NUM} de {PAGE_COUNT}", null, 10, array(0, 0, 0));
+        //UNIMOS LOS PDFS
+        $m->addRaw($pdf->output());
+        $m->addRaw($pdf2->output());
+        $m->addRaw($pdf3->output());
+        $createdPdf = $m->merge();
+        if ($option == "show") {
+            return response($createdPdf, 200)->header('Content-Type', 'application/pdf')->header('Content-Disposition', 'inline; filename="Solicitud de contratación de servicios profesionales.pdf"');
+        } else {
+            $resultado = $this->storeHiringRequest($hiringRequest->id,$createdPdf);
+            return response($resultado, 200);
+        }
+    }
+
+    public function MakeHiringRequestTiempoIntegral($id, $option)
+    {
+        $hri = HiringRequest::findOrFail($id);
+        if ($hri->details->count() == 0) {
+            return response(['message' => 'La solicitud de contratacion no tiene detalles, por lo cual no se puede generar el pdf'], 400);
+        };
+        $hiringRequest = $this->show($hri->id);
+        $header = $this->headerPDF($hiringRequest);
+        //Calculamos el total a pagar por persona
+
+        foreach ($hiringRequest->details as $detail) {
+
+            $detail->fullName = $detail->person->first_name . " " . $detail->person->middle_name . " " . $detail->person->last_name;
+            $detail->total = $detail->work_months * $detail->monthly_salary * $detail->salary_percentage;
+            $hiringRequest->total += $detail->total;
+            foreach ($detail->activities as $act) {
+                $mappedActivities[] = $act->name;
+            }
+            $detail->mappedActivities = $mappedActivities;
+            //Obtenemos los horarios de permanencia y funciones en tiempo normal de la persona   
+            $staySchedule = StaySchedule::where(['id' => $detail->stay_schedule_id])->with(['semester', 'scheduleDetails', 'scheduleActivities'])->firstOrFail();
+            $hrStay = [];
+            foreach ($staySchedule->scheduleDetails as $schedule) {
+                array_push($hrStay, $horario = $schedule->day . " - " . date("g:ia", strtotime($schedule->start_time)) . ' a ' . date("g:ia", strtotime($schedule->finish_time)));
+            }
+            $hrAct = [];
+            foreach ($staySchedule->scheduleActivities as $act) {
+                array_push($hrAct, $act->name);
+            }
+            $detail->stayActivities = $hrAct;
+            $detail->staySchedule =  $hrStay;
+            //obtenemos los grupos de contratacion
+            $mappedGroups = [];
+            foreach ($detail->hiringGroups as $hg) {
+                $days = [];
+                $times = [];
+                foreach ($hg->group->schedule as $schedule) {
+                    array_push($days, $schedule->day);
+                    $horario = date("g:ia", strtotime($schedule->start_hour)) . '-' . date("g:ia", strtotime($schedule->finish_hour));
+                    if (!in_array($horario, $times)) array_push($times, $horario);
+                }
+                $times = implode($times);
+                if (sizeof($days) == 2) {
+                    $days = implode(' y ', $days);
+                } else {
+                    $days = implode(',', $days);
+                }
+                $mappedGroups[] = (object)[
+                    "name" => $hg->group->course->name,
+                    "groupType" => $hg->group->grupo->name,
+                    "number" => $hg->group->number,
+                    'days' => $days,
+                    'time' => $times,
+
+                ];
+            }
+            $detail->mappedGroups = $mappedGroups;
+        }
+        $m = new Merger();
+        $pdf    = PDF::loadView('hiringRequest.HiringRequestTI', compact('header', 'hiringRequest'));
+        $pdf->setPaper('letter', 'portrait');
+        $pdf->render();
+        $pdf2   = PDF::loadView('hiringRequest.HiringRequestTIDetails', compact('hiringRequest','header'));
+        $pdf2->setPaper('letter', 'landscape');
+        $pdf2->render();
+        $dom_pdf    = $pdf2->getDomPDF();
+        $canvas     = $dom_pdf->get_canvas();
+        $canvas->page_text(670, 570, "Pagina {PAGE_NUM} de {PAGE_COUNT}", null, 10, array(0, 0, 0));
+        //UNIMOS LOS PDFS
+        $m->addRaw($pdf->output());
+        $m->addRaw($pdf2->output());
+        $createdPdf = $m->merge();
+        if ($option == "show") {
+            return response($createdPdf, 200)->header('Content-Type', 'application/pdf')->header('Content-Disposition', 'inline; filename="Solicitud de contratación de Tiempo Integral.pdf"');
+        } else {
+           
+            $resultado = $this->storeHiringRequest($hiringRequest->id,$createdPdf);
+            return response($resultado, 200);
+            
+        }
+    }
+
+    public function MakeHiringRequestTiempoAdicional($id, $option)
+    {
+        $hri = HiringRequest::findOrFail($id);
+        if ($hri->details->count() == 0) {
+            return response(['message' => 'La solicitud de contratacion no tiene detalles, por lo cual no se puede generar el pdf'], 400);
+        };
+        $hiringRequest = $this->show($hri->id);
+        $header = $this->headerPDF($hiringRequest);
+        //Calculamos el total a pagar por persona
+
+        foreach ($hiringRequest->details as $detail) {
+
+            $detail->fullName = $detail->person->first_name . " " . $detail->person->middle_name . " " . $detail->person->last_name;
+            $detail->total = $detail->hourly_rate * $detail->work_weeks * $detail->weekly_hours;
+            $hiringRequest->total += $detail->total;
+            foreach ($detail->activities as $act) {
+                $mappedActivities[] = $act->name;
+            }
+            $detail->mappedActivities = $mappedActivities;
+            //Obtenemos los horarios de permanencia y funciones en tiempo normal de la persona   
+            $staySchedule = StaySchedule::where(['id' => $detail->stay_schedule_id])->with(['semester', 'scheduleDetails', 'scheduleActivities'])->firstOrFail();
+            $hrStay = [];
+            foreach ($staySchedule->scheduleDetails as $schedule) {
+                array_push($hrStay, $horario = $schedule->day . " - " . date("g:ia", strtotime($schedule->start_time)) . ' a ' . date("g:ia", strtotime($schedule->finish_time)));
+            }
+            $hrAct = [];
+            foreach ($staySchedule->scheduleActivities as $act) {
+                array_push($hrAct, $act->name);
+            }
+            $detail->stayActivities = $hrAct;
+            $detail->staySchedule =  $hrStay;
+            //obtenemos los grupos de contratacion
+            $mappedGroups = [];
+            foreach ($detail->hiringGroups as $hg) {
+                $days = [];
+                $times = [];
+                foreach ($hg->group->schedule as $schedule) {
+                    array_push($days, $schedule->day);
+                    $horario = date("g:ia", strtotime($schedule->start_hour)) . '-' . date("g:ia", strtotime($schedule->finish_hour));
+                    if (!in_array($horario, $times)) array_push($times, $horario);
+                }
+                $times = implode($times);
+                if (sizeof($days) == 2) {
+                    $days = implode(' y ', $days);
+                } else {
+                    $days = implode(',', $days);
+                }
+                $mappedGroups[] = (object)[
+                    "name" => $hg->group->course->name,
+                    "groupType" => $hg->group->grupo->name,
+                    "number" => $hg->group->number,
+                    'days' => $days,
+                    'time' => $times,
+
+                ];
+            }
+            $detail->mappedGroups = $mappedGroups;
+        }
+        $m = new Merger();
+        $pdf    = PDF::loadView('hiringRequest.HiringRequestTA', compact('header', 'hiringRequest'));
+        $pdf->setPaper('letter', 'portrait');
+        $pdf->render();
+        $pdf2   = PDF::loadView('hiringRequest.HiringRequestTADetails', compact('hiringRequest', 'header'));
+        $pdf2->setPaper('letter', 'landscape');
+        $pdf2->render();
+        $dom_pdf    = $pdf2->getDomPDF();
+        $canvas     = $dom_pdf->get_canvas();
+        $canvas->page_text(670, 570, "Pagina {PAGE_NUM} de {PAGE_COUNT}", null, 10, array(0, 0, 0));
+        //UNIMOS LOS PDFS
+        $m->addRaw($pdf->output());
+        $m->addRaw($pdf2->output());
+        $createdPdf = $m->merge();
+
+        if ($option == "show") {
+            return response($createdPdf, 200)->header('Content-Type', 'application/pdf')->header('Content-Disposition', 'inline; filename="Solicitud de contratación de Tiempo Adicional.pdf"');
+        } else {
+            $resultado = $this->storeHiringRequest($hiringRequest->id,$createdPdf);
+            return response($resultado, 200);
+        }
+    }
+
+    public function getPdf($id){
+
+        $hiringRequest = HiringRequest::findOrFail($id);
+        if($hiringRequest->fileName == null){
+            return response(['message' => 'No se ha generado el archivo pdf de la solicitud'], 400);
+        }
+        $pdf = \Storage::disk('hiringRequest')->get($hiringRequest->fileName);
+        return response($pdf, 200)->header('Content-Type', 'application/pdf')->header('Content-Disposition', 'inline; filename="Solicitud de contratación.pdf"');
+    }
+
+    public function getAllStatus()
+    {
         $status = Status::all();
         return response($status, 200);
     }
