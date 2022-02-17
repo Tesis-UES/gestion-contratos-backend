@@ -2,6 +2,7 @@
 /public/hot
 public/hiringRequest
 public/personalFiles
+public/personDocsMerged
 public/requestDetailSchedules
 /public/storage
 /storage/*.key

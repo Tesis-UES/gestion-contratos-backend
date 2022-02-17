@@ -3,6 +3,7 @@
 namespace App\Http\Traits;
 
 use App\Constants\PersonValidationStatus;
+use App\Http\Controllers\PersonController;
 use App\Models\Person;
 
 trait ValidationTrait
@@ -11,7 +12,9 @@ trait ValidationTrait
 
     public function updatePersonStatus(Person $person)
     {
-
+       
+        $task = new PersonController;
+      
         //$person = Person::findOrFail($id);
         if ($person->employee == null) {
             //Si no es empleado verificamos que sea nacional o extanjero
@@ -19,6 +22,7 @@ trait ValidationTrait
                 if ($this->allFilesNational($person)) {
                     if ($this->validatedNational($person)) {
                         $status = PersonValidationStatus::Validado;
+                        $r = $task->mergePersonalDoc($person->id);
                     } else {
                         $status = PersonValidationStatus::Pendiente;
                     }
@@ -30,6 +34,7 @@ trait ValidationTrait
                 if ($this->allFilesInternational($person)) {
                     if ($this->validatedInternational($person)) {
                         $status = PersonValidationStatus::Validado;
+                        $r =$task->mergePersonalDoc($person->id);
                     } else {
                         $status = PersonValidationStatus::Pendiente;
                     }
@@ -45,6 +50,7 @@ trait ValidationTrait
                     if ($this->allFilesNational($person)) {
                         if ($this->validatedNational($person)) {
                             $status = PersonValidationStatus::Validado;
+                            $r =$task->mergePersonalDoc($person->id);
                         } else {
                             $status = PersonValidationStatus::Pendiente;
                         }
@@ -55,6 +61,7 @@ trait ValidationTrait
                     if ($this->allFilesNational($person) && $this->workPermissionFile($person)) {
                         if ($this->validatedNational($person) && $this->validateWorkPermission($person)) {
                             $status = PersonValidationStatus::Validado;
+                            $r =$task->mergePersonalDoc($person->id);
                         } else {
                             $status = PersonValidationStatus::Pendiente;
                         }
@@ -68,6 +75,7 @@ trait ValidationTrait
                     if ($this->allFilesInternational($person)) {
                         if ($this->validatedInternational($person)) {
                             $status = PersonValidationStatus::Validado;
+                            $r = $task->mergePersonalDoc($person->id);
                         } else {
                             $status = PersonValidationStatus::Pendiente;
                         }
@@ -78,6 +86,7 @@ trait ValidationTrait
                     if ($this->allFilesInternational($person) && $this->workPermissionFile($person)) {
                         if ($this->validatedInternational($person) && $this->validateWorkPermission($person)) {
                             $status = PersonValidationStatus::Validado;
+                            $r = $task->mergePersonalDoc($person->id);
                         } else {
                             $status = PersonValidationStatus::Pendiente;
                         }
