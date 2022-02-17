@@ -198,4 +198,9 @@ class GroupController extends Controller
         $groups = Group::with('course')->with('grupo')->with('schedule')->where([['academic_load_id',$academicLoad->id],['status','SDA'],['modality',$modality]])->get();
         return $groups;
     }
+
+    public function getHiringGroups(Request $request){
+        $groupsHiring = Group::with('course')->with('grupo')->with('schedule')->whereIn('id',$request->groups)->get();
+        return $groupsHiring;
+    }
 }

@@ -358,6 +358,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     //Rutas que manejan los select de las solicitudes de contratacion
     Route::get('/candidates/all', [PersonController::class, 'getCandidates']);
     Route::get('/hiringRequest/{modality}/groups/notAssigned', [GroupController::class, 'getAllGroupsWhitoutProfessors']);
+    Route::get('/hiringRequest/groups/Assigned', [GroupController::class, 'getHiringGroups']);
     Route::get('/candidate/{Person}/ActualInfo', [PersonController::class, 'getInfoCandidate']);
 
     // Rutas que manejan los detalles de las solicitudes de contratacion
@@ -369,6 +370,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
         Route::put('/hiringRequest/details/{id}/SPNP', [HiringRequestDetailController::class, 'updateSPNPRequestDetail']);
         Route::put('/hiringRequest/details/{id}/TI', [HiringRequestDetailController::class, 'updateTIRequestDetails']);
         Route::put('/hiringRequest/details/{id}/TA', [HiringRequestDetailController::class, 'updateTARequestDetails']);
+        Route::post('/hiringRequest/details/{id}/PDF', [HiringRequestDetailController::class, 'addRequestDetailPdf']);
         Route::delete('/hiringRequest/details/{id}', [HiringRequestDetailController::class, 'deleteRequestDetails']);
     });
 

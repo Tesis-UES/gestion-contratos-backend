@@ -15,8 +15,11 @@ use App\Models\HiringGroup;
 use App\Models\HiringRequest;
 use App\Models\HiringRequestDetail;
 use App\Models\Person;
+use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Storage;
 
 class HiringRequestDetailController extends Controller
 {
@@ -239,7 +242,7 @@ class HiringRequestDetailController extends Controller
 
     public function getRequestDetails($id)
     {
-        $requestDetails = HiringRequestDetail::with(['groups', 'activities'])->findOrFail($id);
+        $requestDetails = HiringRequestDetail::with(['HiringGroups', 'activities'])->findOrFail($id);
 
         $user = Auth::user();
 
@@ -544,5 +547,30 @@ class HiringRequestDetailController extends Controller
         $this->RegisterAction("El usuario ha actualizado el detalle de la solicitud de contratación TA con id: " . $id, "high");
         DB::commit();
         return response($detail);
+    }
+
+    public function addRequestDetailPdf($id, Request $request)
+    {
+        $request->validate(['schedule' => 'required|mimes:pdf']);
+        $requestDetail = HiringRequestDetail::with('hiringRequest')->findOrFail($id);
+
+        $requestStatus = $requestDetail->hiringRequest->getLastStatusAttribute();
+        if ($requestStatus->order > 2) {
+            return response(['message' => 'No puede editar una solicitud de contratacion con estado: "' . $requestStatus->name . '"'], 400);
+        }
+
+        if ($requestDetail->schedule_file != null) {
+            Storage::disk('requestDetailSchedules')->delete($requestDetail->schedule_file);
+        }
+
+        $file = $request->file('schedule');
+        $fileName = 'horarioDetalleContratacion' . $id . '.pdf';
+        Storage::disk('requestDetailSchedules')->put($fileName, File::get($file));
+
+        $requestDetail->schedule_file = $fileName;
+        $requestDetail->save();
+
+        $this->RegisterAction("El usuario ha guardado el archivo pdf que contiene el horario del detalle de contratacion " . $id, "high");
+        return;
     }
 }
