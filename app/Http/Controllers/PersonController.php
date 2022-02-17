@@ -1038,7 +1038,7 @@ class PersonController extends Controller
             $user = Auth::user();
             $person = Person::where('user_id', $user->id)->firstOrFail();
         }else{
-            $person = Person::where('user_id',$id)->firstOrFail();
+            $person = Person::where('id',$id)->firstOrFail();
         }
         if ($person->employee == null) {
             //Si no es empleado verificamos que sea nacional o extanjero
@@ -1094,9 +1094,11 @@ class PersonController extends Controller
        
     }
 
+   
+
     public  function mergePersonalDoc($id){
       $respuesta =   $this->getDocumentsByCase($id);
-      $person = Person::where('user_id',$id)->firstOrFail();
+      $person = Person::where('id',$id)->firstOrFail();
        $m = new Merger();
        foreach($respuesta as $archivo){
            switch ($archivo) {
@@ -1135,10 +1137,11 @@ class PersonController extends Controller
            }
        }
        $createdPdf = $m->merge();
-       return response($createdPdf, 200)->header('Content-Type', 'application/pdf')->header('Content-Disposition', 'inline; filename="Documentos.pdf"');
-       //return response(['pdf' => $createdPdf], 200);
-       
-       
+       $namePdf = $person->first_name .'_'. $person->last_name . '_' . $person->id . '.pdf';
+       $person->merged_docs =  $namePdf;
+       \Storage::disk('personDocsMerged')->put($namePdf,$createdPdf);
+       $person->save();
+        return 'exito';       
     }
 
     public function calculaedad($fechanacimiento)

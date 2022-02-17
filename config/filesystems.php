@@ -52,6 +52,10 @@ return [
             'driver'    =>  'local',
             'root'      =>  public_path().'/hiringRequest',
         ],
+        'personDocsMerged'=>[
+            'driver'    =>  'local',
+            'root'      =>  public_path().'/personDocsMerged',
+        ],
         /* Driver que contiene la ubicacion de los formatos*/
         'formats'=>[
             'driver'    =>  'local',

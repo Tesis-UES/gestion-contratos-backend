@@ -58,6 +58,7 @@ class Person extends Model
         'other_title',
         'other_title_name',
         'other_title_doc',
+        'merged_docs',
     ];
 
     public function personValidations()
