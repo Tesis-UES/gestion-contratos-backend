@@ -256,18 +256,24 @@ class HiringRequestDetailController extends Controller
 
     public function deleteRequestDetails($id)
     {
-        $requestDetails = HiringRequestDetail::with('hiringRequest')->findOrFail($id);
+        $requestDetail = HiringRequestDetail::with('hiringRequest')->findOrFail($id);
 
-        $requestStatus = $requestDetails->hiringRequest->getLastStatusAttribute();
+        $requestStatus = $requestDetail->hiringRequest->getLastStatusAttribute();
         $user = Auth::user();
 
-        if ($user->school_id != $requestDetails->hiringRequest->school_id) {
+        if ($user->school_id != $requestDetail->hiringRequest->school_id) {
             return response(['message' => 'No puede editar solicitudes de contratacion de otra escuela'], 400);
         } elseif ($requestStatus->order > 2) {
             return response(['message' => 'No puede eliminar detalles de una solicitud de contratacion con estado: "' . $requestStatus->name . '"'], 400);
         }
 
-        $requestDetails->delete();
+        foreach ($requestDetail->groups as $group) {
+            $group->people_id = null;
+            $group->status = GroupStatus::SDA;
+            $group->save();
+        }
+
+        $requestDetail->delete();
         $this->RegisterAction("El usuario ha eliminado a un docente a la solicitud de contratación con id: " . $id, "high");
         return response(null, 204);
     }
