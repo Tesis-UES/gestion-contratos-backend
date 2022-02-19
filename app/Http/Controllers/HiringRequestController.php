@@ -200,7 +200,7 @@ class HiringRequestController extends Controller
         $hiringRequest->request_status = HiringRequestStatusCode::EDS;
         $hiringRequest->save();
         $hiringRequest->status()->attach($status);
-        return response(['message' => 'El archivo pdf ha sido guardado con exito ']);
+        return ['message' => 'El archivo pdf ha sido guardado con exito ', 'success' => true];
     }
 
     public function MakeHiringRequestSPNP($id, $option)
@@ -293,7 +293,7 @@ class HiringRequestController extends Controller
             return response(['pdf' => $pdf], 200);
         } else {
             $resultado = $this->storeHiringRequest($hiringRequest->id, $createdPdf);
-            return response($resultado, 200);
+            return response($resultado, 201);
         }
     }
 
@@ -373,7 +373,7 @@ class HiringRequestController extends Controller
             return response(['pdf' => $pdf], 200);
         } else {
             $resultado = $this->storeHiringRequest($hiringRequest->id, $createdPdf);
-            return response($resultado, 200);
+            return response($resultado, 201);
         }
     }
 
@@ -455,7 +455,7 @@ class HiringRequestController extends Controller
             return response(['pdf' => $pdf], 200);
         } else {
             $resultado = $this->storeHiringRequest($hiringRequest->id, $createdPdf);
-            return response($resultado, 200);
+            return response($resultado, 201);
         }
     }
 
@@ -466,7 +466,7 @@ class HiringRequestController extends Controller
             return response(['message' => 'No se ha generado el archivo pdf de la solicitud'], 400);
         }
         $pdf = base64_encode(Storage::disk('hiringRequest')->get($hiringRequest->fileName));
-        return response(['pdf' => $pdf], 200);
+        return response(['pdf' => $pdf], 201);
     }
 
     public function getAllStatus()
