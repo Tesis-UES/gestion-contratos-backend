@@ -199,7 +199,7 @@ class HiringRequestController extends Controller
         $hiringRequest->request_status = HiringRequestStatusCode::EDS;
         $hiringRequest->save();
         $hiringRequest->status()->attach($status);
-        return response(['message' => 'El archivo pdf ha sido guardado con exito ']);
+        return ['message' => 'El archivo pdf ha sido guardado con exito ','success' => true];
     }
 
     public function MakeHiringRequestSPNP($id, $option)
