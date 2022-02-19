@@ -169,7 +169,8 @@ class HiringRequestController extends Controller
         return response($hiringRequests, 200);
     }
 
-    public function headerPDF($hiringRequest){
+    public function headerPDF($hiringRequest)
+    {
         $date = Carbon::now()->locale('es');
         $fecha = "Ciudad Universitaria Dr. Fabio Castillo Figueroa, " . $date->day . " de " . $date->monthName . " de " . $date->year . ".";
         $fechaDetalle = $date->day . " de " . $date->monthName . " de " . $date->year . ".";
@@ -178,23 +179,24 @@ class HiringRequestController extends Controller
         } else {
             $escuela = "Escuela de " . $hiringRequest->school->name;
         }
-        return $detalle[] = (object)[ 
+        return $detalle[] = (object)[
             'fecha' => $fecha,
             'fechaDetalle' => $fechaDetalle,
             'escuela' => $escuela
         ];
     }
 
-    public function storeHiringRequest($id,$pdf){
+    public function storeHiringRequest($id, $pdf)
+    {
         $hiringRequest = HiringRequest::findOrFail($id);
         $hiringName = $hiringRequest->code . "-Solicitud.pdf";
         \Storage::disk('hiringRequest')->put($hiringName, $pdf);
         $hiringRequest->fileName = $hiringName;
-        $status = Status::whereIn('code', [HiringRequestStatusCode::FSC,HiringRequestStatusCode::EDS])->get();
+        $status = Status::whereIn('code', [HiringRequestStatusCode::FSC, HiringRequestStatusCode::EDS])->get();
         $hiringRequest->request_status = HiringRequestStatusCode::EDS;
         $hiringRequest->save();
         $hiringRequest->status()->attach($status);
-        return 'Se Ha guardado con Exito el PDF';
+        return response(['message' => 'El archivo pdf ha sido guardado con exito ']);
     }
 
     public function MakeHiringRequestSPNP($id, $option)
@@ -265,7 +267,7 @@ class HiringRequestController extends Controller
         //Ejemplo de como se hace merge de pdfs
         $m = new Merger();
         $pdf    = PDF::loadView('hiringRequest.HiringRequestSPNP', compact('header', 'hiringRequest'));
-        $pdf2   = PDF::loadView('hiringRequest.HiringRequestSPNPDetails', compact('hiringRequest','header'));
+        $pdf2   = PDF::loadView('hiringRequest.HiringRequestSPNPDetails', compact('hiringRequest', 'header'));
         $pdf3   = PDF::loadView('hiringRequest.HiringRequestSPNPFunctions', compact('header', 'hiringRequest'));
         $pdf->setPaper('letter', 'portrait');
         $pdf2->setPaper('letter', 'landscape');
@@ -285,7 +287,7 @@ class HiringRequestController extends Controller
         if ($option == "show") {
             return response($createdPdf, 200)->header('Content-Type', 'application/pdf')->header('Content-Disposition', 'inline; filename="Solicitud de contratación de servicios profesionales.pdf"');
         } else {
-            $resultado = $this->storeHiringRequest($hiringRequest->id,$createdPdf);
+            $resultado = $this->storeHiringRequest($hiringRequest->id, $createdPdf);
             return response($resultado, 200);
         }
     }
@@ -301,7 +303,6 @@ class HiringRequestController extends Controller
         //Calculamos el total a pagar por persona
 
         foreach ($hiringRequest->details as $detail) {
-
             $detail->fullName = $detail->person->first_name . " " . $detail->person->middle_name . " " . $detail->person->last_name;
             $detail->total = $detail->work_months * $detail->monthly_salary * $detail->salary_percentage;
             $hiringRequest->total += $detail->total;
@@ -352,7 +353,7 @@ class HiringRequestController extends Controller
         $pdf    = PDF::loadView('hiringRequest.HiringRequestTI', compact('header', 'hiringRequest'));
         $pdf->setPaper('letter', 'portrait');
         $pdf->render();
-        $pdf2   = PDF::loadView('hiringRequest.HiringRequestTIDetails', compact('hiringRequest','header'));
+        $pdf2   = PDF::loadView('hiringRequest.HiringRequestTIDetails', compact('hiringRequest', 'header'));
         $pdf2->setPaper('letter', 'landscape');
         $pdf2->render();
         $dom_pdf    = $pdf2->getDomPDF();
@@ -365,10 +366,8 @@ class HiringRequestController extends Controller
         if ($option == "show") {
             return response($createdPdf, 200)->header('Content-Type', 'application/pdf')->header('Content-Disposition', 'inline; filename="Solicitud de contratación de Tiempo Integral.pdf"');
         } else {
-           
-            $resultado = $this->storeHiringRequest($hiringRequest->id,$createdPdf);
+            $resultado = $this->storeHiringRequest($hiringRequest->id, $createdPdf);
             return response($resultado, 200);
-            
         }
     }
 
@@ -448,15 +447,15 @@ class HiringRequestController extends Controller
         if ($option == "show") {
             return response($createdPdf, 200)->header('Content-Type', 'application/pdf')->header('Content-Disposition', 'inline; filename="Solicitud de contratación de Tiempo Adicional.pdf"');
         } else {
-            $resultado = $this->storeHiringRequest($hiringRequest->id,$createdPdf);
+            $resultado = $this->storeHiringRequest($hiringRequest->id, $createdPdf);
             return response($resultado, 200);
         }
     }
 
-    public function getPdf($id){
-
+    public function getPdf($id)
+    {
         $hiringRequest = HiringRequest::findOrFail($id);
-        if($hiringRequest->fileName == null){
+        if ($hiringRequest->fileName == null) {
             return response(['message' => 'No se ha generado el archivo pdf de la solicitud'], 400);
         }
         $pdf = \Storage::disk('hiringRequest')->get($hiringRequest->fileName);
