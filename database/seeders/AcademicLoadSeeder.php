@@ -47,7 +47,7 @@ class AcademicLoadSeeder extends Seeder
         Group::create(['status'=>'DA','modality'=>'Presencial','number'=>1,'group_type_id'=>2,'academic_load_id'=>2,'course_id'=>3,'people_id'=>2]);
         Schedule::create(['day'=>'Lunes','start_hour'=>"8:00",'finish_hour'=>"9:45",'group_id'=>8]);
         Group::create(['status'=>'DA','modality'=>'Presencial','number'=>2,'group_type_id'=>2,'academic_load_id'=>2,'course_id'=>3,'people_id'=>3]);
-        Schedule::create(['day'=>'Martes','start_hour'=>"8:00",'finish_hour'=>"9:45",'group_id'=>8]);
+        Schedule::create(['day'=>'Martes','start_hour'=>"8:00",'finish_hour'=>"9:45",'group_id'=>9]);
 
         Group::create(['status'=>'DA','modality'=>'Presencial','number'=>1,'group_type_id'=>1,'academic_load_id'=>2,'course_id'=>4,'people_id'=>1]);
         Schedule::create(['day'=>'Lunes','start_hour'=>"8:00",'finish_hour'=>"9:45",'group_id'=>10]);
