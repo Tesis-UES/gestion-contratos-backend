@@ -17,7 +17,7 @@ class CreateHiringActivitiesTable  extends Migration
             $table->id();
             $table->integer('hiring_request_detail_id');
             $table->integer('activity_id');
-            $table->foreign('hiring_request_detail_id')->references('id')->on('hiring_requests')->onDelete('cascade')->nonullable();
+            $table->foreign('hiring_request_detail_id')->references('id')->on('hiring_request_details')->onDelete('cascade')->nonullable();
             $table->foreign('activity_id')->references('id')->on('activities')->nonullable();
         });
     }
