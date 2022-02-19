@@ -292,7 +292,7 @@ class HiringRequestController extends Controller
             return response(['pdf'=>$pdf], 200);
         } else {
             $resultado = $this->storeHiringRequest($hiringRequest->id, $createdPdf);
-            return response($resultado, 200);
+            return response($resultado, 201);
         }
     }
 
@@ -372,7 +372,7 @@ class HiringRequestController extends Controller
             return response(['pdf'=>$pdf], 200);
         } else {
             $resultado = $this->storeHiringRequest($hiringRequest->id, $createdPdf);
-            return response($resultado, 200);
+            return response($resultado, 201);
         }
     }
 
@@ -454,7 +454,7 @@ class HiringRequestController extends Controller
             return response(['pdf'=>$pdf], 200);
         } else {
             $resultado = $this->storeHiringRequest($hiringRequest->id, $createdPdf);
-            return response($resultado, 200);
+            return response($resultado, 201);
         }
     }
 
