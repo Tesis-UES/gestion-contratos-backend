@@ -191,8 +191,8 @@ class HrSeeder extends Seeder
                 $activities[] = $activity;
             }
             $savedDetail->activities()->saveMany($activities);
-
-            if ($p == 3) {
+           
+            if ($p == 6) {
                 $groups = [81, 82, 83];
             } else {
                 $groups = [75, 76, 77];
@@ -208,6 +208,7 @@ class HrSeeder extends Seeder
             $savedDetail->groups()->saveMany($gps);
             $activities = [];
             $gps = [];
+            $groups = [];
         }
     }
 }
