@@ -48,18 +48,28 @@ return [
             'root'      =>  public_path() . '/personalFiles',
         ],
 
-        'hiringRequest'=>[
+        /* Driver que contiene la ubicacion de las solitudes de contratacion*/
+        'hiringRequest' => [
             'driver'    =>  'local',
-            'root'      =>  public_path().'/hiringRequest',
+            'root'      =>  public_path() . '/hiringRequest',
         ],
-        'personDocsMerged'=>[
+
+        /* Driver que contiene la ubicacion de los archivos personales unidos*/
+        'personDocsMerged' => [
             'driver'    =>  'local',
-            'root'      =>  public_path().'/personDocsMerged',
+            'root'      =>  public_path() . '/personDocsMerged',
         ],
+
         /* Driver que contiene la ubicacion de los formatos*/
         'formats' => [
             'driver'    =>  'local',
             'root'      =>  public_path() . '/formats',
+        ],
+
+        /* Driver que contiene la ubicacion de los acuerdos*/
+        'agreements' => [
+            'driver'    =>  'local',
+            'root'      =>  public_path() . '/agreements',
         ],
 
         /* Driver que contiene la ubicacion de los horarios de detalle de solicitud de contratacion*/
