@@ -107,7 +107,10 @@ class HiringRequestController extends Controller
 
     public function getAllHiringRequestBySchool($id, Request $request)
     {
-        $hiringRequests = HiringRequest::where('school_id', '=', $id)->with('school')->with('contractType')->orderBy('created_at', 'DESC')->paginate($request->query('paginate'));
+        $hiringRequests = HiringRequest::where('school_id', '=', $id)
+            ->with(['school', 'contractType'])
+            ->orderBy('code', 'DESC')
+            ->paginate($request->query('paginate'));
         $hiringRequests->makeHidden('status');
         $this->RegisterAction("El usuario ha consultado todas las solicitudes de contratación", "medium");
         return response($hiringRequests, 200);
