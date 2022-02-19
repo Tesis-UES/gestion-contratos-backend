@@ -288,7 +288,8 @@ class HiringRequestController extends Controller
         $m->addRaw($pdf3->output());
         $createdPdf = $m->merge();
         if ($option == "show") {
-            return response($createdPdf, 200)->header('Content-Type', 'application/pdf')->header('Content-Disposition', 'inline; filename="Solicitud de contratación de servicios profesionales.pdf"');
+            $pdf = base64_encode($createdPdf);
+            return response(['pdf'=>$pdf], 200);
         } else {
             $resultado = $this->storeHiringRequest($hiringRequest->id, $createdPdf);
             return response($resultado, 200);
@@ -367,7 +368,8 @@ class HiringRequestController extends Controller
         $m->addRaw($pdf2->output());
         $createdPdf = $m->merge();
         if ($option == "show") {
-            return response($createdPdf, 200)->header('Content-Type', 'application/pdf')->header('Content-Disposition', 'inline; filename="Solicitud de contratación de Tiempo Integral.pdf"');
+            $pdf = base64_encode($createdPdf);
+            return response(['pdf'=>$pdf], 200);
         } else {
             $resultado = $this->storeHiringRequest($hiringRequest->id, $createdPdf);
             return response($resultado, 200);
@@ -448,7 +450,8 @@ class HiringRequestController extends Controller
         $createdPdf = $m->merge();
 
         if ($option == "show") {
-            return response($createdPdf, 200)->header('Content-Type', 'application/pdf')->header('Content-Disposition', 'inline; filename="Solicitud de contratación de Tiempo Adicional.pdf"');
+            $pdf = base64_encode($createdPdf);
+            return response(['pdf'=>$pdf], 200);
         } else {
             $resultado = $this->storeHiringRequest($hiringRequest->id, $createdPdf);
             return response($resultado, 200);
@@ -461,8 +464,8 @@ class HiringRequestController extends Controller
         if ($hiringRequest->fileName == null) {
             return response(['message' => 'No se ha generado el archivo pdf de la solicitud'], 400);
         }
-        $pdf = \Storage::disk('hiringRequest')->get($hiringRequest->fileName);
-        return response($pdf, 200)->header('Content-Type', 'application/pdf')->header('Content-Disposition', 'inline; filename="Solicitud de contratación.pdf"');
+        $pdf = base64_encode(\Storage::disk('hiringRequest')->get($hiringRequest->fileName));
+        return response(['pdf'=>$pdf], 200);
     }
 
     public function getAllStatus()
