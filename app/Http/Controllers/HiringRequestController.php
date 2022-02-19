@@ -465,7 +465,7 @@ class HiringRequestController extends Controller
             return response(['message' => 'No se ha generado el archivo pdf de la solicitud'], 400);
         }
         $pdf = base64_encode(\Storage::disk('hiringRequest')->get($hiringRequest->fileName));
-        return response(['pdf'=>$pdf], 200);
+        return response(['pdf'=>$pdf], 201);
     }
 
     public function getAllStatus()
