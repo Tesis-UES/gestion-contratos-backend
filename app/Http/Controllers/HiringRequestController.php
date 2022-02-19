@@ -2,22 +2,23 @@
 
 namespace App\Http\Controllers;
 
+use App\Constants\HiringRequestStatusCode;
 use App\Models\HiringRequest;
+use App\Models\HiringRequestDetail;
 use App\Models\Status;
 use App\Models\StaySchedule;
 use App\Http\Requests\StoreHiringRequestRequest;
 use App\Http\Requests\UpdateHiringRequestRequest;
 use App\Http\Traits\WorklogTrait;
 use App\Http\Traits\GeneratorTrait;
-use Illuminate\Support\Facades\Auth;
-use Illuminate\Http\Request;
+use App\Models\Agreement;
+use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
-use App\Constants\HiringRequestStatusCode;
-use App\Models\HiringRequestDetail;
-use Illuminate\Support\Facades\DB;
-use PDF;
-use PhpOffice\PhpSpreadsheet\Calculation\MathTrig\Subtotal;
 use iio\libmergepdf\Merger;
+use Illuminate\Http\Request;
+use Illuminate\Support\Facades\Auth;
+use Illuminate\Support\Facades\File;
+use Illuminate\Support\Facades\Storage;
 
 class HiringRequestController extends Controller
 {
@@ -193,7 +194,7 @@ class HiringRequestController extends Controller
     {
         $hiringRequest = HiringRequest::findOrFail($id);
         $hiringName = $hiringRequest->code . "-Solicitud.pdf";
-        \Storage::disk('hiringRequest')->put($hiringName, $pdf);
+        Storage::disk('hiringRequest')->put($hiringName, $pdf);
         $hiringRequest->fileName = $hiringName;
         $status = Status::whereIn('code', [HiringRequestStatusCode::FSC, HiringRequestStatusCode::EDS])->get();
         $hiringRequest->request_status = HiringRequestStatusCode::EDS;
@@ -289,7 +290,7 @@ class HiringRequestController extends Controller
         $createdPdf = $m->merge();
         if ($option == "show") {
             $pdf = base64_encode($createdPdf);
-            return response(['pdf'=>$pdf], 200);
+            return response(['pdf' => $pdf], 200);
         } else {
             $resultado = $this->storeHiringRequest($hiringRequest->id, $createdPdf);
             return response($resultado, 200);
@@ -369,7 +370,7 @@ class HiringRequestController extends Controller
         $createdPdf = $m->merge();
         if ($option == "show") {
             $pdf = base64_encode($createdPdf);
-            return response(['pdf'=>$pdf], 200);
+            return response(['pdf' => $pdf], 200);
         } else {
             $resultado = $this->storeHiringRequest($hiringRequest->id, $createdPdf);
             return response($resultado, 200);
@@ -451,7 +452,7 @@ class HiringRequestController extends Controller
 
         if ($option == "show") {
             $pdf = base64_encode($createdPdf);
-            return response(['pdf'=>$pdf], 200);
+            return response(['pdf' => $pdf], 200);
         } else {
             $resultado = $this->storeHiringRequest($hiringRequest->id, $createdPdf);
             return response($resultado, 200);
@@ -464,13 +465,45 @@ class HiringRequestController extends Controller
         if ($hiringRequest->fileName == null) {
             return response(['message' => 'No se ha generado el archivo pdf de la solicitud'], 400);
         }
-        $pdf = base64_encode(\Storage::disk('hiringRequest')->get($hiringRequest->fileName));
-        return response(['pdf'=>$pdf], 200);
+        $pdf = base64_encode(Storage::disk('hiringRequest')->get($hiringRequest->fileName));
+        return response(['pdf' => $pdf], 200);
     }
 
     public function getAllStatus()
     {
         $status = Status::all();
         return response($status, 200);
+    }
+
+    public function addAgreement($id, Request $request)
+    {
+        $fields = $request->validate([
+            'code'      => 'required|string|unique:agreements',
+            'approved'  => 'required|boolean',
+            'agreed_on' => 'required|date',
+            'file'      => 'required|mimes:pdf',
+        ]);
+
+        $hiringRequest = HiringRequest::findOrFail($id);
+
+        // TODO: check if the request is in the required status
+        if (false) {
+            return response(['message' => 'La solicitud debe tener el estado <ESTADO> para poder agregar un acuerdo de Junta Directiva'], 400);
+        }
+
+        $file = $request->file('file');
+        $fileName = 'acuerdo-' . $fields['code'] . '.pdf';
+        Storage::disk('agreements')->put($fileName, File::get($file));
+
+        $agreement = new Agreement($fields);
+        $agreement->file_uri = $fileName;
+        $agreement->save();
+
+        $status = Status::where('code', [HiringRequestStatusCode::RJD])->first();
+        $hiringRequest->request_status = HiringRequestStatusCode::RJD;
+        $hiringRequest->status()->attach(['status_id' => $status->id]);
+
+        $this->RegisterAction("El usuario ha guardado el archivo pdf que contiene el acuerdo de junta directiva para la solicitud con id: " . $id, "high");
+        return;
     }
 }

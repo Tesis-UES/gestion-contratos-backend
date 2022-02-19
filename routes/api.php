@@ -353,6 +353,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::get('/hiringRequest/all/peticions', [HiringRequestController::class, 'getAllHiringRequests']);
     Route::get('/hiringRequest/school/{id}', [HiringRequestController::class, 'getAllHiringRequestBySchool']);
     Route::get('/hiringRequest/status/all', [HiringRequestController::class, 'getAllStatus']);
+    Route::post('/hiringRequest/{id}/agreement', [HiringRequestController::class, 'addAgreement']);
 
 
     //Rutas que manejan los select de las solicitudes de contratacion
