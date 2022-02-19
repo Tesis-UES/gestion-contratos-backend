@@ -45,4 +45,9 @@ class HiringRequest extends Model
     {
         return $this->hasMany(HiringRequestDetail::class);
     }
+
+    public function agreement()
+    {
+        return $this->hasOne(Agreement::class);
+    }
 }
