@@ -18,6 +18,8 @@ use DB;
 use Carbon\Carbon;
 use iio\libmergepdf\Merger;
 use App\Http\Controllers\PersonController;
+use App\Models\HiringRequest;
+use App\Models\HiringRequestDetail;
 
 class ContractController extends Controller
 {
@@ -106,9 +108,9 @@ class ContractController extends Controller
 
     }
 
-    public function test()
+    public function getPrincipalData($id)
     {
-        $candidato = Person::findOrFail(1);
+        $candidato = Person::findOrFail($id);
         //Primero obtenermos los datos comunes de los contrato
         $comunes = $this->getPrincipalinfo();
         if ($candidato->nationality == 'El Salvador') {
@@ -117,10 +119,19 @@ class ContractController extends Controller
             $person = $this->getDatosGeneralesExtranjero($candidato->id);
         } 
         return [
-            'comunes' => $comunes,
-            'person' => $person
+            'comunes' => (object)$comunes,
+            'person' => (object)$person
         ];	
-       
-      
+    }
+
+    public function contractGenerateServiciosProfesionales(){
+    
+        $requestDetails = HiringRequestDetail::with(['HiringGroups', 'activities'])->findOrFail(1);
+        //Obtenermos los datos generales del contrato y la informacion personal del candidato
+        $PersonalData = (object) $this->getPrincipalData($requestDetails->person_id);
+        //Se prepara la informacion pertienente a la parte del contrato de servicios profesionales
+        return $PersonalData->comunes->nombreRector;	
+        	
+
     }
 }

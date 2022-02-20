@@ -387,5 +387,5 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::get('/hiringRequest/{id}/pdf', [HiringRequestController::class, 'getPdf']);
     Route::get('/persons/merge/{id?}/pdf', [PersonController::class, 'mergePersonalDoc']);
 
-    Route::get('/contract/test', [ContractController::class, 'test']);
+    Route::get('/contract/test', [ContractController::class, 'contractGenerateServiciosProfesionales']);
 });
