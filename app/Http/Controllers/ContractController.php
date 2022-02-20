@@ -49,7 +49,7 @@ class ContractController extends Controller
         ];
     }
 
-    public function getDatosGenerales($id)
+    public function getDatosGeneralesSN($id)
     {
         $task = new PersonController;
         $formatter = new NumeroALetras();
@@ -61,18 +61,66 @@ class ContractController extends Controller
         $candidatoProfesion = $candidato->professional_title;
         $candidatoCiudad = $candidato->city;
         $candidatoDepartamento = $candidato->department;
+        $candidatoProfesion = $candidato->professional_title;
         //Identificamos el tipo de candidato si es Nacional o Nacionalizado
         if ($candidato->is_nationalized) {
             $candidato->resident_card_number;
-            return $documento = 'CON DOCUMENTO DE CARNET DE RESIDENCIA NUMERO ' . $formatter->toString($candidato->resident_card_number);
+            $documento = 'CON DOCUMENTO DE CARNET DE RESIDENCIA NUMERO ' . $formatter->toString($candidato->resident_card_number);
         } else {
-            return $documento = 'CON DOCUMENTO UNICO DE IDENTIDAD NUMERO ' . $candidato->dui_text;
+            $documento = 'CON DOCUMENTO UNICO DE IDENTIDAD NUMERO ' . $candidato->dui_text;
         }
         $candiatoNit = $candidato->nit_text;
+        return [
+            'nombreCandidato' => $nombreCandidato,
+            'candidatoEdad' => $candidatoEdad,
+            'candidatoProfesion' => $candidatoProfesion,
+            'candidatoCiudad' => $candidatoCiudad,
+            'candidatoDepartamento' => $candidatoDepartamento,
+            'documentoDC' => $documento,
+            'candiatoNit' => $candiatoNit,
+            'candidatoProfesion' => $candidatoProfesion
+        ];
+    
+        
+    }
+
+    public function getDatosGeneralesExtranjero($id){
+        $task = new PersonController;
+        $formatter = new NumeroALetras();
+        //Primero buscamos el candidato
+        $candidato = Person::findOrFail($id);
+        $edad = $task->calculaedad($candidato->birth_date);
+        $nombreCandidato = "" . $candidato->first_name . " " . $candidato->middle_name . " " . $candidato->last_name . "";
+        $candidatoEdad = $formatter->toString($edad);
+        $candidatoProfesion = $candidato->professional_title;
+        $nacionalidad = $candidato->nationality;
+        $pasaporte = $candidato->passport_number;
+        $profesion = $candidato->professional_title;
+        return [ 
+            'nombreCandidato' => $nombreCandidato,
+            'candidatoEdad'   => $candidatoEdad,
+            'candidatoProfesion' => $candidatoProfesion,
+            'nacionalidad' => $nacionalidad,
+            'pasaporte' => $pasaporte,
+        ];
+
     }
 
     public function test()
     {
-        return  $this->getDatosGenerales(1);
+        $candidato = Person::findOrFail(1);
+        //Primero obtenermos los datos comunes de los contrato
+        $comunes = $this->getPrincipalinfo();
+        if ($candidato->nationality == 'El Salvador') {
+            $person = $this->getDatosGeneralesSN($candidato->id);
+        } else {
+            $person = $this->getDatosGeneralesExtranjero($candidato->id);
+        } 
+        return [
+            'comunes' => $comunes,
+            'person' => $person
+        ];	
+       
+      
     }
 }

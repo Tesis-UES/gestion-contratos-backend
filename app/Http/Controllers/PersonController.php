@@ -1011,12 +1011,12 @@ class PersonController extends Controller
             $part2 = $formatter->toString($nitParts[1]);
         }
 
-        if (substr($nitParts[2], 0, -2) == 0 && substr($nitParts[2], 1, -1) == !0) {
+        if (substr($nitParts[2], 0, -2) == 0) {
             $part3 = "CERO " . $formatter->toString($nitParts[2]) . "";
         }
-        if (substr($nitParts[2], 1, -1) == 0) {
+        if (substr($nitParts[2], 1, -1) == 0 && substr($nitParts[2], 0, -2) == 0) {
             $part3 = "CERO CERO " . $formatter->toString($nitParts[2]) . "";
-        } else {
+        } else if(substr($nitParts[2], 0, -2) == !0 && substr($nitParts[2], 0, -2) == !0) {
             $part3 = $formatter->toString($nitParts[2]);
         }
         $part4 =  $formatter->toString($nitParts[3]);
