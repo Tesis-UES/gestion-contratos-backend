@@ -20,6 +20,7 @@ use iio\libmergepdf\Merger;
 use App\Http\Controllers\PersonController;
 use App\Models\HiringRequest;
 use App\Models\HiringRequestDetail;
+use PhpParser\Node\Stmt\TryCatch;
 
 class ContractController extends Controller
 {
@@ -67,9 +68,9 @@ class ContractController extends Controller
         //Identificamos el tipo de candidato si es Nacional o Nacionalizado
         if ($candidato->is_nationalized) {
             $candidato->resident_card_number;
-            $documento = 'CON DOCUMENTO DE CARNET DE RESIDENCIA NUMERO ' . $formatter->toString($candidato->resident_card_number);
+            $documento = 'DOCUMENTO DE CARNET DE RESIDENCIA NUMERO ' . $formatter->toString($candidato->resident_card_number);
         } else {
-            $documento = 'CON DOCUMENTO UNICO DE IDENTIDAD NUMERO ' . $candidato->dui_text;
+            $documento = 'DOCUMENTO UNICO DE IDENTIDAD NUMERO ' . $candidato->dui_text;
         }
         $candiatoNit = $candidato->nit_text;
         return [
@@ -79,14 +80,13 @@ class ContractController extends Controller
             'candidatoCiudad' => $candidatoCiudad,
             'candidatoDepartamento' => $candidatoDepartamento,
             'documentoDC' => $documento,
-            'candiatoNit' => $candiatoNit,
+            'candidatoNit' => $candiatoNit,
             'candidatoProfesion' => $candidatoProfesion
         ];
-    
-        
     }
 
-    public function getDatosGeneralesExtranjero($id){
+    public function getDatosGeneralesExtranjero($id)
+    {
         $task = new PersonController;
         $formatter = new NumeroALetras();
         //Primero buscamos el candidato
@@ -98,14 +98,13 @@ class ContractController extends Controller
         $nacionalidad = $candidato->nationality;
         $pasaporte = $candidato->passport_number;
         $profesion = $candidato->professional_title;
-        return [ 
+        return [
             'nombreCandidato' => $nombreCandidato,
             'candidatoEdad'   => $candidatoEdad,
             'candidatoProfesion' => $candidatoProfesion,
             'nacionalidad' => $nacionalidad,
             'pasaporte' => $pasaporte,
         ];
-
     }
 
     public function getPrincipalData($id)
@@ -117,21 +116,91 @@ class ContractController extends Controller
             $person = $this->getDatosGeneralesSN($candidato->id);
         } else {
             $person = $this->getDatosGeneralesExtranjero($candidato->id);
-        } 
+        }
         return [
             'comunes' => (object)$comunes,
             'person' => (object)$person
-        ];	
+        ];
     }
 
-    public function contractGenerateServiciosProfesionales(){
-    
-        $requestDetails = HiringRequestDetail::with(['HiringGroups', 'activities'])->findOrFail(1);
-        //Obtenermos los datos generales del contrato y la informacion personal del candidato
-        $PersonalData = (object) $this->getPrincipalData($requestDetails->person_id);
-        //Se prepara la informacion pertienente a la parte del contrato de servicios profesionales
-        return $PersonalData->comunes->nombreRector;	
-        	
+    public function contractGenerateServiciosProfesionales()
+    {
 
+        $requestDetails = HiringRequestDetail::with(['HiringGroups', 'activities', 'hiringRequest.school'])->findOrFail(2);
+        //Obtenermos los datos generales del contrato y la informacion personal del candidato
+        $personalData = (object) $this->getPrincipalData($requestDetails->person_id);
+        //Se prepara la informacion pertienente a la parte del contrato de servicios profesionales
+        // return $requestDetails->activities;
+        //Nombre de la escuela o unidad contratante
+        if ($requestDetails->hiringRequest->school->id == 9) {
+            $escuela = $requestDetails->hiringRequest->school->name;
+        } else {
+            $escuela = "Escuela de " . $requestDetails->hiringRequest->school->name;
+        }
+
+        $actividades = "";
+        foreach ($requestDetails->activities as $activity) {
+            $actividades = $actividades . "" . $activity->name . ", ";
+        }
+        $formatter = new NumeroALetras();
+        $fechaInicio = Carbon::parse($requestDetails->start_date)->locale('es');
+        $fechaFinal = Carbon::parse($requestDetails->end_date)->locale('es');
+        $peridoContrato = "DEL " . $formatter->toString($fechaInicio->day) . " DE " . $fechaInicio->monthName . " DE " . $formatter->toString($fechaInicio->year) . " AL ". $formatter->toString($fechaFinal->day) . " DE " . $fechaFinal->monthName . " DE " . $formatter->toString($fechaFinal->year)  ;
+        
+        //Total de horas
+            $subtotal = 0;
+            $subtiempo = 0;
+            $Horas = 0;
+            foreach ($requestDetails->hiringGroups as $group) {
+                $subtotal += $group->hourly_rate * $group->work_weeks * $group->weekly_hours;
+                $subtiempo += $group->weekly_hours * $group->work_weeks;
+                $hourly_rate = $group->hourly_rate;
+            }
+            
+           $Horas += $subtiempo;
+           $horasTotales = $Horas. " HORAS";
+           $valorHora = "$".sprintf('%.2f',$hourly_rate);
+           $valorTotal = explode( '.', sprintf('%.2f',$subtotal));
+           $sueldoLetras = $formatter->toString($subtotal)."".$valorTotal[1]."/100 DOLARES DE LOS DE LOS ESTADOS UNIDOS DE AMERICA" ;
+
+
+        try {
+            $phpWord = new \PhpOffice\PhpWord\TemplateProcessor(\Storage::disk('formats')->path('/SPNP-N.docx'));
+            $phpWord->setValue('numeroAcuerdo', 'FIA-SPNP-N-001');
+            $phpWord->setValue('nombreRector', strtoupper($personalData->comunes->nombreRector));
+            $phpWord->setValue('firmaRector', $personalData->comunes->firmaRector);
+            $phpWord->setValue('edadRector', strtoupper($personalData->comunes->edadRector));
+            $phpWord->setValue('duiTextoRector', strtoupper($personalData->comunes->duiTextoRector));
+            $phpWord->setValue('nitTextoRector', strtoupper($personalData->comunes->nitTextoRector));
+            $phpWord->setValue('profesionRector', strtoupper($personalData->comunes->profesionRector));
+            $phpWord->setValue('fecha', strtoupper($personalData->comunes->fecha));
+
+            $phpWord->setValue('nombreCandidato', strtoupper($personalData->person->nombreCandidato));
+            $phpWord->setValue('candidatoEdad', strtoupper($personalData->person->candidatoEdad));
+            $phpWord->setValue('candidatoProfesion', strtoupper($personalData->person->candidatoProfesion));
+            $phpWord->setValue('candidatoCiudad', strtoupper($personalData->person->candidatoCiudad));
+            $phpWord->setValue('candidatoDepartamento', strtoupper($personalData->person->candidatoDepartamento));
+            $phpWord->setValue('documento', strtoupper($personalData->person->documentoDC));
+            $phpWord->setValue('candidatoNit', strtoupper($personalData->person->candidatoNit));
+
+            $phpWord->setValue('escuelaContratante', mb_strtoupper($escuela, 'UTF-8'));
+            $phpWord->setValue('cargoCandidato', mb_strtoupper($requestDetails->position, 'UTF-8'));
+            $phpWord->setValue('actividadesCandidato', mb_strtoupper($actividades, 'UTF-8'));
+            $phpWord->setValue('periodoDelContrato', mb_strtoupper($peridoContrato, 'UTF-8'));
+            $phpWord->setValue('horasTotales', mb_strtoupper($horasTotales, 'UTF-8'));
+            $phpWord->setValue('valorHora', mb_strtoupper($valorHora, 'UTF-8'));
+            $phpWord->setValue('sueldoLetras', mb_strtoupper($sueldoLetras, 'UTF-8'));
+
+            $tenpFile = tempnam(sys_get_temp_dir(), 'PHPWord');
+            $phpWord->saveAs($tenpFile);
+
+            $header = [
+                "Content-Type: application/octet-stream",
+            ];
+            return response()->download($tenpFile, 'Contrato Generado Servicios Profesionales.docx', $header)->deleteFileAfterSend($shouldDelete = true);
+        } catch (\PhpOffice\PhpWord\Exception\Exception $e) {
+            //throw $th;
+            return back($e->getCode());
+        }
     }
 }
