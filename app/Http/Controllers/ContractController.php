@@ -254,11 +254,36 @@ class ContractController extends Controller
          $staySchedule = StaySchedule::where(['id' => $requestDetails->stay_schedule_id])->with(['semester', 'scheduleDetails', 'scheduleActivities'])->firstOrFail();
         $hrStay = "";
         foreach ($staySchedule->scheduleDetails as $schedule) {
-            $hrStay = $hrStay." ". $horario = $schedule->day . " - " . date("g:ia", strtotime($schedule->start_time)) . ' a ' . date("g:ia", strtotime($schedule->finish_time)).",";
+            $hrStay = $hrStay." ". $ho = $schedule->day . " - " . date("g:ia", strtotime($schedule->start_time)) . ' a ' . date("g:ia", strtotime($schedule->finish_time)).",";
         }
         $hrAct = "";
         foreach ($staySchedule->scheduleActivities as $act) {
          $hrAct = $hrAct." ".$act->name.",";
+        }
+        //funciones y horarios en tiemo integral
+        $actividadesIntegral = "";
+        foreach ($requestDetails->activities as $activity) {
+            $actividadesIntegral = $actividadesIntegral . "" . $activity->name . ", ";
+        }
+        
+
+        $horariosIntegral = "";
+        foreach ($requestDetails->hiringGroups as $hg) {
+            $days = [];
+            $times = [];
+            foreach ($hg->group->schedule as $schedule) {
+                array_push($days, $schedule->day);
+                $horario = date("g:ia", strtotime($schedule->start_hour)) . '-' . date("g:ia", strtotime($schedule->finish_hour));
+                if (!in_array($horario, $times)) array_push($times, $horario);
+            }
+            $times = implode($times);
+
+            if (sizeof($days) == 2) {
+                $days = implode(' y ', $days);
+            } else {
+                $days = implode(',', $days);
+            }
+            $horariosIntegral = $horariosIntegral . "" . "" . "(" . $hg->group->course->name . " " . $hg->group->grupo->name . "-" . $hg->group->number . ") " . $days . " - " . $times . " ";
         }
     
         
@@ -294,6 +319,8 @@ class ContractController extends Controller
             $phpWord->setValue('salario', sprintf('%.2f',$salario));
             $phpWord->setValue('funcionesPermanencia', mb_strtoupper($hrAct, 'UTF-8'));
             $phpWord->setValue('horarioPermanencia', mb_strtoupper($hrStay, 'UTF-8'));
+            $phpWord->setValue('funcionesIntegral', mb_strtoupper($actividadesIntegral, 'UTF-8'));
+            $phpWord->setValue('horarioIntegral', mb_strtoupper($horariosIntegral, 'UTF-8'));
 
             $tenpFile = tempnam(sys_get_temp_dir(), 'PHPWord');
             $phpWord->saveAs($tenpFile);
