@@ -126,7 +126,7 @@ class ContractController extends Controller
     public function contractGenerateServiciosProfesionales()
     {
 
-        $requestDetails = HiringRequestDetail::with(['HiringGroups', 'activities', 'hiringRequest.school'])->findOrFail(2);
+        $requestDetails = HiringRequestDetail::with(['HiringGroups', 'activities', 'hiringRequest.school'])->findOrFail(1);
         //Obtenermos los datos generales del contrato y la informacion personal del candidato
         $personalData = (object) $this->getPrincipalData($requestDetails->person_id);
         //Se prepara la informacion pertienente a la parte del contrato de servicios profesionales
@@ -161,12 +161,28 @@ class ContractController extends Controller
            $horasTotales = $Horas. " HORAS";
            $valorHora = "$".sprintf('%.2f',$hourly_rate);
            $valorTotal = explode( '.', sprintf('%.2f',$subtotal));
-           $sueldoLetras = $formatter->toString($subtotal)."".$valorTotal[1]."/100 DOLARES DE LOS DE LOS ESTADOS UNIDOS DE AMERICA" ;
+           $sueldoLetras = $formatter->toString($subtotal)."".$valorTotal[1]."/100 DOLARES DE LOS DE LOS ESTADOS UNIDOS DE AMERICA ($" .$subtotal. ")";
+            $horarios = "";
+           foreach ($requestDetails->hiringGroups as $hg) {
+            $days = [];
+            $times = [];
+            foreach ($hg->group->schedule as $schedule) {
+                array_push($days, $schedule->day);
+                $horario = date("g:ia", strtotime($schedule->start_hour)) . '-' . date("g:ia", strtotime($schedule->finish_hour));
+                if (!in_array($horario, $times)) array_push($times, $horario);
+            }
+            $times = implode($times);
 
-
+            if (sizeof($days) == 2) {
+                $days = implode(' y ', $days);
+            } else {
+                $days = implode(',', $days);
+            }
+            $horarios = $horarios."".""."(".$hg->group->course->name." ".$hg->group->grupo->name . "-" . $hg->group->number.") ".$days." - ".$times." ";
+        }
         try {
             $phpWord = new \PhpOffice\PhpWord\TemplateProcessor(\Storage::disk('formats')->path('/SPNP-N.docx'));
-            $phpWord->setValue('numeroAcuerdo', 'FIA-SPNP-N-001');
+            $phpWord->setValue('numeroAcuerdo','FIA-SPNP-N-001');
             $phpWord->setValue('nombreRector', strtoupper($personalData->comunes->nombreRector));
             $phpWord->setValue('firmaRector', $personalData->comunes->firmaRector);
             $phpWord->setValue('edadRector', strtoupper($personalData->comunes->edadRector));
@@ -190,6 +206,7 @@ class ContractController extends Controller
             $phpWord->setValue('horasTotales', mb_strtoupper($horasTotales, 'UTF-8'));
             $phpWord->setValue('valorHora', mb_strtoupper($valorHora, 'UTF-8'));
             $phpWord->setValue('sueldoLetras', mb_strtoupper($sueldoLetras, 'UTF-8'));
+            $phpWord->setValue('horarioCandidato', mb_strtoupper($horarios, 'UTF-8'));
 
             $tenpFile = tempnam(sys_get_temp_dir(), 'PHPWord');
             $phpWord->saveAs($tenpFile);
