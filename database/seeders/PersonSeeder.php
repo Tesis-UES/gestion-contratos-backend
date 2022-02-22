@@ -254,6 +254,8 @@ class PersonSeeder extends Seeder
             'faculty_id'        => 1,
             'escalafon_id'      => 1,
             'person_id'         => $datosNacionalUesFia->id,
+            'sub_partida'       => '1',
+            'partida'           => '43',
         ]);
         $employeeNacionalUesFia->employeeTypes()->save($employeeTypes[0]);
         $newStaySchedule = StaySchedule::create([
@@ -303,6 +305,8 @@ class PersonSeeder extends Seeder
             'faculty_id'        => 2,
             'escalafon_id'      => 1,
             'person_id'         => $datosNacionalEOtra->id,
+            'sub_partida'       => '1',
+            'partida'           => '43',
         ]);
         $employeeNacionalEOtra->employeeTypes()->saveMany([$employeeTypes[0], $employeeTypes[1]]);
         $newStaySchedule = StaySchedule::create([
@@ -365,6 +369,8 @@ class PersonSeeder extends Seeder
             'faculty_id'        => 1,
             'escalafon_id'      => 1,
             'person_id'         => $DatosInternacionalE->id,
+            'sub_partida'       => '1',
+            'partida'           => '43',
         ]);
         $employeeInternacionalE->employeeTypes()->save($employeeTypes[2]);
         $newStaySchedule = StaySchedule::create([
@@ -404,6 +410,8 @@ class PersonSeeder extends Seeder
             'faculty_id'        => 2,
             'escalafon_id'      => 1,
             'person_id'         => $DatosInternacionalEO->id,
+            'sub_partida'       => '1',
+            'partida'           => '43',
         ]);
         $employeeInternacionalEO->employeeTypes()->save($employeeTypes[1]);
         $newStaySchedule = StaySchedule::create([
