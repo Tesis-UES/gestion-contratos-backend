@@ -230,7 +230,6 @@ class ContractController extends Controller
                 "Content-Type: application/octet-stream",
             ];
             return ['document'=>$phpWord,'header'=>$header,'name'=>'Contrato Generado Servicios Profesionales.docx'];
-            //return response()->download($tenpFile, 'Contrato Generado Servicios Profesionales.docx', $header)->deleteFileAfterSend($shouldDelete = true);
         } catch (\PhpOffice\PhpWord\Exception\Exception $e) {
             //throw $th;
             return back($e->getCode());
@@ -321,7 +320,7 @@ class ContractController extends Controller
                 "Content-Type: application/octet-stream",
             ];
             return ['document'=>$phpWord,'header'=>$header,'name'=>'Contrato Generado Tiempo Integral.docx'];
-            //return response()->download($tempFile, 'Contrato Generado Tiempo Integral.docx', $header)->deleteFileAfterSend(true);
+
         } catch (\PhpOffice\PhpWord\Exception\Exception $e) {
             return back($e->getCode());
         }
@@ -396,7 +395,7 @@ class ContractController extends Controller
 
 
     public function generateContract($requestDetailId){
-        $requestDetails = HiringRequestDetail::with(['activities', 'hiringRequest.school', 'groups'])->findOrFail($requestDetailId);
+        $requestDetails = HiringRequestDetail::with(['hiringGroups','activities', 'hiringRequest.school', 'groups'])->findOrFail($requestDetailId);
         $hiringRequest = HiringRequest::findOrFail($requestDetails->hiring_request_id);
 
         switch ($hiringRequest->contractType->name) {
