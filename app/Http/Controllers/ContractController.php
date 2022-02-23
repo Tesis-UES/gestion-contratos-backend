@@ -241,37 +241,49 @@ class ContractController extends Controller
         }
     }
 
-    public function contractGenerateTiempoIntegral(){
-        $requestDetails = HiringRequestDetail::with(['HiringGroups', 'activities', 'hiringRequest.school'])->findOrFail(4);
+    public function contractGenerateTiempoIntegral()
+    {
+        $requestDetails = HiringRequestDetail::with(['activities', 'hiringRequest.school', 'groups'])->findOrFail(5);
         //Obtenermos los datos generales del contrato y la informacion personal del candidato
         $personalData = (object) $this->getPrincipalData($requestDetails->person_id);
-        //Obtenemos la partida,cargo,salario
+        //Obtenemos la partida,cargo,salario y total a pagar 
         $formatter = new NumeroALetras();
         $partida = $formatter->toString($requestDetails->person->employee->partida);
         $escalafon = $requestDetails->person->employee->escalafon->name;
-        $salario = $requestDetails->person->employee->escalafon->salary;
+        $salario = $requestDetails->monthly_salary;
+        $totalAPagar = $requestDetails->work_months * $requestDetails->monthly_salary * $requestDetails->salary_percentage;
+        $valorTotal = explode('.', sprintf('%.2f', $totalAPagar));
+        $sueldoLetras = '';
+        if ($personalData->tipo == 'N') {
+            $sueldoLetras = $formatter->toString($totalAPagar) . "" . $valorTotal[1] . "/100 DOLARES DE LOS DE LOS ESTADOS UNIDOS DE AMERICA ($" . sprintf('%.2f', $totalAPagar) . ")";
+        } else {
+            $sueldoLetras = $formatter->toString($totalAPagar) . "" . $valorTotal[1] . "/100 DOLARES DE LOS DE LOS ESTADOS UNIDOS DE AMERICA ($" . sprintf('%.2f', $totalAPagar) . ") MENOS EL 20% DE RENTA, segun deducciones establecidas por las leyes de El salvador";
+        }
         //Funciones en tiempo Normal
-         $staySchedule = StaySchedule::where(['id' => $requestDetails->stay_schedule_id])->with(['semester', 'scheduleDetails', 'scheduleActivities'])->firstOrFail();
+        $staySchedule = StaySchedule::where(['id' => $requestDetails->stay_schedule_id])->with(['semester', 'scheduleDetails', 'scheduleActivities'])->firstOrFail();
         $hrStay = "";
+        $hrStayNumber = 0;
         foreach ($staySchedule->scheduleDetails as $schedule) {
-            $hrStay = $hrStay." ". $ho = $schedule->day . " - " . date("g:ia", strtotime($schedule->start_time)) . ' a ' . date("g:ia", strtotime($schedule->finish_time)).",";
+            $hrStayNumber += (strtotime($schedule->finish_time) -  strtotime($schedule->start_time)) / 3600;
+            $hrStay = $hrStay . " " . $schedule->day . " - " . date("g:ia", strtotime($schedule->start_time)) . ' a ' . date("g:ia", strtotime($schedule->finish_time)) . ",";
         }
         $hrAct = "";
         foreach ($staySchedule->scheduleActivities as $act) {
-         $hrAct = $hrAct." ".$act->name.",";
+            $hrAct = $hrAct . " " . $act->name . ",";
         }
         //funciones y horarios en tiemo integral
         $actividadesIntegral = "";
         foreach ($requestDetails->activities as $activity) {
             $actividadesIntegral = $actividadesIntegral . "" . $activity->name . ", ";
         }
-        
 
+        $horasSemanalesIntegral = 0;
         $horariosIntegral = "";
-        foreach ($requestDetails->hiringGroups as $hg) {
+        foreach ($requestDetails->groups as $group) {
             $days = [];
             $times = [];
-            foreach ($hg->group->schedule as $schedule) {
+            foreach ($group->schedule as $schedule) {
+                $horasSemanalesIntegral += (strtotime($schedule->finish_hour) -  strtotime($schedule->start_hour)) / 3600;
                 array_push($days, $schedule->day);
                 $horario = date("g:ia", strtotime($schedule->start_hour)) . '-' . date("g:ia", strtotime($schedule->finish_hour));
                 if (!in_array($horario, $times)) array_push($times, $horario);
@@ -283,11 +295,14 @@ class ContractController extends Controller
             } else {
                 $days = implode(',', $days);
             }
-            $horariosIntegral = $horariosIntegral . "" . "" . "(" . $hg->group->course->name . " " . $hg->group->grupo->name . "-" . $hg->group->number . ") " . $days . " - " . $times . " ";
+            $horariosIntegral = $horariosIntegral . "" . "" . "(" . $group->course->name . " " . $group->grupo->name . "-" . $group->number . ") " . $days . " - " . $times . " ";
         }
-    
-        
-         
+
+        $formatter = new NumeroALetras();
+        $fechaInicio = Carbon::parse($requestDetails->start_date)->locale('es');
+        $fechaFinal = Carbon::parse($requestDetails->end_date)->locale('es');
+        $peridoContracion = "DEL " . $formatter->toString($fechaInicio->day) . " DE " . $fechaInicio->monthName . " DE " . $formatter->toString($fechaInicio->year) . " AL " . $formatter->toString($fechaFinal->day) . " DE " . $fechaFinal->monthName . " DE " . $formatter->toString($fechaFinal->year);
+
         try {
             if ($personalData->tipo == 'N') {
                 $phpWord = new \PhpOffice\PhpWord\TemplateProcessor(\Storage::disk('formats')->path('/TI-N.docx'));
@@ -296,7 +311,7 @@ class ContractController extends Controller
                 $phpWord->setValue('documento', strtoupper($personalData->person->documentoDC));
                 $phpWord->setValue('candidatoNit', strtoupper($personalData->person->candidatoNit));
             } else {
-                $phpWord = new \PhpOffice\PhpWord\TemplateProcessor(\Storage::disk('formats')->path('/TI-N.docx'));
+                $phpWord = new \PhpOffice\PhpWord\TemplateProcessor(\Storage::disk('formats')->path('/TI-I.docx'));
                 $phpWord->setValue('nacionalidad', strtoupper($personalData->person->nacionalidad));
                 $phpWord->setValue('pasaporte', strtoupper($personalData->person->pasaporte));
             }
@@ -309,28 +324,33 @@ class ContractController extends Controller
             $phpWord->setValue('duiTextoRector', strtoupper($personalData->comunes->duiTextoRector));
             $phpWord->setValue('nitTextoRector', strtoupper($personalData->comunes->nitTextoRector));
             $phpWord->setValue('profesionRector', strtoupper($personalData->comunes->profesionRector));
-            $phpWord->setValue('fecha', strtoupper($personalData->comunes->fecha));
+            $phpWord->setValue('fechaContrato', strtoupper($personalData->comunes->fecha));
 
             $phpWord->setValue('nombreCandidato', strtoupper($personalData->person->nombreCandidato));
             $phpWord->setValue('candidatoEdad', strtoupper($personalData->person->candidatoEdad));
             $phpWord->setValue('candidatoProfesion', strtoupper($personalData->person->candidatoProfesion));
             $phpWord->setValue('partida', mb_strtoupper($partida, 'UTF-8'));
             $phpWord->setValue('cargo', mb_strtoupper($escalafon, 'UTF-8'));
-            $phpWord->setValue('salario', sprintf('%.2f',$salario));
+            $phpWord->setValue('justificacion', mb_strtoupper($requestDetails->justification, 'UTF-8'));
+            $phpWord->setValue('metas', mb_strtoupper($requestDetails->goals, 'UTF-8'));
+            $phpWord->setValue('salario', sprintf('%.2f', $salario));
             $phpWord->setValue('funcionesPermanencia', mb_strtoupper($hrAct, 'UTF-8'));
             $phpWord->setValue('horarioPermanencia', mb_strtoupper($hrStay, 'UTF-8'));
+            $phpWord->setValue('horasSemanales', $hrStayNumber);
             $phpWord->setValue('funcionesIntegral', mb_strtoupper($actividadesIntegral, 'UTF-8'));
             $phpWord->setValue('horarioIntegral', mb_strtoupper($horariosIntegral, 'UTF-8'));
+            $phpWord->setValue('horasIntegral', sprintf('%.2f', $horasSemanalesIntegral));
+            $phpWord->setValue('periodoDeContratacion', mb_strtoupper($peridoContracion, 'UTF-8'));
+            $phpWord->setValue('salarioIntegral', mb_strtoupper($sueldoLetras, 'UTF-8'));
 
-            $tenpFile = tempnam(sys_get_temp_dir(), 'PHPWord');
-            $phpWord->saveAs($tenpFile);
+            $tempFile = tempnam(sys_get_temp_dir(), 'PHPWord');
+            $phpWord->saveAs($tempFile);
 
             $header = [
                 "Content-Type: application/octet-stream",
             ];
-            return response()->download($tenpFile, 'Contrato Generado Servicios Profesionales.docx', $header)->deleteFileAfterSend($shouldDelete = true);
+            return response()->download($tempFile, 'Contrato Generado Tiempo Integral.docx', $header)->deleteFileAfterSend(true);
         } catch (\PhpOffice\PhpWord\Exception\Exception $e) {
-            //throw $th;
             return back($e->getCode());
         }
     }
