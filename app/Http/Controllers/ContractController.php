@@ -324,7 +324,7 @@ class ContractController extends Controller
             $phpWord->setValue('duiTextoRector', strtoupper($personalData->comunes->duiTextoRector));
             $phpWord->setValue('nitTextoRector', strtoupper($personalData->comunes->nitTextoRector));
             $phpWord->setValue('profesionRector', strtoupper($personalData->comunes->profesionRector));
-            $phpWord->setValue('fechaContrato', strtoupper($personalData->comunes->fecha));
+            $phpWord->setValue('fecha', strtoupper($personalData->comunes->fecha));
 
             $phpWord->setValue('nombreCandidato', strtoupper($personalData->person->nombreCandidato));
             $phpWord->setValue('candidatoEdad', strtoupper($personalData->person->candidatoEdad));
