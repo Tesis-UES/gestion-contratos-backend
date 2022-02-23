@@ -173,7 +173,7 @@ class PersonSeeder extends Seeder
             'dui_text'      => ' CERO CIENTO NOVENTA Y DOS MILLONES QUINIENTOS CINCUENTA Y SEIS MIL SESENTA Y SIETE GUION OCHO ',
             'dui_expiration_date'   => '2022-01-29',
             'nit_number'    => '0804-890597-207-8',
-            'nit_text'      => 'CERO OCHOCIENTOS CUATRO-OCHOCIENTOS NOVENTA MIL QUINIENTOS NOVENTA Y SIETE-CERO CERO DOSCIENTOS SIETE-OCHO ',
+            'nit_text'      => 'CERO OCHOCIENTOS CUATRO - OCHOCIENTOS NOVENTA MIL QUINIENTOS NOVENTA Y SIETE - DOSCIENTOS SIETE-OCHO ',
             'bank_id'       => 2,
             'bank_account_number'   => '0125415656'
         ]);
@@ -185,10 +185,10 @@ class PersonSeeder extends Seeder
         $datosNacionalizado = Person::create([
             'user_id'       => $Nacionalizado->id,
             'status'        => 'Validado',
-            'first_name'    => 'JOSE',
-            'middle_name'   => 'Alexander',
-            'last_name'     => 'Cornejo',
-            'know_as'       => 'Pelon',
+            'first_name'    => 'Jose',
+            'middle_name'   => 'Alejandro',
+            'last_name'     => 'Perez Perdomo',
+            'know_as'       => 'alejandrino',
             'birth_date'    => '1996-01-18',
             'gender'        => 'Masculino',
             'civil_status'  => 'Soltero',
@@ -197,17 +197,17 @@ class PersonSeeder extends Seeder
             'alternate_mail'        => 'prueba@gmail.com',
             'address'       => 'Colonia la malaga, calle 3, block 5',
             'department'   => 'San Salvador',
-            'city'          => 'Aguilares',
+            'city'          => 'Mejicanos',
             'nationality'   => 'El Salvador',
             'professional_title'   => 'Ingeniero en Sistemas Informaticos',
             'nup'           => '123456987',
             'isss_number'   => '852159753465',
             'nit_number'    => '0804-890597-207-8',
-            'nit_text'      => 'CERO OCHOCIENTOS CUATRO-OCHOCIENTOS NOVENTA MIL QUINIENTOS NOVENTA Y SIETE-CERO CERO DOSCIENTOS SIETE-OCHO ',
+            'nit_text'      => 'CERO OCHOCIENTOS CUATRO - OCHOCIENTOS NOVENTA MIL QUINIENTOS NOVENTA Y SIETE - DOSCIENTOS SIETE - OCHO ',
             'bank_id'       => 2,
             'bank_account_number'   => '0125415656',
             'is_nationalized' => true,
-            'resident_card_number'      => '63541834684',
+            'resident_card_number'      => '6044785',
             'resident_card_text'        => 'NUMERO X',
             'resident_expiration_date' => '2022-01-29',
             'other_title'   => true,
@@ -215,15 +215,15 @@ class PersonSeeder extends Seeder
         ]);
         $personValidation = new PersonValidation(['person_id' => $datosNacionalizado->id]);
         $personValidation->save();
-       
+
         //Ingresando datos de candidato Nacional - Trabajador UES - FIA
         $datosNacionalUesFia =  Person::create([
             'user_id'       => $NacionalE->id,
             'status'        => 'Validado',
             'first_name'    => 'Jose',
-            'middle_name'   => 'Maria',
-            'last_name'     => 'Aguilar Argueta',
-            'know_as'       => 'Pelonito',
+            'middle_name'   => 'Roberto',
+            'last_name'     => 'Ramirez Argueta',
+            'know_as'       => 'Adalberto',
             'birth_date'    => '1996-01-18',
             'gender'        => 'Masculino',
             'civil_status'  => 'Soltero',
@@ -232,7 +232,7 @@ class PersonSeeder extends Seeder
             'alternate_mail'        => 'prueba@gmail.com',
             'address'       => 'Colonia la malaga, calle 3, block 5',
             'department'   => 'San Salvador',
-            'city'          => 'Aguilares',
+            'city'          => 'Ayutuxtepeque',
             'nationality'   => 'El Salvador',
             'professional_title'   => 'Ingeniero en Sistemas Informaticos',
             'nup'           => '123456987',
@@ -241,7 +241,7 @@ class PersonSeeder extends Seeder
             'dui_text'      => ' CERO CIENTO NOVENTA Y DOS MILLONES QUINIENTOS CINCUENTA Y SEIS MIL SESENTA Y SIETE GUION OCHO ',
             'dui_expiration_date'   => '2022-01-29',
             'nit_number'    => '0804-890597-207-8',
-            'nit_text'      => 'CERO OCHOCIENTOS CUATRO-OCHOCIENTOS NOVENTA MIL QUINIENTOS NOVENTA Y SIETE-CERO CERO DOSCIENTOS SIETE-OCHO ',
+            'nit_text'      => 'CERO OCHOCIENTOS CUATRO - OCHOCIENTOS NOVENTA MIL QUINIENTOS NOVENTA Y SIETE - DOSCIENTOS SIETE - OCHO ',
             'bank_id'       => 3,
             'bank_account_number'   => '0125415656',
             'is_employee' => true
@@ -254,6 +254,8 @@ class PersonSeeder extends Seeder
             'faculty_id'        => 1,
             'escalafon_id'      => 1,
             'person_id'         => $datosNacionalUesFia->id,
+            'sub_partida'       => '1',
+            'partida'           => '43',
         ]);
         $employeeNacionalUesFia->employeeTypes()->save($employeeTypes[0]);
         $newStaySchedule = StaySchedule::create([
@@ -269,9 +271,9 @@ class PersonSeeder extends Seeder
             'user_id'       => $NacionalEOtra->id,
             'status'        => 'Validado',
             'first_name'    => 'Jose',
-            'middle_name'   => 'bennet',
-            'last_name'     => 'Corderjo Argueta',
-            'know_as'       => 'Pelon',
+            'middle_name'   => 'Maria',
+            'last_name'     => 'Lopez Doriga',
+            'know_as'       => 'Guille',
             'birth_date'    => '1996-01-18',
             'gender'        => 'Masculino',
             'civil_status'  => 'Soltero',
@@ -280,7 +282,7 @@ class PersonSeeder extends Seeder
             'alternate_mail'        => 'prueba@gmail.com',
             'address'       => 'Colonia la malaga, calle 3, block 5',
             'department'   => 'San Salvador',
-            'city'          => 'Aguilares',
+            'city'          => 'Apopa',
             'nationality'   => 'El Salvador',
             'professional_title'   => 'Ingeniero en Sistemas Informaticos',
             'nup'           => '123456987',
@@ -289,7 +291,7 @@ class PersonSeeder extends Seeder
             'dui_text'      => ' CERO CIENTO NOVENTA Y DOS MILLONES QUINIENTOS CINCUENTA Y SEIS MIL SESENTA Y SIETE GUION OCHO ',
             'dui_expiration_date'   => '2022-01-29',
             'nit_number'    => '0804-890597-207-8',
-            'nit_text'      => 'CERO OCHOCIENTOS CUATRO-OCHOCIENTOS NOVENTA MIL QUINIENTOS NOVENTA Y SIETE-CERO CERO DOSCIENTOS SIETE-OCHO ',
+            'nit_text'      => 'CERO OCHOCIENTOS CUATRO - OCHOCIENTOS NOVENTA MIL QUINIENTOS NOVENTA Y SIETE- DOSCIENTOS SIETE - OCHO ',
             'bank_id'       => 4,
             'bank_account_number'   => '0125415656',
             'is_employee' => true
@@ -303,6 +305,8 @@ class PersonSeeder extends Seeder
             'faculty_id'        => 2,
             'escalafon_id'      => 1,
             'person_id'         => $datosNacionalEOtra->id,
+            'sub_partida'       => '1',
+            'partida'           => '43',
         ]);
         $employeeNacionalEOtra->employeeTypes()->saveMany([$employeeTypes[0], $employeeTypes[1]]);
         $newStaySchedule = StaySchedule::create([
@@ -316,14 +320,14 @@ class PersonSeeder extends Seeder
         $DatosInternacional =  Person::create([
             'user_id'       => $Internacional->id,
             'status'        => 'Validado',
-            'first_name'    => 'Vladimir',
+            'first_name'    => 'Jhoan',
             'middle_name'   => 'irvetzeliv',
-            'last_name'     => 'bliat',
-            'know_as'       => 'RUSO',
+            'last_name'     => 'Jhonson Roberts',
+            'know_as'       => 'Kronos',
             'birth_date'    => '1996-01-18',
             'gender'        => 'Masculino',
             'civil_status'  => 'Soltero',
-            'passport_number' => '1616841641684',
+            'passport_number' => '24573848445',
             'telephone'     => '2232-2009',
             'alternate_telephone'   => '2356-8974',
             'alternate_mail'        => 'prueba@gmail.com',
@@ -340,8 +344,8 @@ class PersonSeeder extends Seeder
             'user_id'       => $InternacionalE->id,
             'status'        => 'Validado',
             'first_name'    => 'Vladimir',
-            'middle_name'   => 'irvetzeliv',
-            'last_name'     => 'bliat',
+            'middle_name'   => 'ivanovich',
+            'last_name'     => 'bobrov ivanova',
             'know_as'       => 'Bielorusia',
             'birth_date'    => '1996-01-18',
             'gender'        => 'Masculino',
@@ -365,6 +369,8 @@ class PersonSeeder extends Seeder
             'faculty_id'        => 1,
             'escalafon_id'      => 1,
             'person_id'         => $DatosInternacionalE->id,
+            'sub_partida'       => '1',
+            'partida'           => '43',
         ]);
         $employeeInternacionalE->employeeTypes()->save($employeeTypes[2]);
         $newStaySchedule = StaySchedule::create([
@@ -378,19 +384,19 @@ class PersonSeeder extends Seeder
         $DatosInternacionalEO =  Person::create([
             'user_id'       => $InternacionalEOtra->id,
             'status'        => 'Validado',
-            'first_name'    => 'Cordelio',
-            'middle_name'   => 'irvetzeliv',
-            'last_name'     => 'bliat',
-            'know_as'       => 'Bielorusia',
+            'first_name'    => 'Michael',
+            'middle_name'   => 'Stanley',
+            'last_name'     => 'Jordan steward',
+            'know_as'       => 'MSJ',
             'birth_date'    => '1996-01-18',
             'gender'        => 'Masculino',
             'civil_status'  => 'Soltero',
             'telephone'     => '2232-2009',
-            'passport_number' => '16168416416846854',
+            'passport_number' => '1616841641',
             'alternate_telephone'   => '2356-8974',
             'alternate_mail'        => 'prueba@gmail.com',
             'address'       => 'Siberia',
-            'nationality'   => 'España',
+            'nationality'   => 'Estados Unidos',
             'professional_title'   => 'Ingeniero en Sistemas Informaticos',
             'bank_id'       => 7,
             'bank_account_number'   => '0125415656',
@@ -404,6 +410,8 @@ class PersonSeeder extends Seeder
             'faculty_id'        => 2,
             'escalafon_id'      => 1,
             'person_id'         => $DatosInternacionalEO->id,
+            'sub_partida'       => '1',
+            'partida'           => '43',
         ]);
         $employeeInternacionalEO->employeeTypes()->save($employeeTypes[1]);
         $newStaySchedule = StaySchedule::create([

@@ -26,6 +26,7 @@ use App\Http\Controllers\GroupController;
 use App\Http\Controllers\EmployeeTypeController;
 use App\Http\Controllers\HiringRequestController;
 use App\Http\Controllers\HiringRequestDetailController;
+use App\Http\Controllers\ContractController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -385,4 +386,8 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::get('/hiringRequestTA/{id}/create/PDF/{show}', [HiringRequestController::class, 'MakeHiringRequestTiempoAdicional']);
     Route::get('/hiringRequest/{id}/pdf', [HiringRequestController::class, 'getPdf']);
     Route::get('/persons/merge/{id?}/pdf', [PersonController::class, 'mergePersonalDoc']);
+
+    Route::get('/contract/ServicioProfesional/{id}/generate', [ContractController::class, 'contractGenerateServiciosProfesionales']);
+    Route::get('/contract/TiempoIntegral/{id}/generate', [ContractController::class, 'contractGenerateTiempoIntegral']);
+    Route::get('/contract/TiempoAdicional/{id}/generate', [ContractController::class, 'contractGenerateTiempoAdicional']);
 });
