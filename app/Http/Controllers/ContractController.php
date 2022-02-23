@@ -180,8 +180,8 @@ class ContractController extends Controller
 
     public function contractGenerateServiciosProfesionales()
     {
-        $docTemplatePath=['N'=>'/SPNP-N.docx','E'=>'/SPNP-I.docx'];
-        $requestDetails = HiringRequestDetail::with(['HiringGroups', 'activities', 'hiringRequest.school'])->findOrFail(3);
+        $docTemplatePath=['N'=>'\SPNP-N.docx','E'=>'\SPNP-I.docx'];
+        $requestDetails = HiringRequestDetail::with(['HiringGroups', 'activities', 'hiringRequest.school'])->findOrFail(1);
         //Obtenermos los datos generales del contrato y la informacion personal del candidato
         $personalData = $this->getPrincipalData($requestDetails->person_id);
         $formatter = new NumeroALetras();
@@ -211,7 +211,7 @@ class ContractController extends Controller
         $horarios = $this->getHiringGroupsScheduleString($requestDetails);
         try {
             $phpWord = new \PhpOffice\PhpWord\TemplateProcessor(\Storage::disk('formats')->path($docTemplatePath[$personalData['tipo']]));
-            $specifics = [
+             $specifics = [
                 'escuelaContratante'=>mb_strtoupper($escuela, 'UTF-8'),
                 'cargoCandidato'=>mb_strtoupper($requestDetails->position, 'UTF-8'),
                 'actividadesCandidato'=>mb_strtoupper($actividades, 'UTF-8'),
@@ -222,10 +222,10 @@ class ContractController extends Controller
                 'horarioCandidato'=> mb_strtoupper($horarios, 'UTF-8')
             ];
             $phpWord->setValue('numeroAcuerdo','FIA-SPNP-N-001');
-            $this->fillWordFile($phpWord,$personalData['comunes']);
+             $this->fillWordFile($phpWord,$personalData['comunes']);
             $this->fillWordFile($phpWord,$personalData['person']);
-            $this->fillWordFile($phpWord,$specifics);
-
+            $this->fillWordFile($phpWord,$specifics); 
+ 
 
             $tenpFile = tempnam(sys_get_temp_dir(), 'PHPWord');
             $phpWord->saveAs($tenpFile);
@@ -331,6 +331,73 @@ class ContractController extends Controller
             return back($e->getCode());
         }
     }
+
+
+    public function contractGenerateTiempoAdicional(){
+        $docTemplatePath=['N'=>'/TA-N.docx','E'=>'/TA-I.docx'];
+        $requestDetails = HiringRequestDetail::with(['activities', 'hiringRequest.school', 'groups'])->findOrFail(6);
+        //Obtenermos los datos generales del contrato y la informacion personal del candidato
+        $personalData = $this->getPrincipalData($requestDetails->person_id);
+        $formatter = new NumeroALetras();
+        $escalafon = $requestDetails->person->employee->escalafon->name;
+        $salario = $requestDetails->monthly_salary;
+        $totalAPagar = $requestDetails->hourly_rate * $requestDetails->work_weeks * $requestDetails->weekly_hours;
+        $valorTotal = explode('.', sprintf('%.2f', $totalAPagar));
+        $sueldoLetras = $formatter->toString($totalAPagar) . "" . $valorTotal[1] . "/100 DOLARES DE LOS DE LOS ESTADOS UNIDOS DE AMERICA ($" . sprintf('%.2f', $totalAPagar) . ")";
+        if($personalData['tipo'] == 'E'){
+            $sueldoLetras = $sueldoLetras . " MENOS EL 20% DE RENTA, según deducciones establecidas por las leyes de El salvador";
+        }
+        //Funciones en tiempo Normal
+        $staySchedule = StaySchedule::where(['id' => $requestDetails->stay_schedule_id])->with(['semester', 'scheduleDetails', 'scheduleActivities'])->firstOrFail();
+        $hrStay = "";
+        $hrStayNumber = 0;
+        foreach ($staySchedule->scheduleDetails as $schedule) {
+            $hrStayNumber += (strtotime($schedule->finish_time) -  strtotime($schedule->start_time)) / 3600;
+            $hrStay = $hrStay . " " . $schedule->day . " - " . date("g:ia", strtotime($schedule->start_time)) . ' a ' . date("g:ia", strtotime($schedule->finish_time)) . ",";
+        }
+        $hrAct = "";
+        foreach ($staySchedule->scheduleActivities as $act) {
+            $hrAct = $hrAct . " " . $act->name . ",";
+        }
+        //funciones y horarios en tiemo integral
+        $actividadesAdicional = $this->getRequestActivities($requestDetails);
+        $formatter = new NumeroALetras();
+        $peridoContracion = $this->getContractPeriodString($formatter,$requestDetails);
+        $docTemplatePath[$personalData['tipo']];
+        try {
+            $phpWord = new \PhpOffice\PhpWord\TemplateProcessor(\Storage::disk('formats')->path($docTemplatePath[$personalData['tipo']]));
+
+            $specifics=[
+                
+                'cargo'=> mb_strtoupper($escalafon, 'UTF-8'),
+                'salario'=> sprintf('%.2f', $salario),
+                'funcionesPermanencia'=> mb_strtoupper($hrAct, 'UTF-8'),
+                'horarioPermanencia'=> mb_strtoupper($hrStay, 'UTF-8'),
+                'horasSemanales'=> $hrStayNumber,
+                'funcionesAdicional'=> mb_strtoupper($actividadesAdicional, 'UTF-8'),
+                'horarioAdicional'=> mb_strtoupper($hrStay, 'UTF-8'),
+                'horasAdicional'=> sprintf('%.2f', $hrStayNumber),
+                'periodoDeContratacion'=> mb_strtoupper($peridoContracion, 'UTF-8'),
+                'salarioAdicional'=> mb_strtoupper($sueldoLetras, 'UTF-8')
+            ];
+            $phpWord->setValue('numeroAcuerdo', 'FIA-SPNP-N-001');
+            $this->fillWordFile($phpWord,$personalData['comunes']);
+            $this->fillWordFile($phpWord,$personalData['person']);
+            $this->fillWordFile($phpWord,$specifics);
+           
+            $tempFile = tempnam(sys_get_temp_dir(), 'PHPWord');
+            $phpWord->saveAs($tempFile);
+
+            $header = [
+                "Content-Type: application/octet-stream",
+            ];
+            return response()->download($tempFile, 'Contrato Generado Tiempo Adicional.docx', $header)->deleteFileAfterSend(true);
+        } catch (\PhpOffice\PhpWord\Exception\Exception $e) {
+            return back($e->getCode());
+        }
+
+    }
+    
 
     
 }

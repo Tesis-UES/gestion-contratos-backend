@@ -389,4 +389,5 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
 
     Route::get('/contract/test', [ContractController::class, 'contractGenerateServiciosProfesionales']);
     Route::get('/contract/TiempoIntegral', [ContractController::class, 'contractGenerateTiempoIntegral']);
+    Route::get('/contract/TiempoAdicional', [ContractController::class, 'contractGenerateTiempoAdicional']);
 });
