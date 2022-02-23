@@ -126,32 +126,69 @@ class ContractController extends Controller
         ];
     }
 
-    public function contractGenerateServiciosProfesionales()
-    {
-
-        $requestDetails = HiringRequestDetail::with(['HiringGroups', 'activities', 'hiringRequest.school'])->findOrFail(3);
-        //Obtenermos los datos generales del contrato y la informacion personal del candidato
-        $personalData = (object) $this->getPrincipalData($requestDetails->person_id);
-
-        //Se prepara la informacion pertienente a la parte del contrato de servicios profesionales
-        // return $requestDetails->activities;
-        //Nombre de la escuela o unidad contratante
+    public function getSchoolNameFromRequest($requestDetails){
         if ($requestDetails->hiringRequest->school->id == 9) {
             $escuela = $requestDetails->hiringRequest->school->name;
         } else {
             $escuela = "Escuela de " . $requestDetails->hiringRequest->school->name;
         }
-
-        $actividades = "";
+        return $escuela;
+    }
+    
+    public function getRequestActivities($requestDetails){
+        $actividades="";
         foreach ($requestDetails->activities as $activity) {
             $actividades = $actividades . "" . $activity->name . ", ";
         }
-        $formatter = new NumeroALetras();
+        return $actividades;
+    }
+
+    public function getContractPeriodString($formatter,$requestDetails){
         $fechaInicio = Carbon::parse($requestDetails->start_date)->locale('es');
         $fechaFinal = Carbon::parse($requestDetails->end_date)->locale('es');
+        return "DEL ".$formatter->toString($fechaInicio->day)." DE ".$fechaInicio->monthName." DE ".$formatter->toString($fechaInicio->year)." AL ".$formatter->toString($fechaFinal->day)." DE ".$fechaFinal->monthName." DE ".$formatter->toString($fechaFinal->year);
+    }
 
-        $peridoContrato = "DEL " . $formatter->toString($fechaInicio->day) . " DE " . $fechaInicio->monthName . " DE " . $formatter->toString($fechaInicio->year) . " AL " . $formatter->toString($fechaFinal->day) . " DE " . $fechaFinal->monthName . " DE " . $formatter->toString($fechaFinal->year);
+    public function getHiringGroupsScheduleString($requestDetails){
+        $horarios = "";
+        foreach ($requestDetails->hiringGroups as $hg) {
+             $days = [];
+             $times = [];
+             foreach ($hg->group->schedule as $schedule) {
+                 array_push($days, $schedule->day);
+                 $horario = date("g:ia", strtotime($schedule->start_hour)) . '-' . date("g:ia", strtotime($schedule->finish_hour));
+                 if (!in_array($horario, $times)) array_push($times, $horario);
+             }
+             $times = implode($times);
 
+             if (sizeof($days) == 2) {
+                 $days = implode(' y ', $days);
+             } else {
+                 $days = implode(',', $days);
+             }
+             $horarios = $horarios."".""."(".$hg->group->course->name." ".$hg->group->grupo->name . "-" . $hg->group->number.") ".$days." - ".$times." ";
+         }
+         return $horarios;  
+    }
+
+    public function fillWordFile($phpWord,$dataArray){
+        foreach($dataArray as $valueKey => $value){
+            $phpWord->setValue($valueKey, mb_strtoupper($value, 'UTF-8'));
+        }
+    }
+
+
+    public function contractGenerateServiciosProfesionales()
+    {
+        $docTemplatePath=['N'=>'/SPNP-N.docx','E'=>'/SPNP-I.docx'];
+        $requestDetails = HiringRequestDetail::with(['HiringGroups', 'activities', 'hiringRequest.school'])->findOrFail(3);
+        //Obtenermos los datos generales del contrato y la informacion personal del candidato
+        $personalData = $this->getPrincipalData($requestDetails->person_id);
+        $formatter = new NumeroALetras();
+        $escuela = $this->getSchoolNameFromRequest($requestDetails);
+        $actividades = $this->getRequestActivities($requestDetails);
+        $peridoContrato = $this->getContractPeriodString($formatter,$requestDetails);
+       
         //Total de horas
         $subtotal = 0;
         $subtiempo = 0;
@@ -166,67 +203,29 @@ class ContractController extends Controller
         $horasTotales = $Horas . " HORAS";
         $valorHora = "$" . sprintf('%.2f', $hourly_rate);
         $valorTotal = explode('.', sprintf('%.2f', $subtotal));
-        if ($personalData->tipo == 'N') {
-            $sueldoLetras = $formatter->toString($subtotal) . "" . $valorTotal[1] . "/100 DOLARES DE LOS DE LOS ESTADOS UNIDOS DE AMERICA ($" . $subtotal . ")";
-        } else {
-            $sueldoLetras = $formatter->toString($subtotal) . "" . $valorTotal[1] . "/100 DOLARES DE LOS DE LOS ESTADOS UNIDOS DE AMERICA ($" . $subtotal . ") MENOS EL 20% DE RENTA, segun deducciones establecidas por las leyes de El salvador";
-        }
+        $sueldoLetras = $formatter->toString($subtotal)."".$valorTotal[1]."/100 DOLARES DE LOS ESTADOS UNIDOS DE AMERICA ($" .$subtotal. ")";
 
-        $horarios = "";
-        foreach ($requestDetails->hiringGroups as $hg) {
-            $days = [];
-            $times = [];
-            foreach ($hg->group->schedule as $schedule) {
-                array_push($days, $schedule->day);
-                $horario = date("g:ia", strtotime($schedule->start_hour)) . '-' . date("g:ia", strtotime($schedule->finish_hour));
-                if (!in_array($horario, $times)) array_push($times, $horario);
-            }
-            $times = implode($times);
-
-            if (sizeof($days) == 2) {
-                $days = implode(' y ', $days);
-            } else {
-                $days = implode(',', $days);
-            }
-            $horarios = $horarios . "" . "" . "(" . $hg->group->course->name . " " . $hg->group->grupo->name . "-" . $hg->group->number . ") " . $days . " - " . $times . " ";
+        if($personalData['tipo'] == 'E'){
+            $sueldoLetras = $sueldoLetras . " MENOS EL 20% DE RENTA, según deducciones establecidas por las leyes de El salvador";
         }
+        $horarios = $this->getHiringGroupsScheduleString($requestDetails);
         try {
-            if ($personalData->tipo == 'N') {
-                $phpWord = new \PhpOffice\PhpWord\TemplateProcessor(\Storage::disk('formats')->path('/SPNP-N.docx'));
-                $phpWord->setValue('candidatoCiudad', strtoupper($personalData->person->candidatoCiudad));
-                $phpWord->setValue('candidatoDepartamento', strtoupper($personalData->person->candidatoDepartamento));
-                $phpWord->setValue('documento', strtoupper($personalData->person->documentoDC));
-                $phpWord->setValue('candidatoNit', strtoupper($personalData->person->candidatoNit));
-            } else {
-                $phpWord = new \PhpOffice\PhpWord\TemplateProcessor(\Storage::disk('formats')->path('/SPNP-I.docx'));
-                $phpWord->setValue('nacionalidad', strtoupper($personalData->person->nacionalidad));
-                $phpWord->setValue('pasaporte', strtoupper($personalData->person->pasaporte));
-            }
+            $phpWord = new \PhpOffice\PhpWord\TemplateProcessor(\Storage::disk('formats')->path($docTemplatePath[$personalData['tipo']]));
+            $specifics = [
+                'escuelaContratante'=>mb_strtoupper($escuela, 'UTF-8'),
+                'cargoCandidato'=>mb_strtoupper($requestDetails->position, 'UTF-8'),
+                'actividadesCandidato'=>mb_strtoupper($actividades, 'UTF-8'),
+                'periodoDelContrato'=>mb_strtoupper($peridoContrato, 'UTF-8'),
+                'horasTotales'=>mb_strtoupper($horasTotales, 'UTF-8'),
+                'valorHora'=> mb_strtoupper($valorHora, 'UTF-8'),
+                'sueldoLetras'=> mb_strtoupper($sueldoLetras, 'UTF-8'),
+                'horarioCandidato'=> mb_strtoupper($horarios, 'UTF-8')
+            ];
+            $phpWord->setValue('numeroAcuerdo','FIA-SPNP-N-001');
+            $this->fillWordFile($phpWord,$personalData['comunes']);
+            $this->fillWordFile($phpWord,$personalData['person']);
+            $this->fillWordFile($phpWord,$specifics);
 
-
-            $phpWord->setValue('numeroAcuerdo', 'FIA-SPNP-N-001');
-            $phpWord->setValue('nombreRector', strtoupper($personalData->comunes->nombreRector));
-            $phpWord->setValue('firmaRector', $personalData->comunes->firmaRector);
-            $phpWord->setValue('edadRector', strtoupper($personalData->comunes->edadRector));
-            $phpWord->setValue('duiTextoRector', strtoupper($personalData->comunes->duiTextoRector));
-            $phpWord->setValue('nitTextoRector', strtoupper($personalData->comunes->nitTextoRector));
-            $phpWord->setValue('profesionRector', strtoupper($personalData->comunes->profesionRector));
-            $phpWord->setValue('fecha', strtoupper($personalData->comunes->fecha));
-
-            $phpWord->setValue('nombreCandidato', strtoupper($personalData->person->nombreCandidato));
-            $phpWord->setValue('candidatoEdad', strtoupper($personalData->person->candidatoEdad));
-            $phpWord->setValue('candidatoProfesion', strtoupper($personalData->person->candidatoProfesion));
-
-
-
-            $phpWord->setValue('escuelaContratante', mb_strtoupper($escuela, 'UTF-8'));
-            $phpWord->setValue('cargoCandidato', mb_strtoupper($requestDetails->position, 'UTF-8'));
-            $phpWord->setValue('actividadesCandidato', mb_strtoupper($actividades, 'UTF-8'));
-            $phpWord->setValue('periodoDelContrato', mb_strtoupper($peridoContrato, 'UTF-8'));
-            $phpWord->setValue('horasTotales', mb_strtoupper($horasTotales, 'UTF-8'));
-            $phpWord->setValue('valorHora', mb_strtoupper($valorHora, 'UTF-8'));
-            $phpWord->setValue('sueldoLetras', mb_strtoupper($sueldoLetras, 'UTF-8'));
-            $phpWord->setValue('horarioCandidato', mb_strtoupper($horarios, 'UTF-8'));
 
             $tenpFile = tempnam(sys_get_temp_dir(), 'PHPWord');
             $phpWord->saveAs($tenpFile);
@@ -243,9 +242,10 @@ class ContractController extends Controller
 
     public function contractGenerateTiempoIntegral()
     {
+        $docTemplatePath=['N'=>'/TI-N.docx','E'=>'/TI-I.docx'];
         $requestDetails = HiringRequestDetail::with(['activities', 'hiringRequest.school', 'groups'])->findOrFail(5);
         //Obtenermos los datos generales del contrato y la informacion personal del candidato
-        $personalData = (object) $this->getPrincipalData($requestDetails->person_id);
+        $personalData = $this->getPrincipalData($requestDetails->person_id);
         //Obtenemos la partida,cargo,salario y total a pagar 
         $formatter = new NumeroALetras();
         $partida = $formatter->toString($requestDetails->person->employee->partida);
@@ -253,11 +253,10 @@ class ContractController extends Controller
         $salario = $requestDetails->monthly_salary;
         $totalAPagar = $requestDetails->work_months * $requestDetails->monthly_salary * $requestDetails->salary_percentage;
         $valorTotal = explode('.', sprintf('%.2f', $totalAPagar));
-        $sueldoLetras = '';
-        if ($personalData->tipo == 'N') {
-            $sueldoLetras = $formatter->toString($totalAPagar) . "" . $valorTotal[1] . "/100 DOLARES DE LOS DE LOS ESTADOS UNIDOS DE AMERICA ($" . sprintf('%.2f', $totalAPagar) . ")";
-        } else {
-            $sueldoLetras = $formatter->toString($totalAPagar) . "" . $valorTotal[1] . "/100 DOLARES DE LOS DE LOS ESTADOS UNIDOS DE AMERICA ($" . sprintf('%.2f', $totalAPagar) . ") MENOS EL 20% DE RENTA, segun deducciones establecidas por las leyes de El salvador";
+        $sueldoLetras = $formatter->toString($totalAPagar) . "" . $valorTotal[1] . "/100 DOLARES DE LOS DE LOS ESTADOS UNIDOS DE AMERICA ($" . sprintf('%.2f', $totalAPagar) . ")";
+    
+        if($personalData['tipo'] == 'E'){
+            $sueldoLetras = $sueldoLetras . " MENOS EL 20% DE RENTA, según deducciones establecidas por las leyes de El salvador";
         }
         //Funciones en tiempo Normal
         $staySchedule = StaySchedule::where(['id' => $requestDetails->stay_schedule_id])->with(['semester', 'scheduleDetails', 'scheduleActivities'])->firstOrFail();
@@ -272,10 +271,7 @@ class ContractController extends Controller
             $hrAct = $hrAct . " " . $act->name . ",";
         }
         //funciones y horarios en tiemo integral
-        $actividadesIntegral = "";
-        foreach ($requestDetails->activities as $activity) {
-            $actividadesIntegral = $actividadesIntegral . "" . $activity->name . ", ";
-        }
+        $actividadesIntegral = $this->getRequestActivities($requestDetails);
 
         $horasSemanalesIntegral = 0;
         $horariosIntegral = "";
@@ -299,49 +295,30 @@ class ContractController extends Controller
         }
 
         $formatter = new NumeroALetras();
-        $fechaInicio = Carbon::parse($requestDetails->start_date)->locale('es');
-        $fechaFinal = Carbon::parse($requestDetails->end_date)->locale('es');
-        $peridoContracion = "DEL " . $formatter->toString($fechaInicio->day) . " DE " . $fechaInicio->monthName . " DE " . $formatter->toString($fechaInicio->year) . " AL " . $formatter->toString($fechaFinal->day) . " DE " . $fechaFinal->monthName . " DE " . $formatter->toString($fechaFinal->year);
+        $peridoContracion = $this->getContractPeriodString($formatter,$requestDetails);
 
         try {
-            if ($personalData->tipo == 'N') {
-                $phpWord = new \PhpOffice\PhpWord\TemplateProcessor(\Storage::disk('formats')->path('/TI-N.docx'));
-                $phpWord->setValue('candidatoCiudad', strtoupper($personalData->person->candidatoCiudad));
-                $phpWord->setValue('candidatoDepartamento', strtoupper($personalData->person->candidatoDepartamento));
-                $phpWord->setValue('documento', strtoupper($personalData->person->documentoDC));
-                $phpWord->setValue('candidatoNit', strtoupper($personalData->person->candidatoNit));
-            } else {
-                $phpWord = new \PhpOffice\PhpWord\TemplateProcessor(\Storage::disk('formats')->path('/TI-I.docx'));
-                $phpWord->setValue('nacionalidad', strtoupper($personalData->person->nacionalidad));
-                $phpWord->setValue('pasaporte', strtoupper($personalData->person->pasaporte));
-            }
+            $phpWord = new \PhpOffice\PhpWord\TemplateProcessor(\Storage::disk('formats')->path($docTemplatePath[$personalData['tipo']]));
 
-
+            $specifics=[
+                'partida'=> mb_strtoupper($partida, 'UTF-8'),
+                'cargo'=> mb_strtoupper($escalafon, 'UTF-8'),
+                'justificacion'=> mb_strtoupper($requestDetails->justification, 'UTF-8'),
+                'metas'=> mb_strtoupper($requestDetails->goals, 'UTF-8'),
+                'salario'=> sprintf('%.2f', $salario),
+                'funcionesPermanencia'=> mb_strtoupper($hrAct, 'UTF-8'),
+                'horarioPermanencia'=> mb_strtoupper($hrStay, 'UTF-8'),
+                'horasSemanales'=> $hrStayNumber,
+                'funcionesIntegral'=> mb_strtoupper($actividadesIntegral, 'UTF-8'),
+                'horarioIntegral'=> mb_strtoupper($horariosIntegral, 'UTF-8'),
+                'horasIntegral'=> sprintf('%.2f', $horasSemanalesIntegral),
+                'periodoDeContratacion'=> mb_strtoupper($peridoContracion, 'UTF-8'),
+                'salarioIntegral'=> mb_strtoupper($sueldoLetras, 'UTF-8')
+            ];
             $phpWord->setValue('numeroAcuerdo', 'FIA-SPNP-N-001');
-            $phpWord->setValue('nombreRector', strtoupper($personalData->comunes->nombreRector));
-            $phpWord->setValue('firmaRector', $personalData->comunes->firmaRector);
-            $phpWord->setValue('edadRector', strtoupper($personalData->comunes->edadRector));
-            $phpWord->setValue('duiTextoRector', strtoupper($personalData->comunes->duiTextoRector));
-            $phpWord->setValue('nitTextoRector', strtoupper($personalData->comunes->nitTextoRector));
-            $phpWord->setValue('profesionRector', strtoupper($personalData->comunes->profesionRector));
-            $phpWord->setValue('fecha', strtoupper($personalData->comunes->fecha));
-
-            $phpWord->setValue('nombreCandidato', strtoupper($personalData->person->nombreCandidato));
-            $phpWord->setValue('candidatoEdad', strtoupper($personalData->person->candidatoEdad));
-            $phpWord->setValue('candidatoProfesion', strtoupper($personalData->person->candidatoProfesion));
-            $phpWord->setValue('partida', mb_strtoupper($partida, 'UTF-8'));
-            $phpWord->setValue('cargo', mb_strtoupper($escalafon, 'UTF-8'));
-            $phpWord->setValue('justificacion', mb_strtoupper($requestDetails->justification, 'UTF-8'));
-            $phpWord->setValue('metas', mb_strtoupper($requestDetails->goals, 'UTF-8'));
-            $phpWord->setValue('salario', sprintf('%.2f', $salario));
-            $phpWord->setValue('funcionesPermanencia', mb_strtoupper($hrAct, 'UTF-8'));
-            $phpWord->setValue('horarioPermanencia', mb_strtoupper($hrStay, 'UTF-8'));
-            $phpWord->setValue('horasSemanales', $hrStayNumber);
-            $phpWord->setValue('funcionesIntegral', mb_strtoupper($actividadesIntegral, 'UTF-8'));
-            $phpWord->setValue('horarioIntegral', mb_strtoupper($horariosIntegral, 'UTF-8'));
-            $phpWord->setValue('horasIntegral', sprintf('%.2f', $horasSemanalesIntegral));
-            $phpWord->setValue('periodoDeContratacion', mb_strtoupper($peridoContracion, 'UTF-8'));
-            $phpWord->setValue('salarioIntegral', mb_strtoupper($sueldoLetras, 'UTF-8'));
+            $this->fillWordFile($phpWord,$personalData['comunes']);
+            $this->fillWordFile($phpWord,$personalData['person']);
+            $this->fillWordFile($phpWord,$specifics);
 
             $tempFile = tempnam(sys_get_temp_dir(), 'PHPWord');
             $phpWord->saveAs($tempFile);
@@ -354,4 +331,6 @@ class ContractController extends Controller
             return back($e->getCode());
         }
     }
+
+    
 }
