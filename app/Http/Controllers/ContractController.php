@@ -178,10 +178,10 @@ class ContractController extends Controller
     }
 
 
-    public function contractGenerateServiciosProfesionales($id)
+    public function contractGenerateServiciosProfesionales($requestDetails)
     {
         $docTemplatePath=['N'=>'\SPNP-N.docx','E'=>'\SPNP-I.docx'];
-        $requestDetails = HiringRequestDetail::with(['HiringGroups', 'activities', 'hiringRequest.school'])->findOrFail($id);
+
         //Obtenermos los datos generales del contrato y la informacion personal del candidato
         $personalData = $this->getPrincipalData($requestDetails->person_id);
         $formatter = new NumeroALetras();
@@ -211,7 +211,7 @@ class ContractController extends Controller
         $horarios = $this->getHiringGroupsScheduleString($requestDetails);
         try {
             $phpWord = new \PhpOffice\PhpWord\TemplateProcessor(\Storage::disk('formats')->path($docTemplatePath[$personalData['tipo']]));
-             $specifics = [
+             $specific = [
                 'escuelaContratante'=>mb_strtoupper($escuela, 'UTF-8'),
                 'cargoCandidato'=>mb_strtoupper($requestDetails->position, 'UTF-8'),
                 'actividadesCandidato'=>mb_strtoupper($actividades, 'UTF-8'),
@@ -224,26 +224,22 @@ class ContractController extends Controller
             $phpWord->setValue('numeroAcuerdo','FIA-SPNP-N-001');
              $this->fillWordFile($phpWord,$personalData['comunes']);
             $this->fillWordFile($phpWord,$personalData['person']);
-            $this->fillWordFile($phpWord,$specifics); 
+            $this->fillWordFile($phpWord,$specific); 
  
-
-            $tenpFile = tempnam(sys_get_temp_dir(), 'PHPWord');
-            $phpWord->saveAs($tenpFile);
-
             $header = [
                 "Content-Type: application/octet-stream",
             ];
-            return response()->download($tenpFile, 'Contrato Generado Servicios Profesionales.docx', $header)->deleteFileAfterSend($shouldDelete = true);
+            return ['document'=>$phpWord,'header'=>$header,'name'=>'Contrato Generado Servicios Profesionales.docx'];
         } catch (\PhpOffice\PhpWord\Exception\Exception $e) {
             //throw $th;
             return back($e->getCode());
         }
     }
 
-    public function contractGenerateTiempoIntegral($id)
+    public function contractGenerateTiempoIntegral($requestDetails)
     {
         $docTemplatePath=['N'=>'/TI-N.docx','E'=>'/TI-I.docx'];
-        $requestDetails = HiringRequestDetail::with(['activities', 'hiringRequest.school', 'groups'])->findOrFail($id);
+
         //Obtenermos los datos generales del contrato y la informacion personal del candidato
         $personalData = $this->getPrincipalData($requestDetails->person_id);
         //Obtenemos la partida,cargo,salario y total a pagar 
@@ -300,7 +296,7 @@ class ContractController extends Controller
         try {
             $phpWord = new \PhpOffice\PhpWord\TemplateProcessor(\Storage::disk('formats')->path($docTemplatePath[$personalData['tipo']]));
 
-            $specifics=[
+            $specific=[
                 'partida'=> mb_strtoupper($partida, 'UTF-8'),
                 'cargo'=> mb_strtoupper($escalafon, 'UTF-8'),
                 'justificacion'=> mb_strtoupper($requestDetails->justification, 'UTF-8'),
@@ -318,24 +314,21 @@ class ContractController extends Controller
             $phpWord->setValue('numeroAcuerdo', 'FIA-SPNP-N-001');
             $this->fillWordFile($phpWord,$personalData['comunes']);
             $this->fillWordFile($phpWord,$personalData['person']);
-            $this->fillWordFile($phpWord,$specifics);
-
-            $tempFile = tempnam(sys_get_temp_dir(), 'PHPWord');
-            $phpWord->saveAs($tempFile);
+            $this->fillWordFile($phpWord,$specific);
 
             $header = [
                 "Content-Type: application/octet-stream",
             ];
-            return response()->download($tempFile, 'Contrato Generado Tiempo Integral.docx', $header)->deleteFileAfterSend(true);
+            return ['document'=>$phpWord,'header'=>$header,'name'=>'Contrato Generado Tiempo Integral.docx'];
+
         } catch (\PhpOffice\PhpWord\Exception\Exception $e) {
             return back($e->getCode());
         }
     }
 
 
-    public function contractGenerateTiempoAdicional($id){
+    public function contractGenerateTiempoAdicional($requestDetails){
         $docTemplatePath=['N'=>'/TA-N.docx','E'=>'/TA-I.docx'];
-        $requestDetails = HiringRequestDetail::with(['activities', 'hiringRequest.school', 'groups'])->findOrFail($id);
         //Obtenermos los datos generales del contrato y la informacion personal del candidato
         $personalData = $this->getPrincipalData($requestDetails->person_id);
         $formatter = new NumeroALetras();
@@ -369,7 +362,7 @@ class ContractController extends Controller
         try {
             $phpWord = new \PhpOffice\PhpWord\TemplateProcessor(\Storage::disk('formats')->path($docTemplatePath[$personalData['tipo']]));
 
-            $specifics=[
+            $specific=[
                 
                 'cargo'=> mb_strtoupper($escalafon, 'UTF-8'),
                 'salario'=> sprintf('%.2f', $salario),
@@ -387,19 +380,49 @@ class ContractController extends Controller
             $phpWord->setValue('numeroAcuerdo', 'FIA-SPNP-N-001');
             $this->fillWordFile($phpWord,$personalData['comunes']);
             $this->fillWordFile($phpWord,$personalData['person']);
-            $this->fillWordFile($phpWord,$specifics);
+            $this->fillWordFile($phpWord,$specific);
            
-            $tempFile = tempnam(sys_get_temp_dir(), 'PHPWord');
-            $phpWord->saveAs($tempFile);
-
             $header = [
                 "Content-Type: application/octet-stream",
             ];
-            return response()->download($tempFile, 'Contrato Generado Tiempo Adicional.docx', $header)->deleteFileAfterSend(true);
+
+            return ['document'=>$phpWord,'header'=>$header,'name'=>'Contrato Generado Tiempo Adicional.docx'];
         } catch (\PhpOffice\PhpWord\Exception\Exception $e) {
             return back($e->getCode());
         }
 
+    }
+
+
+    public function generateContract($requestDetailId){
+        $requestDetails = HiringRequestDetail::with(['hiringGroups','activities', 'hiringRequest.school', 'groups'])->findOrFail($requestDetailId);
+        $hiringRequest = HiringRequest::findOrFail($requestDetails->hiring_request_id);
+
+        switch ($hiringRequest->contractType->name) {
+            case "Contrato de Tiempo Adicional":
+                $contractComponents = $this->contractGenerateTiempoAdicional($requestDetails);
+                break;
+            
+            case "Contrato de Tiempo Integral":
+                $contractComponents = $this->contractGenerateTiempoIntegral($requestDetails);
+                break;
+            
+            case "Contrato por Servicios Profesionales":
+                $contractComponents = $this->contractGenerateServiciosProfesionales($requestDetails);
+                break;
+            
+            default:
+                return response(['message' => 'No se encontró el tipo de contrato'], 404);
+                break;
+        }
+        
+        $phpWord = $contractComponents['document'];
+        $header = $contractComponents['header'];
+        $fileName = $contractComponents['name'];
+
+        $tempFile = tempnam(sys_get_temp_dir(), 'PHPWord');
+        $phpWord->saveAs($tempFile);
+        return response()->download($tempFile, $fileName, $header)->deleteFileAfterSend(true);
     }
     
 
