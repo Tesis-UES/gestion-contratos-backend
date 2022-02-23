@@ -387,7 +387,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::get('/hiringRequest/{id}/pdf', [HiringRequestController::class, 'getPdf']);
     Route::get('/persons/merge/{id?}/pdf', [PersonController::class, 'mergePersonalDoc']);
 
-    Route::get('/contract/test', [ContractController::class, 'contractGenerateServiciosProfesionales']);
-    Route::get('/contract/TiempoIntegral', [ContractController::class, 'contractGenerateTiempoIntegral']);
-    Route::get('/contract/TiempoAdicional', [ContractController::class, 'contractGenerateTiempoAdicional']);
+    Route::get('/contract/ServicioProfesional/{id}/generate', [ContractController::class, 'contractGenerateServiciosProfesionales']);
+    Route::get('/contract/TiempoIntegral/{id}/generate', [ContractController::class, 'contractGenerateTiempoIntegral']);
+    Route::get('/contract/TiempoAdicional/{id}/generate', [ContractController::class, 'contractGenerateTiempoAdicional']);
 });

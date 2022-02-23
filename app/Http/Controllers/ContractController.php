@@ -178,10 +178,10 @@ class ContractController extends Controller
     }
 
 
-    public function contractGenerateServiciosProfesionales()
+    public function contractGenerateServiciosProfesionales($id)
     {
         $docTemplatePath=['N'=>'\SPNP-N.docx','E'=>'\SPNP-I.docx'];
-        $requestDetails = HiringRequestDetail::with(['HiringGroups', 'activities', 'hiringRequest.school'])->findOrFail(1);
+        $requestDetails = HiringRequestDetail::with(['HiringGroups', 'activities', 'hiringRequest.school'])->findOrFail($id);
         //Obtenermos los datos generales del contrato y la informacion personal del candidato
         $personalData = $this->getPrincipalData($requestDetails->person_id);
         $formatter = new NumeroALetras();
@@ -240,10 +240,10 @@ class ContractController extends Controller
         }
     }
 
-    public function contractGenerateTiempoIntegral()
+    public function contractGenerateTiempoIntegral($id)
     {
         $docTemplatePath=['N'=>'/TI-N.docx','E'=>'/TI-I.docx'];
-        $requestDetails = HiringRequestDetail::with(['activities', 'hiringRequest.school', 'groups'])->findOrFail(5);
+        $requestDetails = HiringRequestDetail::with(['activities', 'hiringRequest.school', 'groups'])->findOrFail($id);
         //Obtenermos los datos generales del contrato y la informacion personal del candidato
         $personalData = $this->getPrincipalData($requestDetails->person_id);
         //Obtenemos la partida,cargo,salario y total a pagar 
@@ -333,14 +333,14 @@ class ContractController extends Controller
     }
 
 
-    public function contractGenerateTiempoAdicional(){
+    public function contractGenerateTiempoAdicional($id){
         $docTemplatePath=['N'=>'/TA-N.docx','E'=>'/TA-I.docx'];
-        $requestDetails = HiringRequestDetail::with(['activities', 'hiringRequest.school', 'groups'])->findOrFail(6);
+        $requestDetails = HiringRequestDetail::with(['activities', 'hiringRequest.school', 'groups'])->findOrFail($id);
         //Obtenermos los datos generales del contrato y la informacion personal del candidato
         $personalData = $this->getPrincipalData($requestDetails->person_id);
         $formatter = new NumeroALetras();
         $escalafon = $requestDetails->person->employee->escalafon->name;
-        $salario = $requestDetails->monthly_salary;
+        $salario = $requestDetails->person->employee->escalafon->salary;
         $totalAPagar = $requestDetails->hourly_rate * $requestDetails->work_weeks * $requestDetails->weekly_hours;
         $valorTotal = explode('.', sprintf('%.2f', $totalAPagar));
         $sueldoLetras = $formatter->toString($totalAPagar) . "" . $valorTotal[1] . "/100 DOLARES DE LOS DE LOS ESTADOS UNIDOS DE AMERICA ($" . sprintf('%.2f', $totalAPagar) . ")";
@@ -359,6 +359,8 @@ class ContractController extends Controller
         foreach ($staySchedule->scheduleActivities as $act) {
             $hrAct = $hrAct . " " . $act->name . ",";
         }
+        $valorTotalHora = explode('.', sprintf('%.2f', $requestDetails->hourly_rate));
+        $valorHora = $formatter->toString($valorTotalHora[0]) . "" . $valorTotalHora[1] . "/100 DOLARES DE LOS DE LOS ESTADOS UNIDOS DE AMERICA ($" . sprintf('%.2f',$requestDetails->hourly_rate ) . ")";
         //funciones y horarios en tiemo integral
         $actividadesAdicional = $this->getRequestActivities($requestDetails);
         $formatter = new NumeroALetras();
@@ -376,9 +378,11 @@ class ContractController extends Controller
                 'horasSemanales'=> $hrStayNumber,
                 'funcionesAdicional'=> mb_strtoupper($actividadesAdicional, 'UTF-8'),
                 'horarioAdicional'=> mb_strtoupper($hrStay, 'UTF-8'),
-                'horasAdicional'=> sprintf('%.2f', $hrStayNumber),
+                'horasAdicional'=> sprintf('%.2f', $requestDetails->weekly_hours),
+                'horasAdicionalPeriodo'=> sprintf('%.2f', $requestDetails->weekly_hours*$requestDetails->work_weeks),
                 'periodoDeContratacion'=> mb_strtoupper($peridoContracion, 'UTF-8'),
-                'salarioAdicional'=> mb_strtoupper($sueldoLetras, 'UTF-8')
+                'salarioAdicional'=> mb_strtoupper($sueldoLetras, 'UTF-8'),
+                'valorHora'=> mb_strtoupper($valorHora,'UTF-8'),
             ];
             $phpWord->setValue('numeroAcuerdo', 'FIA-SPNP-N-001');
             $this->fillWordFile($phpWord,$personalData['comunes']);
