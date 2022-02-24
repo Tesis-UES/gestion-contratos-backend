@@ -34,7 +34,7 @@ class UpdateSPNPRequestDetails extends FormRequest
             'groups.*.group_id'     => 'required|integer|distinct|gte:1',
             'groups.*.hourly_rate'  => 'required|numeric|gte:1',
             'groups.*.work_weeks'   => 'required|numeric|gte:1',
-            'groups.*.weekly_hours' => 'required|numeric|gte:1',
+            'groups.*.weekly_hours' => 'required|numeric',
         ];
     }
 }
