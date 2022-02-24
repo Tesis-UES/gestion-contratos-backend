@@ -505,6 +505,7 @@ class HiringRequestController extends Controller
 
         $status = Status::where('code', [HiringRequestStatusCode::RJD])->first();
         $hiringRequest->request_status = HiringRequestStatusCode::RJD;
+        $hiringRequest->save();
         $hiringRequest->status()->attach(['status_id' => $status->id]);
 
         $this->RegisterAction("El usuario ha guardado el archivo pdf que contiene el acuerdo de junta directiva para la solicitud con id: " . $id, "high");
