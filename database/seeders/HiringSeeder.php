@@ -21,7 +21,7 @@ class HiringSeeder extends Seeder
         $hrQrySec = 3;
         $faker = \Faker\Factory::create();
 
-        for ($i = 0; $i < $hrQty; $i++) {
+        /* for ($i = 0; $i < $hrQty; $i++) {
             $schoolId = 8;//mt_rand(1, 9);
             $rq =  HiringRequest::create([
                 'code' => $this->generateRequestCode($schoolId),
@@ -49,6 +49,6 @@ class HiringSeeder extends Seeder
             $rq->status()->attach(['status_id' => '2'], ['comments' => 'Llenado de datos de solicitud']);
             $rq->status()->attach(['status_id' => '3'], ['comments' => 'Finalizacion del llenado de la solicitud']);
             $rq->status()->attach(['status_id' => '4'], ['comments' => 'Solicitud enviada a Secretaria de Decanato']);
-        }
+        } */
     }
 }
