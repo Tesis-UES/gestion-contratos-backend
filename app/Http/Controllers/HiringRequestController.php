@@ -495,9 +495,13 @@ class HiringRequestController extends Controller
         $fileName = 'acuerdo-' . $fields['code'] . '.pdf';
         Storage::disk('agreements')->put($fileName, File::get($file));
 
-        $agreement = new Agreement($fields);
-        $agreement->file_uri = $fileName;
-        $agreement->save();
+        Agreement::create([
+            'hiring_request_id' => $hiringRequest->id,
+            'code'              => $fields['code'],
+            'approved'          => $fields['approved'],
+            'agreed_on'         => $fields['agreed_on'],
+            'file_uri'         => $fileName,
+        ]);
 
         $status = Status::where('code', [HiringRequestStatusCode::RJD])->first();
         $hiringRequest->request_status = HiringRequestStatusCode::RJD;

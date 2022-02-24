@@ -13,7 +13,7 @@ class Agreement extends Model
         'code',
         'approved',
         'agreed_on',
-        'file',
+        'file_uri',
         'hiring_request_id',
     ];
 
