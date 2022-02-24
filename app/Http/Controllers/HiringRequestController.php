@@ -511,4 +511,21 @@ class HiringRequestController extends Controller
         $this->RegisterAction("El usuario ha guardado el archivo pdf que contiene el acuerdo de junta directiva para la solicitud con id: " . $id, "high");
         return;
     }
+
+    public function getAgreements($id)
+    {
+        $hiringRequest = HiringRequest::with('agreement')->findOrFail($id);
+        $agreement = Agreement::findOrFail($hiringRequest->agreement->id);
+        $pdf = base64_encode(Storage::disk('agreements')->get($agreement->file_uri));
+        return response(["agreement" => $agreement,
+                          "pdf"=> $pdf  ], 200);
+    } 
+
+    public function hiringRequestRRHH()
+    {
+        //NOMBRE VA VARIAS MAS ADELANTE YA QUE ESTE ENDPOINT SOLO TRAE LAS SOLICITUDES LISTAS PARA GENERAR CONTRATOS
+        $hiringRequests = HiringRequest::whereIn('request_status', [HiringRequestStatusCode::RJD,HiringRequestStatusCode::GDC])->with('school')->with('contractType')->orderBy('created_at', 'DESC')->paginate(10);
+        $this->RegisterAction("El usuario ha consultado todas las solicitudes de contratación a las cuales se les puede generar contrato", "medium");
+        return response($hiringRequests, 200);
+    }
 }

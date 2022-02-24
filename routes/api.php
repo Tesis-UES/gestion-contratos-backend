@@ -355,6 +355,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::get('/hiringRequest/school/{id}', [HiringRequestController::class, 'getAllHiringRequestBySchool']);
     Route::get('/hiringRequest/status/all', [HiringRequestController::class, 'getAllStatus']);
     Route::post('/hiringRequest/{id}/agreement', [HiringRequestController::class, 'addAgreement']);
+    Route::get('/hiringRequest/{id}/agreement', [HiringRequestController::class, 'getAgreements']);
 
 
     //Rutas que manejan los select de las solicitudes de contratacion
@@ -388,4 +389,5 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::get('/persons/merge/{id?}/pdf', [PersonController::class, 'mergePersonalDoc']);
 
     Route::get('/contract/hiringRequestDetail/{requestDetailId}/generate', [ContractController::class, 'generateContract']);
+    Route::get('/hiringRequest/all/petitions/rrhh', [HiringRequestController::class, 'hiringRequestRRHH']);
 });
