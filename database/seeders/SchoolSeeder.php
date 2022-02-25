@@ -37,7 +37,7 @@ class SchoolSeeder extends Seeder
         SchoolAuthority::create(['name'=>'PRUEBA  DIRECTOR','position'=>'DIRECTOR','startPeriod'=>'2021-02-02','endPeriod'=>'2021-12-02','school_id'=>7]);
         SchoolAuthority::create(['name'=>'PRUEBA  SECRETARIO','position'=>'SECRETARIO','startPeriod'=>'2021-02-02','endPeriod'=>'2021-12-02','school_id'=>7]);
         School::create(['faculty_id'=>'1', 'name' =>'Ingeniería en Sistemas Informáticos']);
-        SchoolAuthority::create(['name'=>'PRUEBA  DIRECTOR','position'=>'DIRECTOR','startPeriod'=>'2021-02-02','endPeriod'=>'2021-12-02','school_id'=>8]);
+        SchoolAuthority::create(['name'=>'Ing. Rudy Wilfredo Chicas','position'=>'DIRECTOR','startPeriod'=>'2021-02-02','endPeriod'=>'2021-12-02','school_id'=>8]);
         SchoolAuthority::create(['name'=>'PRUEBA  SECRETARIO','position'=>'SECRETARIO','startPeriod'=>'2021-02-02','endPeriod'=>'2021-12-02','school_id'=>8]);
         School::create(['faculty_id'=>'1', 'name' =>'Unidad de Ciencias Basicas']);
         SchoolAuthority::create(['name'=>'PRUEBA  DIRECTOR','position'=>'DIRECTOR','startPeriod'=>'2021-02-02','endPeriod'=>'2021-12-02','school_id'=>9]);
