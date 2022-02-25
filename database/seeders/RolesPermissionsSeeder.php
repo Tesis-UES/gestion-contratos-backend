@@ -153,6 +153,7 @@ class RolesPermissionsSeeder extends Seeder
         Permission::create(['name' => 'view_request_asis']);
         Permission::create(['name' => 'accept_request_asis']);
         Permission::create(['name' => 'view_rrhhContract']);
+        Permission::create(['name' => 'view_hiringRequest']);
 
         //CREACION DE ROLES
         $admin = Role::create(['name' => 'Administrador']);
@@ -268,6 +269,7 @@ class RolesPermissionsSeeder extends Seeder
             'view_academicLoadDirector',
             'read_hiringRequest',
             'write_hiringRequest',
+            'view_hiringRequest'
         ]);
 
         $asistenteAdmin->givePermissionTo([
