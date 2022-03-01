@@ -5,6 +5,8 @@ namespace App\Http\Controllers;
 use App\Http\Traits\WorklogTrait;
 use App\Models\Format;
 use Illuminate\Http\Request;
+use App\Constants\ContractType as ConstantsContractType;
+use Carbon\Carbon;
 
 class FormatController extends Controller
 {
@@ -20,25 +22,47 @@ class FormatController extends Controller
     public function store(Request $request)
     {
         $fields = $request->validate([
-            'code'         => 'required|string|max:50|unique:formats',
             'name'         => 'required|string|max:100',
-            'is_template'  => 'required|boolean',
             'file'         => 'required|mimes:doc,docx,pdf',
+            'type'         => 'required|string|max:100',
+            'type_contract'   => 'string|max:100',
         ]);
+        $unique = uniqid('Format_');
+        switch ($fields['type']) {
+            case ConstantsContractType::TA:
+                $format = Format::where('type', ConstantsContractType::TA)->where('is_active', true)->where('type_contract', $fields['type_contract'])->first();
+                break;
+            case ConstantsContractType::TI:
+                $format = Format::where('type', ConstantsContractType::TI)->where('is_active', true)->where('type_contract', $fields['type_contract'])->first();
+                break;
+            case ConstantsContractType::SPNP:
+                $format = Format::where('type', ConstantsContractType::SPNP)->where('is_active', true)->where('type_contract', $fields['type_contract'])->first();
+                break;
+            default:
+                $fileName = $unique."-".$request->file('file')->getClientOriginalName();
+                \Storage::disk('formats')->put($fileName, \File::get($fields['file']));
+                $newFormat = Format::create([
+                    'name'              => $fields['name'],
+                    'file_url'          => $fileName,
+                    'type'              => $fields['type'],
+                ]);
+                $this->RegisterAction('El usuario ha ingresado un nuevo formato con id: ' . $newFormat->id, 'medium');
+                return response($newFormat, 200);
+                break;
+        }
+        $format->is_active = false;
+        $format->save();
+        $fileName = $unique."-".$request->file('file')->getClientOriginalName();
+        \Storage::disk('formats')->put($fileName, \File::get($fields['file']));
 
-        $formatName = preg_replace('/\s+/', '-', $fields['code']);
-        $fileExt = pathinfo($fields['file']->getClientOriginalName(), PATHINFO_EXTENSION);
-        $file_url = $formatName.'.'.$fileExt;
-        \Storage::disk('formats')->put($file_url, \File::get($fields['file'])); 
-        
         $newFormat = Format::create([
-            'code'         => $fields['code'],
-            'name'         => $fields['name'],
-            'is_template'  => $fields['is_template'],
-            'file_url'     => $file_url,
+            'name'              => $fields['name'],
+            'file_url'          => $fileName,
+            'type'              => $fields['type'],
+            'type_contract'     => $fields['type_contract'],
         ]);
 
-        $this->RegisterAction('El usuario ha ingresado un nuevo formato con id: '.$newFormat->id, 'medium');
+        $this->RegisterAction('El usuario ha ingresado un nuevo formato con id: ' . $newFormat->id, 'medium');
         return response($newFormat, 200);
     }
 
@@ -47,65 +71,7 @@ class FormatController extends Controller
         $format = Format::findOrFail($id);
         $format->encoded_file = base64_encode(\Storage::disk('formats')->get($format->file_url));
         $this->RegisterAction('El usuario ha consultado el formato con id: '.$id);
-        return response($format, 200);
-    }
-     
-    public function update(Request $request, $id)
-    {
-        $fields = $request->validate([
-            'code'        => 'required|string|max:100',
-            'name'        => 'required|string|max:100',
-            'is_template' => 'required|boolean',
-            'file'        => 'mimes:doc,docx,pdf',
-        ]);
-
-        $format = Format::findOrFail($id);
-
-        if($format->is_template && $fields['code'] != $format->code) {
-            return response(['message' => 'No se puede editar el codigo de un archivo plantilla'], 400);
-        }
-
-        if($format->is_template == true && $fields['is_template'] != true) {
-            return response(['message' => 'No se puede eliminar la etiqueta de plantilla de un archivo'], 400);
-        }
-
-        if($fields['code'] != null) {
-            $formatByCode = Format::withTrashed()->where('code', $fields['code'])->first();
-            if($formatByCode && $formatByCode->id != $format->id) {
-                return response(['message' => 'El valor del campo código ya ha sido ocupado'], 400);
-            }
-        }
-        if(array_key_exists('file', $fields)){
-            $formatName = preg_replace('/\s+/', '-', $fields['code']);
-            $fileExt = pathinfo($fields['file']->getClientOriginalName(), PATHINFO_EXTENSION);
-            $file_url = $formatName.'.'.$fileExt;
-    
-            \Storage::disk('formats')->delete($format->file_url);
-            \Storage::disk('formats')->put($file_url, \File::get($fields['file'])); 
-        } else {
-            $file_url = $format->file_url;
-        }
-
-
-       $format->update([
-            'name'      => $fields['name'],
-            'file_url'  => $file_url,
-        ]);
-
-        $this->RegisterAction('El usuario ha actualizado el formato con id: '.$id, 'medium');
-        return response($format, 200);
+        return response($format->encoded_file, 200);
     }
 
-    public function destroy($id)
-    {
-        $format = Format::findOrFail($id);
-        if($format->is_template){
-            return response(['message' => 'No se pueden eliminar los archivos plantilla'], 400);
-        }
-        $format->delete();
-        \Storage::disk('formats')->delete($format->file_url);
-
-        $this->RegisterAction('El usuario ha eliminado el formato con id: '.$id, 'medium');
-        return response(null, 204);
-    }
 }

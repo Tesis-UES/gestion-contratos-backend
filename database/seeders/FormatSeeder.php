@@ -14,18 +14,55 @@ class FormatSeeder extends Seeder
      */
     public function run()
     {
-        Format::create([
-            'code'        => 'DJ-01',
-            'name'        => 'Declaracion jurada',
-            'is_template'  => true,
-            'file_url'     => 'Declaracion-jurada.pdf',
+         Format::create([
+           
+            'name'        => 'Formato de Contrato de Tiempo Adicional Nacional  - Version 1.0',
+            'type'        => 'Contrato de Tiempo Adicional',
+            'file_url'     => 'TA-N.docx',
+            'type_contract' => 'Nacional',
         ]);
 
         Format::create([
-            'code'        => 'SPNP',
-            'name'        => 'Contrato ervicios profesionales no permanentes',
-            'is_template'  => true,
-            'file_url'     => 'SPNP.docx',
+           
+            'name'        => 'Formato de Contrato de Tiempo Adicional Internacional - Version 1.0',
+            'type'        => 'Contrato de Tiempo Adicional',
+            'file_url'     => 'TA-I.docx',
+            'type_contract' => 'Internacional',
         ]);
+
+        Format::create([
+           
+            'name'        => 'Formato de Contrato de Tiempo Integral Nacional- Version 1.0',
+            'type'        => 'Contrato de Tiempo Integral',
+            'file_url'     => 'TI-N.docx',
+            'type_contract' => 'Nacional',
+        ]);
+
+        Format::create([
+           
+            'name'        => 'Formato de Contrato de Tiempo Integral Internacional - Version 1.0',
+            'type'        => 'Contrato de Tiempo Integral',
+            'file_url'     => 'TI-I.docx',
+            'type_contract' => 'Internacional',
+        ]);
+
+        Format::create([
+           
+            'name'        => 'Formato de Contrato por Servicios Profesionales no Personales Nacional- Version 1.0',
+            'type'        => 'Contrato por Servicios Profesionales no Personales',
+            'file_url'     => 'SPNP-N.docx',
+            'type_contract' => 'Nacional',
+        ]);
+
+        Format::create([
+           
+            'name'        => 'Formato de Contrato por Servicios Profesionales no Personales Internacional - Version 1.0',
+            'type'        => 'Contrato por Servicios Profesionales no Personales',
+            'file_url'     => 'SPNP-I.docx',
+            'type_contract' => 'Internacional',
+        ]);
+
+
+       
     }
 }
