@@ -407,7 +407,7 @@ class ContractController extends Controller
                 $contractComponents = $this->contractGenerateTiempoIntegral($requestDetails);
                 break;
             
-            case "Contrato por Servicios Profesionales":
+            case "Contrato por Servicios Profesionales no Personales":
                 $contractComponents = $this->contractGenerateServiciosProfesionales($requestDetails);
                 break;
             

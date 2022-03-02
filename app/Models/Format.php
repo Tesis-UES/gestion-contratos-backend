@@ -19,7 +19,5 @@ class Format extends Model
         'type_contract',
     ];
 
-    protected $hidden = [
-        'file_url',
-    ];
+    
 }

@@ -71,7 +71,8 @@ class FormatController extends Controller
         $format = Format::findOrFail($id);
         $format->encoded_file = base64_encode(\Storage::disk('formats')->get($format->file_url));
         $this->RegisterAction('El usuario ha consultado el formato con id: '.$id);
-        return response($format->encoded_file, 200);
+        return response(['format'  => $format,
+                         'document' => $format->encoded_file], 200);
     }
 
 }

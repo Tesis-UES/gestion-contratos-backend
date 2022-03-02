@@ -71,8 +71,6 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::get('/formats/{id}', [FormatController::class, 'show']);
     Route::group(['middleware' => ['can:write_formats']], function () {
         Route::post('/formats', [FormatController::class, 'store']);
-        Route::post('/formats/{id}/update', [FormatController::class, 'update']);
-        Route::delete('/formats/{id}', [FormatController::class, 'destroy']);
     });
 
     // Rutas que manejan la bitacora de uso 
