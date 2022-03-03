@@ -446,14 +446,14 @@ class HiringRequestDetailController extends Controller
             $group->people_id = $validatedDetail['person_id'];
             $group->status = GroupStatus::DASC;
             $group->save();
-            $groups[] = $group;
+            $grp[] = $group;
         }
         if ($weeklyHours > 5) {
             DB::rollBack();
             return response(['message' => 'Un empleado no puede trabajar mas de 5 horas por semana en esta modalidad'], 400);
         }
-
-        $detail->groups()->saveMany($groups);
+       
+        $detail->groups()->saveMany($grp);
         $detail->groups = $groups;
 
         $this->RegisterAction("El usuario ha actualizado el detalle de la solicitud de contratación TI con id: " . $detail->id, "high");
@@ -539,14 +539,14 @@ class HiringRequestDetailController extends Controller
             $group->people_id = $validatedDetail['person_id'];
             $group->status = GroupStatus::DASC;
             $group->save();
-            $groups[] = $group;
+            $grp[] = $group;
         }
         if ($weeklyHours > 10) {
             DB::rollBack();
             return response(['message' => 'Un empleado no puede trabajar mas de 40 horas por mes en esta modalidad'], 400);
         }
 
-        $detail->groups()->saveMany($groups);
+        $detail->groups()->saveMany($grp);
         $detail->groups = $groups;
         $this->RegisterAction("El usuario ha actualizado el detalle de la solicitud de contratación TA con id: " . $id, "high");
         DB::commit();
