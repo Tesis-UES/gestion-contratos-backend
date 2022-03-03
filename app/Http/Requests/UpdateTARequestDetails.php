@@ -33,7 +33,7 @@ class UpdateTARequestDetails extends FormRequest
       'hourly_rate'    => 'required|numeric|gt:0.0',
       'person_id'      => 'required|integer|gte:1',
       'activities'     => 'required|array|min:2',
-      'activities.*'   => 'required|string|distinct',
+      'activities.*'   => 'required|string',
       'group_ids'      => 'required|array|min:1',
       'group_ids.*'    => 'required|integer|distinct|gte:1',
     ];

@@ -35,7 +35,7 @@ class UpdateTIRequestDetails extends FormRequest
       'salary_percentage' => 'required|numeric|min:0|max:0.25',
       'person_id'         => 'required|integer|gte:1',
       'activities'        => 'required|array|min:2',
-      'activities.*'      => 'required|string|distinct',
+      'activities.*'      => 'required|string',
       'group_ids'         => 'required|array|min:1',
       'group_ids.*'       => 'required|integer|distinct|gte:1',
     ];

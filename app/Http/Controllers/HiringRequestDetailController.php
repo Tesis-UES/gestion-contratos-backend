@@ -483,6 +483,19 @@ class HiringRequestDetailController extends Controller
             'activities'
         ])->findOrFail($id);
 
+        $user = Auth::user();
+        $requestStatus =  $detail->hiringRequest->getLastStatusAttribute();
+        if ($detail->hiringRequest->contractType->name != ContractType::TA) {
+            DB::rollBack();
+            return response(['message' => 'Debe seleccionar un contrato del tipo "' . ContractType::TA . '"'], 400);
+        } elseif ($user->school->id != $detail->hiringRequest->school->id) {
+            DB::rollBack();
+            return response(['message' => 'No puede agregar detalles a una solicitud de contratacion de otra escuela'], 400);
+        } elseif ($requestStatus->order > 2) {
+            DB::rollBack();
+            return response(['message' => 'No puede agregar detalles a una solicitud de contratacion con estado: "' . $requestStatus->name . '"'], 400);
+        }
+
         $hiringGroups = $detail->groups;
         $groupIds = array_map(function ($hGroup) {
             return $hGroup['id'];
@@ -535,21 +548,6 @@ class HiringRequestDetailController extends Controller
 
         $detail->groups()->saveMany($groups);
         $detail->groups = $groups;
-
-        $user = Auth::user();
-        $hiringRequest = HiringRequest::with(['contractType', 'school',])->findOrFail($id);
-        $requestStatus = $hiringRequest->getLastStatusAttribute();
-        if ($hiringRequest->contractType->name != ContractType::TA) {
-            DB::rollBack();
-            return response(['message' => 'Debe seleccionar un contrato del tipo "' . ContractType::TA . '"'], 400);
-        } elseif ($user->school->id != $hiringRequest->school->id) {
-            DB::rollBack();
-            return response(['message' => 'No puede agregar detalles a una solicitud de contratacion de otra escuela'], 400);
-        } elseif ($requestStatus->order > 2) {
-            DB::rollBack();
-            return response(['message' => 'No puede agregar detalles a una solicitud de contratacion con estado: "' . $requestStatus->name . '"'], 400);
-        }
-
         $this->RegisterAction("El usuario ha actualizado el detalle de la solicitud de contratación TA con id: " . $id, "high");
         DB::commit();
         return response($detail);
