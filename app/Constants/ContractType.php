@@ -6,5 +6,6 @@ abstract class ContractType
 {
   public const TA = 'Contrato de Tiempo Adicional';
   public const TI = 'Contrato de Tiempo Integral';
-  public const SPNP = 'Contrato por Servicios Profesionales';
+  public const SPNP = 'Contrato por Servicios Profesionales no Personales';
+  public const OTRO = 'Otro Formato';
 }

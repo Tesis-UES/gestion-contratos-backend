@@ -15,10 +15,11 @@ class CreateFormatsTable extends Migration
     {
         Schema::create('formats', function (Blueprint $table) {
             $table->id();
-            $table->string('code')->unique();
             $table->string('name');
-            $table->boolean('is_template');
+            $table->boolean('is_active')->default(true);
             $table->string('file_url')->unique();
+            $table->enum('type', ['Contrato de Tiempo Adicional', 'Contrato de Tiempo Integral', 'Contrato por Servicios Profesionales no Personales','Otro Formato'])->nullable();
+            $table->enum('type_contract', ['Internacional','Nacional'])->nullable();
             $table->softDeletes();
             $table->timestamps();
         });

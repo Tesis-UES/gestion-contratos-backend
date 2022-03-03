@@ -446,14 +446,14 @@ class HiringRequestDetailController extends Controller
             $group->people_id = $validatedDetail['person_id'];
             $group->status = GroupStatus::DASC;
             $group->save();
-            $groups[] = $group;
+            $grp[] = $group;
         }
         if ($weeklyHours > 5) {
             DB::rollBack();
             return response(['message' => 'Un empleado no puede trabajar mas de 5 horas por semana en esta modalidad'], 400);
         }
-
-        $detail->groups()->saveMany($groups);
+       
+        $detail->groups()->saveMany($grp);
         $detail->groups = $groups;
 
         $this->RegisterAction("El usuario ha actualizado el detalle de la solicitud de contratación TI con id: " . $detail->id, "high");
@@ -482,6 +482,19 @@ class HiringRequestDetailController extends Controller
             'hiringRequest.school',
             'activities'
         ])->findOrFail($id);
+
+        $user = Auth::user();
+        $requestStatus =  $detail->hiringRequest->getLastStatusAttribute();
+        if ($detail->hiringRequest->contractType->name != ContractType::TA) {
+            DB::rollBack();
+            return response(['message' => 'Debe seleccionar un contrato del tipo "' . ContractType::TA . '"'], 400);
+        } elseif ($user->school->id != $detail->hiringRequest->school->id) {
+            DB::rollBack();
+            return response(['message' => 'No puede agregar detalles a una solicitud de contratacion de otra escuela'], 400);
+        } elseif ($requestStatus->order > 2) {
+            DB::rollBack();
+            return response(['message' => 'No puede agregar detalles a una solicitud de contratacion con estado: "' . $requestStatus->name . '"'], 400);
+        }
 
         $hiringGroups = $detail->groups;
         $groupIds = array_map(function ($hGroup) {
@@ -526,30 +539,15 @@ class HiringRequestDetailController extends Controller
             $group->people_id = $validatedDetail['person_id'];
             $group->status = GroupStatus::DASC;
             $group->save();
-            $groups[] = $group;
+            $grp[] = $group;
         }
         if ($weeklyHours > 10) {
             DB::rollBack();
             return response(['message' => 'Un empleado no puede trabajar mas de 40 horas por mes en esta modalidad'], 400);
         }
 
-        $detail->groups()->saveMany($groups);
+        $detail->groups()->saveMany($grp);
         $detail->groups = $groups;
-
-        $user = Auth::user();
-        $hiringRequest = HiringRequest::with(['contractType', 'school',])->findOrFail($id);
-        $requestStatus = $hiringRequest->getLastStatusAttribute();
-        if ($hiringRequest->contractType->name != ContractType::TA) {
-            DB::rollBack();
-            return response(['message' => 'Debe seleccionar un contrato del tipo "' . ContractType::TA . '"'], 400);
-        } elseif ($user->school->id != $hiringRequest->school->id) {
-            DB::rollBack();
-            return response(['message' => 'No puede agregar detalles a una solicitud de contratacion de otra escuela'], 400);
-        } elseif ($requestStatus->order > 2) {
-            DB::rollBack();
-            return response(['message' => 'No puede agregar detalles a una solicitud de contratacion con estado: "' . $requestStatus->name . '"'], 400);
-        }
-
         $this->RegisterAction("El usuario ha actualizado el detalle de la solicitud de contratación TA con id: " . $id, "high");
         DB::commit();
         return response($detail);
