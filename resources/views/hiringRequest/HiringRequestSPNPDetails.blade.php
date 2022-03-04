@@ -157,13 +157,13 @@
                                 <td>{{ $detail->mappedGroups[$i]->time }}</td>
                                 <td>{{ $detail->period }}</td>
                                 <td>Anexo {{ $n }}</td>
-                                <td>$ {{ sprintf('%.2f', $detail->mappedGroups[$i]->hourly_rate) }}</td>
+                                <td>$ {{  number_format( $detail->mappedGroups[$i]->hourly_rate,2) }}</td>
                                 <td>{{ $detail->mappedGroups[$i]->work_weeks }}</td>
                                 <td>{{ $detail->mappedGroups[$i]->weekly_hours }}</td>
                                 <td>{{ $detail->mappedGroups[$i]->work_weeks * $detail->mappedGroups[$i]->weekly_hours }}
                                 </td>
                                 <td>$
-                                    {{ sprintf('%.2f',$detail->mappedGroups[$i]->work_weeks *$detail->mappedGroups[$i]->weekly_hours *$detail->mappedGroups[$i]->hourly_rate) }}
+                                    {{  number_format($detail->mappedGroups[$i]->work_weeks *$detail->mappedGroups[$i]->weekly_hours *$detail->mappedGroups[$i]->hourly_rate,2) }}
                                 </td>
                             </tr>
                         @endfor
@@ -173,7 +173,7 @@
                             <td style="font-weight: bold; background-color: rgb(192, 192, 192, 0.5);">
                                 {{ $detail->subtotalHoras }}</td>
                             <td style="font-weight: bold; background-color: rgb(192, 192, 192, 0.5);">
-                                ${{ sprintf('%.2f', $detail->subtotal) }}</td>
+                                ${{  number_format( $detail->subtotal,2) }}</td>
 
                         </tr>
                     @endforeach
@@ -182,7 +182,7 @@
                     <td style="font-weight: bold; background-color: rgba(243, 55, 55, 0.5); text-align: center;"
                         colspan="10"><b>Total</b></td>
                     <td style="font-weight: bold; background-color: rgba(243, 55, 55, 0.5); text-align: center;"><b>$
-                            {{ sprintf('%.2f', $hiringRequest->total) }}</b></td>
+                            {{  number_format($hiringRequest->total,2) }}</b></td>
                 </tr>
         </table>
         <br>

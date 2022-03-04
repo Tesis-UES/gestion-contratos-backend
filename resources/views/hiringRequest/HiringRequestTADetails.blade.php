@@ -213,12 +213,12 @@
                     <td style="font-weight: bold;  text-align: Left; background-color:rgba(190, 100, 100, 0.5);"
                         colspan="3"><b>Valor a pagar por hora </b>
                     </td>
-                    <td style="font-weight: bold;  text-align: Left; word-wrap: break-word" colspan="3"><b>${{sprintf('%.2f',$detail->hourly_rate)}}</b>
+                    <td style="font-weight: bold;  text-align: Left; word-wrap: break-word" colspan="3"><b>${{ number_format($detail->hourly_rate,2)}}</b>
                     </td>
                     <td style="font-weight: bold;  text-align: Left; background-color: rgba(190, 100, 100, 0.5);"
                         colspan="3"><b>Total a pagar por el periodo</b>
                     </td>
-                    <td style="font-weight: bold;  text-align: Left; word-wrap: break-word" colspan="3"><b>${{sprintf('%.2f',$detail->total)}}</b>
+                    <td style="font-weight: bold;  text-align: Left; word-wrap: break-word" colspan="3"><b>${{ number_format($detail->total,2)}}</b>
                     </td>
 
                 </tr>

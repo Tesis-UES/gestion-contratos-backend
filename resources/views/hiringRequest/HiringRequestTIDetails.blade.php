@@ -212,7 +212,7 @@
                     <td style="font-weight: bold;  text-align: Left; background-color: rgb(192, 192, 192, 0.5);"
                         colspan="3"><b>Salario Mensual en Jornada Normal</b>
                     </td>
-                    <td style="font-weight: bold;  text-align: Left; word-wrap: break-word" colspan="9"><b>$ {{sprintf('%.2f', $detail->monthly_salary)}}</b>
+                    <td style="font-weight: bold;  text-align: Left; word-wrap: break-word" colspan="9"><b>$ {{ number_format( $detail->monthly_salary,2)}}</b>
                     </td>
 
                 </tr>
@@ -228,12 +228,12 @@
                     <td style="font-weight: bold;  text-align: Left; background-color:rgba(190, 100, 100, 0.5);"
                         colspan="3"><b>Valor a pagar por mes </b>
                     </td>
-                    <td style="font-weight: bold;  text-align: Left; word-wrap: break-word" colspan="3"><b>${{sprintf('%.2f',$detail->monthly_salary * $detail->salary_percentage)}}</b>
+                    <td style="font-weight: bold;  text-align: Left; word-wrap: break-word" colspan="3"><b>${{ number_format($detail->monthly_salary * $detail->salary_percentage,2)}}</b>
                     </td>
                     <td style="font-weight: bold;  text-align: Left; background-color: rgba(190, 100, 100, 0.5);"
                         colspan="3"><b>Total a pagar</b>
                     </td>
-                    <td style="font-weight: bold;  text-align: Left; word-wrap: break-word" colspan="3"><b>${{sprintf('%.2f',$detail->work_months * $detail->monthly_salary * $detail->salary_percentage)}}</b>
+                    <td style="font-weight: bold;  text-align: Left; word-wrap: break-word" colspan="3"><b>${{ number_format($detail->work_months * $detail->monthly_salary * $detail->salary_percentage,2)}}</b>
                     </td>
 
                 </tr>

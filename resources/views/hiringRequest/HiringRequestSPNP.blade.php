@@ -152,7 +152,7 @@
         </div>
     </header>
     <footer>
-        Facultad de Ingeniería y Arquitectura - Universidad de El Salvador
+        
     </footer>
     <main style="page-break-after: auto; margin-top:10px;">
         <span class="fecha">{{ $header->fecha }}</span>
@@ -180,14 +180,14 @@
                         <tr>
                             <td>{{ $item->person->first_name . ' ' . $item->person->middle_name . ' ' . $item->person->last_name }}
                             </td>
-                            <td style="text-align: center;">$ {{ sprintf("%.2f",$item->subtotal) }}</td>
+                            <td style="text-align: center;">$ {{ number_format($item->subtotal,2) }}</td>
                         </tr>
                     @endforeach
 
                 <tfoot>
                     <tr>
                         <td style="font-weight: bold; background-color: rgba(243, 55, 55, 0.5); text-align: center;"><strong>Total: </strong></td>
-                        <td style="font-weight: bold; background-color: rgba(243, 55, 55, 0.5); text-align: center;">$ {{ sprintf("%.2f",$hiringRequest->total) }}</td>
+                        <td style="font-weight: bold; background-color: rgba(243, 55, 55, 0.5); text-align: center;">$ {{ number_format($hiringRequest->total,2) }}</td>
                     </tr>
                 </tfoot>
 
