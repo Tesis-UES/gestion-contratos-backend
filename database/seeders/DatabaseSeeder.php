@@ -30,6 +30,5 @@ class DatabaseSeeder extends Seeder
                 $this->call(StatusSeeder::class);
                 $this->call(HiringSeeder::class);
                 $this->call(HrSeeder::class);
-             
         }
 }

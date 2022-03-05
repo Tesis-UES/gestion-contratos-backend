@@ -48,7 +48,8 @@ class HrSeeder extends Seeder
         $rq->status()->attach(['status_id' => '1'], ['comments' => 'Registro de solicitud']);
         $rq->status()->attach(['status_id' => '2'], ['comments' => 'Llenado de datos de solicitud de contratación']);
 
-        $personas = [1, 2, 5];
+        // $personas = [1, 2, 5];
+        $personas = [];
         foreach ($personas as $p) {
             $savedDetail = HiringRequestDetail::create([
                 'hiring_request_id' =>  $rq->id,
@@ -58,7 +59,6 @@ class HrSeeder extends Seeder
                 'person_id'         => $p
             ]);
             $act = [];
-            //$act = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20];
             $act = [1, 2, 3, 4, 5];
 
             foreach ($act as $activityName) {
@@ -106,7 +106,8 @@ class HrSeeder extends Seeder
         ]);
         $rqi->status()->attach(['status_id' => '1'], ['comments' => 'Registro de solicitud']);
         $rqi->status()->attach(['status_id' => '2'], ['comments' => 'Llenado de datos de solicitud de contratación']);
-        $pers = [3, 4];
+        $pers = [];
+        // $pers = [3, 4];
 
         foreach ($pers as $p) {
             if ($p == 3) {
@@ -166,7 +167,8 @@ class HrSeeder extends Seeder
         ]);
         $rqi->status()->attach(['status_id' => '1'], ['comments' => 'Registro de solicitud']);
         $rqi->status()->attach(['status_id' => '2'], ['comments' => 'Llenado de datos de solicitud de contratación']);
-        $perso = [6, 7];
+        // $perso = [6, 7];
+        $perso = [];
 
         foreach ($perso as $p) {
             if ($p == 6) {
@@ -194,7 +196,7 @@ class HrSeeder extends Seeder
                 $activities[] = $activity;
             }
             $savedDetail->activities()->saveMany($activities);
-           
+
             if ($p == 6) {
                 $groups = [81, 82, 83];
             } else {

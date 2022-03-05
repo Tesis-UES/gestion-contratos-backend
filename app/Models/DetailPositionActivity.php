@@ -9,6 +9,11 @@ class DetailPositionActivity extends Model
 {
     use HasFactory;
 
+    protected $fillable = [
+        'position_id',
+        'hiring_request_detail_id'
+    ];
+
     public function hiringRequestDetail()
     {
         return $this->belongsTo(HiringRequestDetail::class);
