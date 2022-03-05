@@ -50,9 +50,9 @@ class HiringRequestDetail extends Model
         return $this->belongsToMany(Group::class, 'hiring_groups');
     }
 
-    public function activities()
+    public function positionActivity()
     {
-        return $this->belongsToMany(Activity::class, 'hiring_activities');
+        return $this->hasOne(DetailPositionActivity::class);
     }
 
     public function hiringRequest()

@@ -15,9 +15,9 @@ class CreateHiringActivitiesTable  extends Migration
     {
         Schema::create('hiring_activities', function (Blueprint $table) {
             $table->id();
-            $table->integer('hiring_request_detail_id');
+            $table->integer('detail_position_activities_id');
             $table->integer('activity_id');
-            $table->foreign('hiring_request_detail_id')->references('id')->on('hiring_request_details')->onDelete('cascade')->nonullable();
+            $table->foreign('detail_position_activities_id')->references('id')->on('detail_position_activities')->onDelete('cascade')->nonullable();
             $table->foreign('activity_id')->references('id')->on('activities')->nonullable();
         });
     }
