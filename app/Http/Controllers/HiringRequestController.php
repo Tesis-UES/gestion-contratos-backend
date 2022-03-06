@@ -55,7 +55,7 @@ class HiringRequestController extends Controller
             'details.groups.grupo',
             'details.groups',
             'details.hiringGroups',
-            'details.activities',
+            'details.positionActivity.position.activities',
             'details.person',
             'details.person.employee',
             'details.person.employee.escalafon',
@@ -232,13 +232,17 @@ class HiringRequestController extends Controller
 
         foreach ($hiringRequest->details as $detail) {
             $detail->fullName = $detail->person->first_name . " " . $detail->person->middle_name . " " . $detail->person->last_name;
-            $detail->period = $detail->start_date . "-" . $detail->finish_date;
-            $mappedActivities = [];
-
-            foreach ($detail->activities as $act) {
-                $mappedActivities[] = $act->name;
+            $detail->period = date('d/m/Y', strtotime($detail->start_date)) . " - " . date('d/m/Y', strtotime($detail->finish_date));
+            $positionActivities =[];
+            foreach ($detail->positionActivity as $position) {
+              
+              $Activities = [];
+              foreach ($position->position->activities as $activity) {
+                 $Activities [] = $activity->name;
+              }
+              $positionActivities[] = ['position' => $position->position->name, 'activities' => $Activities];
             }
-            $detail->mappedActivities = $mappedActivities;
+            $detail->positionActivities = $positionActivities;
             $mappedGroups = [];
 
             foreach ($detail->hiringGroups as $hg) {
@@ -311,10 +315,16 @@ class HiringRequestController extends Controller
             $detail->fullName = $detail->person->first_name . " " . $detail->person->middle_name . " " . $detail->person->last_name;
             $detail->total = $detail->work_months * $detail->monthly_salary * $detail->salary_percentage;
             $hiringRequest->total += $detail->total;
-            foreach ($detail->activities as $act) {
-                $mappedActivities[] = $act->name;
+            $positionActivities =[];
+            foreach ($detail->positionActivity as $position) {
+              
+              $Activities = [];
+              foreach ($position->position->activities as $activity) {
+                 $Activities [] = $activity->name;
+              }
+              $positionActivities[] = ['position' => $position->position->name, 'activities' => $Activities];
             }
-            $detail->mappedActivities = $mappedActivities;
+            $detail->positionActivities = $positionActivities;
             //Obtenemos los horarios de permanencia y funciones en tiempo normal de la persona   
             $staySchedule = StaySchedule::where(['id' => $detail->stay_schedule_id])->with(['semester', 'scheduleDetails', 'scheduleActivities'])->firstOrFail();
             $hrStay = [];
@@ -392,10 +402,16 @@ class HiringRequestController extends Controller
             $detail->fullName = $detail->person->first_name . " " . $detail->person->middle_name . " " . $detail->person->last_name;
             $detail->total = $detail->hourly_rate * $detail->work_weeks * $detail->weekly_hours;
             $hiringRequest->total += $detail->total;
-            foreach ($detail->activities as $act) {
-                $mappedActivities[] = $act->name;
+            $positionActivities =[];
+            foreach ($detail->positionActivity as $position) {
+              
+              $Activities = [];
+              foreach ($position->position->activities as $activity) {
+                 $Activities [] = $activity->name;
+              }
+              $positionActivities[] = ['position' => $position->position->name, 'activities' => $Activities];
             }
-            $detail->mappedActivities = $mappedActivities;
+            $detail->positionActivities = $positionActivities;
             //Obtenemos los horarios de permanencia y funciones en tiempo normal de la persona   
             $staySchedule = StaySchedule::where(['id' => $detail->stay_schedule_id])->with(['semester', 'scheduleDetails', 'scheduleActivities'])->firstOrFail();
             $hrStay = [];

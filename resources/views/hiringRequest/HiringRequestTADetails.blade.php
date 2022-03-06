@@ -180,7 +180,7 @@
                     <td style="font-weight: bold;  text-align: Left; background-color: rgb(192, 192, 192, 0.5);"
                         colspan="3"><b>Periodo de Contratación</b>
                     </td>
-                    <td style="font-weight: bold;  text-align: Left; word-wrap: break-word" colspan="9"><b>{{"Del ".$detail->start_date." Hasta".$detail->finish_date}}</b>
+                    <td style="font-weight: bold;  text-align: Left; word-wrap: break-word" colspan="9"><b>{{ 'Del ' . date('d/m/Y', strtotime($detail->start_date)) . ' Hasta ' . date('d/m/Y', strtotime($detail->finish_date)) }}</b>
                     </td>
 
                 </tr>
@@ -270,26 +270,33 @@
                         </tbody>
                     </table>
                     <br>
-                    <table class="table table-bordered" align="center" width="75%">
-                        <thead>
-                            <tr>
-                                <th style="font-weight: bold; text-align: center; background-color: rgba(190, 100, 100, 0.5);"
-                                    colspan="2"><b>Funciones en tiempo Integral</b>
-                                </th>
-                            </tr>
-    
-                        </thead>
-                        <tbody>
-                            @foreach ($detail->mappedActivities as $act)
-                                <tr>
+                    <div style="page-break-after: always;"> </div>
+                        <span class="despedida"><b>CARGOS Y FUNCIONES QUE REALIZARA
+                                {{ Str::upper($detail->fullName) }} EN TIEMPO ADICIONAL</b> </span>
+
+                            @foreach ($detail->positionActivities as $activity)
+                            <table class="table table-bordered" align="center" width="75%">
+                                <thead>
+                                    <tr>
+                                        <th style="font-weight: bold; text-align: center; background-color: rgba(190, 100, 100, 0.5);"
+                                            colspan="2"><b>Funciones del cargo {{ $activity['position'] }}</b>
+                                        </th>
+                                    </tr>
+            
+                                </thead>
+                                <tbody>
+                              
+                                    @foreach ($activity['activities'] as $act)
+                                       <tr>
                                     <td style="font-weight: bold; text-align: left;" colspan="2"><b>{{ $act }}</b></td>
                                 </tr>
+                                    @endforeach
+
+                                
+                            </tbody>
+                            </table>
                             @endforeach
-    
-    
-    
-                        </tbody>
-                    </table>
+                        
                 </div>
                
             </div>

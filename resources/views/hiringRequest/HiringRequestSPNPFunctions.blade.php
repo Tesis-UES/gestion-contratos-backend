@@ -108,13 +108,20 @@
                 style="page-break-after: always;"
         @endif >
         <span class="despedida"><b>ANEXO {{ $n }}<b></span>
-        <span class="despedida"><b>FUNCIONES QUE REALIZARA {{ Str::upper($detail->fullName) }}</b>
+        <span class="despedida"><b>CARGOS Y FUNCIONES QUE REALIZARA {{ Str::upper($detail->fullName) }}</b>
+            <hr>
         </span>
-        <ol>
-            @foreach ($detail->mappedActivities as $activity)
-                <li>{{ $activity }}</li>
+       
+            @foreach ($detail->positionActivities as $activity)
+                <b> Funciones del cargo {{ $activity['position'] }}</b>
+            <ol>
+                @foreach ($activity['activities'] as $act)
+                <li>{{$act }}</li>
+                @endforeach
+               
+            </ol> 
             @endforeach
-        </ol>
+       
         </div>
         @endforeach
     </main>
