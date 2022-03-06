@@ -4,7 +4,7 @@ use Illuminate\Database\Migrations\Migration;
 use Illuminate\Database\Schema\Blueprint;
 use Illuminate\Support\Facades\Schema;
 
-class CreateHiringActivitiesTable  extends Migration
+class CreateDetailPositionActivitiesTable extends Migration
 {
     /**
      * Run the migrations.
@@ -13,12 +13,13 @@ class CreateHiringActivitiesTable  extends Migration
      */
     public function up()
     {
-        Schema::create('hiring_activities', function (Blueprint $table) {
+        Schema::create('detail_position_activities', function (Blueprint $table) {
             $table->id();
-            $table->integer('hiring_request_detail_id');
-            $table->integer('activity_id');
+            $table->bigInteger('position_id')->unsigned()->nonullable();
+            $table->foreign('position_id')->references('id')->on('positions')->nonullable();
+            $table->bigInteger('hiring_request_detail_id')->unsigned()->nonullable();
             $table->foreign('hiring_request_detail_id')->references('id')->on('hiring_request_details')->onDelete('cascade')->nonullable();
-            $table->foreign('activity_id')->references('id')->on('activities')->nonullable();
+            $table->timestamps();
         });
     }
 
@@ -29,6 +30,6 @@ class CreateHiringActivitiesTable  extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('hiring_activities');
+        Schema::dropIfExists('detail_position_activities');
     }
 }
