@@ -18,6 +18,7 @@ use App\Models\Person;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use App\Models\Schedule;
+use App\Models\DetailPositionActivity;
 
 class HrSeeder extends Seeder
 {
@@ -48,24 +49,34 @@ class HrSeeder extends Seeder
         $rq->status()->attach(['status_id' => '1'], ['comments' => 'Registro de solicitud']);
         $rq->status()->attach(['status_id' => '2'], ['comments' => 'Llenado de datos de solicitud de contratación']);
 
-        // $personas = [1, 2, 5];
-        $personas = [];
+        $personas = [1, 2, 5];
+        //$personas = [];
         foreach ($personas as $p) {
             $savedDetail = HiringRequestDetail::create([
                 'hiring_request_id' =>  $rq->id,
                 'start_date'        => '2022-01-17',
                 'finish_date'       => '2022-06-17',
-                'position'          => 'Dar Clases de las materias analisis numerico, progrmación 2 e impartir laboratorios de las materias antes mencionadas.',
                 'person_id'         => $p
             ]);
+            
             $act = [];
-            $act = [1, 2, 3, 4, 5];
-
-            foreach ($act as $activityName) {
-                $activity = Activity::where('id', $activityName)->first();
-                $activities[] = $activity;
-            }
-            $savedDetail->activities()->saveMany($activities);
+            $act = [
+                [   'position_id'       => 1,
+                    'activities'        => [1, 2, 3, 4, 5]],
+                [   'position_id'       => 2,
+                    'activities'        => [1, 2, 3, 4, 5]],
+                [   'position_id'       => 3,
+                    'activities'        => [1, 2, 6, 7, 8]]
+                ];
+            
+                foreach ($act as $positionActivities) {
+                    $newPositionActivities = DetailPositionActivity::create([
+                        'position_id'               => $positionActivities['position_id'],
+                        'hiring_request_detail_id'  => $savedDetail->id,
+                    ]);
+                    $activities = Activity::whereIn('id', $positionActivities['activities'])->get();
+                    $newPositionActivities->activities()->saveMany($activities);
+                }
             if ($p == 1) {
                 $groups = [55, 56];
             } elseif ($p == 2) {
@@ -107,8 +118,7 @@ class HrSeeder extends Seeder
         $rqi->status()->attach(['status_id' => '1'], ['comments' => 'Registro de solicitud']);
         $rqi->status()->attach(['status_id' => '2'], ['comments' => 'Llenado de datos de solicitud de contratación']);
         $pers = [];
-        // $pers = [3, 4];
-
+        $pers = [3, 4];
         foreach ($pers as $p) {
             if ($p == 3) {
                 $stay = 1;
@@ -119,7 +129,6 @@ class HrSeeder extends Seeder
                 'start_date'        => '2022-01-17',
                 'finish_date'       => '2022-05-17',
                 'stay_schedule_id'  => $stay,
-                'position'          => 'Dar Clases asignadas y laboratorios de las materias antes mencionadas.',
                 'goal'              => 'Atender a los estudiantes en el ciclo 1-2022',
                 'justification'     => 'Falta de personal para atender a los estudiantes en el ciclo 1-2022',
                 'work_months'       => 4,
@@ -129,14 +138,23 @@ class HrSeeder extends Seeder
                 'hiring_request_id' => $rqi->id
             ]);
             $act = [];
-            //$act = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20];
-            $act = [1, 2, 3, 4, 5];
-
-            foreach ($act as $activityName) {
-                $activity = Activity::where('id', $activityName)->first();
-                $activities[] = $activity;
-            }
-            $savedDetail->activities()->saveMany($activities);
+            $act = [
+                [   'position_id'       => 1,
+                    'activities'        => [1, 2, 3, 4, 5]],
+                [   'position_id'       => 2,
+                    'activities'        => [1, 2, 3, 4, 5]],
+                [   'position_id'       => 3,
+                    'activities'        => [1, 2, 6, 7, 8]]
+                ];
+            
+                foreach ($act as $positionActivities) {
+                    $newPositionActivities = DetailPositionActivity::create([
+                        'position_id'               => $positionActivities['position_id'],
+                        'hiring_request_detail_id'  => $savedDetail->id,
+                    ]);
+                    $activities = Activity::whereIn('id', $positionActivities['activities'])->get();
+                    $newPositionActivities->activities()->saveMany($activities);
+                }
 
             if ($p == 3) {
                 $groups = [68, 69, 70, 71];
@@ -167,9 +185,8 @@ class HrSeeder extends Seeder
         ]);
         $rqi->status()->attach(['status_id' => '1'], ['comments' => 'Registro de solicitud']);
         $rqi->status()->attach(['status_id' => '2'], ['comments' => 'Llenado de datos de solicitud de contratación']);
-        // $perso = [6, 7];
         $perso = [];
-
+        $perso = [6, 7];
         foreach ($perso as $p) {
             if ($p == 6) {
                 $stay = 3;
@@ -183,19 +200,28 @@ class HrSeeder extends Seeder
                 'weekly_hours'      => 8,
                 'work_weeks'        => 20,
                 'hourly_rate'       => 10,
-                'position'          => 'Dar Clases asignadas y laboratorios de las materias antes mencionadas.',
                 'person_id'         => $p,
                 'hiring_request_id' => $rqi->id
             ]);
+           
             $act = [];
-            //$act = [1, 2, 3, 4, 5, 6, 7, 8, 9, 10, 11, 12, 13, 14, 15, 16, 17, 18, 19, 20];
-            $act = [1, 2, 3, 4, 5];
-
-            foreach ($act as $activityName) {
-                $activity = Activity::where('id', $activityName)->first();
-                $activities[] = $activity;
-            }
-            $savedDetail->activities()->saveMany($activities);
+            $act = [
+                [   'position_id'       => 1,
+                    'activities'        => [1, 2, 3, 4, 5]],
+                [   'position_id'       => 2,
+                    'activities'        => [1, 2, 3, 4, 5]],
+                [   'position_id'       => 3,
+                    'activities'        => [1, 2, 6, 7, 8]]
+                ];
+            
+                foreach ($act as $positionActivities) {
+                    $newPositionActivities = DetailPositionActivity::create([
+                        'position_id'               => $positionActivities['position_id'],
+                        'hiring_request_detail_id'  => $savedDetail->id,
+                    ]);
+                    $activities = Activity::whereIn('id', $positionActivities['activities'])->get();
+                    $newPositionActivities->activities()->saveMany($activities);
+                }
 
             if ($p == 6) {
                 $groups = [81, 82, 83];

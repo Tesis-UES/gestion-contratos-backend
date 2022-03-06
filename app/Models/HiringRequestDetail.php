@@ -13,7 +13,6 @@ class HiringRequestDetail extends Model
         'start_date',
         'finish_date',
         'schedule_file',
-        'position',
         'goal',
         'work_months',
         'salary_percentage',
@@ -52,7 +51,7 @@ class HiringRequestDetail extends Model
 
     public function positionActivity()
     {
-        return $this->hasOne(DetailPositionActivity::class);
+        return $this->hasMany(DetailPositionActivity::class);
     }
 
     public function hiringRequest()
