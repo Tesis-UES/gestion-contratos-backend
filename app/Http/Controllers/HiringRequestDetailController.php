@@ -264,7 +264,7 @@ class HiringRequestDetailController extends Controller
 
     public function getRequestDetails($id)
     {
-        $requestDetails = HiringRequestDetail::with(['HiringGroups', 'activities', 'person'])->findOrFail($id);
+        $requestDetails = HiringRequestDetail::with(['HiringGroups', 'positionActivity.position.activities', 'person'])->findOrFail($id);
 
         $user = Auth::user();
 
