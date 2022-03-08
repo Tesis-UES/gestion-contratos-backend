@@ -326,7 +326,6 @@ class HiringRequestDetailController extends Controller
             'hiringRequest',
             'hiringRequest.contractType',
             'hiringRequest.school',
-            'activities'
         ])->findOrFail($id);
         $user = Auth::user();
         $requestStatus = $detail->hiringRequest->getLastStatusAttribute();
@@ -355,18 +354,25 @@ class HiringRequestDetailController extends Controller
         }
 
         $detail->groups()->detach();
-        $detail->activities()->detach();
+        $detail->positionActivity()->delete();
         $detail->update($validatedDetail);
 
-        foreach ($validatedDetail['activities'] as $activityName) {
-            $activity = Activity::where('name', 'ilike', $activityName)->first();
-            if (!$activity) {
-                $activity = Activity::create(['name' => $activityName]);
+        foreach ($validatedDetail['position_activities'] as $positionActivities) {
+            $newPositionActivities = DetailPositionActivity::create([
+                'position_id'               => $positionActivities['position_id'],
+                'hiring_request_detail_id'  => $detail->id,
+            ]);
+
+            $activities = [];
+            foreach ($positionActivities['activities'] as $activityName) {
+                $activity = Activity::where('name', 'ilike', $activityName)->first();
+                if (!$activity) {
+                    $activity = Activity::create(['name' => $activityName]);
+                }
+                $activities[] = $activity;
             }
-            $activities[] = $activity;
+            $newPositionActivities->activities()->saveMany($activities);
         }
-        $detail->activities()->saveMany($activities);
-        $detail->activities = $activities;
 
         foreach ($validatedDetail['groups'] as $hiringGroup) {
             $group = Group::findOrFail($hiringGroup['group_id']);
@@ -409,7 +415,6 @@ class HiringRequestDetailController extends Controller
             'hiringRequest',
             'hiringRequest.contractType',
             'hiringRequest.school',
-            'activities'
         ])->findOrFail($id);
 
         $user = Auth::user();
@@ -438,18 +443,25 @@ class HiringRequestDetailController extends Controller
         }
 
         $detail->groups()->detach();
-        $detail->activities()->detach();
+        $detail->positionActivity()->delete();
         $detail->update($validatedDetail);
 
-        foreach ($validatedDetail['activities'] as $activityName) {
-            $activity = Activity::where('name', 'ilike', $activityName)->first();
-            if (!$activity) {
-                $activity = Activity::create(['name' => $activityName]);
+        foreach ($validatedDetail['position_activities'] as $positionActivities) {
+            $newPositionActivities = DetailPositionActivity::create([
+                'position_id'               => $positionActivities['position_id'],
+                'hiring_request_detail_id'  => $detail->id,
+            ]);
+
+            $activities = [];
+            foreach ($positionActivities['activities'] as $activityName) {
+                $activity = Activity::where('name', 'ilike', $activityName)->first();
+                if (!$activity) {
+                    $activity = Activity::create(['name' => $activityName]);
+                }
+                $activities[] = $activity;
             }
-            $activities[] = $activity;
+            $newPositionActivities->activities()->saveMany($activities);
         }
-        $detail->activities()->saveMany($activities);
-        $detail->activities = $activities;
 
         $weeklyHours = 0;
         foreach ($validatedDetail['group_ids'] as $groupId) {
@@ -502,7 +514,6 @@ class HiringRequestDetailController extends Controller
             'hiringRequest',
             'hiringRequest.contractType',
             'hiringRequest.school',
-            'activities'
         ])->findOrFail($id);
 
         $user = Auth::user();
@@ -531,18 +542,25 @@ class HiringRequestDetailController extends Controller
         }
 
         $detail->groups()->detach();
-        $detail->activities()->detach();
+        $detail->positionActivity()->delete();
         $detail->update($validatedDetail);
 
-        foreach ($validatedDetail['activities'] as $activityName) {
-            $activity = Activity::where('name', 'ilike', $activityName)->first();
-            if (!$activity) {
-                $activity = Activity::create(['name' => $activityName]);
+        foreach ($validatedDetail['position_activities'] as $positionActivities) {
+            $newPositionActivities = DetailPositionActivity::create([
+                'position_id'               => $positionActivities['position_id'],
+                'hiring_request_detail_id'  => $detail->id,
+            ]);
+
+            $activities = [];
+            foreach ($positionActivities['activities'] as $activityName) {
+                $activity = Activity::where('name', 'ilike', $activityName)->first();
+                if (!$activity) {
+                    $activity = Activity::create(['name' => $activityName]);
+                }
+                $activities[] = $activity;
             }
-            $activities[] = $activity;
+            $newPositionActivities->activities()->saveMany($activities);
         }
-        $detail->activities()->saveMany($activities);
-        $detail->activities = $activities;
 
         $weeklyHours = 0;
         foreach ($validatedDetail['group_ids'] as $groupId) {

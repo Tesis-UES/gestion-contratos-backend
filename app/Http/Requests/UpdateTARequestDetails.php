@@ -27,14 +27,16 @@ class UpdateTARequestDetails extends FormRequest
       'start_date'     => 'required|date_format:Y-m-d',
       'finish_date'    => 'required|date_format:Y-m-d|after:start_date',
       'weekly_hours'   => 'required|numeric|gt:1.0|max:10',
-      'stay_schedule_id' =>'required|integer|gte:1',
       'work_weeks'     => 'required|numeric|gt:1',
       'hourly_rate'    => 'required|numeric|gt:0.0',
       'person_id'      => 'required|integer|gte:1',
-      'activities'     => 'required|array|min:2',
-      'activities.*'   => 'required|string',
       'group_ids'      => 'required|array|min:1',
       'group_ids.*'    => 'required|integer|distinct|gte:1',
+      'stay_schedule_id' => 'required|integer|gte:1',
+      'position_activities'                  => 'required|array|min:1',
+      'position_activities.*.position_id'    => 'required|integer|gte:1',
+      'position_activities.*.activities'     => 'required|array|min:2',
+      'position_activities.*.activities.*'   => 'required|string|distinct',
     ];
   }
 }
