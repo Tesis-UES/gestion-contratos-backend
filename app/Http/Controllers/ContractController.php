@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Constants\ContractType;
 use App\Models\Bank;
+use App\Models\format;
 use App\Models\EmployeeType;
 use App\Models\Escalafon;
 use App\Models\Faculty;
@@ -205,8 +206,9 @@ class ContractController extends Controller
 
     public function contractGenerateServiciosProfesionales($requestDetails)
     {
-
-        $docTemplatePath = ['N' => '\SPNP-N.docx', 'E' => '\SPNP-I.docx'];
+       $formatN =  Format::where('type','Contrato por Servicios Profesionales no Personales')->where('type_contract','Nacional')->where('is_active',1)->first();
+       $formatI =  Format::where('type','Contrato por Servicios Profesionales no Personales')->where('type_contract','Internacional')->where('is_active',1)->first();
+        $docTemplatePath = ['N' => $formatN->file_url, 'E' => $formatI->file_url];
         $formatter = new NumeroALetras();
         $personalData = $this->getPrincipalData($requestDetails->person_id);
         $escuela = $this->getSchoolNameFromRequest($requestDetails);
