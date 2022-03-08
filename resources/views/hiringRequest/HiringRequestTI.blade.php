@@ -172,7 +172,7 @@
                 <thead>
                     <tr>
                         <th>Nombre</th>
-                        <th>Monto Ciclo</th>
+                        <th>Monto Periodo</th>
                     </tr>
                 </thead>
                 <tbody>

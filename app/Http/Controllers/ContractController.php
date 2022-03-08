@@ -47,8 +47,8 @@ class ContractController extends Controller
             'firmaRector' => $firmaRector,
             'edadRector' => $edadRector,
             'profesionRector' => $profesionRector,
-            'duiTextoRector' => $duiTextoRector,
-            'nitTextoRector' => $nitTextoRector,
+            'duiRector' => $duiTextoRector,
+            'nitRector' => $nitTextoRector,
             'fecha' => $fecha
         ];
     }
@@ -76,12 +76,12 @@ class ContractController extends Controller
         $candiatoNit = $candidato->nit_text;
         return [
             'nombreCandidato' => $nombreCandidato,
-            'candidatoEdad' => $candidatoEdad,
-            'candidatoProfesion' => $candidatoProfesion,
-            'candidatoCiudad' => $candidatoCiudad,
-            'candidatoDepartamento' => $candidatoDepartamento,
-            'documentoDC' => $documento,
-            'candidatoNit' => $candiatoNit,
+            'edadCandidato' => $candidatoEdad,
+            'profesionCandidato' => $candidatoProfesion,
+            'ciudadCandidato' => $candidatoCiudad,
+            'departamentoCandidato' => $candidatoDepartamento,
+            'documentoCandidato' => $documento,
+            'nitCandidato' => $candiatoNit,
             'candidatoProfesion' => $candidatoProfesion
         ];
     }
@@ -139,11 +139,18 @@ class ContractController extends Controller
 
     public function getRequestActivities($requestDetails)
     {
-        $actividades = "";
-        foreach ($requestDetails->activities as $activity) {
-            $actividades = $actividades . "" . $activity->name . ", ";
+        $cargo = [];
+        $allActivities = [];
+        foreach ($requestDetails->positionActivity  as $positionActivity) {
+            $activities = [];
+            $cargo[] = $positionActivity->position->name;
+            $activitiesString = mb_strtoupper($positionActivity->position->name, 'UTF-8') . ': ';
+            foreach ($positionActivity->activities as $activity) {
+                $activities[] = $activity->name;
+            }
+            $allActivities[] = $activitiesString . implode(', ', $activities);
         }
-        return $actividades;
+        return  ['cargo' => implode(', ', $cargo), 'cargoFunciones' => implode('; ', $allActivities)];
     }
 
     public function getContractPeriodString($formatter, $requestDetails)
@@ -183,15 +190,27 @@ class ContractController extends Controller
         }
     }
 
+    public function AgreementContract($requestDetails)
+    {
+        $formatter = new NumeroALetras();
+        $fechaJD = Carbon::parse($requestDetails->agreementDate)->locale('es');
+        $fechaAcuerdo = $formatter->toString($fechaJD->day) . " DE " . $fechaJD->monthName . " DE " . $formatter->toString($fechaJD->year) . "";
+        $codigoAcuerdo = $requestDetails->agreementCode;
+        return [
+            'fechaAcuerdo' => $fechaAcuerdo,
+            'codigoAcuerdo' => $codigoAcuerdo
+        ];
+    }
+
 
     public function contractGenerateServiciosProfesionales($requestDetails)
     {
-        $docTemplatePath = ['N' => '\SPNP-N.docx', 'E' => '\SPNP-I.docx'];
 
-        //Obtenermos los datos generales del contrato y la informacion personal del candidato
-        $personalData = $this->getPrincipalData($requestDetails->person_id);
+        $docTemplatePath = ['N' => '\SPNP-N.docx', 'E' => '\SPNP-I.docx'];
         $formatter = new NumeroALetras();
+        $personalData = $this->getPrincipalData($requestDetails->person_id);
         $escuela = $this->getSchoolNameFromRequest($requestDetails);
+        $acuerdo = $this->AgreementContract($requestDetails);
         $actividades = $this->getRequestActivities($requestDetails);
         $peridoContrato = $this->getContractPeriodString($formatter, $requestDetails);
 
@@ -219,15 +238,15 @@ class ContractController extends Controller
             $phpWord = new \PhpOffice\PhpWord\TemplateProcessor(\Storage::disk('formats')->path($docTemplatePath[$personalData['tipo']]));
             $specific = [
                 'escuelaContratante' => mb_strtoupper($escuela, 'UTF-8'),
-                'cargoCandidato' => mb_strtoupper($requestDetails->position, 'UTF-8'),
-                'actividadesCandidato' => mb_strtoupper($actividades, 'UTF-8'),
+                'cargoCandidato' => $actividades['cargo'],
+                'funcionesCandidato' => $actividades['cargoFunciones'],
                 'periodoDelContrato' => mb_strtoupper($peridoContrato, 'UTF-8'),
                 'horasTotales' => mb_strtoupper($horasTotales, 'UTF-8'),
                 'valorHora' => mb_strtoupper($valorHora, 'UTF-8'),
                 'sueldoLetras' => mb_strtoupper($sueldoLetras, 'UTF-8'),
                 'horarioCandidato' => mb_strtoupper($horarios, 'UTF-8')
             ];
-            $phpWord->setValue('numeroAcuerdo', 'FIA-SPNP-N-001');
+            $this->fillWordFile($phpWord, $acuerdo);
             $this->fillWordFile($phpWord, $personalData['comunes']);
             $this->fillWordFile($phpWord, $personalData['person']);
             $this->fillWordFile($phpWord, $specific);
@@ -401,9 +420,16 @@ class ContractController extends Controller
 
     public function generateContract($requestDetailId)
     {
-        $requestDetails = HiringRequestDetail::with(['hiringGroups', 'activities', 'hiringRequest.school', 'groups'])->findOrFail($requestDetailId);
-        $hiringRequest = HiringRequest::findOrFail($requestDetails->hiring_request_id);
-
+        $requestDetails = HiringRequestDetail::with([
+            'hiringGroups',
+            'positionActivity.activities',
+            'positionActivity.position',
+            'hiringRequest.school',
+            'groups'
+        ])->findOrFail($requestDetailId);
+        $hiringRequest = HiringRequest::with('agreement')->findOrFail($requestDetails->hiring_request_id);
+        $requestDetails->agreementCode =  $hiringRequest->agreement->code;
+        $requestDetails->agreementDate = $hiringRequest->agreement->agreed_on;
         switch ($hiringRequest->contractType->name) {
             case ContractType::TA:
                 $contractComponents = $this->contractGenerateTiempoAdicional($requestDetails);
