@@ -101,8 +101,8 @@ class ContractController extends Controller
         $profesion = $candidato->professional_title;
         return [
             'nombreCandidato' => $nombreCandidato,
-            'candidatoEdad'   => $candidatoEdad,
-            'candidatoProfesion' => $candidatoProfesion,
+            'edadCandidato'   => $candidatoEdad,
+            'profesionCandidato' => $candidatoProfesion,
             'nacionalidad' => $nacionalidad,
             'pasaporte' => $pasaporte,
         ];
@@ -267,14 +267,18 @@ class ContractController extends Controller
 
         //Obtenermos los datos generales del contrato y la informacion personal del candidato
         $personalData = $this->getPrincipalData($requestDetails->person_id);
+        $acuerdo = $this->AgreementContract($requestDetails);
         //Obtenemos la partida,cargo,salario y total a pagar 
         $formatter = new NumeroALetras();
         $partida = $formatter->toString($requestDetails->person->employee->partida);
         $escalafon = $requestDetails->person->employee->escalafon->name;
-        $salario = $requestDetails->monthly_salary;
+        $sal = $requestDetails->monthly_salary;
+        $valorTotalSalario = explode('.', sprintf('%.2f', $sal));
+        $salario = $formatter->toString($sal) . "" . $valorTotalSalario[1] . "/100 DOLARES DE LOS ESTADOS UNIDOS DE AMERICA ($" . number_format($sal,2) . ")";
+        $porcentaje = $formatter->toString($requestDetails->salary_percentage * 100). "POR CIENTO (".($requestDetails->salary_percentage * 100)."%);";
         $totalAPagar = $requestDetails->work_months * $requestDetails->monthly_salary * $requestDetails->salary_percentage;
         $valorTotal = explode('.', sprintf('%.2f', $totalAPagar));
-        $sueldoLetras = $formatter->toString($totalAPagar) . "" . $valorTotal[1] . "/100 DOLARES DE LOS DE LOS ESTADOS UNIDOS DE AMERICA ($" . sprintf('%.2f', $totalAPagar) . ")";
+        $sueldoLetras = $formatter->toString($totalAPagar) . "" . $valorTotal[1] . "/100 DOLARES DE LOS DE LOS ESTADOS UNIDOS DE AMERICA ($" . number_format($totalAPagar,2) . ")";
 
         if ($personalData['tipo'] == 'E') {
             $sueldoLetras = $sueldoLetras . " MENOS EL 20% DE RENTA, según deducciones establecidas por las leyes de El salvador";
@@ -292,7 +296,7 @@ class ContractController extends Controller
             $hrAct = $hrAct . " " . $act->name . ",";
         }
         //funciones y horarios en tiemo integral
-        $actividadesIntegral = $this->getRequestActivities($requestDetails);
+        $actividades = $this->getRequestActivities($requestDetails);
 
         $horasSemanalesIntegral = 0;
         $horariosIntegral = "";
@@ -326,17 +330,19 @@ class ContractController extends Controller
                 'cargo' => mb_strtoupper($escalafon, 'UTF-8'),
                 'justificacion' => mb_strtoupper($requestDetails->justification, 'UTF-8'),
                 'metas' => mb_strtoupper($requestDetails->goals, 'UTF-8'),
-                'salario' => sprintf('%.2f', $salario),
+                'salario' =>  $salario,
                 'funcionesPermanencia' => mb_strtoupper($hrAct, 'UTF-8'),
                 'horarioPermanencia' => mb_strtoupper($hrStay, 'UTF-8'),
                 'horasSemanales' => $hrStayNumber,
-                'funcionesIntegral' => mb_strtoupper($actividadesIntegral, 'UTF-8'),
+                'cargoIntegral' =>$actividades['cargo'],
+                'funcionesIntegral' => $actividades['cargoFunciones'],
                 'horarioIntegral' => mb_strtoupper($horariosIntegral, 'UTF-8'),
                 'horasIntegral' => sprintf('%.2f', $horasSemanalesIntegral),
                 'periodoDeContratacion' => mb_strtoupper($peridoContracion, 'UTF-8'),
-                'salarioIntegral' => mb_strtoupper($sueldoLetras, 'UTF-8')
+                'salarioIntegral' => mb_strtoupper($sueldoLetras, 'UTF-8'),
+                'porcentaje' => $porcentaje,
             ];
-            $phpWord->setValue('numeroAcuerdo', 'FIA-SPNP-N-001');
+            $this->fillWordFile($phpWord, $acuerdo);
             $this->fillWordFile($phpWord, $personalData['comunes']);
             $this->fillWordFile($phpWord, $personalData['person']);
             $this->fillWordFile($phpWord, $specific);
@@ -356,9 +362,12 @@ class ContractController extends Controller
         $docTemplatePath = ['N' => '/TA-N.docx', 'E' => '/TA-I.docx'];
         //Obtenermos los datos generales del contrato y la informacion personal del candidato
         $personalData = $this->getPrincipalData($requestDetails->person_id);
+        $acuerdo = $this->AgreementContract($requestDetails);
         $formatter = new NumeroALetras();
         $escalafon = $requestDetails->person->employee->escalafon->name;
-        $salario = $requestDetails->person->employee->escalafon->salary;
+        $sal = $requestDetails->person->employee->escalafon->salary;
+        $valorTotalSalario = explode('.', sprintf('%.2f', $sal));
+        $salario = $formatter->toString($sal) . "" . $valorTotalSalario[1] . "/100 DOLARES DE LOS ESTADOS UNIDOS DE AMERICA ($" . number_format($sal,2) . ")";
         $totalAPagar = $requestDetails->hourly_rate * $requestDetails->work_weeks * $requestDetails->weekly_hours;
         $valorTotal = explode('.', sprintf('%.2f', $totalAPagar));
         $sueldoLetras = $formatter->toString($totalAPagar) . "" . $valorTotal[1] . "/100 DOLARES DE LOS DE LOS ESTADOS UNIDOS DE AMERICA ($" . sprintf('%.2f', $totalAPagar) . ")";
@@ -380,7 +389,7 @@ class ContractController extends Controller
         $valorTotalHora = explode('.', sprintf('%.2f', $requestDetails->hourly_rate));
         $valorHora = $formatter->toString($valorTotalHora[0]) . "" . $valorTotalHora[1] . "/100 DOLARES DE LOS DE LOS ESTADOS UNIDOS DE AMERICA ($" . sprintf('%.2f', $requestDetails->hourly_rate) . ")";
         //funciones y horarios en tiemo integral
-        $actividadesAdicional = $this->getRequestActivities($requestDetails);
+        $actividades = $this->getRequestActivities($requestDetails);
         $formatter = new NumeroALetras();
         $peridoContracion = $this->getContractPeriodString($formatter, $requestDetails);
         $docTemplatePath[$personalData['tipo']];
@@ -390,11 +399,12 @@ class ContractController extends Controller
             $specific = [
 
                 'cargo' => mb_strtoupper($escalafon, 'UTF-8'),
-                'salario' => sprintf('%.2f', $salario),
+                'salario' => $salario,
                 'funcionesPermanencia' => mb_strtoupper($hrAct, 'UTF-8'),
                 'horarioPermanencia' => mb_strtoupper($hrStay, 'UTF-8'),
                 'horasSemanales' => $hrStayNumber,
-                'funcionesAdicional' => mb_strtoupper($actividadesAdicional, 'UTF-8'),
+                'cargoAdicional' =>$actividades['cargo'],
+                'funcionesAdicional' => $actividades['cargoFunciones'],
                 'horarioAdicional' => mb_strtoupper($hrStay, 'UTF-8'),
                 'horasAdicional' => sprintf('%.2f', $requestDetails->weekly_hours),
                 'horasAdicionalPeriodo' => sprintf('%.2f', $requestDetails->weekly_hours * $requestDetails->work_weeks),
@@ -402,7 +412,7 @@ class ContractController extends Controller
                 'salarioAdicional' => mb_strtoupper($sueldoLetras, 'UTF-8'),
                 'valorHora' => mb_strtoupper($valorHora, 'UTF-8'),
             ];
-            $phpWord->setValue('numeroAcuerdo', 'FIA-SPNP-N-001');
+            $this->fillWordFile($phpWord, $acuerdo);
             $this->fillWordFile($phpWord, $personalData['comunes']);
             $this->fillWordFile($phpWord, $personalData['person']);
             $this->fillWordFile($phpWord, $specific);
