@@ -26,17 +26,19 @@ class UpdateTIRequestDetails extends FormRequest
     return [
       'start_date'        => 'required|date_format:Y-m-d',
       'finish_date'       => 'required|date_format:Y-m-d|after:start_date',
-      'stay_schedule_id' =>'required|integer|gte:1',
+      'stay_schedule_id'  => 'required|integer|gte:1',
       'goal'              => 'required|string',
       'justification'     => 'required|string',
       'work_months'       => 'required|numeric|gt:0.0',
       'monthly_salary'    => 'required|numeric|gt:0.0',
       'salary_percentage' => 'required|numeric|min:0|max:0.25',
       'person_id'         => 'required|integer|gte:1',
-      'activities'        => 'required|array|min:2',
-      'activities.*'      => 'required|string',
       'group_ids'         => 'required|array|min:1',
       'group_ids.*'       => 'required|integer|distinct|gte:1',
+      'position_activities'                  => 'required|array|min:1',
+      'position_activities.*.position_id'    => 'required|integer|gte:1',
+      'position_activities.*.activities'     => 'required|array|min:2',
+      'position_activities.*.activities.*'   => 'required|string|distinct',
     ];
   }
 }
