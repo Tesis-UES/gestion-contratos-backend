@@ -123,29 +123,19 @@ class HiringRequestController extends Controller
         $this->RegisterAction("El usuario ha consultado todas las solicitudes de contratacion enviadas a secretaria", "medium");
         return response($hiringRequests, 200);
     }
-    public function secretaryReceptionHiringRequest(HiringRequest $hiringRequest, Request $request)
+    public function secretaryReceptionHiringRequest(HiringRequest $hiringRequest)
     {
-        $request->validate([
-            'approved'          => 'required|boolean',
-            'observations'       => 'string|nullable',
-        ]);
-
         if ($hiringRequest->request_status != HiringRequestStatusCode::EDS) {
             return response(['message' => 'Solo las solicitudes que tengan el estado de enviadas pueden ser dadas por recibidas por secretaria'], 400);
         }
-        if ($request->approved) {
-            $status = Status::where('code', HiringRequestStatusCode::RDS)->first();
-            $comment = 'La solicitud fue aceptada por secretaria y pasara a ser agendada para ser vista en junta directiva';
-            $hiringRequest->request_status = HiringRequestStatusCode::RDS;
-        } else {
-            $status = Status::where('code', HiringRequestStatusCode::ODS)->first();
-            $comment = $request->observations;
-            $hiringRequest->request_status = HiringRequestStatusCode::ODS;
-        }
+
+        $status = Status::where('code', HiringRequestStatusCode::RDS)->first();
+        $comment = 'La solicitud fue aceptada por secretaria y pasara a ser agendada para ser vista en junta directiva';
         $hiringRequest->status()->attach(['status_id' => $status->id], ['comments' => $comment]);
+        $hiringRequest->request_status = HiringRequestStatusCode::RDS;
         $hiringRequest->save();
 
-        $this->RegisterAction("El usuario ha dado por recibida una solicitud de contratacion", "high");
+        $this->RegisterAction('El usuario ha dado por recibida una solicitud de contratacion', 'high');
         return response(200);
     }
 

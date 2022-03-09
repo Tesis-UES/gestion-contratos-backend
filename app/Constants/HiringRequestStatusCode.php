@@ -11,5 +11,4 @@ abstract class HiringRequestStatusCode
   public const RDS = 'RDS';
   public const RJD = 'RJD';
   public const GDC = 'GDC';
-  public const ODS = 'ODS';
 }
