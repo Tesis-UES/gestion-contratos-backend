@@ -119,7 +119,7 @@ class HiringRequestController extends Controller
 
     public function getAllHiringRequestsSecretary()
     {
-        $hiringRequests = HiringRequest::whereIn('request_status', [HiringRequestStatusCode::EDS,HiringRequestStatusCode::RDS])->with('school')->with('contractType')->orderBy('created_at', 'DESC')->paginate(10);
+        $hiringRequests = HiringRequest::whereIn('request_status', [HiringRequestStatusCode::EDS, HiringRequestStatusCode::RDS])->with('school')->with('contractType')->orderBy('created_at', 'DESC')->paginate(10);
         $this->RegisterAction("El usuario ha consultado todas las solicitudes de contratacion enviadas a secretaria", "medium");
         return response($hiringRequests, 200);
     }
@@ -233,14 +233,14 @@ class HiringRequestController extends Controller
         foreach ($hiringRequest->details as $detail) {
             $detail->fullName = $detail->person->first_name . " " . $detail->person->middle_name . " " . $detail->person->last_name;
             $detail->period = date('d/m/Y', strtotime($detail->start_date)) . " - " . date('d/m/Y', strtotime($detail->finish_date));
-            $positionActivities =[];
+            $positionActivities = [];
             foreach ($detail->positionActivity as $position) {
-              
-              $Activities = [];
-              foreach ($position->position->activities as $activity) {
-                 $Activities [] = $activity->name;
-              }
-              $positionActivities[] = ['position' => $position->position->name, 'activities' => $Activities];
+
+                $Activities = [];
+                foreach ($position->position->activities as $activity) {
+                    $Activities[] = $activity->name;
+                }
+                $positionActivities[] = ['position' => $position->position->name, 'activities' => $Activities];
             }
             $detail->positionActivities = $positionActivities;
             $mappedGroups = [];
@@ -315,14 +315,14 @@ class HiringRequestController extends Controller
             $detail->fullName = $detail->person->first_name . " " . $detail->person->middle_name . " " . $detail->person->last_name;
             $detail->total = $detail->work_months * $detail->monthly_salary * $detail->salary_percentage;
             $hiringRequest->total += $detail->total;
-            $positionActivities =[];
+            $positionActivities = [];
             foreach ($detail->positionActivity as $position) {
-              
-              $Activities = [];
-              foreach ($position->position->activities as $activity) {
-                 $Activities [] = $activity->name;
-              }
-              $positionActivities[] = ['position' => $position->position->name, 'activities' => $Activities];
+
+                $Activities = [];
+                foreach ($position->position->activities as $activity) {
+                    $Activities[] = $activity->name;
+                }
+                $positionActivities[] = ['position' => $position->position->name, 'activities' => $Activities];
             }
             $detail->positionActivities = $positionActivities;
             //Obtenemos los horarios de permanencia y funciones en tiempo normal de la persona   
@@ -402,14 +402,14 @@ class HiringRequestController extends Controller
             $detail->fullName = $detail->person->first_name . " " . $detail->person->middle_name . " " . $detail->person->last_name;
             $detail->total = $detail->hourly_rate * $detail->work_weeks * $detail->weekly_hours;
             $hiringRequest->total += $detail->total;
-            $positionActivities =[];
+            $positionActivities = [];
             foreach ($detail->positionActivity as $position) {
-              
-              $Activities = [];
-              foreach ($position->position->activities as $activity) {
-                 $Activities [] = $activity->name;
-              }
-              $positionActivities[] = ['position' => $position->position->name, 'activities' => $Activities];
+
+                $Activities = [];
+                foreach ($position->position->activities as $activity) {
+                    $Activities[] = $activity->name;
+                }
+                $positionActivities[] = ['position' => $position->position->name, 'activities' => $Activities];
             }
             $detail->positionActivities = $positionActivities;
             //Obtenemos los horarios de permanencia y funciones en tiempo normal de la persona   
@@ -508,7 +508,7 @@ class HiringRequestController extends Controller
         }
 
         $file = $request->file('file');
-        $fileName = 'acuerdo-' . $fields['code'] . '.pdf';
+        $fileName = str_replace('/', '-', 'acuerdo-' . $fields['code'] . '.pdf');
         Storage::disk('agreements')->put($fileName, File::get($file));
 
         Agreement::create([
@@ -533,14 +533,16 @@ class HiringRequestController extends Controller
         $hiringRequest = HiringRequest::with('agreement')->findOrFail($id);
         $agreement = Agreement::findOrFail($hiringRequest->agreement->id);
         $pdf = base64_encode(Storage::disk('agreements')->get($agreement->file_uri));
-        return response(["agreement" => $agreement,
-                          "pdf"=> $pdf  ], 200);
-    } 
+        return response([
+            "agreement" => $agreement,
+            "pdf" => $pdf
+        ], 200);
+    }
 
     public function hiringRequestRRHH()
     {
         //NOMBRE VA VARIAS MAS ADELANTE YA QUE ESTE ENDPOINT SOLO TRAE LAS SOLICITUDES LISTAS PARA GENERAR CONTRATOS
-        $hiringRequests = HiringRequest::whereIn('request_status', [HiringRequestStatusCode::RJD,HiringRequestStatusCode::GDC])->with('school')->with('contractType')->orderBy('created_at', 'DESC')->paginate(10);
+        $hiringRequests = HiringRequest::whereIn('request_status', [HiringRequestStatusCode::RJD, HiringRequestStatusCode::GDC])->with('school')->with('contractType')->orderBy('created_at', 'DESC')->paginate(10);
         $this->RegisterAction("El usuario ha consultado todas las solicitudes de contratación a las cuales se les puede generar contrato", "medium");
         return response($hiringRequests, 200);
     }
