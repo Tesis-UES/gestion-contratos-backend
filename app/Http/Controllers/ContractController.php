@@ -191,28 +191,35 @@ class ContractController extends Controller
         }
     }
 
-    public function AgreementContract($requestDetails)
+    public function agreementContract($requestDetails)
     {
         $formatter = new NumeroALetras();
         $fechaJD = Carbon::parse($requestDetails->agreementDate)->locale('es');
         $fechaAcuerdo = $formatter->toString($fechaJD->day) . " DE " . $fechaJD->monthName . " DE " . $formatter->toString($fechaJD->year) . "";
         $codigoAcuerdo = $requestDetails->agreementCode;
+        if (preg_match('/(\w+)-(\d+)\/(\d+)/', $codigoAcuerdo, $matches)) {
+            $formatter = new NumeroALetras();
+            $parte1 = $matches[1];
+            $parte2 = $formatter->toString($matches[2]);
+            $parte3 = $formatter->toString($matches[3]);
+            $codigoAcuerdo = $parte1 . '-' . $parte2 . '/ ' . $parte3;
+        }
         return [
             'fechaAcuerdo' => $fechaAcuerdo,
-            'codigoAcuerdo' => $codigoAcuerdo
+            'codigoAcuerdo' => $codigoAcuerdo,
         ];
     }
 
 
     public function contractGenerateServiciosProfesionales($requestDetails)
     {
-       $formatN =  Format::where('type','Contrato por Servicios Profesionales no Personales')->where('type_contract','Nacional')->where('is_active',1)->first();
-       $formatI =  Format::where('type','Contrato por Servicios Profesionales no Personales')->where('type_contract','Internacional')->where('is_active',1)->first();
+        $formatN =  Format::where('type', 'Contrato por Servicios Profesionales no Personales')->where('type_contract', 'Nacional')->where('is_active', 1)->first();
+        $formatI =  Format::where('type', 'Contrato por Servicios Profesionales no Personales')->where('type_contract', 'Internacional')->where('is_active', 1)->first();
         $docTemplatePath = ['N' => $formatN->file_url, 'E' => $formatI->file_url];
         $formatter = new NumeroALetras();
         $personalData = $this->getPrincipalData($requestDetails->person_id);
         $escuela = $this->getSchoolNameFromRequest($requestDetails);
-        $acuerdo = $this->AgreementContract($requestDetails);
+        $acuerdo = $this->agreementContract($requestDetails);
         $actividades = $this->getRequestActivities($requestDetails);
         $peridoContrato = $this->getContractPeriodString($formatter, $requestDetails);
 
@@ -269,18 +276,18 @@ class ContractController extends Controller
 
         //Obtenermos los datos generales del contrato y la informacion personal del candidato
         $personalData = $this->getPrincipalData($requestDetails->person_id);
-        $acuerdo = $this->AgreementContract($requestDetails);
+        $acuerdo = $this->agreementContract($requestDetails);
         //Obtenemos la partida,cargo,salario y total a pagar 
         $formatter = new NumeroALetras();
         $partida = $formatter->toString($requestDetails->person->employee->partida);
         $escalafon = $requestDetails->person->employee->escalafon->name;
         $sal = $requestDetails->monthly_salary;
         $valorTotalSalario = explode('.', sprintf('%.2f', $sal));
-        $salario = $formatter->toString($sal) . "" . $valorTotalSalario[1] . "/100 DOLARES DE LOS ESTADOS UNIDOS DE AMERICA ($" . number_format($sal,2) . ")";
-        $porcentaje = $formatter->toString($requestDetails->salary_percentage * 100). "POR CIENTO (".($requestDetails->salary_percentage * 100)."%);";
+        $salario = $formatter->toString($sal) . "" . $valorTotalSalario[1] . "/100 DOLARES DE LOS ESTADOS UNIDOS DE AMERICA ($" . number_format($sal, 2) . ")";
+        $porcentaje = $formatter->toString($requestDetails->salary_percentage * 100) . "POR CIENTO (" . ($requestDetails->salary_percentage * 100) . "%);";
         $totalAPagar = $requestDetails->work_months * $requestDetails->monthly_salary * $requestDetails->salary_percentage;
         $valorTotal = explode('.', sprintf('%.2f', $totalAPagar));
-        $sueldoLetras = $formatter->toString($totalAPagar) . "" . $valorTotal[1] . "/100 DOLARES DE LOS DE LOS ESTADOS UNIDOS DE AMERICA ($" . number_format($totalAPagar,2) . ")";
+        $sueldoLetras = $formatter->toString($totalAPagar) . "" . $valorTotal[1] . "/100 DOLARES DE LOS DE LOS ESTADOS UNIDOS DE AMERICA ($" . number_format($totalAPagar, 2) . ")";
 
         if ($personalData['tipo'] == 'E') {
             $sueldoLetras = $sueldoLetras . " MENOS EL 20% DE RENTA, según deducciones establecidas por las leyes de El salvador";
@@ -336,7 +343,7 @@ class ContractController extends Controller
                 'funcionesPermanencia' => mb_strtoupper($hrAct, 'UTF-8'),
                 'horarioPermanencia' => mb_strtoupper($hrStay, 'UTF-8'),
                 'horasSemanales' => $hrStayNumber,
-                'cargoIntegral' =>$actividades['cargo'],
+                'cargoIntegral' => $actividades['cargo'],
                 'funcionesIntegral' => $actividades['cargoFunciones'],
                 'horarioIntegral' => mb_strtoupper($horariosIntegral, 'UTF-8'),
                 'horasIntegral' => sprintf('%.2f', $horasSemanalesIntegral),
@@ -364,12 +371,12 @@ class ContractController extends Controller
         $docTemplatePath = ['N' => '/TA-N.docx', 'E' => '/TA-I.docx'];
         //Obtenermos los datos generales del contrato y la informacion personal del candidato
         $personalData = $this->getPrincipalData($requestDetails->person_id);
-        $acuerdo = $this->AgreementContract($requestDetails);
+        $acuerdo = $this->agreementContract($requestDetails);
         $formatter = new NumeroALetras();
         $escalafon = $requestDetails->person->employee->escalafon->name;
         $sal = $requestDetails->person->employee->escalafon->salary;
         $valorTotalSalario = explode('.', sprintf('%.2f', $sal));
-        $salario = $formatter->toString($sal) . "" . $valorTotalSalario[1] . "/100 DOLARES DE LOS ESTADOS UNIDOS DE AMERICA ($" . number_format($sal,2) . ")";
+        $salario = $formatter->toString($sal) . "" . $valorTotalSalario[1] . "/100 DOLARES DE LOS ESTADOS UNIDOS DE AMERICA ($" . number_format($sal, 2) . ")";
         $totalAPagar = $requestDetails->hourly_rate * $requestDetails->work_weeks * $requestDetails->weekly_hours;
         $valorTotal = explode('.', sprintf('%.2f', $totalAPagar));
         $sueldoLetras = $formatter->toString($totalAPagar) . "" . $valorTotal[1] . "/100 DOLARES DE LOS DE LOS ESTADOS UNIDOS DE AMERICA ($" . sprintf('%.2f', $totalAPagar) . ")";
@@ -405,7 +412,7 @@ class ContractController extends Controller
                 'funcionesPermanencia' => mb_strtoupper($hrAct, 'UTF-8'),
                 'horarioPermanencia' => mb_strtoupper($hrStay, 'UTF-8'),
                 'horasSemanales' => $hrStayNumber,
-                'cargoAdicional' =>$actividades['cargo'],
+                'cargoAdicional' => $actividades['cargo'],
                 'funcionesAdicional' => $actividades['cargoFunciones'],
                 'horarioAdicional' => mb_strtoupper($hrStay, 'UTF-8'),
                 'horasAdicional' => sprintf('%.2f', $requestDetails->weekly_hours),
@@ -440,6 +447,11 @@ class ContractController extends Controller
             'groups'
         ])->findOrFail($requestDetailId);
         $hiringRequest = HiringRequest::with('agreement')->findOrFail($requestDetails->hiring_request_id);
+        if ($hiringRequest->agreement->approved != true) {
+            return response([
+                'message' => 'El contrato no se puede generar porque la solicitud fue denegada en Junta Directiva'
+            ], 400);
+        }
         $requestDetails->agreementCode =  $hiringRequest->agreement->code;
         $requestDetails->agreementDate = $hiringRequest->agreement->agreed_on;
         switch ($hiringRequest->contractType->name) {
