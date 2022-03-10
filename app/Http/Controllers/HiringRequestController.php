@@ -201,8 +201,9 @@ class HiringRequestController extends Controller
         ];
     }
 
-    public function getHRMail(){
-        $role = Role::where('name','Recursos Humanos')->first();
+    public function getHRMail()
+    {
+        $role = Role::where('name', 'Recursos Humanos')->first();
         $rrhh = User::join('model_has_roles', 'model_has_roles.model_id', '=', 'users.id')->select('users.email')->where('model_has_roles.role_id', '=', $role->id)->get()->toArray();
         return $rrhh;
     }
@@ -219,25 +220,42 @@ class HiringRequestController extends Controller
         } else {
             $escuela = "Escuela de " . $hiringRequest->school->name;
         }
-        $mensajeEmail = "Se ha solicitado la validación de la solicitud de contratación con codigo <b>".$hiringRequest->code."</b> de parte de <b>".$escuela."</b>.
+        $mensajeEmail = "Se ha solicitado la validación de la solicitud de contratación con codigo <b>" . $hiringRequest->code . "</b> de parte de <b>" . $escuela . "</b>.
         <ul>
-            <li>Código: <b>".$hiringRequest->code."</b> </li>
-            <li>Tipo de Solicitud de Contrato:<b> ".$hiringRequest->contractType->name." </b>  </li>
-            <li>Modalidad: <b>".$hiringRequest->modality."</b>   </li>
+            <li>Código: <b>" . $hiringRequest->code . "</b> </li>
+            <li>Tipo de Solicitud de Contrato:<b> " . $hiringRequest->contractType->name . " </b>  </li>
+            <li>Modalidad: <b>" . $hiringRequest->modality . "</b>   </li>
         </ul><br>
      ";
-        
+
         foreach ($emails as $email) {
             try {
-                Mail::to($email)->send(new ValidationDocsNotification($mensajeEmail,'validationHR'));
+                Mail::to($email)->send(new ValidationDocsNotification($mensajeEmail, 'validationHR'));
                 $mensaje = 'Se envio el correo con exito';
             } catch (\Swift_TransportException $e) {
                 $mensaje = 'No se envio el correo';
-            } 
+            }
         }
-        // TODO: Enviar correo electronico a HR notificando
         $this->registerAction('La solicitud se ha enviado a RRHH para validacion', 'high');
         return [['message' => 'La solicitud se ha enviado a RRHH para validacion'], 'success' => true];
+    }
+
+    public function reviewHR(HiringRequest $hiringRequest, Request $request)
+    {
+        $validatedRequest = $request->validate([
+            'validated' => 'required|boolean',
+            'comments'  => 'required|string',
+        ]);
+
+        $hiringRequest->update($validatedRequest);
+
+        if ($validatedRequest['validated'] == true) {
+            $this->registerAction('El usuario valido que la solicitud si cumple con las validaciones', 'high');
+        } else {
+            $this->registerAction('El usuario reviso la solicitud y publico observaciones de cambios a hacer', 'high');
+        }
+
+        return $hiringRequest;
     }
 
     public function storeHiringRequest($id, $pdf)
