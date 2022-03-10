@@ -382,7 +382,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     });
 
     Route::get('/hiringRequest/all/petitions/hr', [HiringRequestController::class, 'getAllHiringRequestsHR']);
-    Route::post('hiringRequest/{hiringRequest}/sendToHR', [HiringRequestController::class, 'sendToHR']);
+    Route::post('/hiringRequest/{hiringRequest}/sendToHR', [HiringRequestController::class, 'sendToHR']);
 
     Route::get('/hiringRequestSPNP/{id}/create/PDF/{show}', [HiringRequestController::class, 'MakeHiringRequestSPNP']);
     Route::get('/hiringRequestTI/{id}/create/PDF/{show}', [HiringRequestController::class, 'MakeHiringRequestTiempoIntegral']);
