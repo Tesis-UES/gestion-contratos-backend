@@ -43,6 +43,12 @@ class ValidationDocsNotification extends Mailable
                     'mensaje'      =>$this-> mensaje,
                 ]);
                 break;
+            case 'validationHR':
+                return $this->subject('Notificación de Envio de Solicitud de Contrato para Validación - FIA-UES')
+                ->markdown('emails.NotificationDocs',[
+                    'mensaje'      =>$this-> mensaje,
+                ]);
+                break;
             
             default:
                 # code...

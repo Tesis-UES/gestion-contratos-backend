@@ -19,6 +19,10 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Storage;
+use App\Models\User;
+use Spatie\Permission\Models\Role;
+use App\Mail\ValidationDocsNotification;
+use Mail;
 
 class HiringRequestController extends Controller
 {
@@ -197,12 +201,40 @@ class HiringRequestController extends Controller
         ];
     }
 
+    public function getHRMail(){
+        $role = Role::where('name','Recursos Humanos')->first();
+        $rrhh = User::join('model_has_roles', 'model_has_roles.model_id', '=', 'users.id')->select('users.email')->where('model_has_roles.role_id', '=', $role->id)->get()->toArray();
+        return $rrhh;
+    }
+
     public function sendToHR(HiringRequest $hiringRequest)
     {
+        $emails =  $this->getHRMail();
         $status = Status::whereIn('code', [HiringRequestStatusCode::FSC, HiringRequestStatusCode::ERH])->get();
         $hiringRequest->request_status = HiringRequestStatusCode::ERH;
         $hiringRequest->save();
         $hiringRequest->status()->attach($status);
+        if ($hiringRequest->school->id == 9) {
+            $escuela =  $hiringRequest->school->name;
+        } else {
+            $escuela = "Escuela de " . $hiringRequest->school->name;
+        }
+        $mensajeEmail = "Se ha solicitado la validación de la solicitud de contratación con codigo <b>".$hiringRequest->code."</b> de parte de <b>".$escuela."</b>.
+        <ul>
+            <li>Código: <b>".$hiringRequest->code."</b> </li>
+            <li>Tipo de Solicitud de Contrato:<b> ".$hiringRequest->contractType->name." </b>  </li>
+            <li>Modalidad: <b>".$hiringRequest->modality."</b>   </li>
+        </ul><br>
+     ";
+        
+        foreach ($emails as $email) {
+            try {
+                Mail::to($email)->send(new ValidationDocsNotification($mensajeEmail,'validationHR'));
+                $mensaje = 'Se envio el correo con exito';
+            } catch (\Swift_TransportException $e) {
+                $mensaje = 'No se envio el correo';
+            } 
+        }
         // TODO: Enviar correo electronico a HR notificando
         $this->registerAction('La solicitud se ha enviado a RRHH para validacion', 'high');
         return [['message' => 'La solicitud se ha enviado a RRHH para validacion'], 'success' => true];
