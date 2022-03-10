@@ -13,6 +13,8 @@ class HiringRequest extends Model
         'id',
         'code',
         'request_status',
+        'validated',
+        'comments',
         'modality',
         'message',
         'contract_type_id',

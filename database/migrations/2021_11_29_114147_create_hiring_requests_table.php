@@ -17,7 +17,9 @@ class CreateHiringRequestsTable extends Migration
             $table->id();
             $table->string('code', 120)->nonullable()->unique();
             $table->string('request_status', 10)->nonullable();
-            $table->enum('modality', ['Modalidad Presencial', 'Modalidad en Linea','Modalidad Semi-Presencial']);
+            $table->boolean('validated')->nullable(); //Null: No validado, False: Con observaciones, True: Validado
+            $table->longText('comments',)->nullable();
+            $table->enum('modality', ['Modalidad Presencial', 'Modalidad en Linea', 'Modalidad Semi-Presencial']);
             $table->longText('message')->nonullable();
             $table->string('fileName')->nullable();
             $table->bigInteger('contract_type_id')->unsigned()->nonullable();

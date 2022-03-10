@@ -117,15 +117,32 @@ class HiringRequestController extends Controller
         return response($hiringRequests, 200);
     }
 
+    public function getAllHiringRequestsHR()
+    {
+        $hiringRequests = HiringRequest::whereIn('request_status', [HiringRequestStatusCode::ERH])
+            ->with('school')
+            ->with('contractType')
+            ->orderBy('created_at', 'DESC')
+            ->paginate(10);
+        $this->RegisterAction("El usuario ha consultado todas las solicitudes de contratacion enviadas a Recursos Humanos", "medium");
+        return response($hiringRequests, 200);
+    }
+
     public function getAllHiringRequestsSecretary()
     {
-        $hiringRequests = HiringRequest::whereIn('request_status', [HiringRequestStatusCode::EDS, HiringRequestStatusCode::RDS])->with('school')->with('contractType')->orderBy('created_at', 'DESC')->paginate(10);
+        $hiringRequests = HiringRequest::whereIn('request_status', [HiringRequestStatusCode::ESD, HiringRequestStatusCode::RDS])
+            ->with('school')
+            ->with('contractType')
+            ->orderBy('created_at', 'DESC')
+            ->paginate(10);
         $this->RegisterAction("El usuario ha consultado todas las solicitudes de contratacion enviadas a secretaria", "medium");
         return response($hiringRequests, 200);
     }
+
+
     public function secretaryReceptionHiringRequest(HiringRequest $hiringRequest)
     {
-        if ($hiringRequest->request_status != HiringRequestStatusCode::EDS) {
+        if ($hiringRequest->request_status != HiringRequestStatusCode::ERH) {
             return response(['message' => 'Solo las solicitudes que tengan el estado de enviadas pueden ser dadas por recibidas por secretaria'], 400);
         }
 
@@ -180,14 +197,25 @@ class HiringRequestController extends Controller
         ];
     }
 
+    public function sendToHR(HiringRequest $hiringRequest)
+    {
+        $status = Status::whereIn('code', [HiringRequestStatusCode::FSC, HiringRequestStatusCode::ERH])->get();
+        $hiringRequest->request_status = HiringRequestStatusCode::ERH;
+        $hiringRequest->save();
+        $hiringRequest->status()->attach($status);
+        // TODO: Enviar correo electronico a HR notificando
+        $this->registerAction('La solicitud se ha enviado a RRHH para validacion', 'high');
+        return [['message' => 'La solicitud se ha enviado a RRHH para validacion'], 'success' => true];
+    }
+
     public function storeHiringRequest($id, $pdf)
     {
         $hiringRequest = HiringRequest::findOrFail($id);
         $hiringName = $hiringRequest->code . "-Solicitud.pdf";
         Storage::disk('hiringRequest')->put($hiringName, $pdf);
         $hiringRequest->fileName = $hiringName;
-        $status = Status::whereIn('code', [HiringRequestStatusCode::FSC, HiringRequestStatusCode::EDS])->get();
-        $hiringRequest->request_status = HiringRequestStatusCode::EDS;
+        $status = Status::whereIn('code', [HiringRequestStatusCode::FSC, HiringRequestStatusCode::ERH])->get();
+        $hiringRequest->request_status = HiringRequestStatusCode::ERH;
         $hiringRequest->save();
         $hiringRequest->status()->attach($status);
         return ['message' => 'El archivo pdf ha sido guardado con exito ', 'success' => true];
