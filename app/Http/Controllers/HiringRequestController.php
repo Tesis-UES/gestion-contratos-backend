@@ -146,8 +146,8 @@ class HiringRequestController extends Controller
 
     public function secretaryReceptionHiringRequest(HiringRequest $hiringRequest)
     {
-        if ($hiringRequest->request_status != HiringRequestStatusCode::ERH) {
-            return response(['message' => 'Solo las solicitudes que tengan el estado de enviadas pueden ser dadas por recibidas por secretaria'], 400);
+        if ($hiringRequest->validated != true || $hiringRequest->request_status != HiringRequestStatusCode::ERH) {
+            return response(['message' => 'Solo las solicitudes validadas por Recursos Humanos pueden ser dadas por recibidas por secretaria'], 400);
         }
 
         $status = Status::where('code', HiringRequestStatusCode::RDS)->first();
@@ -273,8 +273,7 @@ class HiringRequestController extends Controller
 
     public function MakeHiringRequestSPNP($id, $option)
     {
-
-        //Primero se verifica el id y si la solicitud tiene almenos una persona aignada a la solicitud
+        //Primero se verifica el id y si la solicitud tiene almenos una persona asignada a la solicitud
         $hri = HiringRequest::findOrFail($id);
         if ($hri->details->count() == 0) {
             return response(['message' => 'La solicitud de contratacion no tiene detalles, por lo cual no se puede generar el pdf'], 400);
