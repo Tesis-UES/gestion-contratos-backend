@@ -264,8 +264,8 @@ class HiringRequestController extends Controller
         $hiringName = $hiringRequest->code . "-Solicitud.pdf";
         Storage::disk('hiringRequest')->put($hiringName, $pdf);
         $hiringRequest->fileName = $hiringName;
-        $status = Status::whereIn('code', [HiringRequestStatusCode::FSC, HiringRequestStatusCode::ERH])->get();
-        $hiringRequest->request_status = HiringRequestStatusCode::ERH;
+        $status = Status::whereIn('code', [HiringRequestStatusCode::ESD])->get();
+        $hiringRequest->request_status = HiringRequestStatusCode::ESD;
         $hiringRequest->save();
         $hiringRequest->status()->attach($status);
         return ['message' => 'El archivo pdf ha sido guardado con exito ', 'success' => true];
