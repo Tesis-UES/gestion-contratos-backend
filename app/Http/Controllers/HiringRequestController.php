@@ -563,7 +563,7 @@ class HiringRequestController extends Controller
         $fields = $request->validate([
             'code'      => 'required|string|unique:agreements',
             'approved'  => 'required|boolean',
-            'agreed_on' => 'required|date',
+            'agreed_on' => 'required|date|before_or_equal:today',
             'file'      => 'required|mimes:pdf',
         ]);
 
