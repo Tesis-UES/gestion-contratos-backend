@@ -146,7 +146,7 @@ class HiringRequestController extends Controller
 
     public function secretaryReceptionHiringRequest(HiringRequest $hiringRequest)
     {
-        if ($hiringRequest->validated != true || $hiringRequest->request_status != HiringRequestStatusCode::ERH) {
+        if ($hiringRequest->validated != true || $hiringRequest->request_status != HiringRequestStatusCode::ESD) {
             return response(['message' => 'Solo las solicitudes validadas por Recursos Humanos pueden ser dadas por recibidas por secretaria'], 400);
         }
 
