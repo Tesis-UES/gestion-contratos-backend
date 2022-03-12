@@ -197,22 +197,29 @@ class GroupController extends Controller
         return response($updateGroup, 200);
     }
 
-    public function getAllGroupsWhitoutProfessors($modality)
+    public function getAllGroupsWhitoutProfessors($modality, Request $request)
     {
         $semester = Semester::where('status', 1)->firstOrFail();
         $school = $user = Auth::user()->school_id;
         $academicLoad = AcademicLoad::where([['semester_id', $semester->id], ['school_id', $school]])->first();
         $groupsQB = Group::with(['course', 'grupo', 'schedule',])
             ->where([
-                ['academic_load_id', $academicLoad->id],
-                ['status', 'SDA'],
+                ['groups.academic_load_id', $academicLoad->id],
+                ['groups.status', 'SDA'],
             ])
-            ->orderBy('created_at', 'ASC');
+            ->join('courses', 'groups.course_id', '=', 'courses.id', 'left')
+            ->orderBy('groups.created_at', 'ASC');
         if ($modality != 'Semi-Presencial') {
             $groupsQB->where('modality', $modality);
         }
-        $groups = $groupsQB->get();
-        return $groups;
+        $search = $request->search;
+        if ($search != null) {
+            $groupsQB->where(function ($query) use ($search) {
+                $query->where('courses.code', 'ilike', '%' . $search . '%')
+                    ->orWhere('courses.name', 'ilike', '%' . $search . '%');
+            });
+        }
+        return $groupsQB->get();
     }
 
     public function getHiringGroups(Request $request)

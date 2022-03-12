@@ -1226,7 +1226,7 @@ class PersonController extends Controller
                 break;
         }
         $search = $request->search;
-        if ($search) {
+        if ($search != null) {
             $candidates->where(function ($query) use ($search) {
                 $query->where('first_name', 'ilike', '%' . $search . '%')
                     ->orWhere('middle_name', 'ilike', '%' . $search . '%')
