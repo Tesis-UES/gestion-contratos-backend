@@ -32,9 +32,9 @@ class HiringRequestController extends Controller
     {
         $newHiringRequest = HiringRequest::create(array_merge($request->all(), [
             'code'   => $this->generateRequestCode($request->school_id),
-            'request_status' => HiringRequestStatusCode::CSC,
+            'request_status' => HiringRequestStatusCode::RDC,
         ]));
-        $status = Status::whereIn('code', ['CSC', 'RDC'])->orderBy('order')->get();
+        $status = Status::whereIn('code', [HiringRequestStatusCode::CSC, HiringRequestStatusCode::RDC])->orderBy('order')->get();
         $newHiringRequest->status()->attach(['status_id' => $status[0]->id]);
         $newHiringRequest->status()->attach(['status_id' => $status[1]->id]);
         $this->RegisterAction("El usuario ha registrado una nueva solicitud de contratación", "high");
