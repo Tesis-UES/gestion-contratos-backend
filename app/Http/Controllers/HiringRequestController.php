@@ -141,7 +141,8 @@ class HiringRequestController extends Controller
         $hiringRequestsQB = HiringRequest::whereIn('request_status', [HiringRequestStatusCode::ESD, HiringRequestStatusCode::RDS])
             ->with('school')
             ->with('contractType')
-            ->orderBy('created_at', 'DESC');
+            ->orderBy('request_status', 'ASC')
+            ->orderBy('updated_at', 'ASC');
 
         if ($status != null) {
             $hiringRequestsQB->where('request_status', $status);
