@@ -605,7 +605,7 @@ class HiringRequestController extends Controller
         ]);
 
         if ($fields['approved'] == true) {
-            $status = Status::where('code', [HiringRequestStatusCode::RJD, HiringRequestStatusCode::GDC])->get();
+            $status = Status::whereIn('code', [HiringRequestStatusCode::RJD, HiringRequestStatusCode::GDC])->get();
             $hiringRequest->request_status = HiringRequestStatusCode::GDC;
             $hiringRequest->save();
             $hiringRequest->status()->attach(['status_id' => $status[0]->id]);
