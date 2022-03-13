@@ -44,6 +44,11 @@ use Illuminate\Support\Facades\Route;
 Route::post('/auth/register', [AuthController::class, 'register']);
 Route::post('/auth/login', [AuthController::class, 'login']);
 
+//TODO: REMOVE resetMigrations when development finish
+Route::get('/resetMigrations',function(){
+    Artisan::call('migrate:fresh --seed');
+});
+
 // Protected Routes 
 Route::group(['middleware' => ['auth:sanctum']], function () {
     // Ruta para cerrar sesion
