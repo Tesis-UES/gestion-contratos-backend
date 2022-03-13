@@ -24,10 +24,16 @@ class HiringRequestDetail extends Model
         'hiring_request_id',
         'justification',
         'monthly_salary'
-
     ];
 
     protected $hidden = ['pivot'];
+
+    public function contractStatus()
+    {
+        return $this->belongsToMany(ContractStatus::class, 'contract_status_history', 'hiring_request_detail_id', 'contract_status_id')
+            ->withTimestamps()
+            ->orderByPivot('created_at');
+    }
 
     public function person()
     {

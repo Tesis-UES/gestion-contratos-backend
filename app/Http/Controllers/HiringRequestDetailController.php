@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Constants\ContractType;
 use App\Constants\GroupStatus;
+use App\Constants\HiringRequestStatusCode;
 use App\Constants\PersonValidationStatus;
 use App\Http\Requests\UpdateSPNPRequestDetails;
 use App\Http\Requests\UpdateTARequestDetails;
@@ -616,5 +617,15 @@ class HiringRequestDetailController extends Controller
 
         $this->RegisterAction("El usuario ha guardado el archivo pdf que contiene el horario del detalle de contratacion " . $id, "high");
         return;
+    }
+
+    public function getContractHistory($id)
+    {
+        $hiringRequest = HiringRequestDetail::with('contractStatus')->findOrFail($id);
+        if ($hiringRequest->request_status == HiringRequestStatusCode::GDC) {
+            return response(['message' => 'El contrato no existe'], 404);
+        }
+        $contractHistory = $hiringRequest->contractStatus;
+        return $contractHistory;
     }
 }

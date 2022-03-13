@@ -391,6 +391,8 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::get('/hiringRequest/{id}/pdf', [HiringRequestController::class, 'getPdf']);
     Route::get('/persons/merge/{id?}/pdf', [PersonController::class, 'mergePersonalDoc']);
 
+    Route::get('/hiringRequest/details/{id}/contractHistory', [HiringRequestDetailController::class, 'getContractHistory']);
+
     Route::get('/contract/hiringRequestDetail/{requestDetailId}/generate', [ContractController::class, 'generateContract']);
     Route::get('/hiringRequest/all/petitions/rrhh', [HiringRequestController::class, 'hiringRequestRRHH']);
 });
