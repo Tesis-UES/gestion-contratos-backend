@@ -608,7 +608,8 @@ class HiringRequestController extends Controller
             $status = Status::where('code', [HiringRequestStatusCode::RJD, HiringRequestStatusCode::GDC])->get();
             $hiringRequest->request_status = HiringRequestStatusCode::GDC;
             $hiringRequest->save();
-            $hiringRequest->status()->attach(['status_id' => $status[0]->id, 'status_id' => $status[1]->id]);
+            $hiringRequest->status()->attach(['status_id' => $status[0]->id]);
+            $hiringRequest->status()->attach(['status_id' => $status[1]->id]);
 
             $contractStatus = ContractStatus::where('code', ContractStatusCode::ELB)->first();
             foreach ($hiringRequest->details as $detail) {

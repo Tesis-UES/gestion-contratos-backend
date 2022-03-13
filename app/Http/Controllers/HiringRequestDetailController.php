@@ -11,6 +11,7 @@ use App\Http\Requests\UpdateTARequestDetails;
 use App\Http\Requests\UpdateTIRequestDetails;
 use App\Http\Traits\WorklogTrait;
 use App\Models\Activity;
+use App\Models\ContractStatus;
 use App\Models\DetailPositionActivity;
 use App\Models\Group;
 use App\Models\HiringGroup;
@@ -625,7 +626,26 @@ class HiringRequestDetailController extends Controller
         if ($hiringRequest->request_status == HiringRequestStatusCode::GDC) {
             return response(['message' => 'El contrato no existe'], 404);
         }
+
         $contractHistory = $hiringRequest->contractStatus;
+        $this->regsiterAction('El usuario ha consultado el historial del contrato ' . $id, 'medium');
         return $contractHistory;
+    }
+
+    public function updateContractHistory($id, Request $request)
+    {
+        $fields = $request->validate([
+            'code' => 'required|string'
+        ]);
+        $detail = HiringRequestDetail::with(['hiringRequest', 'contractStatus'])->findOrFail($id);
+        if ($detail->request_status == HiringRequestStatusCode::GDC) {
+            return response(['message' => 'El contrato no existe'], 404);
+        }
+
+        $contractStatus = ContractStatus::where('code', $fields['code'])->findOrFail();
+
+        $detail->contractStatus()->attach(['contract_status_id' => $contractStatus->id]);
+        $this->regsiterAction('El usuario ha actualizado el estado del contrato ' . $id . ' a ' . $fields['code'], 'medium');
+        return $detail->contractStatus();
     }
 }
