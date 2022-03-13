@@ -567,7 +567,13 @@ class HiringRequestController extends Controller
 
     public function getAllStatus()
     {
-        $status = Status::all();
+        $status = Status::all()->orderBy('order', 'ASC');
+        return response($status, 200);
+    }
+
+    public function getAllContractStatus()
+    {
+        $status = ContractStatus::all()->orderBy('order', 'ASC');
         return response($status, 200);
     }
 

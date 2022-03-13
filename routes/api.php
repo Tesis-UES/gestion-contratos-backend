@@ -345,13 +345,13 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
 
     //Pendiente por definir los permisos
     Route::post('/hiringRequest', [HiringRequestController::class, 'store']);
+    Route::get('/hiringRequest/all', [HiringRequestController::class, 'getAllHiringRequests']);
+    Route::get('/hiringRequest/school/{id}', [HiringRequestController::class, 'getAllHiringRequestBySchool']);
+    Route::get('/hiringRequest/status/all', [HiringRequestController::class, 'getAllStatus']);
     Route::get('/hiringRequest/{id}', [HiringRequestController::class, 'show']);
     Route::get('/hiringRequest/{id}/base', [HiringRequestController::class, 'showBase']);
     Route::put('/hiringRequest/{id}', [HiringRequestController::class, 'update']);
     Route::delete('/hiringRequest/{id}', [HiringRequestController::class, 'destroy']);
-    Route::get('/hiringRequest/all/peticions', [HiringRequestController::class, 'getAllHiringRequests']);
-    Route::get('/hiringRequest/school/{id}', [HiringRequestController::class, 'getAllHiringRequestBySchool']);
-    Route::get('/hiringRequest/status/all', [HiringRequestController::class, 'getAllStatus']);
     Route::post('/hiringRequest/{id}/agreement', [HiringRequestController::class, 'addAgreement']);
     Route::get('/hiringRequest/{id}/agreement', [HiringRequestController::class, 'getAgreements']);
 
@@ -392,6 +392,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::get('/persons/merge/{id?}/pdf', [PersonController::class, 'mergePersonalDoc']);
 
     Route::get('/hiringRequest/details/{id}/contractHistory', [HiringRequestDetailController::class, 'getContractHistory']);
+    Route::get('/contract/status/all', [HiringRequestController::class, 'getAllContractStatus']);
 
     Route::get('/contract/hiringRequestDetail/{requestDetailId}/generate', [ContractController::class, 'generateContract']);
     Route::get('/hiringRequest/all/petitions/rrhh', [HiringRequestController::class, 'hiringRequestRRHH']);
