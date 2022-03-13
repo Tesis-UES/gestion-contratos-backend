@@ -132,13 +132,22 @@ class HiringRequestController extends Controller
         return response($hiringRequests, 200);
     }
 
-    public function getAllHiringRequestsSecretary()
+    public function getAllHiringRequestsSecretary(Request $request)
     {
-        $hiringRequests = HiringRequest::whereIn('request_status', [HiringRequestStatusCode::ESD, HiringRequestStatusCode::RDS])
+        $status = mb_strtoupper($request->status, 'UTF-8');
+        if (!(!$status || $status == HiringRequestStatusCode::ESD || $status == HiringRequestStatusCode::RDS)) {
+            return response(['message' => 'Solo puede filtrar por estatus ESD o RDS']);
+        }
+        $hiringRequestsQB = HiringRequest::whereIn('request_status', [HiringRequestStatusCode::ESD, HiringRequestStatusCode::RDS])
             ->with('school')
             ->with('contractType')
-            ->orderBy('created_at', 'DESC')
-            ->paginate(10);
+            ->orderBy('created_at', 'DESC');
+
+        if ($status != null) {
+            $hiringRequestsQB->where('request_status', $status);
+        }
+
+        $hiringRequests = $hiringRequestsQB->paginate(10);
         $this->RegisterAction("El usuario ha consultado todas las solicitudes de contratacion enviadas a secretaria", "medium");
         return response($hiringRequests, 200);
     }
