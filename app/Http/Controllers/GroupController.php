@@ -206,12 +206,12 @@ class GroupController extends Controller
             ->where([
                 ['groups.academic_load_id', $academicLoad->id],
                 ['groups.status', 'SDA'],
-            ])
-            ->join('courses', 'groups.course_id', '=', 'courses.id', 'left')
-            ->orderBy('groups.created_at', 'ASC');
+            ]);
+
         if ($modality != 'Semi-Presencial') {
             $groupsQB->where('modality', $modality);
         }
+
         $search = $request->search;
         if ($search != null) {
             $groupsQB->where(function ($query) use ($search) {
@@ -219,6 +219,7 @@ class GroupController extends Controller
                     ->orWhere('courses.name', 'ilike', '%' . $search . '%');
             });
         }
+
         return $groupsQB->get();
     }
 
