@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Constants\ContractStatusCode;
 use App\Constants\HiringRequestStatusCode;
 use App\Models\HiringRequest;
 use App\Models\HiringRequestDetail;
@@ -22,6 +23,7 @@ use Illuminate\Support\Facades\Storage;
 use App\Models\User;
 use Spatie\Permission\Models\Role;
 use App\Mail\ValidationDocsNotification;
+use App\Models\ContractStatus;
 use Mail;
 
 class HiringRequestController extends Controller
@@ -579,7 +581,7 @@ class HiringRequestController extends Controller
         $hiringRequest = HiringRequest::findOrFail($id);
 
         // TODO: check if the request is in the required status
-        if (false) {
+        if ($hiringRequest->request_status != HiringRequestStatusCode::RDS) {
             return response(['message' => 'La solicitud debe tener el estado <ESTADO> para poder agregar un acuerdo de Junta Directiva'], 400);
         }
 
@@ -594,6 +596,13 @@ class HiringRequestController extends Controller
             'agreed_on'         => $fields['agreed_on'],
             'file_uri'         => $fileName,
         ]);
+
+        if ($fields['approved'] == true) {
+            $contractStatus = ContractStatus::where('code', ContractStatusCode::ELB)->first();
+            foreach ($hiringRequest->details as $detail) {
+                $detail->contractStatus()->attach(['contract_status_id' => $contractStatus->id]);
+            }
+        }
 
         $status = Status::where('code', [HiringRequestStatusCode::RJD])->first();
         $hiringRequest->request_status = HiringRequestStatusCode::RJD;
