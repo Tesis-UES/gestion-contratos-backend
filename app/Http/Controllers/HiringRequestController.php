@@ -580,9 +580,8 @@ class HiringRequestController extends Controller
 
         $hiringRequest = HiringRequest::findOrFail($id);
 
-        // TODO: check if the request is in the required status
         if ($hiringRequest->request_status != HiringRequestStatusCode::RDS) {
-            return response(['message' => 'La solicitud debe tener el estado <ESTADO> para poder agregar un acuerdo de Junta Directiva'], 400);
+            return response(['message' => 'La solicitud debe haber sido recibida en Secretaría de Decanato para poder agregar un acuerdo de Junta Directiva'], 400);
         }
 
         $file = $request->file('file');
@@ -598,16 +597,21 @@ class HiringRequestController extends Controller
         ]);
 
         if ($fields['approved'] == true) {
+            $status = Status::where('code', [HiringRequestStatusCode::RJD, HiringRequestStatusCode::GDC])->get();
+            $hiringRequest->request_status = HiringRequestStatusCode::GDC;
+            $hiringRequest->save();
+            $hiringRequest->status()->attach(['status_id' => $status[0]->id, 'status_id' => $status[1]->id]);
+
             $contractStatus = ContractStatus::where('code', ContractStatusCode::ELB)->first();
             foreach ($hiringRequest->details as $detail) {
                 $detail->contractStatus()->attach(['contract_status_id' => $contractStatus->id]);
             }
+        } else {
+            $status = Status::where('code', [HiringRequestStatusCode::RJD])->first();
+            $hiringRequest->request_status = HiringRequestStatusCode::RJD;
+            $hiringRequest->save();
+            $hiringRequest->status()->attach(['status_id' => $status->id]);
         }
-
-        $status = Status::where('code', [HiringRequestStatusCode::RJD])->first();
-        $hiringRequest->request_status = HiringRequestStatusCode::RJD;
-        $hiringRequest->save();
-        $hiringRequest->status()->attach(['status_id' => $status->id]);
 
         $this->RegisterAction("El usuario ha guardado el archivo pdf que contiene el acuerdo de junta directiva para la solicitud con id: " . $id, "high");
         return;

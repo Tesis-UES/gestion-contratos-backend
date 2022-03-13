@@ -30,7 +30,9 @@ class HiringRequestDetail extends Model
 
     public function contractStatus()
     {
-        return $this->belongsToMany(ContractStatus::class, 'contract_status_history', 'hiring_request_detail_id', 'contract_status_id')->withTimestamps();
+        return $this->belongsToMany(ContractStatus::class, 'contract_status_history', 'hiring_request_detail_id', 'contract_status_id')
+            ->withTimestamps()
+            ->orderByPivot('created_at');
     }
 
     public function person()
