@@ -29,6 +29,11 @@ class HiringRequestDetail extends Model
 
     protected $hidden = ['pivot'];
 
+    public function contractStatus()
+    {
+        return $this->belongsToMany(ContractStatus::class, 'status_history', 'contract_status_history', 'contract_status_id')->withTimeStamps();
+    }
+
     public function person()
     {
         return $this->belongsTo(Person::class);
