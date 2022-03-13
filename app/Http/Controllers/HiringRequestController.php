@@ -80,6 +80,7 @@ class HiringRequestController extends Controller
             'status',
             'details',
             'details.person',
+            'details.contractStatus',
         ];
         $hiringRequest = HiringRequest::with($relations)->findOrFail($id);
 
