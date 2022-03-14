@@ -128,7 +128,10 @@ class HiringRequestController extends Controller
     {
         return  $hiringRequests = HiringRequest::with(['school', 'contractType'])
             ->where('request_status', '=', HiringRequestStatusCode::ERH)
-            ->where('validated', '!=', true)
+            ->where(function ($query) {
+                $query->whereNull('validated')
+                    ->orWhere('validated', false);
+            })
             ->orderBy('created_at', 'DESC')
             ->paginate(10);
         $this->RegisterAction("El usuario ha consultado todas las solicitudes de contratacion enviadas a Recursos Humanos", "medium");
