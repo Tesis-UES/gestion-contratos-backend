@@ -45,7 +45,7 @@ Route::post('/auth/register', [AuthController::class, 'register']);
 Route::post('/auth/login', [AuthController::class, 'login']);
 
 //TODO: REMOVE resetMigrations when development finish
-Route::get('/resetMigrations',function(){
+Route::get('/resetMigrations', function () {
     Artisan::call('migrate:fresh --seed');
 });
 
@@ -350,7 +350,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
 
     //Pendiente por definir los permisos
     Route::post('/hiringRequest', [HiringRequestController::class, 'store']);
-    Route::get('/hiringRequest/all', [HiringRequestController::class, 'getAllHiringRequests']);
+    Route::get('/hiringRequest/all/peticions', [HiringRequestController::class, 'getAllHiringRequests']);
     Route::get('/hiringRequest/school/{id}', [HiringRequestController::class, 'getAllHiringRequestBySchool']);
     Route::get('/hiringRequest/status/all', [HiringRequestController::class, 'getAllStatus']);
     Route::get('/hiringRequest/{id}', [HiringRequestController::class, 'show']);
