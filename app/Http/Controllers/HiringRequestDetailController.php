@@ -634,6 +634,7 @@ class HiringRequestDetailController extends Controller
 
     public function updateContractHistory($id, Request $request)
     {
+        // Agregar fecha manualmente 
         $fields = $request->validate([
             'code' => 'required|string'
         ]);

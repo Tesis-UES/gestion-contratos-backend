@@ -10,6 +10,7 @@ class HiringRequestDetail extends Model
     use HasFactory;
 
     protected $fillable = [
+        // Add contract file property
         'start_date',
         'finish_date',
         'schedule_file',

@@ -616,6 +616,7 @@ class HiringRequestController extends Controller
 
             $contractStatus = ContractStatus::where('code', ContractStatusCode::ELB)->first();
             foreach ($hiringRequest->details as $detail) {
+                // Enviar correo a cada contratado que ya hay contrato
                 $detail->contractStatus()->attach(['contract_status_id' => $contractStatus->id]);
             }
         } else {

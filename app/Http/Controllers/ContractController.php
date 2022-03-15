@@ -452,6 +452,7 @@ class ContractController extends Controller
                 'message' => 'El contrato no se puede generar porque la solicitud fue denegada en Junta Directiva'
             ], 400);
         }
+        // If salready saved return server version 
         $requestDetails->agreementCode =  $hiringRequest->agreement->code;
         $requestDetails->agreementDate = $hiringRequest->agreement->agreed_on;
         switch ($hiringRequest->contractType->name) {
@@ -478,6 +479,7 @@ class ContractController extends Controller
 
         $tempFile = tempnam(sys_get_temp_dir(), 'PHPWord');
         $phpWord->saveAs($tempFile);
+        // Save file
         return response()->download($tempFile, $fileName, $header)->deleteFileAfterSend(true);
     }
 }
