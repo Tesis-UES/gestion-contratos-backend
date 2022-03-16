@@ -10,7 +10,6 @@ class HiringRequestDetail extends Model
     use HasFactory;
 
     protected $fillable = [
-        // Add contract file property
         'start_date',
         'finish_date',
         'schedule_file',
@@ -24,10 +23,16 @@ class HiringRequestDetail extends Model
         'stay_schedule_id',
         'hiring_request_id',
         'justification',
-        'monthly_salary'
+        'monthly_salary',
+        'contract_file',
+        'contract_version',
     ];
 
-    protected $hidden = ['pivot'];
+    protected $hidden = [
+        'pivot',
+        'contract_file',
+        'contract_version',
+    ];
 
     public function contractStatus()
     {
