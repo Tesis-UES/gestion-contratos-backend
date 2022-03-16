@@ -26,6 +26,8 @@ class CreateHiringRequestDetailsTable extends Migration
             $table->float('hourly_rate')->nullable();
             $table->float('work_weeks')->nullable();
             $table->float('weekly_hours')->nullable();
+            $table->string('contract_file')->nullable();
+            $table->float('contract_version')->nullable();
             $table->bigInteger('person_id')->unsigned()->nonullable();
             $table->foreign('person_id')->references('id')->on('people')->nonullable();
             $table->bigInteger('stay_schedule_id')->unsigned()->nullable();
