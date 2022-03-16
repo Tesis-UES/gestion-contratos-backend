@@ -72,6 +72,12 @@ return [
             'root'      =>  public_path() . '/agreements',
         ],
 
+        /* Driver que contiene la ubicacion de los contratos*/
+        'contracts' => [
+            'driver'    =>  'local',
+            'root'      =>  public_path() . '/contracts',
+        ],
+
         /* Driver que contiene la ubicacion de los horarios de detalle de solicitud de contratacion*/
         'requestDetailSchedules' => [
             'driver'    =>  'local',
