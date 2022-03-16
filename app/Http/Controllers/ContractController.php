@@ -436,6 +436,14 @@ class ContractController extends Controller
         }
     }
 
+    private function generateContractFileName($requestDetail)
+    {
+        $version = $requestDetail->contract_version ? $requestDetail->contract_version + 1 : 1;
+        $fullName = $requestDetail->person->first_name . $requestDetail->person->middle_name . $requestDetail->person->last_name;
+        $formattedName = str_replace(' ', '', $fullName);
+        $reqCode = $requestDetail->hiringRequest->code;
+        return $reqCode . '-' . $formattedName . '-v' . $version . '.docx';
+    }
 
     public function generateContract($requestDetailId)
     {
@@ -455,7 +463,7 @@ class ContractController extends Controller
         }
 
         if ($requestDetails->contract_file != null) {
-            $this->regsiterAction('El usuario descargo el contrato con id: ' . $requestDetails->id, 'high');
+            $this->RegisterAction('El usuario descargo el contrato con id: ' . $requestDetails->id, 'high');
             return \Storage::disk('contracts')->download($requestDetails->contract_file);
         }
 
@@ -490,15 +498,30 @@ class ContractController extends Controller
             'contract_version' => 1,
         ]);
 
-        $this->regsiterAction('El usuario descargo el contrato con id: ' . $requestDetails->id, 'high');
+        $this->RegisterAction('El usuario descargo el contrato con id: ' . $requestDetails->id, 'high');
         return response()->download($tempFile, $fileName, $header)->deleteFileAfterSend(true);
     }
 
-    private function generateContractFileName($requestDetail)
+
+    public function updateContract($id, Request $request)
     {
-        $fullName = $requestDetail->person->first_name . $requestDetail->person->middle_name . $requestDetail->person->last_name;
-        $formattedName = str_replace(' ', '', $fullName);
-        $reqCode = $requestDetail->hiringRequest->code;
-        return $reqCode . '-' . $formattedName . '.docx';
+        $request->validate(['file' => 'required|mimes:doc,docx']);
+        $requestDetail = HiringRequestDetail::findOrFail($id);
+
+        if ($requestDetail->contract_file == null) {
+            return response(['message' => 'Debe generar la version inicial'], 400);
+        }
+
+        $file = $request->file('file');
+        $fileName = $this->generateContractFileName($requestDetail);
+
+        Storage::disk('contracts')->put($fileName, \File::get($file));
+        $requestDetail->update([
+            'contract_file' => $fileName,
+            'contract_version' => 1,
+        ]);
+
+        $this->RegisterAction('El usuario actualizado el contrato con id: ' . $requestDetail->id, 'critical');
+        return response(['message' => 'El contrato se ha actualizado exitosamente'], 200);
     }
 }

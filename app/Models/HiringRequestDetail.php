@@ -28,11 +28,7 @@ class HiringRequestDetail extends Model
         'contract_version',
     ];
 
-    protected $hidden = [
-        'pivot',
-        'contract_file',
-        'contract_version',
-    ];
+    protected $hidden = ['pivot'];
 
     public function contractStatus()
     {
