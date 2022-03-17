@@ -171,10 +171,22 @@ class HiringRequestController extends Controller
         $hiringRequest->status()->attach(['status_id' => $status->id], ['comments' => $comment]);
         $hiringRequest->request_status = HiringRequestStatusCode::RDS;
         $hiringRequest->save();
+        $emails = $this->getDirectorEmail($hiringRequest->school_id);
+        $mensajeEmail = " Se ha dado por recibida la solicitud de contratacion con codigo <b>: " . $hiringRequest->code . "</b> por parte de la secretaria y ha sido agendada para ser vista en junta directiva";
 
+        foreach ($emails as $email) {
+            try {
+                Mail::to($email)->send(new ValidationDocsNotification($mensajeEmail, 'recepcionSecretary'));
+                $mensaje = 'Se ha dado por recibida la solicitud de contratacion y se ha enviado el correo notificando al director';
+            } catch (\Swift_TransportException $e) {
+                $mensaje = 'Se ha dado por recibida la solicitud de contratacion pero no se ha enviado el correo notificando al director';
+            }
+        }
         $this->RegisterAction('El usuario ha dado por recibida una solicitud de contratacion', 'high');
         return response(200);
     }
+
+     
 
     public function getMyHiringRequests(Request $request)
     {
@@ -247,13 +259,25 @@ class HiringRequestController extends Controller
         foreach ($emails as $email) {
             try {
                 Mail::to($email)->send(new ValidationDocsNotification($mensajeEmail, 'validationHR'));
-                $mensaje = 'Se envio el correo con exito';
+                $mensaje = 'La solicitud se ha enviado a RRHH para validacion y se envio el correo de notificación al responsable de RRHH';
             } catch (\Swift_TransportException $e) {
-                $mensaje = 'No se envio el correo';
+                $mensaje = 'La solicitud se ha enviado a RRHH para validacion y no se envio el correo de notificación al responsable de RRHH';
             }
         }
         $this->registerAction('La solicitud se ha enviado a RRHH para validacion', 'high');
-        return [['message' => 'La solicitud se ha enviado a RRHH para validacion'], 'success' => true];
+        return [['message' => $mensaje], 'success' => true];
+    }
+
+    public function getDirectorEmail($id){
+        $role = Role::where('name', 'Director Escuela')->first();
+        $director = User::join('model_has_roles', 'model_has_roles.model_id', '=', 'users.id')->select('users.email')->where('model_has_roles.role_id', '=', $role->id)->where('users.school_id',"=",$id)->get()->toArray();
+        return $director;
+    }
+
+    public function getAsistenteEmail(){
+        $role = Role::where('name', 'Asistente Administrativo')->first();
+        $asistente = User::join('model_has_roles', 'model_has_roles.model_id', '=', 'users.id')->select('users.email')->where('model_has_roles.role_id', '=', $role->id)->get()->toArray();
+        return $asistente;
     }
 
     public function reviewHR(HiringRequest $hiringRequest, Request $request)
@@ -262,15 +286,28 @@ class HiringRequestController extends Controller
             'validated' => 'required|boolean',
             'comments'  => 'required|string',
         ]);
+        $emails = $this->getDirectorEmail($hiringRequest->school_id);
 
         $hiringRequest->update($validatedRequest);
 
         if ($validatedRequest['validated'] == true) {
             $this->registerAction('El usuario valido que la solicitud si cumple con las validaciones', 'high');
+            $mensajeEmail = "Se ha validado la solicitud de contratación con codigo <b>" . $hiringRequest->code . "</b> que fue enviada para su respectiva validación por parte del Recursos Humanos, la solicitud de contrato ha sido validada y habilitada para poder ser enviada a Secretaria de Decanato. ";
         } else {
             $this->registerAction('El usuario reviso la solicitud y publico observaciones de cambios a hacer', 'high');
+            $mensajeEmail = "Se ha revisado la solicitud de contratación con codigo <b>" . $hiringRequest->code . "</b> por parte de Recursos Humanos, la solicitud de contrato ha sido observada para poder ser modificada segun las observaciones pertinentes. ";
         }
+       
+       
 
+        foreach ($emails as $email) {
+            try {
+                Mail::to($email)->send(new ValidationDocsNotification($mensajeEmail, 'validationHRDirector'));
+                $mensaje = 'Se envio el correo con exito';
+            } catch (\Swift_TransportException $e) {
+                $mensaje = 'No se envio el correo';
+            }
+        }
         return $hiringRequest;
     }
 
@@ -284,6 +321,27 @@ class HiringRequestController extends Controller
         $hiringRequest->request_status = HiringRequestStatusCode::ESD;
         $hiringRequest->save();
         $hiringRequest->status()->attach($status);
+        $emails = $this->getAsistenteEmail();
+        if ($hiringRequest->school->id == 9) {
+            $escuela =  $hiringRequest->school->name;
+        } else {
+            $escuela = "Escuela de " . $hiringRequest->school->name;
+        }
+        $mensajeEmail = "Se ha enviado la solicitud de contratación Validada con codigo <b>" . $hiringRequest->code . "</b> de parte de la  <b>" . $escuela . "</b> para que esta sea recibida para ser agendada para en Junta Directiva.
+         <ul>
+            <li>Código: <b>" . $hiringRequest->code . "</b> </li>
+            <li>Tipo de Solicitud de Contrato:<b> " . $hiringRequest->contractType->name . " </b>  </li>
+            <li>Modalidad: <b>" . $hiringRequest->modality . "</b>   </li>
+        </ul>";
+
+        foreach ($emails as $email) {
+            try {
+                Mail::to($email)->send(new ValidationDocsNotification($mensajeEmail, 'SendSecretarySolicitude'));
+                $mensaje = 'Se envio el correo con exito';
+            } catch (\Swift_TransportException $e) {
+                $mensaje = 'No se envio el correo';
+            }
+        }
         return ['message' => 'El archivo pdf ha sido guardado con exito ', 'success' => true];
     }
 
@@ -619,6 +677,7 @@ class HiringRequestController extends Controller
                 // Enviar correo a cada contratado que ya hay contrato
                 $detail->contractStatus()->attach(['contract_status_id' => $contractStatus->id]);
             }
+            $this->sendAgrementMail($hiringRequest);
         } else {
             $status = Status::where('code', [HiringRequestStatusCode::RJD])->first();
             $hiringRequest->request_status = HiringRequestStatusCode::RJD;
@@ -628,6 +687,53 @@ class HiringRequestController extends Controller
 
         $this->RegisterAction("El usuario ha guardado el archivo pdf que contiene el acuerdo de junta directiva para la solicitud con id: " . $id, "high");
         return;
+    }
+
+    public function getCandidatesEmail($id){
+        $hiringRequest = HiringRequest::findOrFail($id);
+        $candidates = [];
+        foreach ($hiringRequest->details as $detail) {
+         
+                array_push($candidates, $detail->person->user->email);
+        }
+        return $candidates;
+    }
+
+    public function sendAgrementMail(HiringRequest $hiringRequest){
+        $emailDirector = $this->getDirectorEmail($hiringRequest->school_id);
+        $emailCadidates = $this->getCandidatesEmail($hiringRequest->id);
+        $emailHR = $this->getHRmail();
+        //Notificando al director
+        foreach ($emailDirector as $email) {
+            $mensajeEmail = "Se ha Aprobado y Agregado el acuerdo de junta directiva para la solicitud con Codigo: " . $hiringRequest->code ." Ya puede ver el acuerdo de junta directiva en los detalles de la solicitud de contratación"; ;
+            try {
+                Mail::to($email)->send(new ValidationDocsNotification($mensajeEmail, 'AgreementUpdate'));
+                $mensaje = 'Se envio el correo con exito';
+            } catch (\Swift_TransportException $e) {
+                $mensaje = 'No se envio el correo';
+            }
+        }
+        //Notificando a los candidatos
+        foreach ($emailCadidates as $email) {
+            $mensajeEmail = "Se ha Aprobado y Agregado el acuerdo de junta directiva para la solicitud con Codigo: " . $hiringRequest->code ." Ya puede ver el detalle de su contración y ver los paso siguientes a la generación de su contrato."; ;
+            try {
+                Mail::to($email)->send(new ValidationDocsNotification($mensajeEmail, 'AgreementUpdate'));
+                $mensaje = 'Se envio el correo con exito';
+            } catch (\Swift_TransportException $e) {
+                $mensaje = 'No se envio el correo';
+            }
+        }
+        //Notificando a HR para generar contrato
+        foreach ($emailHR as $email) {
+            $mensajeEmail = "Se ha Aprobado y Agregado el acuerdo de junta directiva para la solicitud de contratacion con Codigo: " . $hiringRequest->code ." Ya puede ver el detalle del acuerdo de Junta directiva y se ha habilitado la generación de los contratos para los candidatos involucrados en la solicitud de contratación";
+            try {
+                Mail::to($email)->send(new ValidationDocsNotification($mensajeEmail, 'AgreementUpdate'));
+                $mensaje = 'Se envio el correo con exito';
+            } catch (\Swift_TransportException $e) {
+                $mensaje = 'No se envio el correo';
+            }
+        }
+
     }
 
     public function getAgreements($id)
