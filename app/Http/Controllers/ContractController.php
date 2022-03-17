@@ -272,8 +272,9 @@ class ContractController extends Controller
 
     public function contractGenerateTiempoIntegral($requestDetails)
     {
-        $docTemplatePath = ['N' => '/TI-N.docx', 'E' => '/TI-I.docx'];
-
+        $formatN =  Format::where('type', 'Contrato de Tiempo Integral')->where('type_contract', 'Nacional')->where('is_active', 1)->first();
+        $formatI =  Format::where('type', 'Contrato de Tiempo Integral')->where('type_contract', 'Internacional')->where('is_active', 1)->first();
+        $docTemplatePath = ['N' => $formatN->file_url, 'E' => $formatI->file_url];
         //Obtenermos los datos generales del contrato y la informacion personal del candidato
         $personalData = $this->getPrincipalData($requestDetails->person_id);
         $acuerdo = $this->agreementContract($requestDetails);
@@ -368,7 +369,9 @@ class ContractController extends Controller
 
     public function contractGenerateTiempoAdicional($requestDetails)
     {
-        $docTemplatePath = ['N' => '/TA-N.docx', 'E' => '/TA-I.docx'];
+        $formatN =  Format::where('type', 'Contrato de Tiempo Adicional')->where('type_contract', 'Nacional')->where('is_active', 1)->first();
+        $formatI =  Format::where('type', 'Contrato de Tiempo Adicional')->where('type_contract', 'Internacional')->where('is_active', 1)->first();
+        $docTemplatePath = ['N' => $formatN->file_url, 'E' => $formatI->file_url];
         //Obtenermos los datos generales del contrato y la informacion personal del candidato
         $personalData = $this->getPrincipalData($requestDetails->person_id);
         $acuerdo = $this->agreementContract($requestDetails);
