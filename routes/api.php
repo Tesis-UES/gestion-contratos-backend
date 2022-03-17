@@ -44,18 +44,13 @@ use Illuminate\Support\Facades\Route;
 Route::post('/auth/register', [AuthController::class, 'register']);
 Route::post('/auth/login', [AuthController::class, 'login']);
 
-//TODO: REMOVE resetMigrations when development finish
-Route::get('/resetMigrations', function () {
-    Artisan::call('migrate:fresh --seed');
-});
-
 // Protected Routes 
 Route::group(['middleware' => ['auth:sanctum']], function () {
     // Ruta para cerrar sesion
     Route::post('/auth/logout', [AuthController::class, 'logout']);
 
     // Ruta para cambiar contraseña
-    Route::put('/users/me/password', [AuthController::class, 'changePassword']);
+    Route::put('/auth/users/me/password', [AuthController::class, 'changePassword']);
     Route::group(['middleware' => ['can:change_passwords']], function () {
         Route::put('/auth/users/{id}/password', [AuthController::class, 'changeUserPassword']);
     });
