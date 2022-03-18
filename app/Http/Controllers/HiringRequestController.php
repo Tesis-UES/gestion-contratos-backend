@@ -432,6 +432,11 @@ class HiringRequestController extends Controller
         $m->addRaw($pdf->output());
         $m->addRaw($pdf2->output());
         $m->addRaw($pdf3->output());
+        //Agregamos los pdfs con los documentos de los candidatos
+        foreach ($hiringRequest->details as $detail) {
+            $m->addRaw(\Storage::disk('personDocsMerged')->get($detail->person->merged_docs));
+        }
+
         $createdPdf = $m->merge();
         if ($option == "show") {
             $pdf = base64_encode($createdPdf);
@@ -518,6 +523,9 @@ class HiringRequestController extends Controller
         //UNIMOS LOS PDFS
         $m->addRaw($pdf->output());
         $m->addRaw($pdf2->output());
+        foreach ($hiringRequest->details as $detail) {
+            $m->addRaw(\Storage::disk('personDocsMerged')->get($detail->person->merged_docs));
+        }
         $createdPdf = $m->merge();
         if ($option == "show") {
             $pdf = base64_encode($createdPdf);
@@ -605,6 +613,9 @@ class HiringRequestController extends Controller
         //UNIMOS LOS PDFS
         $m->addRaw($pdf->output());
         $m->addRaw($pdf2->output());
+        foreach ($hiringRequest->details as $detail) {
+            $m->addRaw(\Storage::disk('personDocsMerged')->get($detail->person->merged_docs));
+        }
         $createdPdf = $m->merge();
 
         if ($option == "show") {
