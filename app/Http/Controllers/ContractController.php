@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Constants\ContractType;
 use App\Models\Bank;
-use App\Models\format;
+use App\Models\Format;
 use App\Models\EmployeeType;
 use App\Models\Escalafon;
 use App\Models\Faculty;
@@ -22,6 +22,7 @@ use iio\libmergepdf\Merger;
 use App\Http\Controllers\PersonController;
 use App\Models\HiringRequest;
 use App\Models\HiringRequestDetail;
+use Illuminate\Support\Facades\Storage;
 use PhpParser\Node\Stmt\TryCatch;
 
 class ContractController extends Controller
@@ -194,9 +195,9 @@ class ContractController extends Controller
     public function agreementContract($requestDetails)
     {
         $formatter = new NumeroALetras();
-        $fechaJD = Carbon::parse($requestDetails->agreementDate)->locale('es');
+        $fechaJD = Carbon::parse($requestDetails->hiringRequest->agreement->agreed_on)->locale('es');
         $fechaAcuerdo = $formatter->toString($fechaJD->day) . " DE " . $fechaJD->monthName . " DE " . $formatter->toString($fechaJD->year) . "";
-        $codigoAcuerdo = $requestDetails->agreementCode;
+        $codigoAcuerdo = $requestDetails->hiringRequest->agreement->code;
         if (preg_match('/(\w+)-(\d+)\/(\d+)/', $codigoAcuerdo, $matches)) {
             $formatter = new NumeroALetras();
             $parte1 = $matches[1];
@@ -265,7 +266,6 @@ class ContractController extends Controller
             ];
             return ['document' => $phpWord, 'header' => $header, 'name' => 'Contrato Generado Servicios Profesionales.docx'];
         } catch (\PhpOffice\PhpWord\Exception\Exception $e) {
-            //throw $th;
             return back($e->getCode());
         }
     }
@@ -436,26 +436,38 @@ class ContractController extends Controller
         }
     }
 
+    private function generateContractFileName($requestDetail)
+    {
+        $version = $requestDetail->contract_version ? $requestDetail->contract_version + 1 : 1;
+        $fullName = $requestDetail->person->first_name . $requestDetail->person->middle_name . $requestDetail->person->last_name;
+        $formattedName = str_replace(' ', '', $fullName);
+        $reqCode = $requestDetail->hiringRequest->code;
+        return $reqCode . '-' . $formattedName . '-v' . $version . '.docx';
+    }
 
     public function generateContract($requestDetailId)
     {
         $requestDetails = HiringRequestDetail::with([
+            'person',
+            'groups',
             'hiringGroups',
+            'hiringRequest',
+            'hiringRequest.agreement',
             'positionActivity.activities',
             'positionActivity.position',
             'hiringRequest.school',
-            'groups'
         ])->findOrFail($requestDetailId);
-        $hiringRequest = HiringRequest::with('agreement')->findOrFail($requestDetails->hiring_request_id);
-        if ($hiringRequest->agreement->approved != true) {
-            return response([
-                'message' => 'El contrato no se puede generar porque la solicitud fue denegada en Junta Directiva'
-            ], 400);
+
+        if ($requestDetails->hiringRequest->agreement->approved != true) {
+            return response(['message' => 'El contrato no se puede generar porque la solicitud no ha sido aprobada en Junta Directiva'], 400);
         }
-        // If salready saved return server version 
-        $requestDetails->agreementCode =  $hiringRequest->agreement->code;
-        $requestDetails->agreementDate = $hiringRequest->agreement->agreed_on;
-        switch ($hiringRequest->contractType->name) {
+
+        if ($requestDetails->contract_file != null) {
+            $this->RegisterAction('El usuario descargo el contrato con id: ' . $requestDetails->id, 'high');
+            return \Storage::disk('contracts')->download($requestDetails->contract_file);
+        }
+
+        switch ($requestDetails->hiringRequest->contractType->name) {
             case ContractType::TA:
                 $contractComponents = $this->contractGenerateTiempoAdicional($requestDetails);
                 break;
@@ -473,13 +485,43 @@ class ContractController extends Controller
                 break;
         }
 
-        $phpWord = $contractComponents['document'];
+        $fileName = $this->generateContractFileName($requestDetails);
+        $file = $contractComponents['document'];
         $header = $contractComponents['header'];
-        $fileName = $contractComponents['name'];
 
-        $tempFile = tempnam(sys_get_temp_dir(), 'PHPWord');
-        $phpWord->saveAs($tempFile);
-        // Save file
+        $tempFile = tempnam(sys_get_temp_dir(), 'ContractFile');
+        $file->saveAs($tempFile);
+
+        Storage::disk('contracts')->put($fileName, \File::get($tempFile));
+        $requestDetails->update([
+            'contract_file' => $fileName,
+            'contract_version' => 1,
+        ]);
+
+        $this->RegisterAction('El usuario descargo el contrato con id: ' . $requestDetails->id, 'high');
         return response()->download($tempFile, $fileName, $header)->deleteFileAfterSend(true);
+    }
+
+
+    public function updateContract($id, Request $request)
+    {
+        $request->validate(['file' => 'required|mimes:doc,docx']);
+        $requestDetail = HiringRequestDetail::findOrFail($id);
+
+        if ($requestDetail->contract_file == null) {
+            return response(['message' => 'Debe generar la version inicial'], 400);
+        }
+
+        $file = $request->file('file');
+        $fileName = $this->generateContractFileName($requestDetail);
+
+        Storage::disk('contracts')->put($fileName, \File::get($file));
+        $requestDetail->update([
+            'contract_file' => $fileName,
+            'contract_version' => 1,
+        ]);
+
+        $this->RegisterAction('El usuario actualizado el contrato con id: ' . $requestDetail->id, 'critical');
+        return response(['message' => 'El contrato se ha actualizado exitosamente'], 200);
     }
 }

@@ -151,7 +151,6 @@ class HiringRequestDetailController extends Controller
             }
             $scheduleDetails = $person->employee->staySchedules->last()->scheduleDetails;
 
-            // TODO: Validar que los grupos a contratar no choquen con permanencia
             $group->people_id = $validatedDetail['person_id'];
             $group->status = GroupStatus::DASC;
             $group->save();
@@ -231,7 +230,6 @@ class HiringRequestDetailController extends Controller
             }
             $scheduleDetails = $person->employee->staySchedules->last()->scheduleDetails;
 
-            // TODO: Validar que los grupos a contratar no choquen con permanencia
             $group->people_id = $validatedDetail['person_id'];
             $group->status = GroupStatus::DASC;
             $group->save();
@@ -478,7 +476,6 @@ class HiringRequestDetailController extends Controller
             }
             $scheduleDetails = $person->employee->staySchedules->last()->scheduleDetails;
 
-            // TODO: Validar que los grupos a contratar no choquen con permanencia
             $group->people_id = $validatedDetail['person_id'];
             $group->status = GroupStatus::DASC;
             $group->save();
@@ -577,7 +574,6 @@ class HiringRequestDetailController extends Controller
             }
             $scheduleDetails = $person->employee->staySchedules->last()->scheduleDetails;
 
-            // TODO: Validar que los grupos a contratar no choquen con permanencia
             $group->people_id = $validatedDetail['person_id'];
             $group->status = GroupStatus::DASC;
             $group->save();
