@@ -230,7 +230,7 @@ class HiringRequestController extends Controller
             'details.positionActivity.activities',
         ];
 
-        $hiringRequest = HiringRequest::select('*')
+        $hiringRequest = HiringRequest::select('hiring_requests.*')
             ->leftJoin('hiring_request_details', 'hiring_requests.id', '=', 'hiring_request_details.hiring_request_id')
             ->where('hiring_request_details.person_id', '=', $person->id)
             ->with($relations)
@@ -245,7 +245,7 @@ class HiringRequestController extends Controller
         }
 
         $hiringRequest->filteredDetail = $filteredDetail;
-        $hiringRequest->makeHidden(['details', 'message', 'validated', 'comments', 'fileName']);
+        $hiringRequest->makeHidden(['last_status', 'details', 'message', 'validated', 'comments', 'fileName']);
 
         return $hiringRequest;
     }
