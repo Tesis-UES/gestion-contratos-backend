@@ -340,7 +340,8 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
 
     // Rutas para ver mis solicitudes de contratacion
     Route::group(['middleware' => ['can:read_myHiringRequests']], function () {
-        Route::get('/hiringRequest/mine', [HiringRequestController::class, 'getMyHiringRequests']);
+        Route::get('/hiringRequest/mine', [HiringRequestController::class, 'listMyHiringRequests']);
+        Route::get('/hiringRequest/mine/{id}', [HiringRequestController::class, 'getMyHiringRequest']);
     });
 
     //Pendiente por definir los permisos

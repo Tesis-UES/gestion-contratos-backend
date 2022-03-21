@@ -186,7 +186,7 @@ class HiringRequestController extends Controller
         return response(200);
     }
 
-    public function getMyHiringRequests(Request $request)
+    public function listMyHiringRequests(Request $request)
     {
         $user = Auth::user();
 
@@ -208,6 +208,43 @@ class HiringRequestController extends Controller
 
         $this->RegisterAction("El usuario ha consultado las solicitudes de  contratación que lo incluyen", "medium");
         return response($hiringRequests, 200);
+    }
+
+    public function getMyHiringRequest($id)
+    {
+        $user = Auth::user();
+        $person = $user->person;
+
+        $relations = [
+            'status',
+            'contractType',
+            'school',
+            'details',
+            'details.person',
+            'details.hiringGroups',
+            'details.contractStatus',
+            'details.staySchedule',
+            'details.positionActivity',
+        ];
+
+        $hiringRequest = HiringRequest::select('*')
+            ->leftJoin('hiring_request_details', 'hiring_requests.id', '=', 'hiring_request_details.hiring_request_id')
+            ->where('hiring_request_details.person_id', '=', $person->id)
+            ->with($relations)
+            ->findOrFail($id);
+
+        $filteredDetail = null;
+        foreach ($hiringRequest->details as $detail) {
+            if ($detail->person_id == $person->id) {
+                $filteredDetail =  $detail;
+                break;
+            }
+        }
+
+        $hiringRequest->filteredDetail = $filteredDetail;
+        $hiringRequest->makeHidden(['details', 'message', 'validated', 'comments', 'fileName']);
+
+        return $hiringRequest;
     }
 
     public function headerPDF($hiringRequest)
