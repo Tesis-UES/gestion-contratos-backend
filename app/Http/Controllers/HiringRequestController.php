@@ -225,6 +225,8 @@ class HiringRequestController extends Controller
             'details.contractStatus',
             'details.staySchedule',
             'details.positionActivity',
+            'details.positionActivity.position',
+            'details.positionActivity.activities',
         ];
 
         $hiringRequest = HiringRequest::select('*')
