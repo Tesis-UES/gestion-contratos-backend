@@ -245,7 +245,7 @@ class HiringRequestController extends Controller
         }
 
         $hiringRequest->filteredDetail = $filteredDetail;
-        $hiringRequest->makeHidden(['last_status', 'details', 'message', 'validated', 'comments', 'fileName']);
+        $hiringRequest->makeHidden(['details', 'message', 'validated', 'comments', 'fileName']);
 
         return $hiringRequest;
     }
