@@ -204,7 +204,7 @@ class HiringRequestController extends Controller
         }
 
         $hiringRequests = $queryBuilder->paginate($request->query('paginate'));
-        $hiringRequests->makeHidden('status');
+        $hiringRequests->makeHidden(['status', 'message', 'validated', 'comments', 'fileName']);
 
         $this->RegisterAction("El usuario ha consultado las solicitudes de  contratación que lo incluyen", "medium");
         return response($hiringRequests, 200);
@@ -266,13 +266,15 @@ class HiringRequestController extends Controller
         return [['message' => $mensaje], 'success' => true];
     }
 
-    public function getDirectorEmail($id){
+    public function getDirectorEmail($id)
+    {
         $role = Role::where('name', 'Director Escuela')->first();
-        $director = User::join('model_has_roles', 'model_has_roles.model_id', '=', 'users.id')->select('users.email')->where('model_has_roles.role_id', '=', $role->id)->where('users.school_id',"=",$id)->get()->toArray();
+        $director = User::join('model_has_roles', 'model_has_roles.model_id', '=', 'users.id')->select('users.email')->where('model_has_roles.role_id', '=', $role->id)->where('users.school_id', "=", $id)->get()->toArray();
         return $director;
     }
 
-    public function getAsistenteEmail(){
+    public function getAsistenteEmail()
+    {
         $role = Role::where('name', 'Asistente Administrativo')->first();
         $asistente = User::join('model_has_roles', 'model_has_roles.model_id', '=', 'users.id')->select('users.email')->where('model_has_roles.role_id', '=', $role->id)->get()->toArray();
         return $asistente;
@@ -295,8 +297,8 @@ class HiringRequestController extends Controller
             $this->registerAction('El usuario reviso la solicitud y publicó observaciones de cambios a hacer', 'high');
             $mensajeEmail = "Se ha revisado la solicitud de contratación con código <b>" . $hiringRequest->code . "</b> por parte de Recursos Humanos, la solicitud de contrato ha sido observada para poder ser modificada según las observaciones pertinentes. ";
         }
-       
-       
+
+
 
         foreach ($emails as $email) {
             try {
@@ -698,23 +700,25 @@ class HiringRequestController extends Controller
         return;
     }
 
-    public function getCandidatesEmail($id){
+    public function getCandidatesEmail($id)
+    {
         $hiringRequest = HiringRequest::findOrFail($id);
         $candidates = [];
         foreach ($hiringRequest->details as $detail) {
-         
-                array_push($candidates, $detail->person->user->email);
+
+            array_push($candidates, $detail->person->user->email);
         }
         return $candidates;
     }
 
-    public function sendAgrementMail(HiringRequest $hiringRequest){
+    public function sendAgrementMail(HiringRequest $hiringRequest)
+    {
         $emailDirector = $this->getDirectorEmail($hiringRequest->school_id);
         $emailCadidates = $this->getCandidatesEmail($hiringRequest->id);
         $emailHR = $this->getHRmail();
         //Notificando al director
         foreach ($emailDirector as $email) {
-            $mensajeEmail = "Se ha aprobado y agregado el acuerdo de Junta Directiva para la solicitud con código: " . $hiringRequest->code ." Ya puede ver el acuerdo de Junta Directiva en los detalles de la solicitud de contratación"; ;
+            $mensajeEmail = "Se ha aprobado y agregado el acuerdo de Junta Directiva para la solicitud con código: " . $hiringRequest->code . " Ya puede ver el acuerdo de Junta Directiva en los detalles de la solicitud de contratación";;
             try {
                 Mail::to($email)->send(new ValidationDocsNotification($mensajeEmail, 'AgreementUpdate'));
                 $mensaje = 'Se envio el correo con exito';
@@ -724,7 +728,7 @@ class HiringRequestController extends Controller
         }
         //Notificando a los candidatos
         foreach ($emailCadidates as $email) {
-            $mensajeEmail = "Se ha aprobado y agregado el acuerdo de Junta Directiva para la solicitud con Codigo: " . $hiringRequest->code ." Ya puede ver el detalle de su contración y ver los paso siguientes a la generación de su contrato."; ;
+            $mensajeEmail = "Se ha aprobado y agregado el acuerdo de Junta Directiva para la solicitud con Codigo: " . $hiringRequest->code . " Ya puede ver el detalle de su contración y ver los paso siguientes a la generación de su contrato.";;
             try {
                 Mail::to($email)->send(new ValidationDocsNotification($mensajeEmail, 'AgreementUpdate'));
                 $mensaje = 'Se envio el correo con exito';
@@ -734,7 +738,7 @@ class HiringRequestController extends Controller
         }
         //Notificando a HR para generar contrato
         foreach ($emailHR as $email) {
-            $mensajeEmail = "Se ha Aprobado y Agregado el acuerdo de junta directiva para la solicitud de contratacion con Codigo: " . $hiringRequest->code ." Ya puede ver el detalle del acuerdo de Junta directiva y se ha habilitado la generación de los contratos para los candidatos involucrados en la solicitud de contratación";
+            $mensajeEmail = "Se ha Aprobado y Agregado el acuerdo de junta directiva para la solicitud de contratacion con Codigo: " . $hiringRequest->code . " Ya puede ver el detalle del acuerdo de Junta directiva y se ha habilitado la generación de los contratos para los candidatos involucrados en la solicitud de contratación";
             try {
                 Mail::to($email)->send(new ValidationDocsNotification($mensajeEmail, 'AgreementUpdate'));
                 $mensaje = 'Se envio el correo con exito';
@@ -742,7 +746,6 @@ class HiringRequestController extends Controller
                 $mensaje = 'No se envio el correo';
             }
         }
-
     }
 
     public function getAgreements($id)
