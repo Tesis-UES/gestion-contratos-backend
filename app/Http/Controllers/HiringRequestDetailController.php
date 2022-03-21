@@ -23,10 +23,28 @@ use Illuminate\Support\Facades\Auth;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\File;
 use Illuminate\Support\Facades\Storage;
+use App\Mail\ValidationDocsNotification;
+use Mail;
 
 class HiringRequestDetailController extends Controller
 {
     use WorklogTrait;
+
+    public function newCandidateNotification(HiringRequest $hiringRequest,$email,$type){
+      //Envio de correo de notificación que fue agregado un docente a la solicitud de contratación
+        if ($hiringRequest->school->id == 9) {
+            $escuela =  $hiringRequest->school->name;
+        } else {
+            $escuela = "Escuela de " . $hiringRequest->school->name;
+        }
+        $mensajeEmail = "Ha sido agregado a la solicitud de contratación codigo <b>".$hiringRequest->code."</b> por <b> ".$type."</b> en la <b>".$hiringRequest->modality." </b>de parte de la <b>".$escuela."</b> para ver más detalles de la solicitud y el estado de esta misma puede acceder al sistema con sus credenciales";
+        try {
+            Mail::to($email)->send(new ValidationDocsNotification($mensajeEmail, 'notificacionSolicitud'));
+            $mensaje = 'Se envio el correo con exito';
+        } catch (\Swift_TransportException $e) {
+            $mensaje = 'No se envio el correo';
+        }
+    }
 
     public function addSPNPRequestDetails($id, UpdateSPNPRequestDetails $request)
     {
@@ -101,6 +119,7 @@ class HiringRequestDetailController extends Controller
 
         $this->RegisterAction("El usuario ha agregado a un docente a la solicitud de contratación con id: " . $id, "high");
         DB::commit();
+        $this->newCandidateNotification($hiringRequest,$person->user->email,ContractType::SPNP);
         return response($savedDetail);
     }
 
@@ -180,6 +199,8 @@ class HiringRequestDetailController extends Controller
 
         $this->RegisterAction("El usuario ha agregado a un docente a la solicitud de contratación con id: " . $id, "high");
         DB::commit();
+        //Envio de correo de notificación que fue agregado un docente a la solicitud de contratación
+        $this->newCandidateNotification($hiringRequest,$person->user->email,ContractType::TI);
         return response($savedDetail);
     }
 
@@ -259,6 +280,8 @@ class HiringRequestDetailController extends Controller
 
         $this->RegisterAction("El usuario ha agregado a un docente a la solicitud de contratación con id: " . $id, "high");
         DB::commit();
+        //Envio de correo de notificación que fue agregado un docente a la solicitud de contratación
+        $this->newCandidateNotification($hiringRequest,$person->user->email,ContractType::TA);
         return response($savedDetail);
     }
 

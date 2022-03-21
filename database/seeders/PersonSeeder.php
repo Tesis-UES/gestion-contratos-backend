@@ -5,12 +5,15 @@ namespace Database\Seeders;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 use App\Models\{User, Person, PersonValidation, Employee, EmployeeType, StaySchedule, Semester, Activity};
+use App\Http\Controllers\PersonController;
 
 class PersonSeeder extends Seeder
 {
 
     public function run()
     {
+        $task = new PersonController;
+      
         // Obtenemos employeeTypes,semesters,users
         Semester::Create(['name' => 'Ciclo 2-2021', 'start_date' => '2021-07-13', 'end_date' => '2021-12-12', 'status' => true]);
         $employeeTypes = EmployeeType::all();
@@ -175,10 +178,16 @@ class PersonSeeder extends Seeder
             'nit_number'    => '0804-890597-207-8',
             'nit_text'      => 'CERO OCHOCIENTOS CUATRO - OCHOCIENTOS NOVENTA MIL QUINIENTOS NOVENTA Y SIETE - DOSCIENTOS SIETE-OCHO ',
             'bank_id'       => 2,
-            'bank_account_number'   => '0125415656'
+            'bank_account_number'   => '0125415656',
+            'curriculum' => 'guillermocornejoCV.pdf',
+            'nit' => 'NIT.pdf',
+            'dui' => 'DUI.pdf',	
+            'bank_account' => 'BANCO.pdf',
+            'professional_title_scan' => 'TITULO.pdf',
         ]);
         $personValidation = new PersonValidation(['person_id' => $datosNacional->id]);
         $personValidation->save();
+        $r = $task->mergePersonalDoc($datosNacional->id);
 
         /*********************************************************************************************/
         //Ingresando Datos Nacionalizado//
@@ -212,9 +221,17 @@ class PersonSeeder extends Seeder
             'resident_expiration_date' => '2022-01-29',
             'other_title'   => true,
             'other_title_name' => 'ingeniero en petroleo',
+            'curriculum' => 'joseperezCV.pdf',
+            'nit' => 'NIT.pdf',
+            'other_title_doc' => 'OTRO-T.pdf',
+            'bank_account' => 'BANCO.pdf',
+            'professional_title_scan' => 'TITULO.pdf',
+            'resident_card' => 'CARNET.pdf',
         ]);
         $personValidation = new PersonValidation(['person_id' => $datosNacionalizado->id]);
         $personValidation->save();
+        $r = $task->mergePersonalDoc($datosNacionalizado->id);
+
 
         //Ingresando datos de candidato Nacional - Trabajador UES - FIA
         $datosNacionalUesFia =  Person::create([
@@ -244,10 +261,16 @@ class PersonSeeder extends Seeder
             'nit_text'      => 'CERO OCHOCIENTOS CUATRO - OCHOCIENTOS NOVENTA MIL QUINIENTOS NOVENTA Y SIETE - DOSCIENTOS SIETE - OCHO ',
             'bank_id'       => 3,
             'bank_account_number'   => '0125415656',
-            'is_employee' => true
+            'is_employee' => true,
+            'curriculum' => 'joseramirezCV.pdf',
+            'nit' => 'NIT.pdf',
+            'dui' => 'DUI.pdf',	
+            'bank_account' => 'BANCO.pdf',
+            'professional_title_scan' => 'TITULO.pdf',
         ]);
         $personValidation = new PersonValidation(['person_id' => $datosNacionalUesFia->id]);
         $personValidation->save();
+
         //Ingresando datos de empleado 
         $employeeNacionalUesFia = Employee::create([
             'journey_type'      => 'tiempo-completo',
@@ -265,6 +288,7 @@ class PersonSeeder extends Seeder
 
         $newStaySchedule->scheduleDetails()->createMany($details);
         $newStaySchedule->scheduleActivities()->sync($activityIds);
+        $r = $task->mergePersonalDoc($datosNacionalUesFia->id);
 
         //Ingresando datos de candidato Nacional - Trabajador UES - Otra Facultad
         $datosNacionalEOtra = Person::create([
@@ -294,11 +318,18 @@ class PersonSeeder extends Seeder
             'nit_text'      => 'CERO OCHOCIENTOS CUATRO - OCHOCIENTOS NOVENTA MIL QUINIENTOS NOVENTA Y SIETE- DOSCIENTOS SIETE - OCHO ',
             'bank_id'       => 4,
             'bank_account_number'   => '0125415656',
-            'is_employee' => true
+            'is_employee' => true,
+            'curriculum' => 'joselopezCV.pdf',
+            'nit' => 'NIT.pdf',
+            'dui' => 'DUI.pdf',	
+            'bank_account' => 'BANCO.pdf',
+            'professional_title_scan' => 'TITULO.pdf',
+            'work_permission' => 'PERMISO.pdf',
         ]);
 
         $personValidation = new PersonValidation(['person_id' => $datosNacionalEOtra->id]);
         $personValidation->save();
+
 
         $employeeNacionalEOtra = Employee::create([
             'journey_type'      => 'tiempo-completo',
@@ -316,6 +347,8 @@ class PersonSeeder extends Seeder
 
         $newStaySchedule->scheduleDetails()->createMany($details);
         $newStaySchedule->scheduleActivities()->sync($activityIds);
+        $r = $task->mergePersonalDoc($datosNacionalEOtra->id);
+
         //Ingresando Datos de Candidato Extranjero
         $DatosInternacional =  Person::create([
             'user_id'       => $Internacional->id,
@@ -336,9 +369,15 @@ class PersonSeeder extends Seeder
             'professional_title'   => 'Ingeniero en Sistemas Informaticos',
             'bank_id'       => 5,
             'bank_account_number'   => '0125415656',
+            'curriculum' => 'jhoanjhonsonCV.pdf',
+            'passport' => 'PASAPORTE.pdf',
+            'bank_account' => 'BANCO.pdf',
+            'professional_title_scan' => 'TITULO.pdf',
+            
         ]);
         $personValidation = new PersonValidation(['person_id' => $DatosInternacional->id]);
         $personValidation->save();
+        $r = $task->mergePersonalDoc($DatosInternacional->id);
 
         $DatosInternacionalE =  Person::create([
             'user_id'       => $InternacionalE->id,
@@ -359,10 +398,15 @@ class PersonSeeder extends Seeder
             'professional_title'   => 'Ingeniero en Sistemas Informaticos',
             'bank_id'       => 6,
             'bank_account_number'   => '0125415656',
-            'is_employee' => true
+            'is_employee' => true,
+            'curriculum' => 'vladimirbobrovCV.pdf',
+            'passport' => 'PASAPORTE.pdf',
+            'bank_account' => 'BANCO.pdf',
+            'professional_title_scan' => 'TITULO.pdf',
         ]);
         $personValidation = new PersonValidation(['person_id' => $DatosInternacionalE->id]);
         $personValidation->save();
+
 
         $employeeInternacionalE = Employee::create([
             'journey_type'      => 'tiempo-completo',
@@ -380,6 +424,8 @@ class PersonSeeder extends Seeder
 
         $newStaySchedule->scheduleDetails()->createMany($details);
         $newStaySchedule->scheduleActivities()->sync($activityIds);
+        $r = $task->mergePersonalDoc($DatosInternacionalE->id);
+
 
         $DatosInternacionalEO =  Person::create([
             'user_id'       => $InternacionalEOtra->id,
@@ -400,7 +446,12 @@ class PersonSeeder extends Seeder
             'professional_title'   => 'Ingeniero en Sistemas Informaticos',
             'bank_id'       => 7,
             'bank_account_number'   => '0125415656',
-            'is_employee' => true
+            'is_employee' => true,
+            'curriculum' => 'michaeljordanCV.pdf',
+            'passport' => 'PASAPORTE.pdf',
+            'bank_account' => 'BANCO.pdf',
+            'professional_title_scan' => 'TITULO.pdf',
+            'work_permission' => 'PERMISO.pdf'
         ]);
         $personValidation = new PersonValidation(['person_id' => $DatosInternacionalEO->id]);
         $personValidation->save();
@@ -421,5 +472,7 @@ class PersonSeeder extends Seeder
 
         $newStaySchedule->scheduleDetails()->createMany($details);
         $newStaySchedule->scheduleActivities()->sync($activityIds);
+        $r = $task->mergePersonalDoc($DatosInternacionalEO->id);
+
     }
 }

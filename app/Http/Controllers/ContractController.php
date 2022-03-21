@@ -214,11 +214,10 @@ class ContractController extends Controller
 
     public function contractGenerateServiciosProfesionales($requestDetails)
     {
-        $formatN =  Format::where('type', 'Contrato por Servicios Profesionales no Personales')->where('type_contract', 'Nacional')->where('is_active', 1)->first();
-        $formatI =  Format::where('type', 'Contrato por Servicios Profesionales no Personales')->where('type_contract', 'Internacional')->where('is_active', 1)->first();
-        $docTemplatePath = ['N' => $formatN->file_url, 'E' => $formatI->file_url];
+      
         $formatter = new NumeroALetras();
         $personalData = $this->getPrincipalData($requestDetails->person_id);
+        $format =  Format::where('type', 'Contrato por Servicios Profesionales no Personales')->where('type_contract', $personalData['tipo'] == 'E'?'Internacional':'Nacional')->where('is_active', 1)->first();
         $escuela = $this->getSchoolNameFromRequest($requestDetails);
         $acuerdo = $this->agreementContract($requestDetails);
         $actividades = $this->getRequestActivities($requestDetails);
@@ -245,7 +244,7 @@ class ContractController extends Controller
         }
         $horarios = $this->getHiringGroupsScheduleString($requestDetails);
         try {
-            $phpWord = new \PhpOffice\PhpWord\TemplateProcessor(\Storage::disk('formats')->path($docTemplatePath[$personalData['tipo']]));
+            $phpWord = new \PhpOffice\PhpWord\TemplateProcessor(\Storage::disk('formats')->path($format->file_url));
             $specific = [
                 'escuelaContratante' => mb_strtoupper($escuela, 'UTF-8'),
                 'cargoCandidato' => $actividades['cargo'],
@@ -272,10 +271,9 @@ class ContractController extends Controller
 
     public function contractGenerateTiempoIntegral($requestDetails)
     {
-        $docTemplatePath = ['N' => '/TI-N.docx', 'E' => '/TI-I.docx'];
-
         //Obtenermos los datos generales del contrato y la informacion personal del candidato
         $personalData = $this->getPrincipalData($requestDetails->person_id);
+        $format =  Format::where('type', 'Contrato de Tiempo Integral')->where('type_contract', $personalData['tipo'] == 'E'?'Internacional':'Nacional')->where('is_active', 1)->first();
         $acuerdo = $this->agreementContract($requestDetails);
         //Obtenemos la partida,cargo,salario y total a pagar 
         $formatter = new NumeroALetras();
@@ -332,7 +330,7 @@ class ContractController extends Controller
         $peridoContracion = $this->getContractPeriodString($formatter, $requestDetails);
 
         try {
-            $phpWord = new \PhpOffice\PhpWord\TemplateProcessor(\Storage::disk('formats')->path($docTemplatePath[$personalData['tipo']]));
+            $phpWord = new \PhpOffice\PhpWord\TemplateProcessor(\Storage::disk('formats')->path($format->file_url));
 
             $specific = [
                 'partida' => mb_strtoupper($partida, 'UTF-8'),
@@ -368,9 +366,10 @@ class ContractController extends Controller
 
     public function contractGenerateTiempoAdicional($requestDetails)
     {
-        $docTemplatePath = ['N' => '/TA-N.docx', 'E' => '/TA-I.docx'];
+        
         //Obtenermos los datos generales del contrato y la informacion personal del candidato
         $personalData = $this->getPrincipalData($requestDetails->person_id);
+        $format =  Format::where('type', 'Contrato de Tiempo Adicional')->where('type_contract', $personalData['tipo'] == 'E'?'Internacional':'Nacional')->where('is_active', 1)->first();
         $acuerdo = $this->agreementContract($requestDetails);
         $formatter = new NumeroALetras();
         $escalafon = $requestDetails->person->employee->escalafon->name;
@@ -401,9 +400,9 @@ class ContractController extends Controller
         $actividades = $this->getRequestActivities($requestDetails);
         $formatter = new NumeroALetras();
         $peridoContracion = $this->getContractPeriodString($formatter, $requestDetails);
-        $docTemplatePath[$personalData['tipo']];
+       
         try {
-            $phpWord = new \PhpOffice\PhpWord\TemplateProcessor(\Storage::disk('formats')->path($docTemplatePath[$personalData['tipo']]));
+            $phpWord = new \PhpOffice\PhpWord\TemplateProcessor(\Storage::disk('formats')->path($format->file_url));
 
             $specific = [
 
