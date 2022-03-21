@@ -45,7 +45,8 @@ class HiringRequest extends Model
 
     public function details()
     {
-        return $this->hasMany(HiringRequestDetail::class);
+        return $this->hasMany(HiringRequestDetail::class)
+            ->orderBy('created_at', 'asc');
     }
 
     public function agreement()
