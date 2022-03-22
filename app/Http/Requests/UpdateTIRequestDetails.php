@@ -38,7 +38,7 @@ class UpdateTIRequestDetails extends FormRequest
       'position_activities'                  => 'required|array|min:1',
       'position_activities.*.position_id'    => 'required|integer|gte:1',
       'position_activities.*.activities'     => 'required|array|min:2',
-      'position_activities.*.activities.*'   => 'required|string|distinct',
+      'position_activities.*.activities.*'   => 'required|string',
     ];
   }
 }

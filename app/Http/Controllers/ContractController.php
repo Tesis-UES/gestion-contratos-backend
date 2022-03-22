@@ -214,10 +214,9 @@ class ContractController extends Controller
 
     public function contractGenerateServiciosProfesionales($requestDetails)
     {
-      
         $formatter = new NumeroALetras();
         $personalData = $this->getPrincipalData($requestDetails->person_id);
-        $format =  Format::where('type', 'Contrato por Servicios Profesionales no Personales')->where('type_contract', $personalData['tipo'] == 'E'?'Internacional':'Nacional')->where('is_active', 1)->first();
+        $format =  Format::where('type', 'Contrato por Servicios Profesionales no Personales')->where('type_contract', $personalData['tipo'] == 'E' ? 'Internacional' : 'Nacional')->where('is_active', 1)->first();
         $escuela = $this->getSchoolNameFromRequest($requestDetails);
         $acuerdo = $this->agreementContract($requestDetails);
         $actividades = $this->getRequestActivities($requestDetails);
@@ -273,7 +272,7 @@ class ContractController extends Controller
     {
         //Obtenermos los datos generales del contrato y la informacion personal del candidato
         $personalData = $this->getPrincipalData($requestDetails->person_id);
-        $format =  Format::where('type', 'Contrato de Tiempo Integral')->where('type_contract', $personalData['tipo'] == 'E'?'Internacional':'Nacional')->where('is_active', 1)->first();
+        $format =  Format::where('type', 'Contrato de Tiempo Integral')->where('type_contract', $personalData['tipo'] == 'E' ? 'Internacional' : 'Nacional')->where('is_active', 1)->first();
         $acuerdo = $this->agreementContract($requestDetails);
         //Obtenemos la partida,cargo,salario y total a pagar 
         $formatter = new NumeroALetras();
@@ -366,10 +365,10 @@ class ContractController extends Controller
 
     public function contractGenerateTiempoAdicional($requestDetails)
     {
-        
+
         //Obtenermos los datos generales del contrato y la informacion personal del candidato
         $personalData = $this->getPrincipalData($requestDetails->person_id);
-        $format =  Format::where('type', 'Contrato de Tiempo Adicional')->where('type_contract', $personalData['tipo'] == 'E'?'Internacional':'Nacional')->where('is_active', 1)->first();
+        $format =  Format::where('type', 'Contrato de Tiempo Adicional')->where('type_contract', $personalData['tipo'] == 'E' ? 'Internacional' : 'Nacional')->where('is_active', 1)->first();
         $acuerdo = $this->agreementContract($requestDetails);
         $formatter = new NumeroALetras();
         $escalafon = $requestDetails->person->employee->escalafon->name;
@@ -400,7 +399,7 @@ class ContractController extends Controller
         $actividades = $this->getRequestActivities($requestDetails);
         $formatter = new NumeroALetras();
         $peridoContracion = $this->getContractPeriodString($formatter, $requestDetails);
-       
+
         try {
             $phpWord = new \PhpOffice\PhpWord\TemplateProcessor(\Storage::disk('formats')->path($format->file_url));
 
@@ -494,7 +493,7 @@ class ContractController extends Controller
         $tempFile = tempnam(sys_get_temp_dir(), 'ContractFile');
         $file->saveAs($tempFile);
 
-        Storage::disk('contracts')->put($fileName['name'], \File::get($file));
+        Storage::disk('contracts')->put($fileName['name'], \File::get($tempFile));
         $requestDetails->update([
             'contract_file' => $fileName['name'],
             'contract_version' => $fileName['version'],
@@ -507,7 +506,7 @@ class ContractController extends Controller
 
     public function updateContract($id, Request $request)
     {
-        $request->validate(['file' => 'required|mimes:doc,docx']);
+        $request->validate(['file' => 'required|mimes:pdf,doc,docx']);
         $requestDetail = HiringRequestDetail::findOrFail($id);
 
         $file = $request->file('file');
