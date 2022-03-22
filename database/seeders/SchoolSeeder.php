@@ -4,7 +4,8 @@ namespace Database\Seeders;
 
 use Illuminate\Database\Seeder;
 use App\Models\School;
-use App\Models\{SchoolAuthority,CentralAuthority};
+use App\Models\{SchoolAuthority, CentralAuthority};
+
 class SchoolSeeder extends Seeder
 {
     /**
@@ -15,37 +16,37 @@ class SchoolSeeder extends Seeder
     public function run()
     {
         /*INGENIERIA */
-        School::create(['faculty_id'=>'1', 'name' =>'Arquitectura']);
-        SchoolAuthority::create(['name'=>'PRUEBA  DIRECTOR','position'=>'DIRECTOR','startPeriod'=>'2021-02-02','endPeriod'=>'2021-12-02','school_id'=>1]);
-        SchoolAuthority::create(['name'=>'PRUEBA  SECRETARIO','position'=>'SECRETARIO','startPeriod'=>'2021-02-02','endPeriod'=>'2021-12-02','school_id'=>1]);
-        School::create(['faculty_id'=>'1', 'name' =>'Ingeniería Civil']);
-        SchoolAuthority::create(['name'=>'PRUEBA  DIRECTOR','position'=>'DIRECTOR','startPeriod'=>'2021-02-02','endPeriod'=>'2021-12-02','school_id'=>2]);
-        SchoolAuthority::create(['name'=>'PRUEBA  SECRETARIO','position'=>'SECRETARIO','startPeriod'=>'2021-02-02','endPeriod'=>'2021-12-02','school_id'=>2]);
-        School::create(['faculty_id'=>'1', 'name' =>'Ingeniería Industrial']);
-        SchoolAuthority::create(['name'=>'PRUEBA  DIRECTOR','position'=>'DIRECTOR','startPeriod'=>'2021-02-02','endPeriod'=>'2021-12-02','school_id'=>3]);
-        SchoolAuthority::create(['name'=>'PRUEBA  SECRETARIO','position'=>'SECRETARIO','startPeriod'=>'2021-02-02','endPeriod'=>'2021-12-02','school_id'=>3]);
-        School::create(['faculty_id'=>'1', 'name' =>'Ingeniería Mecánica']);
-        SchoolAuthority::create(['name'=>'PRUEBA  DIRECTOR','position'=>'DIRECTOR','startPeriod'=>'2021-02-02','endPeriod'=>'2021-12-02','school_id'=>4]);
-        SchoolAuthority::create(['name'=>'PRUEBA  SECRETARIO','position'=>'SECRETARIO','startPeriod'=>'2021-02-02','endPeriod'=>'2021-12-02','school_id'=>4]);
-        School::create(['faculty_id'=>'1', 'name' =>'Ingeniería Eléctrica']);
-        SchoolAuthority::create(['name'=>'PRUEBA  DIRECTOR','position'=>'DIRECTOR','startPeriod'=>'2021-02-02','endPeriod'=>'2021-12-02','school_id'=>5]);
-        SchoolAuthority::create(['name'=>'PRUEBA  SECRETARIO','position'=>'SECRETARIO','startPeriod'=>'2021-02-02','endPeriod'=>'2021-12-02','school_id'=>5]);
-        School::create(['faculty_id'=>'1', 'name' =>'Ingeniería Química']);
-        SchoolAuthority::create(['name'=>'PRUEBA  DIRECTOR','position'=>'DIRECTOR','startPeriod'=>'2021-02-02','endPeriod'=>'2021-12-02','school_id'=>6]);
-        SchoolAuthority::create(['name'=>'PRUEBA  SECRETARIO','position'=>'SECRETARIO','startPeriod'=>'2021-02-02','endPeriod'=>'2021-12-02','school_id'=>6]);
-        School::create(['faculty_id'=>'1', 'name' =>'Ingeniería de Alimentos']);
-        SchoolAuthority::create(['name'=>'PRUEBA  DIRECTOR','position'=>'DIRECTOR','startPeriod'=>'2021-02-02','endPeriod'=>'2021-12-02','school_id'=>7]);
-        SchoolAuthority::create(['name'=>'PRUEBA  SECRETARIO','position'=>'SECRETARIO','startPeriod'=>'2021-02-02','endPeriod'=>'2021-12-02','school_id'=>7]);
-        School::create(['faculty_id'=>'1', 'name' =>'Ingeniería en Sistemas Informáticos']);
-        SchoolAuthority::create(['name'=>'Ing. Rudy Wilfredo Chicas','position'=>'DIRECTOR','startPeriod'=>'2021-02-02','endPeriod'=>'2021-12-02','school_id'=>8]);
-        SchoolAuthority::create(['name'=>'PRUEBA  SECRETARIO','position'=>'SECRETARIO','startPeriod'=>'2021-02-02','endPeriod'=>'2021-12-02','school_id'=>8]);
-        School::create(['faculty_id'=>'1', 'name' =>'Unidad de Ciencias Basicas']);
-        SchoolAuthority::create(['name'=>'PRUEBA  DIRECTOR','position'=>'DIRECTOR','startPeriod'=>'2021-02-02','endPeriod'=>'2021-12-02','school_id'=>9]);
-        SchoolAuthority::create(['name'=>'PRUEBA  SECRETARIO','position'=>'SECRETARIO','startPeriod'=>'2021-02-02','endPeriod'=>'2021-12-02','school_id'=>9]);
-        School::create(['faculty_id'=>'1', 'name' =>'Maestría en Gestión de Recursos Hidrológicos']);
-        SchoolAuthority::create(['name'=>'PRUEBA  DIRECTOR','position'=>'DIRECTOR','startPeriod'=>'2021-02-02','endPeriod'=>'2021-12-02','school_id'=>10]);
-        SchoolAuthority::create(['name'=>'PRUEBA  SECRETARIO','position'=>'SECRETARIO','startPeriod'=>'2021-02-02','endPeriod'=>'2021-12-02','school_id'=>10]);
-        
+        School::create(['faculty_id' => '1', 'name' => 'Arquitectura']);
+        SchoolAuthority::create(['name' => 'PRUEBA  DIRECTOR', 'position' => 'DIRECTOR', 'startPeriod' => '2021-02-02', 'endPeriod' => '2021-12-02', 'school_id' => 1]);
+        // SchoolAuthority::create(['name'=>'PRUEBA  SECRETARIO','position'=>'SECRETARIO','startPeriod'=>'2021-02-02','endPeriod'=>'2021-12-02','school_id'=>1]);
+        School::create(['faculty_id' => '1', 'name' => 'Ingeniería Civil']);
+        SchoolAuthority::create(['name' => 'PRUEBA  DIRECTOR', 'position' => 'DIRECTOR', 'startPeriod' => '2021-02-02', 'endPeriod' => '2021-12-02', 'school_id' => 2]);
+        // SchoolAuthority::create(['name'=>'PRUEBA  SECRETARIO','position'=>'SECRETARIO','startPeriod'=>'2021-02-02','endPeriod'=>'2021-12-02','school_id'=>2]);
+        School::create(['faculty_id' => '1', 'name' => 'Ingeniería Industrial']);
+        SchoolAuthority::create(['name' => 'PRUEBA  DIRECTOR', 'position' => 'DIRECTOR', 'startPeriod' => '2021-02-02', 'endPeriod' => '2021-12-02', 'school_id' => 3]);
+        // SchoolAuthority::create(['name'=>'PRUEBA  SECRETARIO','position'=>'SECRETARIO','startPeriod'=>'2021-02-02','endPeriod'=>'2021-12-02','school_id'=>3]);
+        School::create(['faculty_id' => '1', 'name' => 'Ingeniería Mecánica']);
+        SchoolAuthority::create(['name' => 'PRUEBA  DIRECTOR', 'position' => 'DIRECTOR', 'startPeriod' => '2021-02-02', 'endPeriod' => '2021-12-02', 'school_id' => 4]);
+        // SchoolAuthority::create(['name'=>'PRUEBA  SECRETARIO','position'=>'SECRETARIO','startPeriod'=>'2021-02-02','endPeriod'=>'2021-12-02','school_id'=>4]);
+        School::create(['faculty_id' => '1', 'name' => 'Ingeniería Eléctrica']);
+        SchoolAuthority::create(['name' => 'PRUEBA  DIRECTOR', 'position' => 'DIRECTOR', 'startPeriod' => '2021-02-02', 'endPeriod' => '2021-12-02', 'school_id' => 5]);
+        // SchoolAuthority::create(['name'=>'PRUEBA  SECRETARIO','position'=>'SECRETARIO','startPeriod'=>'2021-02-02','endPeriod'=>'2021-12-02','school_id'=>5]);
+        School::create(['faculty_id' => '1', 'name' => 'Ingeniería Química']);
+        SchoolAuthority::create(['name' => 'PRUEBA  DIRECTOR', 'position' => 'DIRECTOR', 'startPeriod' => '2021-02-02', 'endPeriod' => '2021-12-02', 'school_id' => 6]);
+        // SchoolAuthority::create(['name'=>'PRUEBA  SECRETARIO','position'=>'SECRETARIO','startPeriod'=>'2021-02-02','endPeriod'=>'2021-12-02','school_id'=>6]);
+        School::create(['faculty_id' => '1', 'name' => 'Ingeniería de Alimentos']);
+        SchoolAuthority::create(['name' => 'PRUEBA  DIRECTOR', 'position' => 'DIRECTOR', 'startPeriod' => '2021-02-02', 'endPeriod' => '2021-12-02', 'school_id' => 7]);
+        // SchoolAuthority::create(['name'=>'PRUEBA  SECRETARIO','position'=>'SECRETARIO','startPeriod'=>'2021-02-02','endPeriod'=>'2021-12-02','school_id'=>7]);
+        School::create(['faculty_id' => '1', 'name' => 'Ingeniería en Sistemas Informáticos']);
+        SchoolAuthority::create(['name' => 'Ing. Rudy Wilfredo Chicas', 'position' => 'DIRECTOR', 'startPeriod' => '2021-02-02', 'endPeriod' => '2021-12-02', 'school_id' => 8]);
+        // SchoolAuthority::create(['name'=>'PRUEBA  SECRETARIO','position'=>'SECRETARIO','startPeriod'=>'2021-02-02','endPeriod'=>'2021-12-02','school_id'=>8]);
+        School::create(['faculty_id' => '1', 'name' => 'Unidad de Ciencias Basicas']);
+        SchoolAuthority::create(['name' => 'PRUEBA  DIRECTOR', 'position' => 'DIRECTOR', 'startPeriod' => '2021-02-02', 'endPeriod' => '2021-12-02', 'school_id' => 9]);
+        // SchoolAuthority::create(['name'=>'PRUEBA  SECRETARIO','position'=>'SECRETARIO','startPeriod'=>'2021-02-02','endPeriod'=>'2021-12-02','school_id'=>9]);
+        School::create(['faculty_id' => '1', 'name' => 'Maestría en Gestión de Recursos Hidrológicos']);
+        SchoolAuthority::create(['name' => 'PRUEBA  DIRECTOR', 'position' => 'DIRECTOR', 'startPeriod' => '2021-02-02', 'endPeriod' => '2021-12-02', 'school_id' => 10]);
+        // SchoolAuthority::create(['name'=>'PRUEBA  SECRETARIO','position'=>'SECRETARIO','startPeriod'=>'2021-02-02','endPeriod'=>'2021-12-02','school_id'=>10]);
+
         /*AGRONOMIA
         School::create(['faculty_id'=>'2', 'name' =>'Ingeniería Agronómica']);
         SchoolAuthority::create(['name'=>'PRUEBA  DIRECTOR','position'=>'DIRECTOR','startPeriod'=>'2021-02-02','endPeriod'=>'2021-12-02','school_id'=>11]);
@@ -383,19 +384,19 @@ SchoolAuthority::create(['name'=>'PRUEBA  DIRECTOR','position'=>'DIRECTOR','star
 */
 
         CentralAuthority::create([
-            'position'      =>'Rector',
-            'firstName'     =>'ROGER',
-            'middleName'    =>'ARMANDO',
-            'lastName'      =>'ARIAS ALVARADO',
-            'dui'           =>'01645197-6',
-            'nit'           =>'0403-200868-101-7',
-            'start_period'  =>'2021-02-02',
-            'end_period'    =>'2021-12-02',
-            'text_dui'      =>'cero un millon seiscientos cuarenta y cinco mil ciento noventa y siete guion seis',
-            'text_nit'      =>'cero cuatrocientos tres - doscientos mil ochocientos sesenta y ocho - ciento uno-siete',
-            'birth_date'    =>'1968-08-20',
-            'profession'    =>'Economista',
-            'reading_signature'=>'R. Arias'
+            'position'      => 'Rector',
+            'firstName'     => 'ROGER',
+            'middleName'    => 'ARMANDO',
+            'lastName'      => 'ARIAS ALVARADO',
+            'dui'           => '01645197-6',
+            'nit'           => '0403-200868-101-7',
+            'start_period'  => '2021-02-02',
+            'end_period'    => '2021-12-02',
+            'text_dui'      => 'cero un millon seiscientos cuarenta y cinco mil ciento noventa y siete guion seis',
+            'text_nit'      => 'cero cuatrocientos tres - doscientos mil ochocientos sesenta y ocho - ciento uno-siete',
+            'birth_date'    => '1968-08-20',
+            'profession'    => 'Economista',
+            'reading_signature' => 'R. Arias'
         ]);
     }
 }
