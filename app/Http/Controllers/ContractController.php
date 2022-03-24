@@ -223,20 +223,25 @@ class ContractController extends Controller
         $peridoContrato = $this->getContractPeriodString($formatter, $requestDetails);
 
         //Total de horas
-        $subtotal = 0;
+        $total = 0;
         $subtiempo = 0;
         $Horas = 0;
         foreach ($requestDetails->hiringGroups as $group) {
-            $subtotal += $group->hourly_rate * $group->work_weeks * $group->weekly_hours;
-            $subtiempo += $group->weekly_hours * $group->work_weeks;
+            if ($group->period_hours != null) {
+                $total += $group->hourly_rate * $group->period_hours;
+                $subtiempo += $group->period_hours;
+            } else {
+                $total += $group->hourly_rate * $group->work_weeks * $group->weekly_hours;
+                $subtiempo += $group->weekly_hours * $group->work_weeks;
+            }
             $hourly_rate = $group->hourly_rate;
         }
 
         $Horas += $subtiempo;
         $horasTotales = $Horas . " HORAS";
         $valorHora = "$" . sprintf('%.2f', $hourly_rate);
-        $valorTotal = explode('.', sprintf('%.2f', $subtotal));
-        $sueldoLetras = $formatter->toString($subtotal) . "" . $valorTotal[1] . "/100 DOLARES DE LOS ESTADOS UNIDOS DE AMERICA ($" . $subtotal . ")";
+        $valorTotal = explode('.', sprintf('%.2f', $total));
+        $sueldoLetras = $formatter->toString($total) . "" . $valorTotal[1] . "/100 DOLARES DE LOS ESTADOS UNIDOS DE AMERICA ($" . $total . ")";
 
         if ($personalData['tipo'] == 'E') {
             $sueldoLetras = $sueldoLetras . " MENOS EL 20% DE RENTA, según deducciones establecidas por las leyes de El salvador";

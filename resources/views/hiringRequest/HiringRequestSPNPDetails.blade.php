@@ -95,7 +95,6 @@
             background-color: rgb(192, 192, 192, 0.5);
             text-align: center;
         }
-
     </style>
 </head>
 
@@ -139,50 +138,50 @@
                 <thead>
                 <tbody>
                     @php
-                        $n = 0;
+                    $n = 0;
                     @endphp
                     @foreach ($hiringRequest->details as $detail)
-                        @php
-                            $n++;
-                        @endphp
+                    @php
+                    $n++;
+                    @endphp
+                    <tr>
+                        <td style="font-weight: bold; background-color: rgba(190, 100, 100, 0.5); text-align: center;" colspan="11">No {{ $n }}:<b> {{ $detail->fullName }}</b> </td>
+                    </tr>
+                    @for ($i = 0; $i < count($detail->mappedGroups); $i++)
                         <tr>
-                            <td style="font-weight: bold; background-color: rgba(190, 100, 100, 0.5); text-align: center;"
-                                colspan="11">No {{ $n }}:<b> {{ $detail->fullName }}</b> </td>
+                            <td>{{ $detail->mappedGroups[$i]->name }}</td>
+                            <td>{{ $detail->mappedGroups[$i]->groupType }}</td>
+                            <td>{{ $detail->mappedGroups[$i]->days }}</td>
+                            <td>{{ $detail->mappedGroups[$i]->time }}</td>
+                            <td>{{ $detail->period }}</td>
+                            <td>Anexo {{ $n }}</td>
+                            <td>$ {{ number_format( $detail->mappedGroups[$i]->hourly_rate,2) }}</td>
+                            <td>{{ $detail->mappedGroups[$i]->work_weeks }}</td>
+                            <td>{{ $detail->mappedGroups[$i]->weekly_hours ? $detail->mappedGroups[$i]->weekly_hours : "Ver Anexo de horas" }}</td>
+                            @if ($detail->mappedGroups[$i]->period_hours != null)
+                            <td>{{ $detail->mappedGroups[$i]->period_hours  }}</td>
+                            <td> $ {{ number_format($detail->mappedGroups[$i]->period_hours *$detail->mappedGroups[$i]->hourly_rate,2) }}</td>
+                            @else
+                            <td>{{ $detail->mappedGroups[$i]->work_weeks * $detail->mappedGroups[$i]->weekly_hours }}</td>
+                            <td> $ {{ number_format($detail->mappedGroups[$i]->work_weeks *$detail->mappedGroups[$i]->weekly_hours *$detail->mappedGroups[$i]->hourly_rate,2) }}</td>
+                            @endif
                         </tr>
-                        @for ($i = 0; $i < count($detail->mappedGroups); $i++)
-                            <tr>
-                                <td>{{ $detail->mappedGroups[$i]->name }}</td>
-                                <td>{{ $detail->mappedGroups[$i]->groupType }}</td>
-                                <td>{{ $detail->mappedGroups[$i]->days }}</td>
-                                <td>{{ $detail->mappedGroups[$i]->time }}</td>
-                                <td>{{ $detail->period }}</td>
-                                <td>Anexo {{ $n }}</td>
-                                <td>$ {{  number_format( $detail->mappedGroups[$i]->hourly_rate,2) }}</td>
-                                <td>{{ $detail->mappedGroups[$i]->work_weeks }}</td>
-                                <td>{{ $detail->mappedGroups[$i]->weekly_hours }}</td>
-                                <td>{{ $detail->mappedGroups[$i]->work_weeks * $detail->mappedGroups[$i]->weekly_hours }}
-                                </td>
-                                <td>$
-                                    {{  number_format($detail->mappedGroups[$i]->work_weeks *$detail->mappedGroups[$i]->weekly_hours *$detail->mappedGroups[$i]->hourly_rate,2) }}
-                                </td>
-                            </tr>
                         @endfor
                         <tr>
-                            <td style="font-weight: bold; background-color: rgb(192, 192, 192, 0.5); text-align: center;"
-                                colspan="9">Sub Total</td>
+                            <td style="font-weight: bold; background-color: rgb(192, 192, 192, 0.5); text-align: center;" colspan="9">Sub Total</td>
                             <td style="font-weight: bold; background-color: rgb(192, 192, 192, 0.5);">
-                                {{ $detail->subtotalHoras }}</td>
+                                {{ $detail->subtotalHoras }}
+                            </td>
                             <td style="font-weight: bold; background-color: rgb(192, 192, 192, 0.5);">
-                                ${{  number_format( $detail->subtotal,2) }}</td>
+                                ${{ number_format( $detail->subtotal,2) }}</td>
 
                         </tr>
-                    @endforeach
+                        @endforeach
                 </tbody>
                 <tr>
-                    <td style="font-weight: bold; background-color: rgba(243, 55, 55, 0.5); text-align: center;"
-                        colspan="10"><b>Total</b></td>
+                    <td style="font-weight: bold; background-color: rgba(243, 55, 55, 0.5); text-align: center;" colspan="10"><b>Total</b></td>
                     <td style="font-weight: bold; background-color: rgba(243, 55, 55, 0.5); text-align: center;"><b>$
-                            {{  number_format($hiringRequest->total,2) }}</b></td>
+                            {{ number_format($hiringRequest->total,2) }}</b></td>
                 </tr>
         </table>
         <br>
@@ -192,8 +191,7 @@
             <br>
             <br>
             <span class="despedida">___________________________________</span>
-            <span
-                class="despedida">{{ $hiringRequest->school->SchoolAuthority->where('position', 'DIRECTOR')->first()->name }}</span>
+            <span class="despedida">{{ $hiringRequest->school->SchoolAuthority->where('position', 'DIRECTOR')->first()->name }}</span>
             <span class="despedida">Director</span>
             <span class="despedida">{{ ucfirst($header->escuela) }}</span>
         </div>

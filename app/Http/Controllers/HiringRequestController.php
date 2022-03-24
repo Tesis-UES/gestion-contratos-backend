@@ -413,8 +413,13 @@ class HiringRequestController extends Controller
             $subtiempo = 0;
             $totalHoras = 0;
             foreach ($detail->hiringGroups as $group) {
-                $subtotal += $group->hourly_rate * $group->work_weeks * $group->weekly_hours;
-                $subtiempo += $group->weekly_hours * $group->work_weeks;
+                if ($group->period_hours != null) {
+                    $subtotal += $group->hourly_rate * $group->period_hours;
+                    $subtiempo += $group->period_hours;
+                } else {
+                    $subtotal += $group->hourly_rate * $group->work_weeks * $group->weekly_hours;
+                    $subtiempo += $group->weekly_hours * $group->work_weeks;
+                }
             }
             $detail->subtotal = $subtotal;
             $total += $subtotal;
@@ -461,6 +466,7 @@ class HiringRequestController extends Controller
                     "hourly_rate" => $hg->hourly_rate,
                     "weekly_hours" => $hg->weekly_hours,
                     "work_weeks" => $hg->work_weeks,
+                    "period_hours" => $hg->period_hours,
                 ];
             }
             $detail->mappedGroups = $mappedGroups;
