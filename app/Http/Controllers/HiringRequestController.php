@@ -94,7 +94,19 @@ class HiringRequestController extends Controller
     {
         $hiringRequest = HiringRequest::findOrFail($id);
         $hiringRequest->update($request->all());
-        $this->RegisterAction("El usuario ha actualizado la solicitud de contratación", "high");
+
+        if (
+            $hiringRequest->request_status != HiringRequestStatusCode::ERH
+            && $hiringRequest->validated === false
+        ) {
+            // TODO: Enviar correo que se actualizo la solicitud con cambios solicitados
+            // Loggear lo que dice arriba xd 
+        } else if ($hiringRequest->request_status != HiringRequestStatusCode::RDC) {
+            // Generar pdf de solicitud nuevamente
+            // Loggear que se hizo un cambio fuera del tiempo de registro de candidatos
+        } else {
+            $this->RegisterAction("El usuario ha actualizado la solicitud de contratación", "high");
+        }
         return response(['hiringRequest' => $hiringRequest], 200);
     }
 

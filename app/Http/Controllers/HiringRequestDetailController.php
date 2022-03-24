@@ -75,6 +75,19 @@ class HiringRequestDetailController extends Controller
 
         $user = Auth::user();
         $hiringRequest = HiringRequest::with(['contractType', 'school',])->findOrFail($id);
+
+        if (
+            $hiringRequest->request_status != HiringRequestStatusCode::ERH
+            && $hiringRequest->validated === false
+        ) {
+            // TODO: Enviar correo que se actualizo la solicitud con cambios solicitados
+        } else if ($hiringRequest->request_status != HiringRequestStatusCode::RDC) {
+            // Generar pdf de solicitud nuevamente
+            // Loggear que se hizo un cambio fuera del tiempo de registro de candidatos
+        } else {
+            $this->RegisterAction("El usuario ha actualizado el detalle de la solicitud de contratación TI con id: " . $detail->id, "high");
+        }
+
         $requestStatus = $hiringRequest->getLastStatusAttribute();
         if ($hiringRequest->contractType->name != ContractType::SPNP) {
             DB::rollBack();
@@ -190,6 +203,19 @@ class HiringRequestDetailController extends Controller
 
         $user = Auth::user();
         $hiringRequest = HiringRequest::with(['contractType', 'school',])->findOrFail($id);
+
+        if (
+            $hiringRequest->request_status != HiringRequestStatusCode::ERH
+            && $hiringRequest->validated === false
+        ) {
+            // TODO: Enviar correo que se actualizo la solicitud con cambios solicitados
+        } else if ($hiringRequest->request_status != HiringRequestStatusCode::RDC) {
+            // Generar pdf de solicitud nuevamente
+            // Loggear que se hizo un cambio fuera del tiempo de registro de candidatos
+        } else {
+            $this->RegisterAction("El usuario ha actualizado el detalle de la solicitud de contratación TI con id: " . $detail->id, "high");
+        }
+
         $requestStatus = $hiringRequest->getLastStatusAttribute();
         if ($hiringRequest->contractType->name != ContractType::TI) {
             DB::rollBack();
@@ -271,6 +297,19 @@ class HiringRequestDetailController extends Controller
 
         $user = Auth::user();
         $hiringRequest = HiringRequest::with(['contractType', 'school',])->findOrFail($id);
+
+        if (
+            $hiringRequest->request_status != HiringRequestStatusCode::ERH
+            && $hiringRequest->validated === false
+        ) {
+            // TODO: Enviar correo que se actualizo la solicitud con cambios solicitados
+        } else if ($hiringRequest->request_status != HiringRequestStatusCode::RDC) {
+            // Generar pdf de solicitud nuevamente
+            // Loggear que se hizo un cambio fuera del tiempo de registro de candidatos
+        } else {
+            $this->RegisterAction("El usuario ha actualizado el detalle de la solicitud de contratación TI con id: " . $detail->id, "high");
+        }
+
         $requestStatus = $hiringRequest->getLastStatusAttribute();
         if ($hiringRequest->contractType->name != ContractType::TA) {
             DB::rollBack();
@@ -312,6 +351,18 @@ class HiringRequestDetailController extends Controller
     public function deleteRequestDetails($id)
     {
         $requestDetail = HiringRequestDetail::with('hiringRequest')->findOrFail($id);
+
+        if (
+            $requestDetail->hiringRequest->request_status != HiringRequestStatusCode::ERH
+            && $requestDetail->hiringRequest->validated === false
+        ) {
+            // TODO: Enviar correo que se actualizo la solicitud con cambios solicitados
+        } else if ($requestDetail->hiringRequest->request_status != HiringRequestStatusCode::RDC) {
+            // Generar pdf de solicitud nuevamente
+            // Loggear que se hizo un cambio fuera del tiempo de registro de candidatos
+        } else {
+            $this->RegisterAction("El usuario ha actualizado el detalle de la solicitud de contratación TI con id: " . $detail->id, "high");
+        }
 
         $requestStatus = $requestDetail->hiringRequest->getLastStatusAttribute();
         $user = Auth::user();
@@ -364,6 +415,19 @@ class HiringRequestDetailController extends Controller
             'hiringRequest.contractType',
             'hiringRequest.school',
         ])->findOrFail($id);
+
+        if (
+            $detail->hiringRequest->request_status != HiringRequestStatusCode::ERH
+            && $detail->hiringRequest->validated === false
+        ) {
+            // TODO: Enviar correo que se actualizo la solicitud con cambios solicitados
+        } else if ($detail->hiringRequest->request_status != HiringRequestStatusCode::RDC) {
+            // Generar pdf de solicitud nuevamente
+            // Loggear que se hizo un cambio fuera del tiempo de registro de candidatos
+        } else {
+            $this->RegisterAction("El usuario ha actualizado el detalle de la solicitud de contratación TI con id: " . $detail->id, "high");
+        }
+
         $user = Auth::user();
         $requestStatus = $detail->hiringRequest->getLastStatusAttribute();
 
@@ -453,6 +517,18 @@ class HiringRequestDetailController extends Controller
             'hiringRequest.contractType',
             'hiringRequest.school',
         ])->findOrFail($id);
+
+        if (
+            $detail->hiringRequest->request_status != HiringRequestStatusCode::ERH
+            && $detail->hiringRequest->validated === false
+        ) {
+            // TODO: Enviar correo que se actualizo la solicitud con cambios solicitados
+        } else if ($detail->hiringRequest->request_status != HiringRequestStatusCode::RDC) {
+            // Generar pdf de solicitud nuevamente
+            // Loggear que se hizo un cambio fuera del tiempo de registro de candidatos
+        } else {
+            $this->RegisterAction("El usuario ha actualizado el detalle de la solicitud de contratación TI con id: " . $detail->id, "high");
+        }
 
         $user = Auth::user();
         $requestStatus = $detail->hiringRequest->getLastStatusAttribute();
@@ -550,6 +626,18 @@ class HiringRequestDetailController extends Controller
             'hiringRequest.contractType',
             'hiringRequest.school',
         ])->findOrFail($id);
+
+        if (
+            $detail->hiringRequest->request_status != HiringRequestStatusCode::ERH
+            && $detail->hiringRequest->validated === false
+        ) {
+            // TODO: Enviar correo que se actualizo la solicitud con cambios solicitados
+        } else if ($detail->hiringRequest->request_status != HiringRequestStatusCode::RDC) {
+            // Generar pdf de solicitud nuevamente
+            // Loggear que se hizo un cambio fuera del tiempo de registro de candidatos
+        } else {
+            $this->RegisterAction("El usuario ha actualizado el detalle de la solicitud de contratación TI con id: " . $detail->id, "high");
+        }
 
         $user = Auth::user();
         $requestStatus =  $detail->hiringRequest->getLastStatusAttribute();
