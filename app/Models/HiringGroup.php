@@ -13,6 +13,7 @@ class HiringGroup extends Model
         'hourly_rate',
         'work_weeks',
         'weekly_hours',
+        'period_hours',
         'group_id',
         'hiring_request_detail_id',
     ];

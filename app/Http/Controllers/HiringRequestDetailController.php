@@ -62,7 +62,11 @@ class HiringRequestDetailController extends Controller
         }
 
         $totalWorkHours = array_reduce($validatedDetail['groups'], function ($pv, $group) {
-            return $pv + $group['weekly_hours'];
+            if (array_key_exists('period_hours', $group)) {
+                return $pv + ($group['period_hours'] / $group['work_weeks']);
+            } else {
+                return $pv + $group['weekly_hours'];
+            }
         }, 0);
         if ($totalWorkHours > 40) {
             DB::rollBack();
@@ -344,7 +348,11 @@ class HiringRequestDetailController extends Controller
         }
 
         $totalWorkHours = array_reduce($validatedDetail['groups'], function ($pv, $group) {
-            return $pv + $group['weekly_hours'];
+            if (array_key_exists('period_hours', $group)) {
+                return $pv + ($group['period_hours'] / $group['work_weeks']);
+            } else {
+                return $pv + $group['weekly_hours'];
+            }
         }, 0);
         if ($totalWorkHours > 40) {
             DB::rollBack();
@@ -518,7 +526,6 @@ class HiringRequestDetailController extends Controller
         $detail->groups()->saveMany($grp);
         $detail->groups = $groups;
 
-        $this->RegisterAction("El usuario ha actualizado el detalle de la solicitud de contratación TI con id: " . $detail->id, "high");
         DB::commit();
         return response($detail);
     }

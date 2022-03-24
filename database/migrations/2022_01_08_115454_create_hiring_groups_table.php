@@ -18,6 +18,7 @@ class CreateHiringGroupsTable extends Migration
             $table->float('hourly_rate')->nullable();
             $table->float('work_weeks')->nullable();
             $table->float('weekly_hours')->nullable();
+            $table->float('period_hours')->nullable();
             $table->bigInteger('group_id')->unsigned()->nullable();
             $table->foreign('group_id')->references('id')->on('groups')->nonullable();
             $table->bigInteger('hiring_request_detail_id')->unsigned()->nullable();
