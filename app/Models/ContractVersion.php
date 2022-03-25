@@ -9,11 +9,11 @@ class ContractVersion extends Model
 {
     use HasFactory;
 
-    protected $fillabe = [
+    protected $fillable = [
         'name',
         'version',
         'active',
-        'request_detail_id',
+        'hiring_request_detail_id',
     ];
 
     public function HiringRequestDetail()

@@ -18,8 +18,8 @@ class CreateContractVersionsTable extends Migration
             $table->string('name');
             $table->unsignedInteger('version');
             $table->boolean('active');
-            $table->unsignedBigInteger('request_detail_id');
-            $table->foreign('request_detail_id')->references('id')->on('hiring_request_details')->nonullable();
+            $table->unsignedBigInteger('hiring_request_detail_id');
+            $table->foreign('hiring_request_detail_id')->references('id')->on('hiring_request_details')->nonullable();
             $table->timestamps();
         });
     }
