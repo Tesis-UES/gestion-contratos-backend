@@ -85,7 +85,7 @@ class HiringRequestDetailController extends Controller
             // Generar pdf de solicitud nuevamente
             // Loggear que se hizo un cambio fuera del tiempo de registro de candidatos
         } else {
-            $this->RegisterAction("El usuario ha actualizado el detalle de la solicitud de contratación TI con id: " . $detail->id, "high");
+            $this->RegisterAction("El usuario ha agregado a un docente a la solicitud de contratación con id: " . $id, "high");
         }
 
         $requestStatus = $hiringRequest->getLastStatusAttribute();
@@ -135,7 +135,6 @@ class HiringRequestDetailController extends Controller
         }
         $savedDetail->groups = $groups;
 
-        $this->RegisterAction("El usuario ha agregado a un docente a la solicitud de contratación con id: " . $id, "high");
         DB::commit();
         $this->newCandidateNotification($hiringRequest, $person->user->email, ContractType::SPNP);
         return response($savedDetail);
@@ -213,7 +212,7 @@ class HiringRequestDetailController extends Controller
             // Generar pdf de solicitud nuevamente
             // Loggear que se hizo un cambio fuera del tiempo de registro de candidatos
         } else {
-            $this->RegisterAction("El usuario ha actualizado el detalle de la solicitud de contratación TI con id: " . $detail->id, "high");
+            $this->RegisterAction("El usuario ha agregado a un docente a la solicitud de contratación con id: " . $id, "high");
         }
 
         $requestStatus = $hiringRequest->getLastStatusAttribute();
@@ -228,7 +227,6 @@ class HiringRequestDetailController extends Controller
             return response(['message' => 'No puede agregar detalles a una solicitud de contratacion con estado: "' . $requestStatus->name . '"'], 400);
         }
 
-        $this->RegisterAction("El usuario ha agregado a un docente a la solicitud de contratación con id: " . $id, "high");
         DB::commit();
         //Envio de correo de notificación que fue agregado un docente a la solicitud de contratación
         $this->newCandidateNotification($hiringRequest, $person->user->email, ContractType::TI);
@@ -307,7 +305,7 @@ class HiringRequestDetailController extends Controller
             // Generar pdf de solicitud nuevamente
             // Loggear que se hizo un cambio fuera del tiempo de registro de candidatos
         } else {
-            $this->RegisterAction("El usuario ha actualizado el detalle de la solicitud de contratación TI con id: " . $detail->id, "high");
+            $this->RegisterAction("El usuario ha agregado a un docente a la solicitud de contratación con id: " . $id, "high");
         }
 
         $requestStatus = $hiringRequest->getLastStatusAttribute();
@@ -322,7 +320,6 @@ class HiringRequestDetailController extends Controller
             return response(['message' => 'No puede agregar detalles a una solicitud de contratacion con estado: "' . $requestStatus->name . '"'], 400);
         }
 
-        $this->RegisterAction("El usuario ha agregado a un docente a la solicitud de contratación con id: " . $id, "high");
         DB::commit();
         //Envio de correo de notificación que fue agregado un docente a la solicitud de contratación
         $this->newCandidateNotification($hiringRequest, $person->user->email, ContractType::TA);
@@ -361,7 +358,7 @@ class HiringRequestDetailController extends Controller
             // Generar pdf de solicitud nuevamente
             // Loggear que se hizo un cambio fuera del tiempo de registro de candidatos
         } else {
-            $this->RegisterAction("El usuario ha actualizado el detalle de la solicitud de contratación TI con id: " . $detail->id, "high");
+            $this->RegisterAction("El usuario ha eliminado a un docente a la solicitud de contratación con id: " . $id, "high");
         }
 
         $requestStatus = $requestDetail->hiringRequest->getLastStatusAttribute();
@@ -380,7 +377,6 @@ class HiringRequestDetailController extends Controller
         }
 
         $requestDetail->delete();
-        $this->RegisterAction("El usuario ha eliminado a un docente a la solicitud de contratación con id: " . $id, "high");
         return response(null, 204);
     }
 
@@ -425,7 +421,7 @@ class HiringRequestDetailController extends Controller
             // Generar pdf de solicitud nuevamente
             // Loggear que se hizo un cambio fuera del tiempo de registro de candidatos
         } else {
-            $this->RegisterAction("El usuario ha actualizado el detalle de la solicitud de contratación TI con id: " . $detail->id, "high");
+            $this->RegisterAction("El usuario ha actualizado el detalle de la solicitud de contratación SPNP con id: " . $detail->id, "high");
         }
 
         $user = Auth::user();
@@ -492,7 +488,6 @@ class HiringRequestDetailController extends Controller
         $detail->groups = $newGroups;
 
 
-        $this->RegisterAction("El usuario ha actualizado el detalle de la solicitud de contratación SPNP con id: " . $detail->id, "high");
         DB::commit();
         return response($detail);
     }
@@ -636,7 +631,7 @@ class HiringRequestDetailController extends Controller
             // Generar pdf de solicitud nuevamente
             // Loggear que se hizo un cambio fuera del tiempo de registro de candidatos
         } else {
-            $this->RegisterAction("El usuario ha actualizado el detalle de la solicitud de contratación TI con id: " . $detail->id, "high");
+            $this->RegisterAction("El usuario ha actualizado el detalle de la solicitud de contratación TA con id: " . $id, "high");
         }
 
         $user = Auth::user();
@@ -710,7 +705,6 @@ class HiringRequestDetailController extends Controller
 
         $detail->groups()->saveMany($grp);
         $detail->groups = $groups;
-        $this->RegisterAction("El usuario ha actualizado el detalle de la solicitud de contratación TA con id: " . $id, "high");
         DB::commit();
         return response($detail);
     }
