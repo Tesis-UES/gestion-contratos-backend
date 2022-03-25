@@ -439,14 +439,14 @@ class ContractController extends Controller
         }
     }
 
-    private function generateContractFileName($requestDetail)
+    private function generateContractFileName($requestDetail, $extension = 'docx')
     {
         $version = $requestDetail->contract_version ? $requestDetail->contract_version + 1 : 1;
         $fullName = $requestDetail->person->first_name . $requestDetail->person->middle_name . $requestDetail->person->last_name;
         $formattedName = str_replace(' ', '', $fullName);
         $reqCode = $requestDetail->hiringRequest->code;
         return [
-            'name' => $reqCode . '-' . $formattedName . '-v' . $version . '.docx',
+            'name' => $reqCode . '-' . $formattedName . '-v' . $version . '.' . $extension,
             'version' => $version,
         ];
     }
@@ -527,7 +527,7 @@ class ContractController extends Controller
         $requestDetail = HiringRequestDetail::findOrFail($id);
 
         $file = $request->file('file');
-        $fileName = $this->generateContractFileName($requestDetail);
+        $fileName = $this->generateContractFileName($requestDetail, $file->extension());
 
         Storage::disk('contracts')->put($fileName['name'], \File::get($file));
         $this->updateContractVersionHistory($requestDetail, $fileName);
