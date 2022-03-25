@@ -66,4 +66,10 @@ class HiringRequestDetail extends Model
     {
         return $this->belongsTo(HiringRequest::class);
     }
+
+    public function contractVersions()
+    {
+        return $this->hasMany(ContractVersion::class)
+            ->orderBy('created_at', 'asc');
+    }
 }

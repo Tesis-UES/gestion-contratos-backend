@@ -10,7 +10,7 @@ use App\Models\Escalafon;
 use App\Models\Faculty;
 use App\Models\Person;
 use App\Models\PersonValidation;
-use App\Models\{PersonChange, CentralAuthority, StaySchedule};
+use App\Models\{PersonChange, CentralAuthority, ContractVersion, StaySchedule};
 use Illuminate\Http\Request;
 use App\Http\Traits\{WorklogTrait, ValidationTrait};
 use Illuminate\Support\Facades\Auth;
@@ -451,6 +451,17 @@ class ContractController extends Controller
         ];
     }
 
+    private function updateContractVersionHistory($requestDetail, $fileName)
+    {
+        $requestDetail->contractVersions()->update(['active' => false]);
+        ContractVersion::create([
+            'name'    => $fileName['name'],
+            'version' => $fileName['version'],
+            'active'  => true,
+            'hiring_request_detail_id' => $requestDetail->id,
+        ]);
+    }
+
     public function generateContract($requestDetailId)
     {
         $requestDetails = HiringRequestDetail::with([
@@ -499,6 +510,7 @@ class ContractController extends Controller
         $file->saveAs($tempFile);
 
         Storage::disk('contracts')->put($fileName['name'], \File::get($tempFile));
+        $this->updateContractVersionHistory($requestDetails, $fileName);
         $requestDetails->update([
             'contract_file' => $fileName['name'],
             'contract_version' => $fileName['version'],
@@ -518,6 +530,7 @@ class ContractController extends Controller
         $fileName = $this->generateContractFileName($requestDetail);
 
         Storage::disk('contracts')->put($fileName['name'], \File::get($file));
+        $this->updateContractVersionHistory($requestDetail, $fileName);
         $requestDetail->update([
             'contract_file' => $fileName['name'],
             'contract_version' => $fileName['version'],
