@@ -21,11 +21,6 @@ class CheckPersonDocs extends Command
         parent::__construct();
     }
 
-    /**
-     * Execute the console command.
-     *
-     * @return int
-     */
     public function handle()
     {
         $candidates = Person::all();

@@ -88,6 +88,13 @@ class ValidationDocsNotification extends Mailable
                     ]);
                 break;
 
+             case 'notificacionAuthorities':
+                return $this->subject('Notificación de Vencimiento de Periodo de Autoridades - FIA-UES')
+                    ->markdown('emails.NotificationDocs', [
+                        'mensaje'      => $this->mensaje,
+                    ]);
+                break;
+
             default:
                 # code...
                 break;
