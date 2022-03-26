@@ -101,11 +101,15 @@ class HiringRequestController extends Controller
         ) {
             // TODO: Enviar correo que se actualizo la solicitud con cambios solicitados
             // Loggear lo que dice arriba xd 
-        } else if ($hiringRequest->request_status != HiringRequestStatusCode::RDC) {
-            // Generar pdf de solicitud nuevamente
-            // Loggear que se hizo un cambio fuera del tiempo de registro de candidatos
+            $this->RegisterAction("El usuario ha actualizado la solicitud ".$hiringRequest->code." de contratación y Notificado a RRHH para su validación", "high");
+        } elseif($hiringRequest->request_status == HiringRequestStatusCode::ERH && $hiringRequest->validated === null){
+            $this->RegisterAction("El usuario ha actualizado la solicitud ".$hiringRequest->code." de contratación aun sin validar por Recursos humanos", "high");
+
+        }else if ($hiringRequest->request_status != HiringRequestStatusCode::RDC) {
+            $this->MakeHiringRequestSPNP($hiringRequest->id,"update");
+            $this->RegisterAction("El usuario ha actualizado la solicitud ".$hiringRequest->code." de contratación que ya ha sido Generada y enviada a Junta o esta aprobada  ", "high");
         } else {
-            $this->RegisterAction("El usuario ha actualizado la solicitud de contratación", "high");
+            $this->RegisterAction("El usuario ha actualizado la solicitud ".$hiringRequest->code." de contratación", "high");
         }
         return response(['hiringRequest' => $hiringRequest], 200);
     }
@@ -397,6 +401,14 @@ class HiringRequestController extends Controller
         return ['message' => 'El archivo pdf ha sido guardado con éxito ', 'success' => true];
     }
 
+    public function storeUpdateHR($id, $pdf){
+        $hiringRequest = HiringRequest::findOrFail($id);
+        $hiringName = $hiringRequest->code . "-Solicitud.pdf";
+        Storage::disk('hiringRequest')->put($hiringName, $pdf);
+        $hiringRequest->fileName = $hiringName;
+        $hiringRequest->save();
+    }
+
     public function MakeHiringRequestSPNP($id, $option)
     {
         //Primero se verifica el id y si la solicitud tiene almenos una persona asignada a la solicitud
@@ -499,7 +511,9 @@ class HiringRequestController extends Controller
         if ($option == "show") {
             $pdf = base64_encode($createdPdf);
             return response(['pdf' => $pdf], 200);
-        } else {
+        } elseif($option == "update"){
+            $this->storeUpdateHR($hiringRequest->id, $createdPdf);
+        }else {
             $resultado = $this->storeHiringRequest($hiringRequest->id, $createdPdf);
             return response($resultado, 201);
         }
