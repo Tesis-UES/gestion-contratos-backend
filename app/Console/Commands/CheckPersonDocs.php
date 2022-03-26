@@ -7,6 +7,8 @@ use Illuminate\Support\Facades\Storage;
 use Symfony\Component\HttpKernel\HttpCache\Store;
 use App\Models\Person;
 use App\Mail\ValidationDocsNotification;
+use Carbon\Carbon;
+use Mail;
 
 class CheckPersonDocs extends Command
 {
@@ -26,11 +28,27 @@ class CheckPersonDocs extends Command
      */
     public function handle()
     {
-       $candidates = Person::all();
-         foreach ($candidates as $candidate) {
-            if ($candidate->doc_expiration_date < date('Y-m-d')) {
+        $candidates = Person::all();
+        foreach ($candidates as $candidate) {
+            if (!$candidate->dui_expiration_date == null) {
+                $expirationDate = Carbon::parse($candidate->dui_expiration_date);
+                $actualDate = Carbon::now();
+                $days = $expirationDate->diffInDays($actualDate);
+                
+                if($expirationDate < $actualDate){
+                    if ($days == 30 || $days == 15 || $days == 5 || $days == 0) {
+                        \Log::info("Faltan " . $days . " dias para que el documento de " . $candidate->first_name . " " . $candidate->last_name . " expire");
+                        $mensajeEmail = "Buen dia se le notifica que su documento esta por vencerse, por favor proceda a actualizarlo.";
+                     
+                            try {
+                                Mail::to($candidate->user->email)->send(new ValidationDocsNotification($mensajeEmail, 'notificacionExpDoc'));
+                            } catch (\Swift_TransportException $e) {
+                            }
+                        
+                    }
+                }
+               
             }
-            \Log::info($candidates);
-         }
+        }
     }
 }

@@ -81,6 +81,13 @@ class ValidationDocsNotification extends Mailable
                     ]);
                 break;
 
+             case 'notificacionExpDoc':
+                return $this->subject('Notificación de Vencimiento de Documento Personal - FIA-UES')
+                    ->markdown('emails.NotificationDocs', [
+                        'mensaje'      => $this->mensaje,
+                    ]);
+                break;
+
             default:
                 # code...
                 break;
