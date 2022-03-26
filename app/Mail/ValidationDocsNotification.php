@@ -51,29 +51,29 @@ class ValidationDocsNotification extends Mailable
                 break;
 
             case 'validationHRDirector':
-                    return $this->subject('Notificación de Validación de Solicitud de Contrato por Parte de Recursos Humanos - FIA-UES')
-                        ->markdown('emails.NotificationDocs', [
-                            'mensaje'      => $this->mensaje,
-                        ]);
-                    break;
+                return $this->subject('Notificación de Validación de Solicitud de Contrato por Parte de Recursos Humanos - FIA-UES')
+                    ->markdown('emails.NotificationDocs', [
+                        'mensaje'      => $this->mensaje,
+                    ]);
+                break;
             case 'SendSecretarySolicitude':
-                        return $this->subject('Notificación de Solicitud de Contrato Enviada a Secretaria - FIA-UES')
-                            ->markdown('emails.NotificationDocs', [
-                                'mensaje'      => $this->mensaje,
-                            ]);
-                        break;
+                return $this->subject('Notificación de Solicitud de Contrato Enviada a Secretaria - FIA-UES')
+                    ->markdown('emails.NotificationDocs', [
+                        'mensaje'      => $this->mensaje,
+                    ]);
+                break;
             case 'recepcionSecretary':
-                        return $this->subject('Notificación de Solicitud de Contrato Enviada a Secretaria (Actualización)- FIA-UES')
-                            ->markdown('emails.NotificationDocs', [
-                                'mensaje'      => $this->mensaje,
-                            ]);
-                        break;
+                return $this->subject('Notificación de Solicitud de Contrato Enviada a Secretaria (Actualización)- FIA-UES')
+                    ->markdown('emails.NotificationDocs', [
+                        'mensaje'      => $this->mensaje,
+                    ]);
+                break;
             case 'AgreementUpdate':
-                        return $this->subject('Notificación de Solicitud de Contrato (Actualización) Acuerdo de Junta Directiva - FIA-UES')
-                            ->markdown('emails.NotificationDocs', [
-                                'mensaje'      => $this->mensaje,
-                            ]);
-                        break;
+                return $this->subject('Notificación de Solicitud de Contrato (Actualización) Acuerdo de Junta Directiva - FIA-UES')
+                    ->markdown('emails.NotificationDocs', [
+                        'mensaje'      => $this->mensaje,
+                    ]);
+                break;
             case 'notificacionSolicitud':
                 return $this->subject('Notificación de Ingreso a Solicitud de Contrato - FIA-UES')
                     ->markdown('emails.NotificationDocs', [
@@ -81,15 +81,21 @@ class ValidationDocsNotification extends Mailable
                     ]);
                 break;
 
-             case 'notificacionExpDoc':
+            case 'notificacionExpDoc':
                 return $this->subject('Notificación de Vencimiento de Documento Personal - FIA-UES')
                     ->markdown('emails.NotificationDocs', [
                         'mensaje'      => $this->mensaje,
                     ]);
                 break;
 
-             case 'notificacionAuthorities':
+            case 'notificacionAuthorities':
                 return $this->subject('Notificación de Vencimiento de Periodo de Autoridades - FIA-UES')
+                    ->markdown('emails.NotificationDocs', [
+                        'mensaje'      => $this->mensaje,
+                    ]);
+                break;
+            case 'HrUpdateDoc':
+                return $this->subject('Notificación de Actualización de Documentación por parte de candidato de contratación - FIA-UES')
                     ->markdown('emails.NotificationDocs', [
                         'mensaje'      => $this->mensaje,
                     ]);
