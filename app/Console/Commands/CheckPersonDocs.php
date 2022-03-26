@@ -37,8 +37,26 @@ class CheckPersonDocs extends Command
                 
                 if($expirationDate < $actualDate){
                     if ($days == 30 || $days == 15 || $days == 5 || $days == 0) {
-                        \Log::info("Faltan " . $days . " dias para que el documento de " . $candidate->first_name . " " . $candidate->last_name . " expire");
-                        $mensajeEmail = "Buen dia se le notifica que su documento esta por vencerse, por favor proceda a actualizarlo.";
+                        $mensajeEmail = "Se le notifica que su DUI está a ".$days." días  por vencer, por favor proceda a actualizar el escaneo de su DUI y actualizar su nueva fecha de vencimiento.";
+                     
+                            try {
+                                Mail::to($candidate->user->email)->send(new ValidationDocsNotification($mensajeEmail, 'notificacionExpDoc'));
+                            } catch (\Swift_TransportException $e) {
+                            }
+                        
+                    }
+                }
+               
+            }
+
+            if (!$candidate->resident_expiration_date == null) {
+                $expirationDate = Carbon::parse($candidate->resident_expiration_date);
+                $actualDate = Carbon::now();
+                $days = $expirationDate->diffInDays($actualDate);
+                
+                if($expirationDate < $actualDate){
+                    if ($days == 30 || $days == 15 || $days == 5 || $days == 0) {
+                        $mensajeEmail = "Se le notifica que su CARNET DE RESIDENCIA está a ".$days." días  por vencer, por favor proceda a actualizar el escaneo de su CARNET DE RESIDENCIA y actualizar su nueva fecha de vencimiento.";
                      
                             try {
                                 Mail::to($candidate->user->email)->send(new ValidationDocsNotification($mensajeEmail, 'notificacionExpDoc'));
