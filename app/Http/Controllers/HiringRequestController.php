@@ -94,24 +94,46 @@ class HiringRequestController extends Controller
     {
         $hiringRequest = HiringRequest::findOrFail($id);
         $hiringRequest->update($request->all());
-
-        if (
-            $hiringRequest->request_status != HiringRequestStatusCode::ERH
-            && $hiringRequest->validated === false
-        ) {
-            // TODO: Enviar correo que se actualizo la solicitud con cambios solicitados
-            // Loggear lo que dice arriba xd 
-            $this->RegisterAction("El usuario ha actualizado la solicitud ".$hiringRequest->code." de contratación y Notificado a RRHH para su validación", "high");
-        } elseif($hiringRequest->request_status == HiringRequestStatusCode::ERH && $hiringRequest->validated === null){
-            $this->RegisterAction("El usuario ha actualizado la solicitud ".$hiringRequest->code." de contratación aun sin validar por Recursos humanos", "high");
-
-        }else if ($hiringRequest->request_status != HiringRequestStatusCode::RDC) {
-            $this->MakeHiringRequestSPNP($hiringRequest->id,"update");
-            $this->RegisterAction("El usuario ha actualizado la solicitud ".$hiringRequest->code." de contratación que ya ha sido Generada y enviada a Junta o esta aprobada  ", "high");
-        } else {
-            $this->RegisterAction("El usuario ha actualizado la solicitud ".$hiringRequest->code." de contratación", "high");
-        }
+        $this->notiChanges($hiringRequest);
         return response(['hiringRequest' => $hiringRequest], 200);
+    }
+
+    public function notiChanges($hiringRequest)
+    {
+        if ($hiringRequest->request_status == HiringRequestStatusCode::ERH && $hiringRequest->validated === false) {
+            $emails = $this->getHRMail();
+            $mensajeEmail =  "Se ha modificado la solicitud de contratación con el siguiente código: " . $hiringRequest->code . " por favor revisar la solicitud para verificar si cumple con las observaciones dadas en la validación de la solicitud.";
+            foreach ($emails as $email) {
+                try {
+                    Mail::to($email)->send(new ValidationDocsNotification($mensajeEmail, 'hhrrUpdateHr'));
+                } catch (\Swift_TransportException $e) {
+                }
+            }
+            $this->RegisterAction("El usuario ha actualizado la solicitud " . $hiringRequest->code . " de contratación y Notificado a RRHH para su validación", "high");
+        } elseif ($hiringRequest->request_status == HiringRequestStatusCode::ERH && $hiringRequest->validated === null) {
+            $this->RegisterAction("El usuario ha actualizado la solicitud " . $hiringRequest->code . " de contratación aun sin validar por Recursos humanos", "high");
+        } else if ($hiringRequest->request_status != HiringRequestStatusCode::RDC) {
+            switch ($hiringRequest->contract_type_id) {
+                case '1':
+                    $this->MakeHiringRequestTiempoAdicional($hiringRequest->id, "update");
+                    break;
+                case '2':
+                    $this->MakeHiringRequestTiempoIntegral($hiringRequest->id, "update");
+
+                    break;
+                case '3':
+                    $this->MakeHiringRequestSPNP($hiringRequest->id, "update");
+                    break;
+
+                default:
+                    # code...
+                    break;
+            }
+
+            $this->RegisterAction("El usuario ha actualizado la solicitud " . $hiringRequest->code . " de contratación que ya ha sido Generada y enviada a Junta o esta aprobada  ", "high");
+        } else {
+            $this->RegisterAction("El usuario ha actualizado la solicitud " . $hiringRequest->code . " de contratación", "high");
+        }
     }
 
     public function destroy($id)
@@ -401,7 +423,8 @@ class HiringRequestController extends Controller
         return ['message' => 'El archivo pdf ha sido guardado con éxito ', 'success' => true];
     }
 
-    public function storeUpdateHR($id, $pdf){
+    public function storeUpdateHR($id, $pdf)
+    {
         $hiringRequest = HiringRequest::findOrFail($id);
         $hiringName = $hiringRequest->code . "-Solicitud.pdf";
         Storage::disk('hiringRequest')->put($hiringName, $pdf);
@@ -511,9 +534,9 @@ class HiringRequestController extends Controller
         if ($option == "show") {
             $pdf = base64_encode($createdPdf);
             return response(['pdf' => $pdf], 200);
-        } elseif($option == "update"){
+        } elseif ($option == "update") {
             $this->storeUpdateHR($hiringRequest->id, $createdPdf);
-        }else {
+        } else {
             $resultado = $this->storeHiringRequest($hiringRequest->id, $createdPdf);
             return response($resultado, 201);
         }
@@ -602,6 +625,8 @@ class HiringRequestController extends Controller
         if ($option == "show") {
             $pdf = base64_encode($createdPdf);
             return response(['pdf' => $pdf], 200);
+        } elseif ($option == "update") {
+            $this->storeUpdateHR($hiringRequest->id, $createdPdf);
         } else {
             $resultado = $this->storeHiringRequest($hiringRequest->id, $createdPdf);
             return response($resultado, 201);
@@ -693,6 +718,8 @@ class HiringRequestController extends Controller
         if ($option == "show") {
             $pdf = base64_encode($createdPdf);
             return response(['pdf' => $pdf], 200);
+        } elseif ($option == "update") {
+            $this->storeUpdateHR($hiringRequest->id, $createdPdf);
         } else {
             $resultado = $this->storeHiringRequest($hiringRequest->id, $createdPdf);
             return response($resultado, 201);
