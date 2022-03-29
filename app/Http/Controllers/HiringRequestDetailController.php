@@ -77,16 +77,13 @@ class HiringRequestDetailController extends Controller
 
         $user = Auth::user();
         $hiringRequest = HiringRequest::with(['contractType', 'school',])->findOrFail($id);
-        $requestStatus = $hiringRequest->getLastStatusAttribute();
+
         if ($hiringRequest->contractType->name != ContractType::SPNP) {
             DB::rollBack();
             return response(['message' => 'Debe seleccionar un contrato del tipo "' . ContractType::SPNP . '"'], 400);
         } elseif ($user->school->id != $hiringRequest->school->id) {
             DB::rollBack();
             return response(['message' => 'No puede agregar detalles a una solicitud de contratacion de otra escuela'], 400);
-        } elseif ($requestStatus->order > 2) {
-            DB::rollBack();
-            return response(['message' => 'No puede agregar detalles a una solicitud de contratacion con estado: "' . $requestStatus->name . '"'], 400);
         }
 
         $savedDetail = HiringRequestDetail::create(array_merge($validatedDetail, ['hiring_request_id' => $id]));
@@ -195,16 +192,12 @@ class HiringRequestDetailController extends Controller
         $user = Auth::user();
         $hiringRequest = HiringRequest::with(['contractType', 'school',])->findOrFail($id);
 
-        $requestStatus = $hiringRequest->getLastStatusAttribute();
         if ($hiringRequest->contractType->name != ContractType::TI) {
             DB::rollBack();
             return response(['message' => 'Debe seleccionar un contrato del tipo "' . ContractType::TI . '"'], 400);
         } elseif ($user->school->id != $hiringRequest->school->id) {
             DB::rollBack();
             return response(['message' => 'No puede agregar detalles a una solicitud de contratacion de otra escuela'], 400);
-        } elseif ($requestStatus->order > 2) {
-            DB::rollBack();
-            return response(['message' => 'No puede agregar detalles a una solicitud de contratacion con estado: "' . $requestStatus->name . '"'], 400);
         }
 
         DB::commit();
@@ -278,16 +271,13 @@ class HiringRequestDetailController extends Controller
 
         $user = Auth::user();
         $hiringRequest = HiringRequest::with(['contractType', 'school',])->findOrFail($id);
-        $requestStatus = $hiringRequest->getLastStatusAttribute();
+      
         if ($hiringRequest->contractType->name != ContractType::TA) {
             DB::rollBack();
             return response(['message' => 'Debe seleccionar un contrato del tipo "' . ContractType::TA . '"'], 400);
         } elseif ($user->school->id != $hiringRequest->school->id) {
             DB::rollBack();
             return response(['message' => 'No puede agregar detalles a una solicitud de contratacion de otra escuela'], 400);
-        } elseif ($requestStatus->order > 2) {
-            DB::rollBack();
-            return response(['message' => 'No puede agregar detalles a una solicitud de contratacion con estado: "' . $requestStatus->name . '"'], 400);
         }
 
         DB::commit();
@@ -321,23 +311,17 @@ class HiringRequestDetailController extends Controller
     public function deleteRequestDetails($id)
     {
         $requestDetail = HiringRequestDetail::with('hiringRequest')->findOrFail($id);
-        $this->RegisterAction("El usuario ha eliminado a un docente a la solicitud de contratación con id: " . $id, "high");
-        $requestStatus = $requestDetail->hiringRequest->getLastStatusAttribute();
         $user = Auth::user();
-
         if ($user->school_id != $requestDetail->hiringRequest->school_id) {
             return response(['message' => 'No puede editar solicitudes de contratacion de otra escuela'], 400);
-        } elseif ($requestStatus->order > 2) {
-            return response(['message' => 'No puede eliminar detalles de una solicitud de contratacion con estado: "' . $requestStatus->name . '"'], 400);
         }
-
         foreach ($requestDetail->groups as $group) {
             $group->people_id = null;
             $group->status = GroupStatus::SDA;
             $group->save();
         }
-
         $requestDetail->delete();
+        $this->RegisterAction("El usuario ha eliminado a un docente a la solicitud de contratación con id: " . $id, "high");
         return response(null, 204);
     }
 
@@ -374,17 +358,12 @@ class HiringRequestDetailController extends Controller
         ])->findOrFail($id);
 
         $user = Auth::user();
-        $requestStatus = $detail->hiringRequest->getLastStatusAttribute();
-
         if ($detail->hiringRequest->contractType->name != ContractType::SPNP) {
             DB::rollBack();
             return response(['message' => 'Debe seleccionar un contrato del tipo "' . ContractType::SPNP . '"'], 400);
         } elseif ($user->school->id != $detail->hiringRequest->school->id) {
             DB::rollBack();
             return response(['message' => 'No puede editar detalles de una solicitud de contratacion de otra escuela'], 400);
-        } elseif ($requestStatus->order > 2) {
-            DB::rollBack();
-            return response(['message' => 'No puede editar detalles de una solicitud de contratacion con estado: "' . $requestStatus->name . '"'], 400);
         }
 
         $hiringGroups = $detail->groups;
@@ -466,16 +445,12 @@ class HiringRequestDetailController extends Controller
         ])->findOrFail($id);
 
         $user = Auth::user();
-        $requestStatus = $detail->hiringRequest->getLastStatusAttribute();
         if ($detail->hiringRequest->contractType->name != ContractType::TI) {
             DB::rollBack();
             return response(['message' => 'Debe seleccionar un contrato del tipo "' . ContractType::TI . '"'], 400);
         } elseif ($user->school->id != $detail->hiringRequest->school->id) {
             DB::rollBack();
             return response(['message' => 'No puede editar detalles de una solicitud de contratacion de otra escuela'], 400);
-        } elseif ($requestStatus->order > 2) {
-            DB::rollBack();
-            return response(['message' => 'No puede editar detalles de una solicitud de contratacion con estado: "' . $requestStatus->name . '"'], 400);
         }
 
         $hiringGroups = $detail->groups;
@@ -566,16 +541,12 @@ class HiringRequestDetailController extends Controller
         ])->findOrFail($id);
 
         $user = Auth::user();
-        $requestStatus =  $detail->hiringRequest->getLastStatusAttribute();
         if ($detail->hiringRequest->contractType->name != ContractType::TA) {
             DB::rollBack();
             return response(['message' => 'Debe seleccionar un contrato del tipo "' . ContractType::TA . '"'], 400);
         } elseif ($user->school->id != $detail->hiringRequest->school->id) {
             DB::rollBack();
             return response(['message' => 'No puede agregar detalles a una solicitud de contratacion de otra escuela'], 400);
-        } elseif ($requestStatus->order > 2) {
-            DB::rollBack();
-            return response(['message' => 'No puede agregar detalles a una solicitud de contratacion con estado: "' . $requestStatus->name . '"'], 400);
         }
 
         $hiringGroups = $detail->groups;
@@ -649,9 +620,6 @@ class HiringRequestDetailController extends Controller
         $requestDetail = HiringRequestDetail::with('hiringRequest')->findOrFail($id);
 
         $requestStatus = $requestDetail->hiringRequest->getLastStatusAttribute();
-        if ($requestStatus->order > 2) {
-            return response(['message' => 'No puede editar una solicitud de contratacion con estado: "' . $requestStatus->name . '"'], 400);
-        }
 
         if ($requestDetail->schedule_file != null) {
             Storage::disk('requestDetailSchedules')->delete($requestDetail->schedule_file);
