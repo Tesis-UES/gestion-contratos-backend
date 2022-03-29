@@ -130,7 +130,7 @@ class HiringRequestController extends Controller
                     break;
             }
 
-            $this->RegisterAction("El usuario ha actualizado la solicitud " . $hiringRequest->code . " de contratación que ya ha sido Generada y enviada a Junta o esta aprobada  ", "high");
+            $this->RegisterAction("El usuario ha actualizado la solicitud " . $hiringRequest->code . " de contratación que ya ha sido enviada a Junta Directiva o está aprobada ", "high");
         } else {
             $this->RegisterAction("El usuario ha actualizado la solicitud " . $hiringRequest->code . " de contratación", "high");
         }
@@ -781,12 +781,6 @@ class HiringRequestController extends Controller
             $hiringRequest->save();
             $hiringRequest->status()->attach(['status_id' => $status[0]->id]);
             $hiringRequest->status()->attach(['status_id' => $status[1]->id]);
-
-            $contractStatus = ContractStatus::where('code', ContractStatusCode::ELB)->first();
-            foreach ($hiringRequest->details as $detail) {
-                // Enviar correo a cada contratado que ya hay contrato
-                $detail->contractStatus()->attach(['contract_status_id' => $contractStatus->id]);
-            }
             $this->sendAgrementMail($hiringRequest);
         } else {
             $status = Status::where('code', [HiringRequestStatusCode::RJD])->first();
