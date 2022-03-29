@@ -17,6 +17,9 @@ use Luecano\NumeroALetras\NumeroALetras;
 use DB;
 use Carbon\Carbon;
 use iio\libmergepdf\Merger;
+use App\Http\Controllers\HiringRequestController;
+use Mail;
+use App\Mail\ValidationDocsNotification;
 
 
 class PersonController extends Controller
@@ -509,6 +512,7 @@ class PersonController extends Controller
 
     public function updateMenu(Request $request)
     {
+
         $type = $request['type'];
         switch ($type) {
             case 'dui':
@@ -549,7 +553,63 @@ class PersonController extends Controller
                 break;
         }
         $this->updatePersonStatus($person);
+        $this->hrUpdateDocNotification($request['type']);
         return response(['person' => $person,], 200);
+    }
+
+    public function hrUpdateDocNotification($doc)
+    {
+        $task = new HiringRequestController;
+        $emails = $task->getHRMail();
+        $user = Auth::user();
+        $person = Person::where('user_id', $user->id)->firstOrFail();
+        $nombrePersona = $person->first_name . " " . $person->middle_name . " " . $person->last_name;
+        switch ($doc) {
+            case 'dui':
+                $mensaje = "El usuario " . $nombrePersona . " ha actualizado su Documento Unico de Identidad DUI, por favor revisar y validar dicho documento para que el candidato tenga todos sus documentos validados.";
+                break;
+
+            case 'nit':
+                $mensaje = "El usuario " . $nombrePersona . " ha actualizado su NIT, por favor revisar y validar dicho documento para que el candidato tenga todos sus documentos validados. ";
+                break;
+
+            case 'banco':
+                $mensaje = "El usuario " . $nombrePersona . " ha actualizado su Cuenta de Banco, por favor revisar y validar dicho documento para que el candidato tenga todos sus documentos validados. ";
+                break;
+
+            case 'cv':
+                $mensaje = "El usuario " . $nombrePersona . " ha actualizado su Curriculum, por favor revisar y validar dicho documento para que el candidato tenga todos sus documentos validados. ";
+                break;
+
+            case 'titulo':
+                $mensaje = "El usuario " . $nombrePersona . " ha actualizado su Titulo Profesional, por favor revisar y validar dicho documento para que el candidato tenga todos sus documentos validados. ";
+                break;
+
+            case 'permiso':
+                $mensaje = "El usuario " . $nombrePersona . " ha actualizado su Permiso de Trabajo, por favor revisar y validar dicho documento para que el candidato tenga todos sus documentos validados. ";
+                break;
+            case 'pass':
+                $mensaje = "El usuario " . $nombrePersona . " ha actualizado su Pasaporte, por favor revisar y validar dicho documento para que el candidato tenga todos sus documentos validados. ";
+                break;
+            case 'carnet':
+                $mensaje = "El usuario " . $nombrePersona . " ha actualizado su Carnet de Residencia, por favor revisar y validar dicho documento para que el candidato tenga todos sus documentos validados ";
+                break;
+
+            case 'otro_titulo':
+                $mensaje = "El usuario " . $nombrePersona . " ha actualizado su Segundo Titulo, por favor revisar y validar dicho documento para que el candidato tenga todos sus documentos validados ";
+                break;
+            default:
+                # code...
+                break;
+        }
+        foreach ($emails as $email) {
+            try {
+                Mail::to($email)->send(new ValidationDocsNotification($mensaje, 'HrUpdateDoc'));
+                $mensaje = 'La solicitud se ha enviado a RRHH para validación y se envió el correo de notificación al responsable de RRHH';
+            } catch (\Swift_TransportException $e) {
+                $mensaje = 'La solicitud se ha enviado a RRHH para validación, pero no se envió el correo de notificación al responsable de RRHH';
+            }
+        }
     }
 
     public function updateDui(Request $request)
