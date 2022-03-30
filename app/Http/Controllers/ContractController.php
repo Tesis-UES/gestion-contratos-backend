@@ -340,7 +340,7 @@ class ContractController extends Controller
                 'partida' => mb_strtoupper($partida, 'UTF-8'),
                 'cargo' => mb_strtoupper($escalafon, 'UTF-8'),
                 'justificacion' => mb_strtoupper($requestDetails->justification, 'UTF-8'),
-                'metas' => mb_strtoupper($requestDetails->goals, 'UTF-8'),
+                'metas' => mb_strtoupper($requestDetails->goal, 'UTF-8'),
                 'salario' =>  $salario,
                 'funcionesPermanencia' => mb_strtoupper($hrAct, 'UTF-8'),
                 'horarioPermanencia' => mb_strtoupper($hrStay, 'UTF-8'),
