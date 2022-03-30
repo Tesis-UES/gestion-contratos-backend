@@ -271,7 +271,7 @@ class HiringRequestDetailController extends Controller
 
         $user = Auth::user();
         $hiringRequest = HiringRequest::with(['contractType', 'school',])->findOrFail($id);
-      
+
         if ($hiringRequest->contractType->name != ContractType::TA) {
             DB::rollBack();
             return response(['message' => 'Debe seleccionar un contrato del tipo "' . ContractType::TA . '"'], 400);
@@ -614,12 +614,26 @@ class HiringRequestDetailController extends Controller
         return response($detail);
     }
 
+    public function getRequestDetailPdf($id)
+    {
+        $requestDetail = HiringRequestDetail::findOrFail($id);
+
+        if ($requestDetail->schedule_file == null) {
+            return response([
+                'message' => 'El candidato no tiene un PDF de horario asociado en la solicitud'
+            ], 404);
+        }
+
+        $encodedFile = base64_encode(Storage::disk('requestDetailSchedules')
+            ->get($requestDetail->schedule_file));
+
+        return response(['encodedFile' => $encodedFile], 200);
+    }
+
     public function addRequestDetailPdf($id, Request $request)
     {
         $request->validate(['schedule' => 'required|mimes:pdf']);
         $requestDetail = HiringRequestDetail::with('hiringRequest')->findOrFail($id);
-
-        $requestStatus = $requestDetail->hiringRequest->getLastStatusAttribute();
 
         if ($requestDetail->schedule_file != null) {
             Storage::disk('requestDetailSchedules')->delete($requestDetail->schedule_file);
