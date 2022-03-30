@@ -169,6 +169,7 @@
         <div>
              <table class="demo" width="100%">
                 <caption><b>Personas a Contratar en {{$hiringRequest->contractType->name}}</b></caption>
+                <caption><b>en {{$hiringRequest->modality}}</b></caption>
                 <thead>
                     <tr>
                         <th>Nombre</th>
