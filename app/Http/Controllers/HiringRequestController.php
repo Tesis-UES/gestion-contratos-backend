@@ -370,7 +370,7 @@ class HiringRequestController extends Controller
 
         if ($validatedRequest['validated'] == true) {
             $this->registerAction('El usuario valido que la solicitud si cumple con las validaciones', 'high');
-            $mensajeEmail = "Se ha validado la solicitud de contratación con código <b>" . $hiringRequest->code . "</b> que fue enviada para su respectiva validación por parte del Recursos Humanos, la solicitud de contrato ha sido validada y habilitada para poder ser enviada a Secretaría de Decanato. ";
+            $mensajeEmail = "Se ha validado la solicitud de contratación con código <b>" . $hiringRequest->code . "</b> que fue enviada para su respectiva validación por parte del Recursos Humanos, la solicitud de contrato ha sido validada y habilitada para poder ser enviada a Secretaría de Facultad. ";
         } else {
             $this->registerAction('El usuario reviso la solicitud y publicó observaciones de cambios a hacer', 'high');
             $mensajeEmail = "Se ha revisado la solicitud de contratación con código <b>" . $hiringRequest->code . "</b> por parte de Recursos Humanos, la solicitud de contrato ha sido observada para poder ser modificada según las observaciones pertinentes. ";
@@ -527,19 +527,19 @@ class HiringRequestController extends Controller
         $m->addRaw($pdf3->output());
         //Agregamos los pdfs con los documentos de los candidatos
         foreach ($hiringRequest->details as $detail) {
-            if($detail->schedule_file != null){
-                $mensaje ="Anexo de Detalle de Horario " . $detail->person->first_name . " " . $detail->person->middle_name . " " . $detail->person->last_name;
+            if ($detail->schedule_file != null) {
+                $mensaje = "Anexo de Detalle de Horario " . $detail->person->first_name . " " . $detail->person->middle_name . " " . $detail->person->last_name;
                 $pdf4   = PDF::loadView('hiringRequest.HiringAnexoBlank', compact('mensaje'));
                 $pdf4->setPaper('letter', 'portrait');
                 $pdf4->render();
                 $m->addRaw($pdf4->output());
                 $m->addRaw(\Storage::disk('requestDetailSchedules')->get($detail->schedule_file));
             }
-            $mensaje ="Anexo Documentos Personales del Candidato " . $detail->person->first_name . " " . $detail->person->middle_name . " " . $detail->person->last_name;
-                $pdf4   = PDF::loadView('hiringRequest.HiringAnexoBlank', compact('mensaje'));
-                $pdf4->setPaper('letter', 'portrait');
-                $pdf4->render();
-                $m->addRaw($pdf4->output());
+            $mensaje = "Anexo Documentos Personales del Candidato " . $detail->person->first_name . " " . $detail->person->middle_name . " " . $detail->person->last_name;
+            $pdf4   = PDF::loadView('hiringRequest.HiringAnexoBlank', compact('mensaje'));
+            $pdf4->setPaper('letter', 'portrait');
+            $pdf4->render();
+            $m->addRaw($pdf4->output());
             $m->addRaw(\Storage::disk('personDocsMerged')->get($detail->person->merged_docs));
         }
 
@@ -632,11 +632,11 @@ class HiringRequestController extends Controller
         $m->addRaw($pdf->output());
         $m->addRaw($pdf2->output());
         foreach ($hiringRequest->details as $detail) {
-            $mensaje ="Anexo Documentos Personales del Candidato " . $detail->person->first_name . " " . $detail->person->middle_name . " " . $detail->person->last_name;
-                $pdf4   = PDF::loadView('hiringRequest.HiringAnexoBlank', compact('mensaje'));
-                $pdf4->setPaper('letter', 'portrait');
-                $pdf4->render();
-                $m->addRaw($pdf4->output());
+            $mensaje = "Anexo Documentos Personales del Candidato " . $detail->person->first_name . " " . $detail->person->middle_name . " " . $detail->person->last_name;
+            $pdf4   = PDF::loadView('hiringRequest.HiringAnexoBlank', compact('mensaje'));
+            $pdf4->setPaper('letter', 'portrait');
+            $pdf4->render();
+            $m->addRaw($pdf4->output());
             $m->addRaw(\Storage::disk('personDocsMerged')->get($detail->person->merged_docs));
         }
         $createdPdf = $m->merge();
@@ -729,19 +729,19 @@ class HiringRequestController extends Controller
         $m->addRaw($pdf->output());
         $m->addRaw($pdf2->output());
         foreach ($hiringRequest->details as $detail) {
-            if($detail->schedule_file != null){
-                $mensaje ="Anexo de Detalle de Horario del Candidato " . $detail->person->first_name . " " . $detail->person->middle_name . " " . $detail->person->last_name;
+            if ($detail->schedule_file != null) {
+                $mensaje = "Anexo de Detalle de Horario del Candidato " . $detail->person->first_name . " " . $detail->person->middle_name . " " . $detail->person->last_name;
                 $pdf4   = PDF::loadView('hiringRequest.HiringAnexoBlank', compact('mensaje'));
                 $pdf4->setPaper('letter', 'portrait');
                 $pdf4->render();
                 $m->addRaw($pdf4->output());
                 $m->addRaw(\Storage::disk('requestDetailSchedules')->get($detail->schedule_file));
             }
-            $mensaje ="Anexo Documentos Personales del Candidato " . $detail->person->first_name . " " . $detail->person->middle_name . " " . $detail->person->last_name;
-                $pdf4   = PDF::loadView('hiringRequest.HiringAnexoBlank', compact('mensaje'));
-                $pdf4->setPaper('letter', 'portrait');
-                $pdf4->render();
-                $m->addRaw($pdf4->output());
+            $mensaje = "Anexo Documentos Personales del Candidato " . $detail->person->first_name . " " . $detail->person->middle_name . " " . $detail->person->last_name;
+            $pdf4   = PDF::loadView('hiringRequest.HiringAnexoBlank', compact('mensaje'));
+            $pdf4->setPaper('letter', 'portrait');
+            $pdf4->render();
+            $m->addRaw($pdf4->output());
             $m->addRaw(\Storage::disk('personDocsMerged')->get($detail->person->merged_docs));
         }
         $createdPdf = $m->merge();
@@ -791,7 +791,7 @@ class HiringRequestController extends Controller
         $hiringRequest = HiringRequest::findOrFail($id);
 
         if ($hiringRequest->request_status != HiringRequestStatusCode::RDS) {
-            return response(['message' => 'La solicitud debe haber sido recibida en Secretaría de Decanato para poder agregar un acuerdo de Junta Directiva'], 400);
+            return response(['message' => 'La solicitud debe haber sido recibida en Secretaría de Facultad para poder agregar un acuerdo de Junta Directiva'], 400);
         }
 
         $file = $request->file('file');
