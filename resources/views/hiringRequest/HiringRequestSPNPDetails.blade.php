@@ -157,7 +157,7 @@
                             <td>Anexo {{ $n }}</td>
                             <td>$ {{ number_format( $detail->mappedGroups[$i]->hourly_rate,2) }}</td>
                             <td>{{ $detail->mappedGroups[$i]->work_weeks }}</td>
-                            <td>{{ $detail->mappedGroups[$i]->weekly_hours ? $detail->mappedGroups[$i]->weekly_hours : "Ver Anexo de horas" }}</td>
+                            <td>{{ $detail->mappedGroups[$i]->weekly_hours ? $detail->mappedGroups[$i]->weekly_hours : "Ver anexo de horas" }}</td>
                             @if ($detail->mappedGroups[$i]->period_hours != null)
                             <td>{{ $detail->mappedGroups[$i]->period_hours  }}</td>
                             <td> $ {{ number_format($detail->mappedGroups[$i]->period_hours *$detail->mappedGroups[$i]->hourly_rate,2) }}</td>
