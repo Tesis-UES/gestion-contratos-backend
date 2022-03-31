@@ -205,6 +205,9 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     });
 
     // Rutas que manejan el catalogo de empleados
+    // Route::group(['middleware' => ['can:list_employees']], function () {
+    Route::get('/employees', [EmployeeController::class, 'listEmployees']);
+    // });
     Route::group(['middleware' => ['can:write_employee']], function () {
         Route::post('/employees/me', [EmployeeController::class, 'store']);
     });
