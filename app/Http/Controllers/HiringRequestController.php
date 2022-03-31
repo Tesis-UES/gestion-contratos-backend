@@ -102,7 +102,7 @@ class HiringRequestController extends Controller
     {
         if ($hiringRequest->request_status == HiringRequestStatusCode::ERH && $hiringRequest->validated === false) {
             $emails = $this->getHRMail();
-            $mensajeEmail =  "Se ha modificado la solicitud de contratación con el siguiente código: " . $hiringRequest->code . " por favor revisar la solicitud para verificar si cumple con las observaciones dadas en la validación de la solicitud.";
+            $mensajeEmail =  "Se ha modificado la solicitud de contratación con el siguiente código: " . $hiringRequest->code . " por favor revisar la solicitud para verificar si cumple con las observaciones hechas en la validación de la solicitud.";
             foreach ($emails as $email) {
                 try {
                     Mail::to($email)->send(new ValidationDocsNotification($mensajeEmail, 'hhrrUpdateHr'));
@@ -211,7 +211,8 @@ class HiringRequestController extends Controller
         $hiringRequest->request_status = HiringRequestStatusCode::RDS;
         $hiringRequest->save();
         $emails = $this->getDirectorEmail($hiringRequest->school_id);
-        $mensajeEmail = " Se ha dado por recibida la solicitud de contratación con código <b>: " . $hiringRequest->code . "</b> por parte de la secretaría y ha sido agendada para ser vista en Junta Directiva";
+        $mensajeEmail = " Se ha dado por recibida la solicitud de contratación con código: <b>" . $hiringRequest->code . "</b> por parte de 
+        secretaría de facultad y ha sido agendada para ser vista en Junta Directiva";
 
         foreach ($emails as $email) {
             try {
@@ -324,13 +325,12 @@ class HiringRequestController extends Controller
         } else {
             $escuela = "Escuela de " . $hiringRequest->school->name;
         }
-        $mensajeEmail = "Se ha solicitado la validación de la solicitud de contratación con codigo <b>" . $hiringRequest->code . "</b> de parte de <b>" . $escuela . "</b>.
+        $mensajeEmail = "Se ha solicitado la validación de la solicitud de contratación con codigo:  <b>" . $hiringRequest->code . "</b> de parte de <b>" . $escuela . "</b>.<br>
         <ul>
-            <li>Código: <b>" . $hiringRequest->code . "</b> </li>
-            <li>Tipo de Solicitud de Contrato:<b> " . $hiringRequest->contractType->name . " </b>  </li>
-            <li>Modalidad: <b>" . $hiringRequest->modality . "</b>   </li>
-        </ul><br>
-     ";
+            <li>Código: <b>" . $hiringRequest->code . "</b></li>
+            <li>Tipo de solicitud de contrato: <b>" . $hiringRequest->contractType->name . "</b></li>
+            <li>Modalidad: <b>" . $hiringRequest->modality . "</b></li>
+        </ul><br>";
 
         foreach ($emails as $email) {
             try {
@@ -370,9 +370,9 @@ class HiringRequestController extends Controller
 
         if ($validatedRequest['validated'] == true) {
             $this->registerAction('El usuario valido que la solicitud si cumple con las validaciones', 'high');
-            $mensajeEmail = "Se ha validado la solicitud de contratación con código <b>" . $hiringRequest->code . "</b> que fue enviada para su respectiva validación por parte del Recursos Humanos, la solicitud de contrato ha sido validada y habilitada para poder ser enviada a Secretaría de Facultad. ";
+            $mensajeEmail = "Se ha validado correctamente la solicitud de contratación con código: <b>" . $hiringRequest->code . "</b> que fue enviada para su respectiva validación por parte de Recursos Humanos, la solicitud de contrato ha sido validada y habilitada para poder ser enviada a Secretaría de Facultad. ";
         } else {
-            $this->registerAction('El usuario reviso la solicitud y publicó observaciones de cambios a hacer', 'high');
+            $this->registerAction('El usuario reviso la solicitud y comentó observaciones de cambios por hacer', 'high');
             $mensajeEmail = "Se ha revisado la solicitud de contratación con código <b>" . $hiringRequest->code . "</b> por parte de Recursos Humanos, la solicitud de contrato ha sido observada para poder ser modificada según las observaciones pertinentes. ";
         }
 
@@ -405,11 +405,11 @@ class HiringRequestController extends Controller
         } else {
             $escuela = "Escuela de " . $hiringRequest->school->name;
         }
-        $mensajeEmail = "Se ha enviado la solicitud de contratación validada con código <b>" . $hiringRequest->code . "</b> de parte de la  <b>" . $escuela . "</b> para que esta sea recibida para ser agendada para en Junta Directiva.
+        $mensajeEmail = "Se ha enviado la solicitud de contratación validada con código <b>" . $hiringRequest->code . "</b> de parte de la  <b>" . $escuela . "</b> para que esta sea recibida por secretaía de facultad y posteriormente agendada para Junta Directiva.
          <ul>
-            <li>Código: <b>" . $hiringRequest->code . "</b> </li>
-            <li>Tipo de Solicitud de Contrato:<b> " . $hiringRequest->contractType->name . " </b>  </li>
-            <li>Modalidad: <b>" . $hiringRequest->modality . "</b>   </li>
+            <li>Código: <b>" . $hiringRequest->code . "</b>li>
+            <li>Tipo de Solicitud de Contrato:<b>" . $hiringRequest->contractType->name . " </b></li>
+            <li>Modalidad: <b>" . $hiringRequest->modality . "</b></li>
         </ul>";
 
         foreach ($emails as $email) {
@@ -841,8 +841,8 @@ class HiringRequestController extends Controller
         $emailCadidates = $this->getCandidatesEmail($hiringRequest->id);
         $emailHR = $this->getHRmail();
         //Notificando al director
+        $mensajeEmail = "Se ha aprobado y agregado el acuerdo de Junta Directiva para la solicitud con código: " . $hiringRequest->code . "Ya puede ver el acuerdo de Junta Directiva en los detalles de la solicitud de contratación";
         foreach ($emailDirector as $email) {
-            $mensajeEmail = "Se ha aprobado y agregado el acuerdo de Junta Directiva para la solicitud con código: " . $hiringRequest->code . " Ya puede ver el acuerdo de Junta Directiva en los detalles de la solicitud de contratación";;
             try {
                 Mail::to($email)->send(new ValidationDocsNotification($mensajeEmail, 'AgreementUpdate'));
                 $mensaje = 'Se envio el correo con exito';
@@ -851,8 +851,8 @@ class HiringRequestController extends Controller
             }
         }
         //Notificando a los candidatos
+        $mensajeEmail = "Se ha aprobado y agregado el acuerdo de Junta Directiva para la solicitud con Codigo: " . $hiringRequest->code . " . Ya puede ver el detalle de su contración y ver los paso siguientes a la generación de su contrato.";
         foreach ($emailCadidates as $email) {
-            $mensajeEmail = "Se ha aprobado y agregado el acuerdo de Junta Directiva para la solicitud con Codigo: " . $hiringRequest->code . " Ya puede ver el detalle de su contración y ver los paso siguientes a la generación de su contrato.";;
             try {
                 Mail::to($email)->send(new ValidationDocsNotification($mensajeEmail, 'AgreementUpdate'));
                 $mensaje = 'Se envio el correo con exito';
@@ -862,7 +862,7 @@ class HiringRequestController extends Controller
         }
         //Notificando a HR para generar contrato
         foreach ($emailHR as $email) {
-            $mensajeEmail = "Se ha Aprobado y Agregado el acuerdo de junta directiva para la solicitud de contratacion con Codigo: " . $hiringRequest->code . " Ya puede ver el detalle del acuerdo de Junta directiva y se ha habilitado la generación de los contratos para los candidatos involucrados en la solicitud de contratación";
+            $mensajeEmail = "Se ha Aprobado y Agregado el acuerdo de junta directiva para la solicitud de contratacion con código: " . $hiringRequest->code . ". Ya puede ver el detalle del acuerdo de Junta directiva y se ha habilitado la generación de los contratos para los candidatos involucrados en la solicitud de contratación";
             try {
                 Mail::to($email)->send(new ValidationDocsNotification($mensajeEmail, 'AgreementUpdate'));
                 $mensaje = 'Se envio el correo con exito';

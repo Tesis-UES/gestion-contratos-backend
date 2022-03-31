@@ -38,14 +38,14 @@ class CheckAuthorities extends Command
             if ($endPeriod < $actualDate) {
                 if ($days == 30 || $days == 0) {
                     $countSA++;
-                    $mensajeSa[] =  "<li>" . $sca->school->name . "<b> Fin del Periodo: " . $endPeriod->format('d/m/Y') . "</b></li>";
+                    $mensajeSA[] =  "<li>" . $sca->school->name . "<b> Fin del Periodo: " . $endPeriod->format('d/m/Y') . "</b></li>";
                 }
             }
         }
         if ($countSA > 0) {
-            $mensaje = "Por favor verificar las autoridades (Directores/Jefe de Unidad) de las escuelas/unidades a continuación listadas en el catalogo de autoridades de Escuelas de Sistema:<br>
+            $mensaje = "Por favor verificar en el catalogo de autoridades de escuelas/unidades del sistema, las autoridades (Directores/Jefe de Unidad) de las escuelas/unidades a continuación listadas:<br>
             <b>Escuelas/Unidades:</b>
-            <ul>" . implode(' ', $mensajeSa) . "</ul><br>
+            <ul>" . implode(' ', $mensajeSA) . "</ul><br>
             Su periodo está cerca de caducar y necesitan ser actualizados.";
             foreach ($adminEmail as $email) {
                 try {
@@ -94,7 +94,7 @@ class CheckAuthorities extends Command
             }
         }
         if ($countCA > 0) {
-            $mensaje = "Por favor verificar las autoridades Centrales a continuación listadas en el catalogo de Autoridades Centrales sistema:<br>
+            $mensaje = "Por favor verificar en el catalogo de Autoridades Centrales del sistema, las autoridades centrales a continuación listadas :<br>
             <ul>" . implode(' ', $mensajeCA) . "</ul><br>
             Su periodo está cerca de caducar y necesitan ser actualizados.";
             foreach ($adminEmail as $email) {
