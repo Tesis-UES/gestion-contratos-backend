@@ -667,7 +667,7 @@ class HiringRequestDetailController extends Controller
         // Agregar fecha manualmente 
         $fields = $request->validate([
             'code' => 'required|string',
-            'date' => 'required|date|before:today',
+            'date' => 'required|date|before_or_equal:today',
         ]);
         $detail = HiringRequestDetail::with(['hiringRequest', 'contractStatus'])->findOrFail($id);
         if ($detail->request_status == HiringRequestStatusCode::GDC) {
