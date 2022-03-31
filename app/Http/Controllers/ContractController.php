@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers;
 
+use App\Constants\ContractStatusCode;
 use App\Constants\ContractType;
 use App\Models\Bank;
 use App\Models\Format;
@@ -10,7 +11,7 @@ use App\Models\Escalafon;
 use App\Models\Faculty;
 use App\Models\Person;
 use App\Models\PersonValidation;
-use App\Models\{PersonChange, CentralAuthority, ContractVersion, StaySchedule};
+use App\Models\{PersonChange, CentralAuthority, ContractStatus, ContractVersion, StaySchedule};
 use Illuminate\Http\Request;
 use App\Http\Traits\{WorklogTrait, ValidationTrait};
 use Illuminate\Support\Facades\Auth;
@@ -483,11 +484,6 @@ class ContractController extends Controller
             return response(['message' => 'El contrato no se puede generar porque la solicitud no ha sido aprobada en Junta Directiva'], 400);
         }
 
-        if ($requestDetails->contract_file != null) {
-            $this->RegisterAction('El usuario descargo el contrato con id: ' . $requestDetails->id, 'high');
-            return \Storage::disk('contracts')->download($requestDetails->contract_file);
-        }
-
         switch ($requestDetails->hiringRequest->contractType->name) {
             case ContractType::TA:
                 $contractComponents = $this->contractGenerateTiempoAdicional($requestDetails);
@@ -513,15 +509,19 @@ class ContractController extends Controller
         $tempFile = tempnam(sys_get_temp_dir(), 'ContractFile');
         $file->saveAs($tempFile);
 
-        Storage::disk('contracts')->put($fileName['name'], \File::get($tempFile));
-        $this->updateContractVersionHistory($requestDetails, $fileName);
-        $requestDetails->update([
-            'contract_file' => $fileName['name'],
-            'contract_version' => $fileName['version'],
-        ]);
+        if ($requestDetails->contract_file == null) {
+            Storage::disk('contracts')->put($fileName['name'], \File::get($tempFile));
+            $this->updateContractVersionHistory($requestDetails, $fileName);
+            $contractStatus = ContractStatus::where('code', ContractStatusCode::ELB)->first();
+            $requestDetails->contractStatus()->attach(['contract_status_id' => $contractStatus->id]);
+            $requestDetails->update([
+                'contract_file' => $fileName['name'],
+                'contract_version' => $fileName['version'],
+            ]);
+            $this->RegisterAction('El usuario genero la version inicial del contrato con id: ' . $requestDetails->id, 'high');
+        }
 
-        $this->RegisterAction('El usuario genero la version inicial del contrato con id: ' . $requestDetails->id, 'high');
-        return response()->download($tempFile, $fileName, $header)->deleteFileAfterSend(true);
+        return response()->download($tempFile, $fileName['name'], $header)->deleteFileAfterSend(true);
     }
 
 
