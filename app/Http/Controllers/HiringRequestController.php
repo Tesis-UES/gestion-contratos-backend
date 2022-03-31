@@ -200,7 +200,10 @@ class HiringRequestController extends Controller
 
     public function getAllHiringRequestWithAgreement()
     {
-        $hiringRequests = HiringRequest::has('agreement')->get();
+        $relations = ['school', 'contractType'];
+        $hiringRequests = HiringRequest::with($relations)
+            ->has('agreement')
+            ->get();
 
         return $hiringRequests;
     }
