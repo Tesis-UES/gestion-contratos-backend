@@ -261,7 +261,7 @@ class HiringRequestDetailController extends Controller
             $group->save();
             $groups[] = $group;
         }
-        if ($weeklyHours > 10) {
+        if ($weeklyHours > 10 && $validatedDetail['weekly_hours'] != null) {
             DB::rollBack();
             return response(['message' => 'Un empleado no puede trabajar mas de 40 horas por mes en esta modalidad'], 400);
         }
@@ -600,7 +600,7 @@ class HiringRequestDetailController extends Controller
             $group->save();
             $grp[] = $group;
         }
-        if ($weeklyHours > 10) {
+        if ($weeklyHours > 10 && $validatedDetail['weekly_hours'] != null) {
             DB::rollBack();
             return response(['message' => 'Un empleado no puede trabajar mas de 40 horas por mes en esta modalidad'], 400);
         }

@@ -17,7 +17,7 @@ class CreateEscalafonsTable extends Migration
             $table->id();
             $table->string('code', 10);
             $table->string('name', 120);
-            $table->integer('salary');
+            $table->float('salary');
             $table->softDeletes();
             $table->timestamps();
         });

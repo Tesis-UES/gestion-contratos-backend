@@ -664,7 +664,11 @@ class HiringRequestController extends Controller
         foreach ($hiringRequest->details as $detail) {
 
             $detail->fullName = $detail->person->first_name . " " . $detail->person->middle_name . " " . $detail->person->last_name;
-            $detail->total = $detail->hourly_rate * $detail->work_weeks * $detail->weekly_hours;
+            if ($detail->period_hours != null) {
+                $detail->total = $detail->hourly_rate * $detail->period_hours;
+            } else {
+                $detail->total = $detail->hourly_rate * $detail->work_weeks * $detail->weekly_hours;
+            }
             $hiringRequest->total += $detail->total;
             $positionActivities = [];
             foreach ($detail->positionActivity as $position) {

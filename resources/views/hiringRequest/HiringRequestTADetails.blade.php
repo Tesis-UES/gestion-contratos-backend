@@ -85,7 +85,6 @@
             border-collapse: collapse;
             table-layout: fixed;
         }
-
     </style>
 </head>
 
@@ -106,124 +105,116 @@
     </footer>
     <main style="page-break-after: auto; margin-top:5px;">
         @php
-            $n = 0;
+        $n = 0;
         @endphp
         @foreach ($hiringRequest->details as $detail)
-            @php
-                $n++;
-            @endphp
-            <div @if (count($hiringRequest->details) != $n)
-                style="page-break-after: always; text-align: center;"
+        @php
+        $n++;
+        @endphp
+        <div @if (count($hiringRequest->details) != $n)
+            style="page-break-after: always; text-align: center;"
             @else
-                style="text-align: center;"
-        @endif >
-        <span style="float: left;"><b>{{ $header->escuela }}</b></span>
-        <span><b>Docente:</b> {{ $detail->fullName }}</span>
-        <span style="float:right "><b>Escalafon: {{ $detail->person->employee->escalafon->code }}</b></span>
-        <table style="margin-top:10px; " class="demo" width="100%">
-            <tbody>
-                <tr>
-                    <td style="font-weight: bold; background-color: rgba(190, 100, 100, 0.5); text-align: center;"
-                        colspan="12">Actividades en Horario normal</b> </td>
-                </tr>
-                <tr>
-                    <td style="font-weight: bold; background-color: rgb(192, 192, 192, 0.5); text-align: center;"
-                        colspan="6"><b>Funciones en Jornada Normal</b> </td>
-                    <td style="font-weight: bold; background-color: rgb(192, 192, 192, 0.5); text-align: center;"
-                        colspan="6"><b>Horario de Permanencia en Jornada Normal</b> </td>
-                </tr>
-                <tr>
-                    <td style="font-weight: bold; background-color: rgb(255, 255, 255); text-align: center;"
-                        colspan="6">
-                        Ver Anexo
-                    </td>
-                    <td style="font-weight: bold; background-color: rgb(255, 255, 255); text-align: center;"
-                        colspan="6">
-                        Ver Anexo
-                    </td>
+            style="text-align: center;"
+            @endif >
+            <span style="float: left;"><b>{{ $header->escuela }}</b></span>
+            <span><b>Docente:</b> {{ $detail->fullName }}</span>
+            <span style="float:right "><b>Escalafon: {{ $detail->person->employee->escalafon->code }}</b></span>
+            <table style="margin-top:10px; " class="demo" width="100%">
+                <tbody>
+                    <tr>
+                        <td style="font-weight: bold; background-color: rgba(190, 100, 100, 0.5); text-align: center;" colspan="12">Actividades en Horario normal</b> </td>
+                    </tr>
+                    <tr>
+                        <td style="font-weight: bold; background-color: rgb(192, 192, 192, 0.5); text-align: center;" colspan="6"><b>Funciones en Jornada Normal</b> </td>
+                        <td style="font-weight: bold; background-color: rgb(192, 192, 192, 0.5); text-align: center;" colspan="6"><b>Horario de Permanencia en Jornada Normal</b> </td>
+                    </tr>
+                    <tr>
+                        <td style="font-weight: bold; background-color: rgb(255, 255, 255); text-align: center;" colspan="6">
+                            Ver Anexo
+                        </td>
+                        <td style="font-weight: bold; background-color: rgb(255, 255, 255); text-align: center;" colspan="6">
+                            Ver Anexo
+                        </td>
 
-                </tr>
-                <tr>
-                    <td style="font-weight: bold; background-color: rgba(190, 100, 100, 0.5); text-align: center;"
-                        colspan="12">Actividades en Tiempo Integral</b> </td>
-                </tr>
-                <tr>
-                    <td style="font-weight: bold; background-color:  rgb(192, 192, 192, 0.5); text-align: center;"
-                        colspan="3"><b>Asignatura</b> </td>
-                    <td style="font-weight: bold; background-color:  rgb(192, 192, 192, 0.5); text-align: center;"
-                        colspan="3"><b>Actividad</b> </td>
-                    <td style="font-weight: bold; background-color:  rgb(192, 192, 192, 0.5); text-align: center;"
-                        colspan="3"><b>Grupo</b> </td>
-                    <td style="font-weight: bold; background-color:  rgb(192, 192, 192, 0.5); text-align: center;"
-                        colspan="3"><b>Horario</b> </td>
-                </tr>
-               
+                    </tr>
+                    <tr>
+                        <td style="font-weight: bold; background-color: rgba(190, 100, 100, 0.5); text-align: center;" colspan="12">Actividades en Tiempo Integral</b> </td>
+                    </tr>
+                    <tr>
+                        <td style="font-weight: bold; background-color:  rgb(192, 192, 192, 0.5); text-align: center;" colspan="3"><b>Asignatura</b> </td>
+                        <td style="font-weight: bold; background-color:  rgb(192, 192, 192, 0.5); text-align: center;" colspan="3"><b>Actividad</b> </td>
+                        <td style="font-weight: bold; background-color:  rgb(192, 192, 192, 0.5); text-align: center;" colspan="3"><b>Grupo</b> </td>
+                        <td style="font-weight: bold; background-color:  rgb(192, 192, 192, 0.5); text-align: center;" colspan="3"><b>Horario</b> </td>
+                    </tr>
+
                     @foreach ($detail->mappedGroups as $group)
                     <tr>
-                    <td style="font-weight: bold;  text-align: center;" colspan="3"><b>{{$group->name}}</b> </td>
-                    <td style="font-weight: bold; text-align: center;" colspan="3"><b>{{$group->groupType}}</b> </td>
-                    <td style="font-weight: bold; text-align: center;" colspan="3"><b>{{$group->number}}</b> </td>
-                    <td style="font-weight: bold; text-align: center;" colspan="3"><b>{{$group->days." ".$group->time }}</b>
-                    </td>
-                </tr>
+                        <td style="font-weight: bold;  text-align: center;" colspan="3"><b>{{$group->name}}</b> </td>
+                        <td style="font-weight: bold; text-align: center;" colspan="3"><b>{{$group->groupType}}</b> </td>
+                        <td style="font-weight: bold; text-align: center;" colspan="3"><b>{{$group->number}}</b> </td>
+                        <td style="font-weight: bold; text-align: center;" colspan="3"><b>{{$group->days." ".$group->time }}</b>
+                        </td>
+                    </tr>
                     @endforeach
-                <tr>
-                    <td style="font-weight: bold; background-color: rgb(192, 192, 192, 0.5); text-align: Left;"
-                        colspan="3"><b>Funciones en jornada tiempo Adicional:</b>
-                    </td>
-                    <td style="font-weight: bold;  text-align: Left; word-wrap: break-word" colspan="9"><b>Ver Anexo</b>
-                    </td>
+                    <tr>
+                        <td style="font-weight: bold; background-color: rgb(192, 192, 192, 0.5); text-align: Left;" colspan="3"><b>Funciones en jornada tiempo Adicional:</b>
+                        </td>
+                        <td style="font-weight: bold;  text-align: Left; word-wrap: break-word" colspan="9"><b>Ver Anexo</b>
+                        </td>
 
-                </tr>
-               
-                <tr>
-                    <td style="font-weight: bold;  text-align: Left; background-color: rgb(192, 192, 192, 0.5);"
-                        colspan="3"><b>Periodo de Contratación</b>
-                    </td>
-                    <td style="font-weight: bold;  text-align: Left; word-wrap: break-word" colspan="9"><b>{{ 'Del ' . date('d/m/Y', strtotime($detail->start_date)) . ' Hasta ' . date('d/m/Y', strtotime($detail->finish_date)) }}</b>
-                    </td>
+                    </tr>
 
-                </tr>
-                <tr>
-                    <td style="font-weight: bold;  text-align: Left; background-color: rgb(192, 192, 192, 0.5);"
-                        colspan="3"><b>Cantidad de horas por semana</b>
-                    </td>
-                    <td style="font-weight: bold;  text-align: Left; word-wrap: break-word" colspan="9"><b>{{$detail->weekly_hours}}</b>
-                    </td>
+                    <tr>
+                        <td style="font-weight: bold;  text-align: Left; background-color: rgb(192, 192, 192, 0.5);" colspan="3"><b>Periodo de Contratación</b>
+                        </td>
+                        <td style="font-weight: bold;  text-align: Left; word-wrap: break-word" colspan="9"><b>{{ 'Del ' . date('d/m/Y', strtotime($detail->start_date)) . ' Hasta ' . date('d/m/Y', strtotime($detail->finish_date)) }}</b>
+                        </td>
 
-                </tr>
-                <tr>
-                    <td style="font-weight: bold; background-color: rgb(192, 192, 192, 0.5);  text-align: Left;"
-                        colspan="3"><b>Cantidad de semanas a pagar:</b></td>
-                    <td style="font-weight: bold;  text-align: Left; word-wrap: break-word" colspan="9">
-                        <b>{{$detail->work_weeks}}</b>
-                    </td>
+                    </tr>
+                    <tr>
+                        <td style="font-weight: bold;  text-align: Left; background-color: rgb(192, 192, 192, 0.5);" colspan="3"><b>Cantidad de horas por semana</b>
+                        </td>
+                        @if($detail->period_hours != null)
+                        <td style="font-weight: bold;  text-align: Left; word-wrap: break-word" colspan="9"><b>Ver anexo de horas</b>
+                        </td>
+                        @else
+                        <td style="font-weight: bold;  text-align: Left; word-wrap: break-word" colspan="9"><b>{{$detail->weekly_hours}}</b>
+                        </td>
+                        @endif
+                    </tr>
+                    <tr>
+                        <td style="font-weight: bold; background-color: rgb(192, 192, 192, 0.5);  text-align: Left;" colspan="3"><b>Cantidad de semanas a pagar:</b></td>
+                        <td style="font-weight: bold;  text-align: Left; word-wrap: break-word" colspan="9">
+                            <b>{{$detail->work_weeks}}</b>
+                        </td>
 
-                </tr>
-                <tr>
-                    <td style="font-weight: bold; background-color: rgb(192, 192, 192, 0.5);  text-align: Left;"
-                        colspan="3"><b>total de horas por periodo</b>
-                    </td>
-                    <td style="font-weight: bold;  text-align: Left; word-wrap: break-word" colspan="9">
-                        <b>{{$detail->weekly_hours*$detail->work_weeks }}</b>
-                    </td>
+                    </tr>
+                    <tr>
+                        <td style="font-weight: bold; background-color: rgb(192, 192, 192, 0.5);  text-align: Left;" colspan="3"><b>total de horas por periodo</b>
+                        </td>
+                        @if($detail->period_hours != null)
+                        <td style="font-weight: bold;  text-align: Left; word-wrap: break-word" colspan="9">
+                            <b>{{ $detail->period_hours }}</b>
+                        </td>
+                        @else
+                        <td style="font-weight: bold;  text-align: Left; word-wrap: break-word" colspan="9">
+                            <b>{{ $detail->weekly_hours * $detail->work_weeks }}</b>
+                        </td>
+                        @endif
 
-                </tr>
-                <tr>
-                    <td style="font-weight: bold;  text-align: Left; background-color:rgba(190, 100, 100, 0.5);"
-                        colspan="3"><b>Valor a pagar por hora </b>
-                    </td>
-                    <td style="font-weight: bold;  text-align: Left; word-wrap: break-word" colspan="3"><b>${{ number_format($detail->hourly_rate,2)}}</b>
-                    </td>
-                    <td style="font-weight: bold;  text-align: Left; background-color: rgba(190, 100, 100, 0.5);"
-                        colspan="3"><b>Total a pagar por el periodo</b>
-                    </td>
-                    <td style="font-weight: bold;  text-align: Left; word-wrap: break-word" colspan="3"><b>${{ number_format($detail->total,2)}}</b>
-                    </td>
-
-                </tr>
-            </tbody>
-        </table>
+                    </tr>
+                    <tr>
+                        <td style="font-weight: bold;  text-align: Left; background-color:rgba(190, 100, 100, 0.5);" colspan="3"><b>Valor a pagar por hora </b>
+                        </td>
+                        <td style="font-weight: bold;  text-align: Left; word-wrap: break-word" colspan="3"><b>${{ number_format($detail->hourly_rate,2)}}</b>
+                        </td>
+                        <td style="font-weight: bold;  text-align: Left; background-color: rgba(190, 100, 100, 0.5);" colspan="3"><b>Total a pagar por el periodo</b>
+                        </td>
+                        <td style="font-weight: bold;  text-align: Left; word-wrap: break-word" colspan="3"><b>${{ number_format($detail->total,2)}}</b>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
             <div style="page-break-before: always;">
                 <span><b>Anexo de Funciones y horario de permanencia del docente: </b> {{ $detail->fullName }}</span>
                 {{-- make a list --}}
@@ -231,74 +222,71 @@
                     <table class="table table-bordered" align="center" width="50%">
                         <thead>
                             <tr>
-                                <th style="font-weight: bold; text-align: center; background-color: rgba(190, 100, 100, 0.5);"
-                                    colspan="2"><b>Horario de Permanencia en Jornada Normal</b>
+                                <th style="font-weight: bold; text-align: center; background-color: rgba(190, 100, 100, 0.5);" colspan="2"><b>Horario de Permanencia en Jornada Normal</b>
                                 </th>
                             </tr>
-    
+
                         </thead>
                         <tbody>
                             @foreach ($detail->staySchedule as $stay)
-                                <tr>
-                                    <td style="font-weight: bold; text-align: center;" colspan="2"><b>{{ $stay }}</b></td>
-                                </tr>
+                            <tr>
+                                <td style="font-weight: bold; text-align: center;" colspan="2"><b>{{ $stay }}</b></td>
+                            </tr>
                             @endforeach
-    
-    
-    
+
+
+
                         </tbody>
                     </table>
                     <br>
                     <table class="table table-bordered" align="center" width="75%">
                         <thead>
                             <tr>
-                                <th style="font-weight: bold; text-align: center; background-color: rgba(190, 100, 100, 0.5);"
-                                    colspan="2"><b>Funciones en Jornada Normal</b>
+                                <th style="font-weight: bold; text-align: center; background-color: rgba(190, 100, 100, 0.5);" colspan="2"><b>Funciones en Jornada Normal</b>
                                 </th>
                             </tr>
-    
+
                         </thead>
                         <tbody>
                             @foreach ($detail->stayActivities as $act)
-                                <tr>
-                                    <td style="font-weight: bold; text-align: left;" colspan="2"><b>{{ $act }}</b></td>
-                                </tr>
+                            <tr>
+                                <td style="font-weight: bold; text-align: left;" colspan="2"><b>{{ $act }}</b></td>
+                            </tr>
                             @endforeach
-    
-    
-    
+
+
+
                         </tbody>
                     </table>
                     <br>
                     <div style="page-break-after: always;"> </div>
-                        <span class="despedida"><b>CARGOS Y FUNCIONES QUE REALIZARA
-                                {{ Str::upper($detail->fullName) }} EN TIEMPO ADICIONAL</b> </span>
+                    <span class="despedida"><b>CARGOS Y FUNCIONES QUE REALIZARA
+                            {{ Str::upper($detail->fullName) }} EN TIEMPO ADICIONAL</b> </span>
 
-                            @foreach ($detail->positionActivities as $activity)
-                            <table class="table table-bordered" align="center" width="75%">
-                                <thead>
-                                    <tr>
-                                        <th style="font-weight: bold; text-align: center; background-color: rgba(190, 100, 100, 0.5);"
-                                            colspan="2"><b>Funciones del cargo {{ $activity['position'] }}</b>
-                                        </th>
-                                    </tr>
-            
-                                </thead>
-                                <tbody>
-                              
-                                    @foreach ($activity['activities'] as $act)
-                                       <tr>
-                                    <td style="font-weight: bold; text-align: left;" colspan="2"><b>{{ $act }}</b></td>
-                                </tr>
-                                    @endforeach
+                    @foreach ($detail->positionActivities as $activity)
+                    <table class="table table-bordered" align="center" width="75%">
+                        <thead>
+                            <tr>
+                                <th style="font-weight: bold; text-align: center; background-color: rgba(190, 100, 100, 0.5);" colspan="2"><b>Funciones del cargo {{ $activity['position'] }}</b>
+                                </th>
+                            </tr>
 
-                                
-                            </tbody>
-                            </table>
+                        </thead>
+                        <tbody>
+
+                            @foreach ($activity['activities'] as $act)
+                            <tr>
+                                <td style="font-weight: bold; text-align: left;" colspan="2"><b>{{ $act }}</b></td>
+                            </tr>
                             @endforeach
-                        
+
+
+                        </tbody>
+                    </table>
+                    @endforeach
+
                 </div>
-               
+
             </div>
         </div>
 
@@ -311,8 +299,7 @@
             <br>
             <br>
             <span class="despedida">___________________________________</span>
-            <span
-                class="despedida">{{ $hiringRequest->school->SchoolAuthority->where('position', 'DIRECTOR')->first()->name }}</span>
+            <span class="despedida">{{ $hiringRequest->school->SchoolAuthority->where('position', 'DIRECTOR')->first()->name }}</span>
             <span class="despedida">Director</span>
             <span class="despedida">{{ ucfirst($header->escuela) }}</span>
         </div>

@@ -380,7 +380,13 @@ class ContractController extends Controller
         $sal = $requestDetails->person->employee->escalafon->salary;
         $valorTotalSalario = explode('.', sprintf('%.2f', $sal));
         $salario = $formatter->toString($sal) . "" . $valorTotalSalario[1] . "/100 DOLARES DE LOS ESTADOS UNIDOS DE AMERICA ($" . number_format($sal, 2) . ")";
-        $totalAPagar = $requestDetails->hourly_rate * $requestDetails->work_weeks * $requestDetails->weekly_hours;
+        if ($requestDetails->period_hours != null) {
+            $horasAdicionalPeriodo = $requestDetails->period_hours;
+            $totalAPagar = $requestDetails->hourly_rate * $requestDetails->period_hours;
+        } else {
+            $horasAdicionalPeriodo = $requestDetails->work_weeks * $requestDetails->weekly_hours;
+            $totalAPagar = $requestDetails->hourly_rate * $requestDetails->work_weeks * $requestDetails->weekly_hours;
+        }
         $valorTotal = explode('.', sprintf('%.2f', $totalAPagar));
         $sueldoLetras = $formatter->toString($totalAPagar) . "" . $valorTotal[1] . "/100 DOLARES DE LOS DE LOS ESTADOS UNIDOS DE AMERICA ($" . sprintf('%.2f', $totalAPagar) . ")";
         if ($personalData['tipo'] == 'E') {
@@ -407,9 +413,7 @@ class ContractController extends Controller
 
         try {
             $phpWord = new \PhpOffice\PhpWord\TemplateProcessor(\Storage::disk('formats')->path($format->file_url));
-
             $specific = [
-
                 'cargo' => mb_strtoupper($escalafon, 'UTF-8'),
                 'salario' => $salario,
                 'funcionesPermanencia' => mb_strtoupper($hrAct, 'UTF-8'),
@@ -419,7 +423,7 @@ class ContractController extends Controller
                 'funcionesAdicional' => $actividades['cargoFunciones'],
                 'horarioAdicional' => mb_strtoupper($hrStay, 'UTF-8'),
                 'horasAdicional' => sprintf('%.2f', $requestDetails->weekly_hours),
-                'horasAdicionalPeriodo' => sprintf('%.2f', $requestDetails->weekly_hours * $requestDetails->work_weeks),
+                'horasAdicionalPeriodo' => sprintf('%.2f', $horasAdicionalPeriodo),
                 'periodoDeContratacion' => mb_strtoupper($peridoContracion, 'UTF-8'),
                 'salarioAdicional' => mb_strtoupper($sueldoLetras, 'UTF-8'),
                 'valorHora' => mb_strtoupper($valorHora, 'UTF-8'),

@@ -19,6 +19,7 @@ class HiringRequestDetail extends Model
         'hourly_rate',
         'work_weeks',
         'weekly_hours',
+        'period_hours',
         'person_id',
         'stay_schedule_id',
         'hiring_request_id',
