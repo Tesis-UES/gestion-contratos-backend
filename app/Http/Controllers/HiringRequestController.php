@@ -198,6 +198,13 @@ class HiringRequestController extends Controller
         return response($hiringRequests, 200);
     }
 
+    public function getAllHiringRequestWithAgreement()
+    {
+        $hiringRequests = HiringRequest::has('agreement')->get();
+
+        return $hiringRequests;
+    }
+
 
     public function secretaryReceptionHiringRequest(HiringRequest $hiringRequest)
     {
