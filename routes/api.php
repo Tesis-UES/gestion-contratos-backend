@@ -387,6 +387,11 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
         Route::put('/hiringRequest/{hiringRequest}/secretary/reception', [HiringRequestController::class, 'secretaryReceptionHiringRequest'])->middleware('can:accept_request_asis');
     });
 
+    // Ruta de asistente financiero para ver las solicitudes de contratacion aprobadas
+    Route::group(['middleware' => ['can:read_validated_requests']], function () {
+        Route::get('/hiringRequest/all/validated', [HiringRequestController::class, 'getAllHiringRequestValidated']);
+    });
+
     Route::get('/hiringRequest/all/petitions/hr', [HiringRequestController::class, 'getAllHiringRequestsHR']);
     Route::post('/hiringRequest/{hiringRequest}/sendToHR', [HiringRequestController::class, 'sendToHR']);
     Route::post('/hiringRequest/{hiringRequest}/validateHR', [HiringRequestController::class, 'reviewHR']);
