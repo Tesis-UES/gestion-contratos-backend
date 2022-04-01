@@ -20,6 +20,7 @@ class CreateContractStatusHistoryTable extends Migration
             $table->foreign('contract_status_id')->references('id')->on('contract_status')->onDelete('cascade')->nonullable();
             $table->bigInteger('hiring_request_detail_id')->unsigned()->nonullable();
             $table->foreign('hiring_request_detail_id')->references('id')->on('hiring_request_details')->onDelete('cascade')->nonullable();
+            $table->timestamps();
         });
     }
 
