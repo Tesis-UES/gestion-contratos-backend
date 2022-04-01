@@ -46,4 +46,11 @@ class ReportController extends Controller
 
         return ['totalUsers' => $users, 'usersBySchool' => $usersBySchool, 'usersByRole' => $usersByRole, 'worklogs' => $worklogs, 'schools' => $schools, 'semesters' => $semesters, 'employeesByFaculty' => $employeesByFaculty, 'lastWeekWorklogs' => $lastWeekWorklogs];
     }
+
+    public function rrhuDashboard(){
+        //get the person count by validation status
+        $personByValidationStatus = Person::select(DB::raw('count(validation_status) as total'),'validation_status')
+            ->groupBy('validation_status')
+            ->get();
+    }
 }
