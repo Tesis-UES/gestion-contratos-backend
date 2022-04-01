@@ -407,4 +407,6 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::get('/hiringRequest/all/petitions/rrhh', [HiringRequestController::class, 'hiringRequestRRHH']);
 
     Route::get('/adminDashboard', [ReportController::class, 'adminDashboard']);
+    Route::get('/rhDashboard', [ReportController::class, 'rrhhDashboard']);
+    Route::get('/Dashboard/{type}', [ReportController::class, 'Dashboard']);
 });
