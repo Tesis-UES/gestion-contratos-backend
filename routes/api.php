@@ -27,6 +27,7 @@ use App\Http\Controllers\EmployeeTypeController;
 use App\Http\Controllers\HiringRequestController;
 use App\Http\Controllers\HiringRequestDetailController;
 use App\Http\Controllers\ContractController;
+use App\Http\Controllers\ReportController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -404,4 +405,6 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::get('/contract/hiringRequestDetail/{requestDetailId}/generate', [ContractController::class, 'generateContract']);
     Route::post('/contract/hiringRequestDetail/{requestDetailId}', [ContractController::class, 'updateContract']);
     Route::get('/hiringRequest/all/petitions/rrhh', [HiringRequestController::class, 'hiringRequestRRHH']);
+
+    Route::get('/adminDashboard', [ReportController::class, 'adminDashboard']);
 });
