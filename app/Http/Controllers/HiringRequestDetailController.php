@@ -300,7 +300,7 @@ class HiringRequestDetailController extends Controller
 
         $user = Auth::user();
 
-        if ($user->school_id != $requestDetails->hiringRequest->school_id) {
+        if ($user->hasRole('Director Escuela') && $user->school_id != $requestDetails->hiringRequest->school_id) {
             return response(['message' => 'No puede ver solicitudes de contratacion de otra escuela'], 400);
         }
 

@@ -299,8 +299,9 @@ class RolesPermissionsSeeder extends Seeder
             'view_personInfo',
             'view_contracSolicitude',
             'view_candidates', */
+            'read_hiringRequest',
             'view_request_asis',
-            'accept_request_asis'
+            'accept_request_asis',
         ]);
 
         $rrhh->givePermissionTo([
@@ -309,12 +310,14 @@ class RolesPermissionsSeeder extends Seeder
             'write_personValidations',
             'read_personValidations',
             'view_rrhhContract',
+            'read_hiringRequest',
         ]);
 
         $financiero->givePermissionTo([
             'view_candidates',
             'read_validated_requests',
             'read_escalafones',
+            'read_hiringRequest',
         ]);
 
         $usuario1->assignRole('Administrador');
