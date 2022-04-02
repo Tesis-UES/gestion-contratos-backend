@@ -5,6 +5,7 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use DB;
 use App\Models\{User, Worklog, Semester, School, Person, HiringRequest, Employee, Agreement};
+use Illuminate\Support\Facades\Auth;
 
 class ReportController extends Controller
 {
@@ -128,20 +129,23 @@ class ReportController extends Controller
         ];
     }
 
-    public function Dashboard($type)
+    public function Dashboard()
     {
-        switch ($type) {
-            case 'Admin':
+        //get the login user 
+        $user = Auth::user();
+       
+        switch ($user->getRoleNames()->first()) {
+            case 'Administrador':
                 return $this->adminDashboard();
                 break;
-            case 'rrhh':
+            case 'Recursos Humanos':
                 return $this->rrhhDashboard();
                 break;
-            case 'decano':
+            case 'Decano':
                 return array_merge($this->adminDashboard(), $this->rrhhDashboard());
                 break;
-            case 'director':
-               return $this->DirectorDashboard(8);
+            case 'Director Escuela':
+               return $this->DirectorDashboard($user->school_id);
                 break;
 
             default:
