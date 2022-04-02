@@ -54,7 +54,7 @@ class EmployeeController extends Controller
     public function listEmployees()
     {
         $select = [
-            'employee.id',
+            'employees.id',
             'people.first_name',
             'people.middle_name',
             'people.last_name',

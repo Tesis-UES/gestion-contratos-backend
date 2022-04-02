@@ -200,8 +200,21 @@ class HiringRequestController extends Controller
 
     public function getAllHiringRequestWithAgreement()
     {
-        $hiringRequests = HiringRequest::has('agreement')->get();
+        $relations = ['school', 'contractType'];
+        $hiringRequests = HiringRequest::with($relations)
+            ->has('agreement')
+            ->get();
 
+        $this->registerAction('El usuario ha consultado las solicitudes de contratacion que ya tienen un acuerdo', 'medium');
+
+        return $hiringRequests;
+    }
+
+    public function getAllHiringRequestValidated()
+    {
+        $relations = ['school', 'contractType'];
+        $hiringRequests = HiringRequest::with($relations)->where('validated', 1)->get();
+        $this->registerAction('El usuario ha consultado las solicitudes de contratacion que ya estan validadas', 'medium');
         return $hiringRequests;
     }
 

@@ -372,20 +372,27 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
         Route::post('/hiringRequest/{id}/details/SPNP', [HiringRequestDetailController::class, 'addSPNPRequestDetails']);
         Route::post('/hiringRequest/{id}/details/TI', [HiringRequestDetailController::class, 'addTIRequestDetails']);
         Route::post('/hiringRequest/{id}/details/TA', [HiringRequestDetailController::class, 'addTARequestDetails']);
-        Route::get('/hiringRequest/details/{id}', [HiringRequestDetailController::class, 'getRequestDetails']);
         Route::put('/hiringRequest/details/{id}/SPNP', [HiringRequestDetailController::class, 'updateSPNPRequestDetail']);
         Route::put('/hiringRequest/details/{id}/TI', [HiringRequestDetailController::class, 'updateTIRequestDetails']);
         Route::put('/hiringRequest/details/{id}/TA', [HiringRequestDetailController::class, 'updateTARequestDetails']);
-        Route::get('/hiringRequest/details/{id}/PDF', [HiringRequestDetailController::class, 'getRequestDetailPdf']);
         Route::post('/hiringRequest/details/{id}/PDF', [HiringRequestDetailController::class, 'addRequestDetailPdf']);
         Route::delete('/hiringRequest/details/{id}', [HiringRequestDetailController::class, 'deleteRequestDetails']);
+    });
+    Route::group(['middleware' => ['can:read_hiringRequest']], function () {
+        Route::get('/hiringRequest/details/{id}', [HiringRequestDetailController::class, 'getRequestDetails']);
+        Route::get('/hiringRequest/details/{id}/PDF', [HiringRequestDetailController::class, 'getRequestDetailPdf']);
     });
 
     //Ruta de secretaria para ver las solicitudes de contratacion enviadas para aprobacion
     Route::group(['middleware' => ['can:view_request_asis']], function () {
-        Route::get('/hiringRequest//all/withAgreement', [HiringRequestController::class, 'getAllHiringRequestWithAgreement']);
+        Route::get('/hiringRequest/all/withAgreement', [HiringRequestController::class, 'getAllHiringRequestWithAgreement']);
         Route::get('/hiringRequest/all/petitions/secretary', [HiringRequestController::class, 'getAllHiringRequestsSecretary']);
         Route::put('/hiringRequest/{hiringRequest}/secretary/reception', [HiringRequestController::class, 'secretaryReceptionHiringRequest'])->middleware('can:accept_request_asis');
+    });
+
+    // Ruta de asistente financiero para ver las solicitudes de contratacion aprobadas
+    Route::group(['middleware' => ['can:read_validated_requests']], function () {
+        Route::get('/hiringRequest/all/validated', [HiringRequestController::class, 'getAllHiringRequestValidated']);
     });
 
     Route::get('/hiringRequest/all/petitions/hr', [HiringRequestController::class, 'getAllHiringRequestsHR']);
