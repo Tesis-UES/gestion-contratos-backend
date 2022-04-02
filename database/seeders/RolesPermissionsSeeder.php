@@ -20,6 +20,7 @@ class RolesPermissionsSeeder extends Seeder
             'email'     => 'admin@ues.edu.sv',
             'password'  => bcrypt('foobar'),
         ]);
+
         $usuario2 = User::create([
             'name'      => 'Guillermo Alexander Cornejo Argueta',
             'email'     => 'admin2@ues.edu.sv',
@@ -53,7 +54,11 @@ class RolesPermissionsSeeder extends Seeder
             'email'     => 'rrhh@ues.edu.sv',
             'password'  => bcrypt('foobar'),
         ]);
-
+        $decano = User::create([
+            'name'      => 'Decano',
+            'email'     => 'decano@ues.edu.sv',
+            'password'  => bcrypt('foobar'),
+        ]);
         // CREACION DE PERMISOS 
         Permission::create(['name' => 'change_passwords']);
         Permission::create(['name' => 'write_formats']);
@@ -162,6 +167,7 @@ class RolesPermissionsSeeder extends Seeder
         $asistenteAdmin = Role::create(['name' => 'Asistente Administrativo']);
         $financiero =   Role::create(['name' => 'Asistente Financiero']);
         $rrhh = Role::create(['name' => 'Recursos Humanos']);
+        $decanoRole = Role::create(['name' => 'Decano']);
 
         $admin->givePermissionTo([
             'change_passwords',
@@ -321,5 +327,7 @@ class RolesPermissionsSeeder extends Seeder
         $usuario5->assignRole('Asistente Administrativo');
         $usuario6->assignRole('Asistente Financiero');
         $usuario7->assignRole('Recursos Humanos');
+        $decano->assignRole('Decano');
     }
 }
+
