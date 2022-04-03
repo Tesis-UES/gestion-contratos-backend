@@ -5,7 +5,11 @@ namespace App\Http\Controllers;
 use Illuminate\Http\Request;
 use DB;
 use App\Models\{User, Worklog, Semester, School, Person, HiringRequest, Employee, Agreement};
+use App\Http\Controllers\HiringRequestController;
 use Illuminate\Support\Facades\Auth;
+use Barryvdh\DomPDF\Facade\Pdf;
+use Carbon\Carbon;
+use App\Constants\ContractType;
 
 class ReportController extends Controller
 {
@@ -133,7 +137,7 @@ class ReportController extends Controller
     {
         //get the login user 
         $user = Auth::user();
-       
+
         switch ($user->getRoleNames()->first()) {
             case 'Administrador':
                 return $this->adminDashboard();
@@ -145,13 +149,135 @@ class ReportController extends Controller
                 return array_merge($this->adminDashboard(), $this->rrhhDashboard());
                 break;
             case 'Director Escuela':
-               return $this->DirectorDashboard($user->school_id);
+                return $this->DirectorDashboard($user->school_id);
                 break;
 
             default:
                 # code...
                 break;
         }
+    }
 
+    public function getSpnpInfo($id)
+    {
+        $task = new HiringRequestController();
+        $infoSpnp = $task->show($id);
+        $total = 0;
+        $candidatos = [];
+        $cnd = [];
+        foreach ($infoSpnp->details as $detail) {
+            $subtotal = 0;
+            foreach ($detail->hiringGroups as $group) {
+                if ($group->period_hours != null) {
+                    $subtotal += $group->hourly_rate * $group->period_hours;
+                } else {
+                    $subtotal += $group->hourly_rate * $group->work_weeks * $group->weekly_hours;
+                }
+            }
+            array_push($candidatos, [
+                'name' => $detail->person->first_name . ' ' . $detail->person->middle_name . ' ' . $detail->person->last_name,
+                'subtotal' => $subtotal
+            ]);
+            $total += $subtotal;
+        }
+        $result = (object)['candidatos' => $candidatos];
+        $result->total = $total;
+        return $result;
+    }
+
+    public function getTaInfo($id)
+    {
+        $task = new HiringRequestController();
+        $infota = $task->show($id);
+        $total = 0;
+        $candidatos = [];
+        foreach ($infota->details as $detail) {
+            $detail->fullName = $detail->person->first_name . " " . $detail->person->middle_name . " " . $detail->person->last_name;
+            if ($detail->period_hours != null) {
+                $totalp = $detail->hourly_rate * $detail->period_hours;
+            } else {
+                $totalp = $detail->hourly_rate * $detail->work_weeks * $detail->weekly_hours;
+            }
+            array_push($candidatos, [
+                'name' => $detail->person->first_name . ' ' . $detail->person->middle_name . ' ' . $detail->person->last_name,
+                'subtotal' => $totalp
+            ]);
+            $total +=  $totalp;
+        }
+        $result = (object)['candidatos' => $candidatos];
+        $result->total = $total;
+        return $result;
+    }
+
+    public function getTiInfo($id)
+    {
+        $task = new HiringRequestController();
+        $infoti = $task->show($id);
+        $total = 0;
+        $candidatos = [];
+        foreach ($infoti->details as $detail) {
+            $name = $detail->person->first_name . " " . $detail->person->middle_name . " " . $detail->person->last_name;
+            $totalp = $detail->work_months * $detail->monthly_salary * $detail->salary_percentage;
+            array_push($candidatos, [
+                'name' => $name,
+                'subtotal' => $totalp
+            ]);
+            $total +=  $totalp;
+        }
+        $result = (object)['candidatos' => $candidatos];
+        $result->total = $total;
+        return $result;
+    }
+
+    public function firstReport(Request $request)
+    {
+
+
+        $hiringRequests = HiringRequest::whereBetween('created_at', [$request->start_date, $request->end_date])
+            ->where('school_id', $request->school)->get();
+        if ($hiringRequests->isEmpty()) {
+            return response(
+                ['mensaje'  => "No se encontraron solicitudes entre las fechas seleccionadas"],
+                200
+            );
+        }
+
+        foreach ($hiringRequests as $hr) {
+            switch ($hr->contractType->name) {
+                case ContractType::SPNP:
+                    $info = $this->getSpnpInfo($hr->id);
+                    $info->contractName = ContractType::SPNP;
+                    $info->modality = $hr->modality;
+                    $info->code = $hr->code;
+                    $info->school = $hr->school->name;
+                    $info->createDate = $hr->created_at;
+                    break;
+
+                case ContractType::TA:
+                    $info = $this->getTaInfo($hr->id);
+                    $info->contractName = ContractType::TA;
+                    $info->modality = $hr->modality;
+                    $info->code = $hr->code;
+                    $info->school = $hr->school->name;
+                    $info->createDate = $hr->created_at;
+                    break;
+                case ContractType::TI:
+                    $info = $this->getTiInfo($hr->id);
+                    $info->contractName = ContractType::TI;
+                    $info->modality = $hr->modality;
+                    $info->code = $hr->code;
+                    $info->school = $hr->school->name;
+                    $info->createDate = $hr->created_at;
+                    break;
+
+                default:
+                    # code...
+                    break;
+            }
+            $finalInfo[] = $info;
+        }
+        $reportInfo = (object)$finalInfo;
+        $pdf    = PDF::loadView('reports.DetailHiringReport', compact('reportInfo'));
+        return $pdf->download('reporte.pdf');
     }
 }
