@@ -194,6 +194,14 @@
           
             @endforeach
             <div class="despedida">
+                @php
+                    $total = 0;
+                    foreach ($reportInfo as $rp) {
+                        $total += $rp->total;
+                    }
+                @endphp
+                
+                <span class="despedida"><h3><b>Total de montos en el periodo :</b> ${{ number_format($total,2)}}</h3></span>
                
             </div>
         </div>
