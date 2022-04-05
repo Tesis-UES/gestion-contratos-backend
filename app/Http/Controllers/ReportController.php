@@ -4,7 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use DB;
-use App\Models\{User, Worklog, Semester, School, Person, HiringRequest, Employee, Agreement};
+use App\Models\{User, worklog, Semester, School, Person, HiringRequest, Employee, Agreement};
 use App\Http\Controllers\HiringRequestController;
 use Illuminate\Support\Facades\Auth;
 use Barryvdh\DomPDF\Facade\Pdf;
@@ -233,8 +233,25 @@ class ReportController extends Controller
     {
 
 
-        $hiringRequests = HiringRequest::whereBetween('created_at', [$request->start_date, $request->end_date])
-            ->where('school_id', $request->school)->get();
+        $hiringRequests = HiringRequest::whereBetween('created_at', [$request->start_date, $request->end_date]);
+            
+
+         switch ($request->type) {
+             case 'escuela':
+            $hiringRequests = $hiringRequests->where('school_id', $request->school_id)->get();
+                 break;
+             case 'tcontrato':
+                 # code...
+                 break;
+            case 'tmodalidad':
+                 # code...
+                 break;
+             
+             default:
+                 # code...
+                 break;
+         }   
+
         if ($hiringRequests->isEmpty()) {
             return response(
                 ['mensaje'  => "No se encontraron solicitudes entre las fechas seleccionadas"],
