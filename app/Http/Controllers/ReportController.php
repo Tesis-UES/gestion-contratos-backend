@@ -133,7 +133,7 @@ class ReportController extends Controller
         ];
     }
 
-    public function Dashboard()
+    public function dashboard()
     {
         //get the login user 
         $user = Auth::user();
@@ -229,32 +229,34 @@ class ReportController extends Controller
         return $result;
     }
 
-    public function firstReport(Request $request)
+    public function totalAmountsReport(Request $request)
     {
 
 
         $hiringRequests = HiringRequest::whereBetween('created_at', [$request->start_date, $request->end_date]);
-            
 
-         switch ($request->type) {
-             case 'escuela':
-            $hiringRequests = $hiringRequests->where('school_id', $request->school_id)->get();
-                 break;
-             case 'tcontrato':
-                 # code...
-                 break;
+
+        switch ($request->type) {
+            case 'escuela':
+                $hiringRequests = $hiringRequests->where('school_id', $request->school_id)->get();
+                break;
+            case 'tcontrato':
+                $hiringRequests = $hiringRequests->where('contract_type_id', $request->contract_type_id)->get();
+                break;
             case 'tmodalidad':
-                 # code...
-                 break;
-             
-             default:
-                 # code...
-                 break;
-         }   
+                $hiringRequests = $hiringRequests->where('modality', $request->modality)->get();
+                break;
+            case 'escuela-contrato':
+                $hiringRequests = $hiringRequests->where('school_id', $request->school_id)->where('contract_type_id', $request->contract_type_id)->get();
+                break;
+            default:
+                $hiringRequests = $hiringRequests->get();
+                break;
+        }
 
         if ($hiringRequests->isEmpty()) {
             return response(
-                ['mensaje'  => "No se encontraron solicitudes entre las fechas seleccionadas"],
+                ['mensaje'  => "No se encontraron solicitudes para las opciones de busqueda"],
                 200
             );
         }
@@ -295,6 +297,7 @@ class ReportController extends Controller
         }
         $reportInfo = (object)$finalInfo;
         $pdf    = PDF::loadView('reports.DetailHiringReport', compact('reportInfo'));
-        return $pdf->download('reporte.pdf');
+        $report = base64_encode($pdf->stream());
+        return response(['report'  => $report], 200);
     }
 }

@@ -414,7 +414,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::post('/contract/hiringRequestDetail/{requestDetailId}', [ContractController::class, 'updateContract']);
     Route::get('/hiringRequest/all/petitions/rrhh', [HiringRequestController::class, 'hiringRequestRRHH']);
 
-
-    Route::get('/dashboard', [ReportController::class, 'Dashboard']);
-    Route::get('/reportOne', [ReportController::class, 'firstReport']);
+    
+    Route::get('/dashboard', [ReportController::class, 'dashboard']);
+    Route::get('/totalAmountsReport', [ReportController::class, 'totalAmountsReport']);
 });
