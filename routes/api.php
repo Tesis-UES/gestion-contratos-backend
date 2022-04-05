@@ -206,9 +206,9 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     });
 
     // Rutas que manejan el catalogo de empleados
-    // Route::group(['middleware' => ['can:list_employees']], function () {
-    Route::get('/employees', [EmployeeController::class, 'listEmployees']);
-    // });
+    Route::group(['middleware' => ['can:list_employees']], function () {
+        Route::get('/employees', [EmployeeController::class, 'listEmployees']);
+    });
     Route::group(['middleware' => ['can:write_employee']], function () {
         Route::post('/employees/me', [EmployeeController::class, 'store']);
     });
@@ -413,6 +413,6 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::post('/contract/hiringRequestDetail/{requestDetailId}', [ContractController::class, 'updateContract']);
     Route::get('/hiringRequest/all/petitions/rrhh', [HiringRequestController::class, 'hiringRequestRRHH']);
 
-    
+
     Route::get('/Dashboard', [ReportController::class, 'Dashboard']);
 });

@@ -160,6 +160,7 @@ class RolesPermissionsSeeder extends Seeder
         Permission::create(['name' => 'view_rrhhContract']);
         Permission::create(['name' => 'view_hiringRequest']);
         Permission::create(['name' => 'read_validated_requests']);
+        Permission::create(['name' => 'list_employees']);
 
         //CREACION DE ROLES
         $admin = Role::create(['name' => 'Administrador']);
@@ -308,6 +309,7 @@ class RolesPermissionsSeeder extends Seeder
             'read_hiringRequest',
             'view_request_asis',
             'accept_request_asis',
+            'list_employees',
         ]);
 
         $rrhh->givePermissionTo([
@@ -336,4 +338,3 @@ class RolesPermissionsSeeder extends Seeder
         $decano->assignRole('Decano');
     }
 }
-
