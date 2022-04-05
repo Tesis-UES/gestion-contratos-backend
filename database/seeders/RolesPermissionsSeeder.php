@@ -326,6 +326,7 @@ class RolesPermissionsSeeder extends Seeder
             'read_validated_requests',
             'read_escalafones',
             'read_hiringRequest',
+            'write_banks',
         ]);
 
         $usuario1->assignRole('Administrador');
