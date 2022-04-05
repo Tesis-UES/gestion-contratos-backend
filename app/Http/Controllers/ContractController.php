@@ -513,7 +513,12 @@ class ContractController extends Controller
             Storage::disk('contracts')->put($fileName['name'], \File::get($tempFile));
             $this->updateContractVersionHistory($requestDetails, $fileName);
             $contractStatus = ContractStatus::where('code', ContractStatusCode::ELB)->first();
-            $requestDetails->contractStatus()->attach(['contract_status_id' => $contractStatus->id]);
+            $requestDetails->contractStatus()->attach([
+                [
+                    'contract_status_id' => $contractStatus->id,
+                    'date'               => Carbon::now()
+                ],
+            ]);
             $requestDetails->update([
                 'contract_file' => $fileName['name'],
                 'contract_version' => $fileName['version'],
@@ -522,6 +527,18 @@ class ContractController extends Controller
         }
 
         return response()->download($tempFile, $fileName['name'], $header)->deleteFileAfterSend(true);
+    }
+
+    public function getContractVersion($contractVersion)
+    {
+        $contract = ContractVersion::findOrFail($contractVersion);
+        $encoded_file = base64_encode(\Storage::disk('contracts')->get($contract->name));
+
+        $this->RegisterAction('El usuario ha consultado el contrato con version: ' . $contractVersion, 'high');
+        return [
+            'contract_version' => $contract,
+            'encoded_file' => $encoded_file,
+        ];
     }
 
 
