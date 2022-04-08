@@ -417,4 +417,5 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     
     Route::get('/dashboard', [ReportController::class, 'dashboard']);
     Route::get('/totalAmountsReport', [ReportController::class, 'totalAmountsReport']);
+    Route::get('/hiringRequest/{id}/amount/export/', [ReportController::class, 'export']);
 });

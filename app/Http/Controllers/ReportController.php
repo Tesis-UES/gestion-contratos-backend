@@ -10,6 +10,8 @@ use Illuminate\Support\Facades\Auth;
 use Barryvdh\DomPDF\Facade\Pdf;
 use Carbon\Carbon;
 use App\Constants\ContractType;
+use App\Exports\AmountExport;
+use Maatwebsite\Excel\Facades\Excel;
 
 class ReportController extends Controller
 {
@@ -299,5 +301,31 @@ class ReportController extends Controller
         $pdf    = PDF::loadView('reports.DetailHiringReport', compact('reportInfo'));
         $report = base64_encode($pdf->stream());
         return response(['report'  => $report], 200);
+    }
+
+    public function export($id) 
+    {
+        $hr = HiringRequest::findOrFail($id);
+        switch ($hr->contractType->name) {
+            case ContractType::SPNP:
+                $info = $this->getSpnpInfo($hr->id);
+                return Excel::download(new AmountExport($info), $hr->code.'-Detalle de Montos.xlsx');
+                break;
+            
+            case ContractType::TA:
+                $info = $this->getTaInfo($hr->id);
+                return Excel::download(new AmountExport($info), $hr->code.'-Detalle de Montos.xlsx');
+                break;
+            
+            case ContractType::TI:
+                $info = $this->getTiInfo($hr->id);
+                return Excel::download(new AmountExport($info), $hr->code.'-Detalle de Montos.xlsx');
+                break;
+            default:
+                # code...
+                break;
+        }
+
+       
     }
 }
