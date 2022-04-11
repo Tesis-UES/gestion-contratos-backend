@@ -106,6 +106,12 @@ class ValidationDocsNotification extends Mailable
                         'mensaje'      => $this->mensaje,
                     ]);
                 break;
+            case 'notificacionCiclos':
+                return $this->subject('Notificación de vencimiento de periodo de ciclo actual activo - FIA-UES')
+                    ->markdown('emails.NotificationDocs', [
+                        'mensaje'      => $this->mensaje,
+                    ]);
+                break;
 
             default:
                 # code...
