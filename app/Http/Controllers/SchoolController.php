@@ -14,7 +14,7 @@ class SchoolController extends Controller
     {
         Faculty::findOrFail($id);
         $schools = School::select('schools.id AS schoolId','schools.name AS nameSchool','school_authorities.name AS directorName')
-        ->leftjoin('school_authorities','schools.id','=','school_authorities.school_id')
+        ->join('school_authorities','schools.id','=','school_authorities.school_id')
         ->where('school_authorities.status','=',1)
         ->where('school_authorities.position','=','DIRECTOR')
         ->where('schools.faculty_id', $id)
