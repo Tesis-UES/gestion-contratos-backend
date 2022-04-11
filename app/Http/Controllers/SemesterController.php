@@ -42,6 +42,13 @@ class SemesterController extends Controller
             ], 201);
         
         } else {
+            
+            if ($lastSemester->end_date == $request->end_date && $lastSemester->start_date == $request->start_date) {
+                return response([
+                    'message' => "No se puede Crear el ciclo academico, ya que cuenta con fechas iguales al ciclo anterior",
+                ], 422);
+            }
+
             $baseDate   = new \DateTime($lastSemester->end_date); 
             $startDate  = new \DateTime($request->start_date);
         
