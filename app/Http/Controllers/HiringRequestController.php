@@ -532,7 +532,7 @@ class HiringRequestController extends Controller
         $pdf2   = PDF::loadView('hiringRequest.HiringRequestSPNPDetails', compact('hiringRequest', 'header'));
         $pdf3   = PDF::loadView('hiringRequest.HiringRequestSPNPFunctions', compact('header', 'hiringRequest'));
         $pdf->setPaper('letter', 'portrait');
-        $pdf2->setPaper('letter', 'landscape');
+        $pdf2->setPaper('legal', 'landscape');
         $pdf3->setPaper('letter', 'portrait');
         $pdf->render();
         $pdf2->render();
