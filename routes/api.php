@@ -339,7 +339,6 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     //Rutas que manejan las fuciones de RRHH
     Route::group(['middleware' => ['can:view_candidates']], function () {
         Route::get('/persons', [PersonController::class, 'allCandidates']);
-        Route::get('/Word/{id}', [PersonController::class, 'wordExample']);
     });
 
     // Rutas para ver mis solicitudes de contratacion
