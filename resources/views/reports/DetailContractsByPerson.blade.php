@@ -68,7 +68,9 @@
             margin: 0 auto;
         }
 
-        .header-text p:last-of-type {}
+        .header-text p:last-of-type {
+           
+        }
 
         .title-details {
             width: 100%;
@@ -145,89 +147,78 @@
             <div class="header-text">
                 <p>UNIVERSIDAD DE EL SALVADOR</p>
                 <p>FACULTAD DE INGENIERÍA Y ARQUITECTURA</p>
-                <p>RESUMEN DE SOLICITUDES DE CONTRATACIÓN</p>
+                <p>NUMERO DE CONTRATACIONES DE ESCUELA POR CANDIDATO</p>
             </div>
         </div>
     </header>
     <footer>
-
+        
     </footer>
     <main style="page-break-after: auto; margin-top:10px;">
-        {{-- title --}}
-      
-            <span>
-                <p style="text-align: center;">
-                    <strong>
-                        <u>
-                           Reporte generado segun las fechas: {{date('d/m/Y',strtotime($fechaInicio))}} al {{date('d/m/Y',strtotime($fechaFin))}}
-                        </u>
-                    </strong>
-                </p>
-                
-            </span>
-        
-
         <div>
-            @foreach ($reportInfo as $rp)
-                <div class="header-text">
-                    <p>Codigo de Solicitud: <b>{{ $rp->code }}</b></p>
-                    <p>Tipo de contratación solicitada:<b> {{ $rp->contractName }} </b></p>
-                    <p>Modalidad de la contratación:<b> {{ $rp->modality }} </b></p>
-                    <p>Escuela/Unidad que solicita:<b> {{ $rp->school }} </b></p>
-                    <p>Fecha de creación:<b> {{ date_format(date_create($rp->createDate), 'd-m-Y') }} </b></p>
-                </div>
-                @if ($rp->candidatos == null)
-                    <p>
-                    <h2>No se han registrado candidatos en esta solicitud.</h2>
-                    </p>
-                @else
-                    <table class="demo" width="100%">
-                        <thead>
-                            <tr>
-                                <th>Nombre</th>
-                                <th>Monto Periodo</th>
-                            </tr>
-                        </thead>
-                        <tbody>
+           
+        
+            <table class="demo" width="100%">
+                <caption><b><h3>{{$escuela}}</h3></b></caption>
+                <thead>
+                    <tr>
+                        <th>Nombre Candidato</th>
+                        <th>Serivicios Profesionales No Personales</th>
+                        <th>Tiempo Integral</th>
+                        <th>Tiempo Adicional</th>
+                        <th>Total</th>
+                    </tr>
+                </thead>
+                <tbody>
+                    
+                     @foreach ($reportInfo as $item)
+                        <tr>
+                            <td>{{ $item['name'] }}</td>
+                            </td>
+                            <td style="text-align: center;">{{ $item['spnp'] }}</td>
+                            <td style="text-align: center;">{{ $item['ti'] }}</td>
+                            <td style="text-align: center;">{{ $item['ta'] }}</td>
+                            {{-- total --}}
+                            @php
+                                $total = $item['spnp'] + $item['ti'] + $item['ta'];
+                            @endphp
+                            <td style="text-align: center;"><b>{{ $total }}</b></td>
 
-                            @foreach ($rp->candidatos as $item)
-                                <tr>
-                                    <td>{{ $item['name'] }}</td>
-                                    </td>
-                                    <td style="text-align: center;">$ {{ number_format($item['subtotal'], 2) }}</td>
-                                </tr>
-                            @endforeach
+                        </tr>
+                    @endforeach   
 
-                        <tfoot>
-                            <tr>
-                                <td
-                                    style="font-weight: bold; background-color: rgba(243, 55, 55, 0.5); text-align: center;">
-                                    <strong>Total: </strong></td>
-                                <td
-                                    style="font-weight: bold; background-color: rgba(243, 55, 55, 0.5); text-align: center;">
-                                    $ {{ number_format($rp->total, 2) }}</td>
-                            </tr>
-                        </tfoot>
-
-                        </tbody>
-                    </table>
-                @endif
-                <hr>
-                <br>
-                @endforeach
-                <div class="despedida">
-                    @php
-                        $total = 0;
-                        foreach ($reportInfo as $rp) {
-                            $total += $rp->total;
-                        }
-                    @endphp
-
-                    <span class="despedida">
-                        <h3><b>Total de montos en el periodo :</b> ${{ number_format($total, 2) }}</h3>
-                    </span>
-
-                </div>
+                <tfoot>
+                   {{-- calculate each total --}}
+                     @php
+                            $totalSPNP = 0;
+                            $totalTI = 0;
+                            $totalTA = 0;
+                            $total = 0;
+                            foreach ($reportInfo as $item) {
+                             $totalSPNP += $item['spnp'];
+                             $totalTI += $item['ti'];
+                             $totalTA += $item['ta'];
+                             $total += $item['spnp'] + $item['ti'] + $item['ta'];
+                            }
+                      @endphp
+                     
+                </tfoot>
+                <tr>
+                    <td><b>TOTAL</b></td>
+                    <td style="text-align: center;"><b>{{ $totalSPNP }}</b></td>
+                    <td style="text-align: center;"><b>{{ $totalTI }}</b></td>
+                    <td style="text-align: center;"><b>{{ $totalTA }}</b></td>
+                    <td style="text-align: center;"><b>{{ $total }}</b></td>
+              </tr>
+                </tbody>
+            </table>
+            <br>
+          
+            
+            <div class="despedida">
+                
+               
+            </div>
         </div>
 
     </main>

@@ -4,7 +4,8 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use DB;
-use App\Models\{User, worklog, Semester, School, Person, HiringRequest, Employee, Agreement};
+use App\Models\{User, worklog, Semester, School, Person, HiringRequest, Employee, Agreement, HiringRequestDetail};
+use Spatie\Permission\Models\Role;
 use App\Http\Controllers\HiringRequestController;
 use Illuminate\Support\Facades\Auth;
 use Barryvdh\DomPDF\Facade\Pdf;
@@ -12,9 +13,11 @@ use Carbon\Carbon;
 use App\Constants\ContractType;
 use App\Exports\AmountExport;
 use Maatwebsite\Excel\Facades\Excel;
+use App\Http\Traits\WorklogTrait;
 
 class ReportController extends Controller
 {
+    use WorklogTrait;
     public function adminDashboard()
     {
         //count all users
@@ -234,10 +237,9 @@ class ReportController extends Controller
     public function totalAmountsReport(Request $request)
     {
 
-
-        $hiringRequests = HiringRequest::whereBetween('created_at', [$request->start_date, $request->end_date]);
-
-
+        $hiringRequests = HiringRequest::whereBetween('created_at', [$request->start_date,$request->end_date]);
+        $fechaInicio = $request->start_date;
+        $fechaFin = $request->end_date;
         switch ($request->type) {
             case 'escuela':
                 $hiringRequests = $hiringRequests->where('school_id', $request->school_id)->get();
@@ -298,34 +300,216 @@ class ReportController extends Controller
             $finalInfo[] = $info;
         }
         $reportInfo = (object)$finalInfo;
-        $pdf    = PDF::loadView('reports.DetailHiringReport', compact('reportInfo'));
+        $pdf    = PDF::loadView('reports.DetailHiringReport', compact('reportInfo', 'fechaInicio', 'fechaFin'));
         $report = base64_encode($pdf->stream());
+        $this->RegisterAction("El usuario ha generado un reporte", "medium");
         return response(['report'  => $report], 200);
     }
 
-    public function export($id) 
+    public function export($id)
     {
         $hr = HiringRequest::findOrFail($id);
         switch ($hr->contractType->name) {
             case ContractType::SPNP:
                 $info = $this->getSpnpInfo($hr->id);
-                return Excel::download(new AmountExport($info), $hr->code.'-Detalle de Montos.xlsx');
+                return Excel::download(new AmountExport($info), $hr->code . '-Detalle de Montos.xlsx');
                 break;
-            
+
             case ContractType::TA:
                 $info = $this->getTaInfo($hr->id);
-                return Excel::download(new AmountExport($info), $hr->code.'-Detalle de Montos.xlsx');
+                return Excel::download(new AmountExport($info), $hr->code . '-Detalle de Montos.xlsx');
                 break;
-            
+
             case ContractType::TI:
                 $info = $this->getTiInfo($hr->id);
-                return Excel::download(new AmountExport($info), $hr->code.'-Detalle de Montos.xlsx');
+                return Excel::download(new AmountExport($info), $hr->code . '-Detalle de Montos.xlsx');
                 break;
             default:
                 # code...
                 break;
         }
-
-       
     }
-}
+
+    public function totalOfContractsByPerson(Request $request)
+    {
+        //get all persons by school_id
+        $role = Role::where('name', 'Candidato')->first();
+        $school = School::findOrFail($request->school_id);
+        $pullCandidates = User::join('model_has_roles', 'model_has_roles.model_id', '=', 'users.id')->where('model_has_roles.role_id', '=', $role->id)->where('users.school_id', $request->school_id)->get();
+        $candidatesPdf = [];
+        if ($school->id == 9) {
+            $escuela =  $school->name;
+        } else {
+            $escuela = "Escuela de " . $school->name;
+        }
+        foreach ($pullCandidates as $candidate) {
+
+            if ($candidate->person != null) {
+                $spnp = 0;
+                $ta = 0;
+                $ti = 0;
+                foreach ($candidate->person->hiringRequestDetail as $detail) {
+                    switch ($detail->hiringRequest->contractType->name) {
+                        case ContractType::SPNP:
+                            $spnp++;
+                            break;
+                        case ContractType::TA:
+                            $ta++;
+                            break;
+                        case ContractType::TI:
+                            $ti++;
+                            break;
+
+                        default:
+                            # code...
+                            break;
+                    }
+                }
+                array_push($candidatesPdf, [
+                    'name' => $candidate->person->first_name . ' ' . $candidate->person->middle_name . ' ' . $candidate->person->last_name,
+                    'spnp' => $spnp,
+                    'ta' => $ta,
+                    'ti' => $ti
+                ]);;
+            }
+        }
+
+        $reportInfo = (object)$candidatesPdf;
+        $pdf    = PDF::loadView('reports.DetailContractsByPerson', compact('reportInfo', 'escuela'));
+        $report = base64_encode($pdf->stream());
+        $this->RegisterAction("El usuario ha generado un reporte", "medium");
+        return response(['report'  => $report], 200);
+    }
+
+    public function getAmountSPNP($id)
+    {
+        $detail =  HiringRequestDetail::findOrFail($id);
+        $subtotal = 0;
+        foreach ($detail->hiringGroups as $group) {
+            if ($group->period_hours != null) {
+                $subtotal += $group->hourly_rate * $group->period_hours;
+            } else {
+                $subtotal += $group->hourly_rate * $group->work_weeks * $group->weekly_hours;
+            }
+        }
+        return [
+            'hrCode' => $detail->hiringRequest->code,
+            'hrModality' => $detail->hiringRequest->modality,
+            'hrContractType' => $detail->hiringRequest->contractType->name,
+            'subtotal' => $subtotal
+        ];
+    }
+
+    public function getAmountTA($id)
+    {
+        $detail =  HiringRequestDetail::findOrFail($id);
+        if ($detail->period_hours != null) {
+            $totalp = $detail->hourly_rate * $detail->period_hours;
+        } else {
+            $totalp = $detail->hourly_rate * $detail->work_weeks * $detail->weekly_hours;
+        }
+        return [
+            'hrCode' => $detail->hiringRequest->code,
+            'hrModality' => $detail->hiringRequest->modality,
+            'hrContractType' => $detail->hiringRequest->contractType->name,
+            'subtotal' => $totalp
+        ];
+    }
+
+    public function getAmountTI($id)
+    {
+        $detail =  HiringRequestDetail::findOrFail($id);
+        $totalp = $detail->work_months * $detail->monthly_salary * $detail->salary_percentage;
+        return [
+            'hrCode' => $detail->hiringRequest->code,
+            'hrModality' => $detail->hiringRequest->modality,
+            'hrContractType' => $detail->hiringRequest->contractType->name,
+            'subtotal' => $totalp
+        ];
+    }
+
+    public function contractsAmountsByPerson(Request $request)
+    {
+
+        $hrds = HiringRequestDetail::where('person_id', $request->person_id)->get();
+
+        $candidatesPdf = [];
+        if (count($hrds) > 0) {
+
+            foreach ($hrds as $hrd) {
+
+                $name = $hrd->person->first_name . ' ' . $hrd->person->middle_name . ' ' . $hrd->person->last_name;
+                switch ($hrd->hiringRequest->contractType->name) {
+                    case ContractType::SPNP:
+                        array_push($candidatesPdf, $this->getAmountSPNP($hrd->id));
+                        break;
+                    case ContractType::TA:
+                        array_push($candidatesPdf, $this->getAmountTA($hrd->id));
+                        break;
+                    case ContractType::TI:
+                        array_push($candidatesPdf, $this->getAmountTI($hrd->id));
+                        break;
+
+                    default:
+                        # code...
+                        break;
+                }
+            }
+
+            $reportInfo = (object)$candidatesPdf;
+            $pdf    = PDF::loadView('reports.ContractsAmountsByPerson', compact('reportInfo', 'name'));
+            $report = base64_encode($pdf->stream());
+            $this->RegisterAction("El usuario ha generado un reporte", "medium");
+            return response(['report'  => $report], 200);
+        } else {
+            return response(['message' => 'No hay datos de contratos para la persona seleccionada'], 200);
+        }
+    }
+
+    public function totalAmountByContracts(Request $request)
+    {
+      
+        $hiringRequests = HiringRequest::whereBetween('created_at', [$request->start_date, $request->end_date])->where('school_id', $request->school_id)->get();
+        $school = School::findOrFail($request->school_id);
+        if ($school->id == 9) {
+            $escuela =  $school->name;
+        } else {
+            $escuela = "Escuela de " . $school->name;
+        }
+        $fechaInicio = $request->start_date;
+        $fechaFin = $request->end_date;
+        if ($hiringRequests->isEmpty()) {
+            return response(
+                ['mensaje'  => "No se encontraron solicitudes para las opciones de busqueda"],
+                200
+            );
+        }
+            $spnpTotal = 0;
+            $taTotal = 0;
+            $tiTotal = 0;
+            foreach ($hiringRequests as $hr) {
+                switch ($hr->contractType->name) {
+                    case ContractType::SPNP:
+                        $info = $this->getSpnpInfo($hr->id);
+                        $spnpTotal += $info->total;
+                        break;
+                    case ContractType::TA:
+                        $info = $this->getTaInfo($hr->id);
+                        $taTotal += $info->total;
+                        break;
+                    case ContractType::TI:
+                        $info = $this->getTiInfo($hr->id);
+                        $tiTotal += $info->total;
+                        break;
+                    default:
+                        # code...
+                        break;
+                }
+            }
+            $pdf    = PDF::loadView('reports.TotalAmountByContracts', compact('spnpTotal', 'taTotal', 'tiTotal', 'escuela', 'fechaInicio', 'fechaFin'));
+            $report = base64_encode($pdf->stream());
+            $this->RegisterAction("El usuario ha generado un reporte", "medium");
+            return response(['report'  => $report], 200);
+        }
+    }
+
