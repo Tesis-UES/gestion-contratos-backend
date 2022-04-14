@@ -409,6 +409,41 @@ class HiringRequestController extends Controller
         return $hiringRequest;
     }
 
+    public function markAsFinalized(HiringRequest $hiringRequest)
+    {
+        if ($hiringRequest->request_status != HiringRequestStatusCode::GDC) {
+            return response(['message' => 'Solo se pueden marcar como finalizadas las solicitudes en estado "Generación de contratos"'], 400);
+        }
+
+        $status = Status::whereIn('code', [HiringRequestStatusCode::FIN])->get();
+        $hiringRequest->request_status = HiringRequestStatusCode::FIN;
+        $hiringRequest->save();
+        $hiringRequest->status()->attach($status);
+
+        $this->registerAction('La solicitud de contratación ha sido marcada como finalizada', 'high');
+        return response(['message' => 'La solicitud se ha marcado como finalizada']);
+    }
+
+    public function getFinalized()
+    {
+        $user = Auth::user();
+
+        $finalizedRequests = null;
+        if ($user->hasRole('Director Escuela')) {
+            $finalizedRequests = HiringRequest::with(['contractType', 'school'])
+                ->where('request_status', '=', HiringRequestStatusCode::FIN)
+                ->where('school_id', '=', $user->school_id)
+                ->get();
+        } else {
+            $finalizedRequests = HiringRequest::with(['contractType', 'school'])
+                ->where('request_status', '=', HiringRequestStatusCode::FIN)
+                ->get();
+        }
+
+        $this->registerAction('El usuario ha consultado el listado de solicitudes finalizadas', 'medium');
+        return $finalizedRequests;
+    }
+
     public function storeHiringRequest($id, $pdf)
     {
         $hiringRequest = HiringRequest::findOrFail($id);

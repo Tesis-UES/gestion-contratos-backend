@@ -24,5 +24,6 @@ class StatusSeeder extends Seeder
         Status::create(['code' => HiringRequestStatusCode::RDS, 'name' => 'Recepción solicitud de contratación por parte de Secretaria de Facultad', 'description' => 'Se ha recibido la solicitud de contratacion por parte de secretaria de facultad y se ha agendado para discusión de Junta Directiva', 'order' => '6']);
         Status::create(['code' => HiringRequestStatusCode::RJD, 'name' => 'Resolución de solicitud de contratación por parte de Junta Directiva', 'description' => 'Se ha aprobado la solicitud de contratacion y se ha subido su correspondiente acuerdo de Junta directiva', 'order' => '7']);
         Status::create(['code' => HiringRequestStatusCode::GDC, 'name' => 'Generación de Contratos', 'description' => 'Se estan generado los contratos aprobados por Junta Directiva', 'order' => '8']);
+        Status::create(['code' => HiringRequestStatusCode::FIN, 'name' => 'Finalizado', 'description' => 'La solicitud de contratacion se ha marcado como finalizada y se han generado todos los contratos', 'order' => '9']);
     }
 }

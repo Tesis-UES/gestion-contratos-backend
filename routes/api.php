@@ -395,8 +395,10 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     });
 
     Route::get('/hiringRequest/all/petitions/hr', [HiringRequestController::class, 'getAllHiringRequestsHR']);
+    Route::get('/hiringRequest/all/finalized', [HiringRequestController::class, 'getFinalized']);
     Route::post('/hiringRequest/{hiringRequest}/sendToHR', [HiringRequestController::class, 'sendToHR']);
     Route::post('/hiringRequest/{hiringRequest}/validateHR', [HiringRequestController::class, 'reviewHR']);
+    Route::post('/hiringRequest/{hiringRequest}/finalize', [HiringRequestController::class, 'markAsFinalized']);
 
     Route::get('/hiringRequestSPNP/{id}/create/PDF/{show}', [HiringRequestController::class, 'MakeHiringRequestSPNP']);
     Route::get('/hiringRequestTI/{id}/create/PDF/{show}', [HiringRequestController::class, 'MakeHiringRequestTiempoIntegral']);
@@ -418,5 +420,4 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::get('/contractsAmountsByPerson', [ReportController::class, 'contractsAmountsByPerson']);
     Route::get('/totalAmountByContracts', [ReportController::class, 'totalAmountByContracts']);
     Route::get('/hiringRequest/{id}/amount/export/', [ReportController::class, 'export']);
-
 });
