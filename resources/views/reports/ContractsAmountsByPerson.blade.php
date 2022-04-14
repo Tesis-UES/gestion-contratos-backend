@@ -145,7 +145,7 @@
             <div class="header-text">
                 <p>UNIVERSIDAD DE EL SALVADOR</p>
                 <p>FACULTAD DE INGENIERÍA Y ARQUITECTURA</p>
-                <p>RESUMEN DE SOLICITUDES DE CONTRATACIÓN</p>
+                <p>DETALLE DE CONTRATACIONES DE CANDIDATO</p>
             </div>
         </div>
     </header>
@@ -153,81 +153,58 @@
 
     </footer>
     <main style="page-break-after: auto; margin-top:10px;">
-        {{-- title --}}
-      
-            <span>
-                <p style="text-align: center;">
-                    <strong>
-                        <u>
-                           Reporte generado segun las fechas: {{date('d/m/Y',strtotime($fechaInicio))}} al {{date('d/m/Y',strtotime($fechaFin))}}
-                        </u>
-                    </strong>
-                </p>
-                
-            </span>
         
-
         <div>
-            @foreach ($reportInfo as $rp)
-                <div class="header-text">
-                    <p>Codigo de Solicitud: <b>{{ $rp->code }}</b></p>
-                    <p>Tipo de contratación solicitada:<b> {{ $rp->contractName }} </b></p>
-                    <p>Modalidad de la contratación:<b> {{ $rp->modality }} </b></p>
-                    <p>Escuela/Unidad que solicita:<b> {{ $rp->school }} </b></p>
-                    <p>Fecha de creación:<b> {{ date_format(date_create($rp->createDate), 'd-m-Y') }} </b></p>
-                </div>
-                @if ($rp->candidatos == null)
-                    <p>
-                    <h2>No se han registrado candidatos en esta solicitud.</h2>
-                    </p>
-                @else
-                    <table class="demo" width="100%">
-                        <thead>
-                            <tr>
-                                <th>Nombre</th>
-                                <th>Monto Periodo</th>
-                            </tr>
-                        </thead>
-                        <tbody>
+            <table class="demo" width="100%">
+                <caption><b>
+                        <h3>Candidato: {{ $name }}</h3>
+                    </b></caption>
+                <thead>
+                    <tr>
+                        <th>No</th>
+                        <th>Código Solicitud</th>
+                        <th>Tipo de Contrato</th>
+                        <th>Modalidad de Contrato</th>
+                        <th>Total Pagado</th>
 
-                            @foreach ($rp->candidatos as $item)
-                                <tr>
-                                    <td>{{ $item['name'] }}</td>
-                                    </td>
-                                    <td style="text-align: center;">$ {{ number_format($item['subtotal'], 2) }}</td>
-                                </tr>
-                            @endforeach
+                    </tr>
+                </thead>
+                <tbody>
 
-                        <tfoot>
-                            <tr>
-                                <td
-                                    style="font-weight: bold; background-color: rgba(243, 55, 55, 0.5); text-align: center;">
-                                    <strong>Total: </strong></td>
-                                <td
-                                    style="font-weight: bold; background-color: rgba(243, 55, 55, 0.5); text-align: center;">
-                                    $ {{ number_format($rp->total, 2) }}</td>
-                            </tr>
-                        </tfoot>
+                    @foreach ($reportInfo as $item)
+                        <tr>
+                            <td>{{ $loop->iteration }}</td>
+                            <td>{{ $item['hrCode'] }}</td>
+                            <td>{{ $item['hrContractType'] }}</td>
+                            <td>{{ $item['hrModality'] }}</td>
+                            <td style="text-align: center;">$ {{ number_format($item['subtotal'], 2) }}</td>
 
-                        </tbody>
-                    </table>
-                @endif
-                <hr>
-                <br>
-                @endforeach
-                <div class="despedida">
+                        </tr>
+                    @endforeach
+
+                <tfoot>
                     @php
                         $total = 0;
-                        foreach ($reportInfo as $rp) {
-                            $total += $rp->total;
+                        foreach ($reportInfo as $item) {
+                            $total += $item['subtotal'];
                         }
                     @endphp
+                    <tr>
+                        <td colspan="4" style="text-align: center;"><b>TOTAL</b></td>
+                        <td style="text-align: center;"><b>$ {{ number_format($total, 2) }}</b></td>
+                    </tr>
 
-                    <span class="despedida">
-                        <h3><b>Total de montos en el periodo :</b> ${{ number_format($total, 2) }}</h3>
-                    </span>
+                </tfoot>
 
-                </div>
+                </tbody>
+            </table>
+            <br>
+
+
+            <div class="despedida">
+
+
+            </div>
         </div>
 
     </main>

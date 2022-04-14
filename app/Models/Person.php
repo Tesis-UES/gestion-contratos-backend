@@ -80,4 +80,9 @@ class Person extends Model
     {
         return $this->BelongsTo(Bank::class);
     }
+
+    public function hiringRequestDetail()
+    {
+        return $this->hasMany(HiringRequestDetail::class);
+    }
 }
