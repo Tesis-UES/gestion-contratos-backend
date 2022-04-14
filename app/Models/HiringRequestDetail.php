@@ -31,13 +31,6 @@ class HiringRequestDetail extends Model
 
     protected $hidden = ['pivot'];
 
-    public function contractStatus()
-    {
-        return $this->belongsToMany(ContractStatus::class, 'contract_status_history', 'hiring_request_detail_id', 'contract_status_id')
-            ->withTimestamps()
-            ->orderByPivot('created_at');
-    }
-
     public function person()
     {
         return $this->belongsTo(Person::class);
@@ -66,6 +59,13 @@ class HiringRequestDetail extends Model
     public function hiringRequest()
     {
         return $this->belongsTo(HiringRequest::class);
+    }
+
+    public function contractStatus()
+    {
+        return $this->belongsToMany(ContractStatus::class, 'contract_status_history', 'hiring_request_detail_id', 'contract_status_id')
+            ->orderBy('date')
+            ->orderBy('contract_status_id');
     }
 
     public function contractVersions()

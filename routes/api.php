@@ -404,16 +404,14 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::get('/hiringRequest/{id}/pdf', [HiringRequestController::class, 'getPdf']);
     Route::get('/persons/merge/{id?}/pdf', [PersonController::class, 'mergePersonalDoc']);
 
-    Route::get('/hiringRequest/details/{id}/contractHistory', [HiringRequestDetailController::class, 'getContractHistory']);
-    Route::post('/hiringRequest/details/{id}/contractHistory', [HiringRequestDetailController::class, 'updateContractHistory']);
+    Route::get('/hiringRequest/all/petitions/rrhh', [HiringRequestController::class, 'hiringRequestRRHH']);
     Route::get('/contract/status/all', [HiringRequestController::class, 'getAllContractStatus']);
-
+    Route::get('/contract/hiringRequestDetail/{requestDetailId}/history', [ContractController::class, 'getContractHistory']);
     Route::get('/contract/hiringRequestDetail/{requestDetailId}/generate', [ContractController::class, 'generateContract']);
     Route::get('/contract/version/{versionId}', [ContractController::class, 'getContractVersion']);
     Route::post('/contract/hiringRequestDetail/{requestDetailId}', [ContractController::class, 'updateContract']);
-    Route::get('/hiringRequest/all/petitions/rrhh', [HiringRequestController::class, 'hiringRequestRRHH']);
+    Route::post('/contract/hiringRequestDetail/{requestDetailId}/status', [ContractController::class, 'updateContractStatus']);
 
-    
     Route::get('/dashboard', [ReportController::class, 'dashboard']);
     Route::get('/totalAmountsReport', [ReportController::class, 'totalAmountsReport']);
 });

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Constants\ContractStatusCode;
 use App\Constants\ContractType;
+use App\Constants\HiringRequestStatusCode;
 use App\Models\Bank;
 use App\Models\Format;
 use App\Models\EmployeeType;
@@ -456,17 +457,6 @@ class ContractController extends Controller
         ];
     }
 
-    private function updateContractVersionHistory($requestDetail, $fileName)
-    {
-        $requestDetail->contractVersions()->update(['active' => false]);
-        ContractVersion::create([
-            'name'    => $fileName['name'],
-            'version' => $fileName['version'],
-            'active'  => true,
-            'hiring_request_detail_id' => $requestDetail->id,
-        ]);
-    }
-
     public function generateContract($requestDetailId)
     {
         $requestDetails = HiringRequestDetail::with([
@@ -523,24 +513,38 @@ class ContractController extends Controller
                 'contract_file' => $fileName['name'],
                 'contract_version' => $fileName['version'],
             ]);
-            $this->RegisterAction('El usuario genero la version inicial del contrato con id: ' . $requestDetails->id, 'high');
+            $this->RegisterAction('El usuario generó la version inicial del contrato con id: ' . $requestDetails->id, 'critical');
         }
 
         return response()->download($tempFile, $fileName['name'], $header)->deleteFileAfterSend(true);
     }
 
-    public function getContractVersion($contractVersion)
+    public function getContractHistory($requestDetailId)
     {
-        $contract = ContractVersion::findOrFail($contractVersion);
+        $requestDetail = HiringRequestDetail::with(['hiringRequest', 'contractStatus', 'contractVersions'])
+            ->findOrFail($requestDetailId);
+        if ($requestDetail->hiringRequest->request_status != HiringRequestStatusCode::GDC) {
+            return response(['message' => 'La solicitud no se encuentra en generación de contratos'], 400);
+        }
+
+
+        return [
+            'contractStatus' => $requestDetail->contractStatus,
+            'contractVersions' => $requestDetail->contractVersions
+        ];
+    }
+
+    public function getContractVersion($contractVersionId)
+    {
+        $contract = ContractVersion::findOrFail($contractVersionId);
         $encoded_file = base64_encode(\Storage::disk('contracts')->get($contract->name));
 
-        $this->RegisterAction('El usuario ha consultado el contrato con version: ' . $contractVersion, 'high');
+        $this->RegisterAction('El usuario ha consultado el contrato con id: ' . $contractVersionId, 'high');
         return [
             'contract_version' => $contract,
             'encoded_file' => $encoded_file,
         ];
     }
-
 
     public function updateContract($id, Request $request)
     {
@@ -557,7 +561,36 @@ class ContractController extends Controller
             'contract_version' => $fileName['version'],
         ]);
 
-        $this->RegisterAction('El usuario actualizado el contrato con id: ' . $requestDetail->id, 'critical');
+        $this->RegisterAction('El usuario ha actualizado el contrato del detalle de solicitud con id: ' . $requestDetail->id, 'critical');
         return response(['message' => 'El contrato se ha actualizado exitosamente'], 200);
+    }
+
+    public function updateContractStatus($requestDetailId, Request $request)
+    {
+        $fields = $request->validate([
+            'date'                  => 'required|date|before_or_equal:today',
+            'contract_status_id'    => 'required|numeric|exists:contract_status,id',
+        ]);
+
+        $requestDetail = HiringRequestDetail::with('hiringRequest')
+            ->findOrFail($requestDetailId);
+        if ($requestDetail->hiringRequest->request_status != HiringRequestStatusCode::GDC) {
+            return response(['message' => 'La solicitud no se encuentra en generación de contratos'], 400);
+        }
+
+        $requestDetail->contractStatus()->attach([$fields]);
+
+        $this->registerAction('El usuario ha actualizado el status del contrato del detalle de solicitud con ID: ', $requestDetailId, 'critical');
+    }
+
+    private function updateContractVersionHistory($requestDetail, $fileName)
+    {
+        $requestDetail->contractVersions()->update(['active' => false]);
+        ContractVersion::create([
+            'name'    => $fileName['name'],
+            'version' => $fileName['version'],
+            'active'  => true,
+            'hiring_request_detail_id' => $requestDetail->id,
+        ]);
     }
 }
