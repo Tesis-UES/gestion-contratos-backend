@@ -85,6 +85,17 @@ class HiringRequestController extends Controller
         ];
         $hiringRequest = HiringRequest::with($relations)->findOrFail($id);
 
+        if ($hiringRequest->request_status = HiringRequestStatusCode::GDC) {
+            foreach ($hiringRequest->details as $detail) {
+                $lastStatus = $detail->contractStatus->last();
+                if ($lastStatus == null) {
+                    $detail->last_contract_status = 'Sin contrato generado';
+                } else {
+                    $detail->last_contract_status = $lastStatus->name;
+                }
+            }
+        }
+
         $this->registerAction('El usuario ha consultado los detalles base de la solicitud de contratacion con id: ' . $id, 'medium');
         return response($hiringRequest, 200);
     }
