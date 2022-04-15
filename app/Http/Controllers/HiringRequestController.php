@@ -85,7 +85,7 @@ class HiringRequestController extends Controller
         ];
         $hiringRequest = HiringRequest::with($relations)->findOrFail($id);
 
-        if ($hiringRequest->request_status = HiringRequestStatusCode::GDC) {
+        if ($hiringRequest->request_status == HiringRequestStatusCode::GDC) {
             foreach ($hiringRequest->details as $detail) {
                 $lastStatus = $detail->contractStatus->last();
                 if ($lastStatus == null) {
