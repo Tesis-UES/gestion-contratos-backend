@@ -1223,6 +1223,9 @@ class PersonController extends Controller
             case 'SPNP':
                 $candidates = $candidates->where('is_employee', false);
                 break;
+             case 'RP':
+                $candidates;
+                break;
             default:
                 $candidates = $candidates->where('is_employee', true);
                 break;
