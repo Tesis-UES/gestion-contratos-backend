@@ -319,6 +319,7 @@ class RolesPermissionsSeeder extends Seeder
             'read_personValidations',
             'view_rrhhContract',
             'read_hiringRequest',
+            'read_schools',
         ]);
 
         $financiero->givePermissionTo([

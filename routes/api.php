@@ -118,9 +118,8 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
         Route::put('/schools/{id}', [SchoolController::class, 'update']);
         Route::delete('/schools/{id}', [SchoolController::class, 'destroy']);
     });
-    Route::get('/faculties/{id}/schools', [SchoolController::class, 'all']);
     Route::group(['middleware' => ['can:read_schools']], function () {
-      
+        Route::get('/faculties/{id}/schools', [SchoolController::class, 'all']);
         Route::get('/schools/{id}', [SchoolController::class, 'show']);
     });
 
