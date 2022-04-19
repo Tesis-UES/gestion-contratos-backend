@@ -59,6 +59,12 @@ class RolesPermissionsSeeder extends Seeder
             'email'     => 'decano@ues.edu.sv',
             'password'  => bcrypt('foobar'),
         ]);
+
+        $superAdmin = User::create([
+            'name'      => 'Super Admin',
+            'email'     => 'superadmin@ues.edu.sv',
+            'password'  => bcrypt('foobar'),
+        ]);
         // CREACION DE PERMISOS 
         Permission::create(['name' => 'change_passwords']);
         Permission::create(['name' => 'write_formats']);
@@ -181,6 +187,7 @@ class RolesPermissionsSeeder extends Seeder
         $financiero =   Role::create(['name' => 'Asistente Financiero']);
         $rrhh = Role::create(['name' => 'Recursos Humanos']);
         $decanoRole = Role::create(['name' => 'Decano']);
+        $superadmin = Role::create(['name' => 'Super Administrador']);
 
         $admin->givePermissionTo([
             'change_passwords',
@@ -234,6 +241,20 @@ class RolesPermissionsSeeder extends Seeder
             'read_reports',
             'view_candidates',
 
+        ]);
+
+        $superadmin->givePermissionTo([
+            'change_passwords',
+            'read_worklog',
+            'read_roles',
+            'read_faculties',
+            'read_schools',
+            'read_users',
+            'write_users',
+            'view_users',
+            'view_worklog',
+            'read_dashboard',
+            'write_faculties',
         ]);
 
         $profesor->givePermissionTo([
@@ -358,5 +379,6 @@ class RolesPermissionsSeeder extends Seeder
         $usuario6->assignRole('Asistente Financiero');
         $usuario7->assignRole('Recursos Humanos');
         $decano->assignRole('Decano');
+        $superAdmin->assignRole('Super Administrador'); 
     }
 }
