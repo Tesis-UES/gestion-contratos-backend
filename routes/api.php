@@ -230,18 +230,12 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     // Rutas que manejan el catalogo de horario de permanencia 
     Route::group(['middleware' => ['can:write_staySchedule']], function () {
         Route::post('/employees/me/stay-schedules', [StayScheduleController::class, 'registerForActiveSemester']);
+        Route::put('/employees/me/stay-schedules/{id}/details', [StayScheduleDetailController::class, 'store']);
     });
     Route::group(['middleware' => ['can:read_staySchedule']], function () {
         Route::get('/employees/me/stay-schedules', [StayScheduleController::class, 'allMine']);
         Route::get('/employees/me/stay-schedules/last', [StayScheduleController::class, 'last']);
         Route::get('/employees/me/stay-schedules/{id}', [StayScheduleController::class, 'show']);
-    });
-
-    // Rutas que manejan el catalogo de horario de permanencia 
-    Route::group(['middleware' => ['can:write_staySchedule']], function () {
-        Route::put('/employees/me/stay-schedules/{id}/details', [StayScheduleDetailController::class, 'store']);
-    });
-    Route::group(['middleware' => ['can:read_staySchedule']], function () {
     });
 
     // Rutas que manejan el catalogo de usuarios
@@ -336,9 +330,10 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
         Route::get('/academicLoad/{id}/groups', [GroupController::class, 'showByAcademicLoad']);
     });
 
-    //Rutas que manejan las fuciones de RRHH
+    // Rutas que manejan los catalogos de candidatos
     Route::group(['middleware' => ['can:view_candidates']], function () {
         Route::get('/persons', [PersonController::class, 'allCandidates']);
+        Route::get('/candidates/all', [PersonController::class, 'getCandidates']);
     });
 
     // Rutas para ver mis solicitudes de contratacion
@@ -347,26 +342,22 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
         Route::get('/hiringRequest/mine/{id}', [HiringRequestController::class, 'getMyHiringRequest']);
     });
 
-    //Pendiente por definir los permisos
-    Route::post('/hiringRequest', [HiringRequestController::class, 'store']);
-    Route::get('/hiringRequest/all/peticions', [HiringRequestController::class, 'getAllHiringRequests']);
-    Route::get('/hiringRequest/school/{id}', [HiringRequestController::class, 'getAllHiringRequestBySchool']);
-    Route::get('/hiringRequest/status/all', [HiringRequestController::class, 'getAllStatus']);
-    Route::get('/hiringRequest/{id}', [HiringRequestController::class, 'show']);
-    Route::get('/hiringRequest/{id}/base', [HiringRequestController::class, 'showBase']);
-    Route::put('/hiringRequest/{id}', [HiringRequestController::class, 'update']);
-    Route::delete('/hiringRequest/{id}', [HiringRequestController::class, 'destroy']);
-    Route::post('/hiringRequest/{id}/agreement', [HiringRequestController::class, 'addAgreement']);
-    Route::get('/hiringRequest/{id}/agreement', [HiringRequestController::class, 'getAgreements']);
-
-
-    //Rutas que manejan los select de las solicitudes de contratacion
-    Route::get('/candidates/all', [PersonController::class, 'getCandidates']);
-    Route::get('/hiringRequest/{modality}/groups/notAssigned', [GroupController::class, 'getAllGroupsWhitoutProfessors']);
-    Route::get('/hiringRequest/groups/Assigned', [GroupController::class, 'getHiringGroups']);
-    Route::get('/candidate/{Person}/ActualInfo', [PersonController::class, 'getInfoCandidate']);
-
-    // Rutas que manejan los detalles de las solicitudes de contratacion
+    // Rutas que manejan funciones basicas de solicitudes de contratacion 
+    Route::group(['middleware' => ['can:read_hiringRequest']], function () {
+        Route::get('/hiringRequest/status/all', [HiringRequestController::class, 'getAllStatus']);
+        Route::get('/contract/status/all', [HiringRequestController::class, 'getAllContractStatus']);
+        Route::get('/hiringRequest/{id}', [HiringRequestController::class, 'show']);
+        Route::get('/hiringRequest/{id}/base', [HiringRequestController::class, 'showBase']);
+        Route::get('/hiringRequest/all/peticions', [HiringRequestController::class, 'getAllHiringRequests']);
+        Route::get('/hiringRequest/groups/Assigned', [GroupController::class, 'getHiringGroups']);
+        Route::get('/candidate/{Person}/ActualInfo', [PersonController::class, 'getInfoCandidate']);
+        Route::get('/hiringRequest/details/{id}', [HiringRequestDetailController::class, 'getRequestDetails']);
+        Route::get('/hiringRequest/details/{id}/PDF', [HiringRequestDetailController::class, 'getRequestDetailPdf']);
+        Route::get('/hiringRequestSPNP/{id}/create/PDF/{show}', [HiringRequestController::class, 'MakeHiringRequestSPNP']);
+        Route::get('/hiringRequestTI/{id}/create/PDF/{show}', [HiringRequestController::class, 'MakeHiringRequestTiempoIntegral']);
+        Route::get('/hiringRequestTA/{id}/create/PDF/{show}', [HiringRequestController::class, 'MakeHiringRequestTiempoAdicional']);
+        Route::get('/hiringRequest/{id}/pdf', [HiringRequestController::class, 'getPdf']);
+    });
     Route::group(['middleware' => ['can:write_hiringRequest']], function () {
         Route::post('/hiringRequest/{id}/details/SPNP', [HiringRequestDetailController::class, 'addSPNPRequestDetails']);
         Route::post('/hiringRequest/{id}/details/TI', [HiringRequestDetailController::class, 'addTIRequestDetails']);
@@ -376,48 +367,70 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
         Route::put('/hiringRequest/details/{id}/TA', [HiringRequestDetailController::class, 'updateTARequestDetails']);
         Route::post('/hiringRequest/details/{id}/PDF', [HiringRequestDetailController::class, 'addRequestDetailPdf']);
         Route::delete('/hiringRequest/details/{id}', [HiringRequestDetailController::class, 'deleteRequestDetails']);
+        Route::post('/hiringRequest', [HiringRequestController::class, 'store']);
+        Route::get('/hiringRequest/school/{id}', [HiringRequestController::class, 'getAllHiringRequestBySchool']);
+        Route::put('/hiringRequest/{id}', [HiringRequestController::class, 'update']);
+        Route::delete('/hiringRequest/{id}', [HiringRequestController::class, 'destroy']);
+        Route::get('/hiringRequest/{modality}/groups/notAssigned', [GroupController::class, 'getAllGroupsWhitoutProfessors']);
+        Route::post('/hiringRequest/{hiringRequest}/sendToHR', [HiringRequestController::class, 'sendToHR']);
     });
-    Route::group(['middleware' => ['can:read_hiringRequest']], function () {
-        Route::get('/hiringRequest/details/{id}', [HiringRequestDetailController::class, 'getRequestDetails']);
-        Route::get('/hiringRequest/details/{id}/PDF', [HiringRequestDetailController::class, 'getRequestDetailPdf']);
+
+    // Rutas que manejan las funciones de acuerdos de JD
+    Route::group(['middleware' => ['can:read_agreements']], function () {
+        Route::get('/hiringRequest/{id}/agreement', [HiringRequestController::class, 'getAgreements']);
+    });
+
+    Route::group(['middleware' => ['can:write_agreements']], function () {
+        Route::post('/hiringRequest/{id}/agreement', [HiringRequestController::class, 'addAgreement']);
     });
 
     //Ruta de secretaria para ver las solicitudes de contratacion enviadas para aprobacion
     Route::group(['middleware' => ['can:view_request_asis']], function () {
         Route::get('/hiringRequest/all/withAgreement', [HiringRequestController::class, 'getAllHiringRequestWithAgreement']);
         Route::get('/hiringRequest/all/petitions/secretary', [HiringRequestController::class, 'getAllHiringRequestsSecretary']);
-        Route::put('/hiringRequest/{hiringRequest}/secretary/reception', [HiringRequestController::class, 'secretaryReceptionHiringRequest'])->middleware('can:accept_request_asis');
     });
+    Route::group(['middleware' => ['can:accept_request_asis']], function () {
+        Route::put('/hiringRequest/{hiringRequest}/secretary/reception', [HiringRequestController::class, 'secretaryReceptionHiringRequest']);
+    });
+
+
+    // Rutas que manejan las fuciones de solicitudes de RRHH
+    Route::group(['middleware' => ['can:read_hiringRequestsHR']], function () {
+        Route::get('/hiringRequest/all/petitions/hr', [HiringRequestController::class, 'getRequestsReadyForReview']);
+        Route::get('/hiringRequest/all/petitions/rrhh', [HiringRequestController::class, 'hiringRequestRRHH']);
+        Route::get('/hiringRequest/all/finalized', [HiringRequestController::class, 'getFinalized']);
+    });
+    Route::group(['middleware' => ['can:write_hiringRequestsHR']], function () {
+        Route::post('/hiringRequest/{hiringRequest}/validateHR', [HiringRequestController::class, 'reviewHR']);
+        Route::post('/hiringRequest/{hiringRequest}/finalize', [HiringRequestController::class, 'markAsFinalized']);
+    });
+
+    // Rutas que manejan las fuciones de contratos 
+    Route::group(['middleware' => ['can:read_contracts']], function () {
+        Route::get('/contract/hiringRequestDetail/{requestDetailId}/history', [ContractController::class, 'getContractHistory']);
+        Route::get('/contract/hiringRequestDetail/{requestDetailId}/generate', [ContractController::class, 'generateContract']);
+        Route::get('/contract/version/{versionId}', [ContractController::class, 'getContractVersion']);
+    });
+    Route::group(['middleware' => ['can:write_contracts']], function () {
+        Route::post('/contract/hiringRequestDetail/{requestDetailId}', [ContractController::class, 'updateContract']);
+        Route::post('/contract/hiringRequestDetail/{requestDetailId}/status', [ContractController::class, 'updateContractStatus']);
+    });
+
 
     // Ruta de asistente financiero para ver las solicitudes de contratacion aprobadas
     Route::group(['middleware' => ['can:read_validated_requests']], function () {
         Route::get('/hiringRequest/all/validated', [HiringRequestController::class, 'getAllHiringRequestValidated']);
     });
 
-    Route::get('/hiringRequest/all/petitions/hr', [HiringRequestController::class, 'getAllHiringRequestsHR']);
-    Route::get('/hiringRequest/all/finalized', [HiringRequestController::class, 'getFinalized']);
-    Route::post('/hiringRequest/{hiringRequest}/sendToHR', [HiringRequestController::class, 'sendToHR']);
-    Route::post('/hiringRequest/{hiringRequest}/validateHR', [HiringRequestController::class, 'reviewHR']);
-    Route::post('/hiringRequest/{hiringRequest}/finalize', [HiringRequestController::class, 'markAsFinalized']);
-
-    Route::get('/hiringRequestSPNP/{id}/create/PDF/{show}', [HiringRequestController::class, 'MakeHiringRequestSPNP']);
-    Route::get('/hiringRequestTI/{id}/create/PDF/{show}', [HiringRequestController::class, 'MakeHiringRequestTiempoIntegral']);
-    Route::get('/hiringRequestTA/{id}/create/PDF/{show}', [HiringRequestController::class, 'MakeHiringRequestTiempoAdicional']);
-    Route::get('/hiringRequest/{id}/pdf', [HiringRequestController::class, 'getPdf']);
-    Route::get('/persons/merge/{id?}/pdf', [PersonController::class, 'mergePersonalDoc']);
-
-    Route::get('/hiringRequest/all/petitions/rrhh', [HiringRequestController::class, 'hiringRequestRRHH']);
-    Route::get('/contract/status/all', [HiringRequestController::class, 'getAllContractStatus']);
-    Route::get('/contract/hiringRequestDetail/{requestDetailId}/history', [ContractController::class, 'getContractHistory']);
-    Route::get('/contract/hiringRequestDetail/{requestDetailId}/generate', [ContractController::class, 'generateContract']);
-    Route::get('/contract/version/{versionId}', [ContractController::class, 'getContractVersion']);
-    Route::post('/contract/hiringRequestDetail/{requestDetailId}', [ContractController::class, 'updateContract']);
-    Route::post('/contract/hiringRequestDetail/{requestDetailId}/status', [ContractController::class, 'updateContractStatus']);
-
-    Route::get('/dashboard', [ReportController::class, 'dashboard']);
-    Route::get('/totalAmountsReport', [ReportController::class, 'totalAmountsReport']);
-    Route::get('/totalOfContractsByPerson', [ReportController::class, 'totalOfContractsByPerson']);
-    Route::get('/contractsAmountsByPerson', [ReportController::class, 'contractsAmountsByPerson']);
-    Route::get('/totalAmountByContracts', [ReportController::class, 'totalAmountByContracts']);
-    Route::get('/hiringRequest/{id}/amount/export/', [ReportController::class, 'export']);
+    // Rutas que manejan los reportes del sistema 
+    Route::group(['middleware' => ['can:read_dashboard']], function () {
+        Route::get('/dashboard', [ReportController::class, 'dashboard']);
+    });
+    Route::group(['middleware' => ['can:read_reports']], function () {
+        Route::get('/totalAmountsReport', [ReportController::class, 'totalAmountsReport']);
+        Route::get('/totalOfContractsByPerson', [ReportController::class, 'totalOfContractsByPerson']);
+        Route::get('/contractsAmountsByPerson', [ReportController::class, 'contractsAmountsByPerson']);
+        Route::get('/totalAmountByContracts', [ReportController::class, 'totalAmountByContracts']);
+        Route::get('/hiringRequest/{id}/amount/export/', [ReportController::class, 'export']);
+    });
 });

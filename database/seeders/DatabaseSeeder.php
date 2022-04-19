@@ -53,7 +53,7 @@ class DatabaseSeeder extends Seeder
                         $hiringRequest->status()->attach(['status_id' => '2'], ['comments' => 'Llenado de datos de solicitud de contratación']);
                 });
                
-                //Candidatos que no son trabajadores de la UES XD
+                //Candidatos que no son trabajadores de la UES
                 User::factory()->count(50)->create()->each(function ($user) {
                         $user->assignRole('Candidato');
                         $user->person()->save(Person::factory()->make());

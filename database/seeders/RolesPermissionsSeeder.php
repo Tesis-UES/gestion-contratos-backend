@@ -135,8 +135,19 @@ class RolesPermissionsSeeder extends Seeder
         Permission::create(['name' => 'read_hiringRequest']);
         Permission::create(['name' => 'write_hiringRequest']);
 
+        Permission::create(['name' => 'read_agreements']);
+        Permission::create(['name' => 'write_agreements']);
+
+        Permission::create(['name' => 'read_hiringRequestsHR']);
+        Permission::create(['name' => 'write_hiringRequestsHR']);
+
+        Permission::create(['name' => 'read_contracts']);
+        Permission::create(['name' => 'write_contracts']);
+
         // Permisos individuales 
         Permission::create(['name' => 'read_myHiringRequests']);
+        Permission::create(['name' => 'read_dashboard']);
+        Permission::create(['name' => 'read_reports']);
 
         //Permisos visuales
         Permission::create(['name' => 'view_activities']);
@@ -218,6 +229,11 @@ class RolesPermissionsSeeder extends Seeder
             'read_banks',
             'write_banks',
             'read_hiringRequest',
+            'read_agreements',
+            'read_dashboard',
+            'read_reports',
+            'view_candidates',
+
         ]);
 
         $profesor->givePermissionTo([
@@ -259,7 +275,6 @@ class RolesPermissionsSeeder extends Seeder
             'write_activities',
             'read_positions',
             'read_courses',
-            // 'write_courses', 
             'read_contractTypes',
             'read_persons',
             'read_plans',
@@ -275,41 +290,22 @@ class RolesPermissionsSeeder extends Seeder
             'view_academicLoadDirector',
             'read_hiringRequest',
             'write_hiringRequest',
-            'view_hiringRequest'
+            'view_hiringRequest',
+            'read_dashboard',
+            'read_agreements',
         ]);
 
         $asistenteAdmin->givePermissionTo([
-            /*  'read_employeeType',
-            'read_escalafones',
-            'write_escalafones',
-            'read_faculties',
-            'write_faculties',
-            'read_schools',
-            'write_schools',
-            'read_activities',
-            'read_positions',
-            'read_courses',
-            'write_courses',
-            'read_contractTypes',
-            'write_contractTypes',
-            'read_centralAuthorities',
-            'write_centralAuthorities',
-            'read_plans',
-            'read_facultyAuth',
-            'read_schoolAuth',
-            'read_semesters',
-            'read_groupsType',
-            'read_academicLoad',
-            'read_groups',
-            'write_personValidations',
-            'read_personValidations',
-            'view_personInfo',
-            'view_contracSolicitude',
-            'view_candidates', */
             'read_hiringRequest',
             'view_request_asis',
             'accept_request_asis',
             'list_employees',
+            'read_agreements',
+            'write_agreements',
+            'read_reports',
+            'read_contractTypes',
+            'view_candidates',
+            'read_dashboard',
         ]);
 
         $rrhh->givePermissionTo([
@@ -320,6 +316,14 @@ class RolesPermissionsSeeder extends Seeder
             'view_rrhhContract',
             'read_hiringRequest',
             'read_schools',
+            'read_agreements',
+            'write_hiringRequestsHR',
+            'read_hiringRequestsHR',
+            'read_contracts',
+            'write_contracts',
+            'read_dashboard',
+            'read_reports',
+            'read_contractTypes',
         ]);
 
         $financiero->givePermissionTo([
@@ -328,6 +332,22 @@ class RolesPermissionsSeeder extends Seeder
             'read_escalafones',
             'read_hiringRequest',
             'read_banks',
+            'read_agreements',
+            'read_reports',
+            'read_contractTypes',
+        ]);
+
+        $decanoRole->givePermissionTo([
+            'read_schools',
+            'read_semesters',
+            'read_contractTypes',
+            'read_agreements',
+            'read_dashboard',
+            'read_reports',
+            'view_candidates',
+            'view_request_asis',
+            'read_agreements',
+            'read_hiringRequest',
         ]);
 
         $usuario1->assignRole('Administrador');

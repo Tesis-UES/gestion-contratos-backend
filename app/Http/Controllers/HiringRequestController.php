@@ -170,11 +170,11 @@ class HiringRequestController extends Controller
             ->orderBy('code', 'DESC')
             ->paginate($request->query('paginate'));
         $hiringRequests->makeHidden('status');
-        $this->RegisterAction("El usuario ha consultado todas las solicitudes de contratación", "medium");
+        $this->RegisterAction("El usuario ha consultado todas las solicitudes de contratación de su escuela", "medium");
         return response($hiringRequests, 200);
     }
 
-    public function getAllHiringRequestsHR()
+    public function getRequestsReadyForReview()
     {
         return  $hiringRequests = HiringRequest::with(['school', 'contractType'])
             ->where('request_status', '=', HiringRequestStatusCode::ERH)
