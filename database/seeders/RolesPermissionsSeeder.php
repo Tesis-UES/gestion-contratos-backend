@@ -315,6 +315,7 @@ class RolesPermissionsSeeder extends Seeder
             'read_dashboard',
             'read_agreements',
             'read_myHiringRequests',
+            'view_candidates',
         ]);
 
         $asistenteAdmin->givePermissionTo([
