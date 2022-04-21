@@ -344,10 +344,10 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
         Route::get('/candidate/{Person}/ActualInfo', [PersonController::class, 'getInfoCandidate']);
         Route::get('/contract/status/all', [HiringRequestController::class, 'getAllContractStatus']);
     });
-
+    Route::get('/hiringRequest/status/all', [HiringRequestController::class, 'getAllStatus']);
     // Rutas que manejan funciones basicas de solicitudes de contratacion 
     Route::group(['middleware' => ['can:read_hiringRequest']], function () {
-        Route::get('/hiringRequest/status/all', [HiringRequestController::class, 'getAllStatus']);
+        
         Route::get('/hiringRequest/{id}', [HiringRequestController::class, 'show']);
         Route::get('/hiringRequest/{id}/base', [HiringRequestController::class, 'showBase']);
         Route::get('/hiringRequest/all/peticions', [HiringRequestController::class, 'getAllHiringRequests']);
