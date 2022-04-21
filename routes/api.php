@@ -340,17 +340,17 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::group(['middleware' => ['can:read_myHiringRequests']], function () {
         Route::get('/hiringRequest/mine', [HiringRequestController::class, 'listMyHiringRequests']);
         Route::get('/hiringRequest/mine/{id}', [HiringRequestController::class, 'getMyHiringRequest']);
+        Route::get('/hiringRequest/groups/Assigned', [GroupController::class, 'getHiringGroups']);
+        Route::get('/candidate/{Person}/ActualInfo', [PersonController::class, 'getInfoCandidate']);
+        Route::get('/contract/status/all', [HiringRequestController::class, 'getAllContractStatus']);
     });
 
     // Rutas que manejan funciones basicas de solicitudes de contratacion 
     Route::group(['middleware' => ['can:read_hiringRequest']], function () {
         Route::get('/hiringRequest/status/all', [HiringRequestController::class, 'getAllStatus']);
-        Route::get('/contract/status/all', [HiringRequestController::class, 'getAllContractStatus']);
         Route::get('/hiringRequest/{id}', [HiringRequestController::class, 'show']);
         Route::get('/hiringRequest/{id}/base', [HiringRequestController::class, 'showBase']);
         Route::get('/hiringRequest/all/peticions', [HiringRequestController::class, 'getAllHiringRequests']);
-        Route::get('/hiringRequest/groups/Assigned', [GroupController::class, 'getHiringGroups']);
-        Route::get('/candidate/{Person}/ActualInfo', [PersonController::class, 'getInfoCandidate']);
         Route::get('/hiringRequest/details/{id}', [HiringRequestDetailController::class, 'getRequestDetails']);
         Route::get('/hiringRequest/details/{id}/PDF', [HiringRequestDetailController::class, 'getRequestDetailPdf']);
         Route::get('/hiringRequestSPNP/{id}/create/PDF/{show}', [HiringRequestController::class, 'MakeHiringRequestSPNP']);

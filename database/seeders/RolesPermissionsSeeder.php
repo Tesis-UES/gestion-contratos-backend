@@ -240,7 +240,7 @@ class RolesPermissionsSeeder extends Seeder
             'read_dashboard',
             'read_reports',
             'view_candidates',
-
+            'read_myHiringRequests',
         ]);
 
         $superadmin->givePermissionTo([
@@ -314,6 +314,7 @@ class RolesPermissionsSeeder extends Seeder
             'view_hiringRequest',
             'read_dashboard',
             'read_agreements',
+            'read_myHiringRequests',
         ]);
 
         $asistenteAdmin->givePermissionTo([
@@ -327,6 +328,7 @@ class RolesPermissionsSeeder extends Seeder
             'read_contractTypes',
             'view_candidates',
             'read_dashboard',
+            'read_myHiringRequests',
         ]);
 
         $rrhh->givePermissionTo([
@@ -336,6 +338,7 @@ class RolesPermissionsSeeder extends Seeder
             'read_personValidations',
             'view_rrhhContract',
             'read_hiringRequest',
+            'read_myHiringRequests',
             'read_schools',
             'read_agreements',
             'write_hiringRequestsHR',
@@ -352,6 +355,7 @@ class RolesPermissionsSeeder extends Seeder
             'read_validated_requests',
             'read_escalafones',
             'read_hiringRequest',
+            'read_myHiringRequests',
             'read_banks',
             'read_agreements',
             'read_reports',
@@ -369,6 +373,7 @@ class RolesPermissionsSeeder extends Seeder
             'view_request_asis',
             'read_agreements',
             'read_hiringRequest',
+            'read_myHiringRequests',
         ]);
 
         $usuario1->assignRole('Administrador');
@@ -379,6 +384,6 @@ class RolesPermissionsSeeder extends Seeder
         $usuario6->assignRole('Asistente Financiero');
         $usuario7->assignRole('Recursos Humanos');
         $decano->assignRole('Decano');
-        $superAdmin->assignRole('Super Administrador'); 
+        $superAdmin->assignRole('Super Administrador');
     }
 }

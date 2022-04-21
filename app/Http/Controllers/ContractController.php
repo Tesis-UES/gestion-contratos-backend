@@ -160,7 +160,7 @@ class ContractController extends Controller
     public function getContractPeriodString($formatter, $requestDetails)
     {
         $fechaInicio = Carbon::parse($requestDetails->start_date)->locale('es');
-        $fechaFinal = Carbon::parse($requestDetails->end_date)->locale('es');
+        $fechaFinal = Carbon::parse($requestDetails->finish_date)->locale('es');
         return "DEL " . $formatter->toString($fechaInicio->day) . " DE " . $fechaInicio->monthName . " DE " . $formatter->toString($fechaInicio->year) . " AL " . $formatter->toString($fechaFinal->day) . " DE " . $fechaFinal->monthName . " DE " . $formatter->toString($fechaFinal->year);
     }
 
@@ -499,22 +499,20 @@ class ContractController extends Controller
         $tempFile = tempnam(sys_get_temp_dir(), 'ContractFile');
         $file->saveAs($tempFile);
 
-        if ($requestDetails->contract_file == null) {
-            Storage::disk('contracts')->put($fileName['name'], \File::get($tempFile));
-            $this->updateContractVersionHistory($requestDetails, $fileName);
-            $contractStatus = ContractStatus::where('code', ContractStatusCode::ELB)->first();
-            $requestDetails->contractStatus()->attach([
-                [
-                    'contract_status_id' => $contractStatus->id,
-                    'date'               => Carbon::now()
-                ],
-            ]);
-            $requestDetails->update([
-                'contract_file' => $fileName['name'],
-                'contract_version' => $fileName['version'],
-            ]);
-            $this->RegisterAction('El usuario generó la version inicial del contrato con id: ' . $requestDetails->id, 'critical');
-        }
+        Storage::disk('contracts')->put($fileName['name'], \File::get($tempFile));
+        $this->updateContractVersionHistory($requestDetails, $fileName);
+        $contractStatus = ContractStatus::where('code', ContractStatusCode::ELB)->first();
+        $requestDetails->contractStatus()->attach([
+            [
+                'contract_status_id' => $contractStatus->id,
+                'date'               => Carbon::now()
+            ],
+        ]);
+        $requestDetails->update([
+            'contract_file' => $fileName['name'],
+            'contract_version' => $fileName['version'],
+        ]);
+        $this->RegisterAction('El usuario generó la version inicial del contrato con id: ' . $requestDetails->id, 'critical');
 
         return response()->download($tempFile, $fileName['name'], $header)->deleteFileAfterSend(true);
     }
