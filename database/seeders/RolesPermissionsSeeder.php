@@ -285,6 +285,7 @@ class RolesPermissionsSeeder extends Seeder
             'view_Personal_changes',
             'read_banks',
             'read_myHiringRequests',
+          
         ]);
 
         $directorEscuela->givePermissionTo([
@@ -316,6 +317,9 @@ class RolesPermissionsSeeder extends Seeder
             'read_agreements',
             'read_myHiringRequests',
             'view_candidates',
+            'write_plans', 
+            'read_plans',
+            'write_courses'
         ]);
 
         $asistenteAdmin->givePermissionTo([
