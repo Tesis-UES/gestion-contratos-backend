@@ -10,17 +10,27 @@ use App\Http\Traits\WorklogTrait;
 class SchoolController extends Controller
 {
     use WorklogTrait;
-    public function all($id)
-    {
-        Faculty::findOrFail($id);
-        $schools = School::select('schools.id AS schoolId','schools.name AS nameSchool','school_authorities.name AS directorName')
-        ->join('school_authorities','schools.id','=','school_authorities.school_id')
-        ->where('school_authorities.status','=',1)
-        ->where('school_authorities.position','=','DIRECTOR')
+    public function all($id){
+        $schools = School::with('SchoolAuthority')
         ->where('schools.faculty_id', $id)
-        ->orWhere('school_authorities.position','=',null)->get();
+        ->get();
+
+        $schoolsResponse = array_map(function($school) {
+            $directorName = 'Sin asignar';
+            foreach($school['school_authority'] as $authority) {
+                if($authority['position'] == 'DIRECTOR' && $authority['status'] == true){
+                    $directorName = $authority['name'];
+                }
+            }
+            return [
+                'schoolId' => $school['id'],
+                'nameSchool' => $school['name'],
+                'directorName' => $directorName,
+            ];
+        }, $schools->toArray());
+
         $this->RegisterAction("El usuario ha consultado el catalogo de Escuelas");
-        return response($schools, 200);
+        return response($schoolsResponse, 200);
     }
 
     /**

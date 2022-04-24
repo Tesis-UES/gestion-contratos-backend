@@ -23,6 +23,14 @@ class CentralAuthorityController extends Controller
         return response($authorities, 200);
     }
 
+    public function changeStatus($id)
+    {
+        $centralAuthority = CentralAuthority::findOrFail($id);
+        $centralAuthority->status = !$centralAuthority->status;
+        return response($centralAuthority, 200);
+    }
+
+
     /**
      * Store a newly created resource in storage.
      *

@@ -40,6 +40,13 @@ class SchoolAuthorityController extends Controller
         return response($newSchoolAuthoritie, 201);
     }
 
+    public function changeStatus($id)
+    {
+        $schoolAuthority = SchoolAuthority::findOrFail($id);
+        $schoolAuthority->status = !$schoolAuthority->status;
+        return response($schoolAuthority, 200);
+    }
+
     
     
 

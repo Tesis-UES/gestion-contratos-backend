@@ -40,7 +40,7 @@ class EscalafonController extends Controller
         $fields = $request->validate([
             'code'   => 'required|string|max:10',
             'name'   => 'required|string|max:120',
-            'salary' => 'required|integer',
+            'salary' => 'required|numeric',
         ]);
 
         $newEscalafon = Escalafon::create([
@@ -93,7 +93,7 @@ class EscalafonController extends Controller
         $request->validate([
             'code'   => 'required|string|max:10',
             'name'   => 'required|string|max:120',
-            'salary' => 'required|integer',
+            'salary' => 'required|numeric',
         ]);
 
         $escalafon = Escalafon::findOrFail($id);

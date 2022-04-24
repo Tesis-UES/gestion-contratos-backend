@@ -1221,13 +1221,13 @@ class PersonController extends Controller
         $candidates = Person::select('id', DB::raw("CONCAT(first_name,' ',middle_name,' ',last_name) as name"));
         switch ($request->hiringType) {
             case 'SPNP':
-                $candidates = $candidates->where('is_employee', false);
+                $candidates = $candidates->where('is_employee', false)->where('status', 'Validado');
                 break;
              case 'RP':
                 $candidates;
                 break;
             default:
-                $candidates = $candidates->where('is_employee', true);
+                $candidates = $candidates->where('is_employee', true)->where('status', 'Validado');
                 break;
         }
         $search = $request->search;

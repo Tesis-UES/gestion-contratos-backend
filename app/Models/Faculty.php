@@ -17,4 +17,11 @@ class Faculty extends Model
         'viceDean',
 ];
 
+    //Relaciones
+    public function schools()
+    {
+        return $this->hasMany(School::class);
+    }
+    
+
 }
