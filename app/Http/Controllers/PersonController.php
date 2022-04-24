@@ -269,13 +269,13 @@ class PersonController extends Controller
 
         if ($request->input('is_employee') == true) {
             $employeeFields = $request->validate([
-                'partida'           => 'string|max:50',
-                'sub_partida'       => 'string|max:50',
-                'journey_type'      => ['required|', Rule::in(['tiempo-completo', 'medio-tiempo', 'cuarto-tiempo', 'tiempo-parcial', 'tiempo-eventual'])],
+                'partida'           => 'integer|max:50',
+                'sub_partida'       => 'integer|max:50',
+                'journey_type'      => ['required', Rule::in(['tiempo-completo', 'medio-tiempo', 'cuarto-tiempo', 'tiempo-parcial', 'tiempo-eventual'])],
                 'faculty_id'        => 'required|integer|gte:1',
                 'escalafon_id'      => 'required|integer|gte:1',
                 'employee_types'    => 'required|array|min:1',
-                'employee_types.*'  => 'required|integer|distinct|gte:1',
+                'employee_types.*'  => 'required|integer|gte:1',
             ]);
 
             Escalafon::findOrFail($employeeFields['escalafon_id']);
