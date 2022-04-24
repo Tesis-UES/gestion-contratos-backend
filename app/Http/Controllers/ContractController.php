@@ -521,7 +521,7 @@ class ContractController extends Controller
     {
         $requestDetail = HiringRequestDetail::with(['hiringRequest', 'contractStatus', 'contractVersions'])
             ->findOrFail($requestDetailId);
-        if ($requestDetail->hiringRequest->request_status != HiringRequestStatusCode::GDC) {
+        if ($requestDetail->hiringRequest->request_status != HiringRequestStatusCode::GDC && $requestDetail->hiringRequest->request_status != HiringRequestStatusCode::FIN) {
             return response(['message' => 'La solicitud no se encuentra en generación de contratos'], 400);
         }
 

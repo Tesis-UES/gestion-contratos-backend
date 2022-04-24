@@ -107,9 +107,10 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
         Route::put('/faculties/{id}', [FacultyController::class, 'update']);
         Route::delete('/faculties/{id}', [FacultyController::class, 'destroy']);
     });
+    
     Route::group(['middleware' => ['can:read_faculties']], function () {
         Route::get('/faculties', [FacultyController::class, 'all']);
-        Route::get('/faculties/{id}', [FacultyController::class, 'show']);
+       
     });
 
     // Rutas que manejan el catalogo de escuelas pertenecientes a facultades
@@ -119,9 +120,10 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
         Route::delete('/schools/{id}', [SchoolController::class, 'destroy']);
     });
     Route::group(['middleware' => ['can:read_schools']], function () {
-        Route::get('/faculties/{id}/schools', [SchoolController::class, 'all']);
+      
         Route::get('/schools/{id}', [SchoolController::class, 'show']);
     });
+   
 
     // Rutas que manejan el catalogo de cargos de docentes
     Route::group(['middleware' => ['can:write_positions']], function () {
@@ -323,8 +325,9 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
         Route::post('/importGroups/{academicLoadId}', [GroupController::class, 'importGroups']);
         Route::put('/groups/{id}', [GroupController::class, 'update']);
         Route::put('/groups/{id}/professor', [GroupController::class, 'setProfessor']);
-        Route::get('/professors', [PersonController::class, 'allCandidatesProfessor']);
+      
     });
+    
     Route::group(['middleware' => ['can:read_groups']], function () {
         Route::get('/groups/{id}', [GroupController::class, 'show']);
         Route::get('/academicLoad/{id}/groups', [GroupController::class, 'showByAcademicLoad']);
@@ -344,7 +347,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
         Route::get('/candidate/{Person}/ActualInfo', [PersonController::class, 'getInfoCandidate']);
         Route::get('/contract/status/all', [HiringRequestController::class, 'getAllContractStatus']);
     });
-    Route::get('/hiringRequest/status/all', [HiringRequestController::class, 'getAllStatus']);
+   
     // Rutas que manejan funciones basicas de solicitudes de contratacion 
     Route::group(['middleware' => ['can:read_hiringRequest']], function () {
         
@@ -398,8 +401,10 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::group(['middleware' => ['can:read_hiringRequestsHR']], function () {
         Route::get('/hiringRequest/all/petitions/hr', [HiringRequestController::class, 'getRequestsReadyForReview']);
         Route::get('/hiringRequest/all/petitions/rrhh', [HiringRequestController::class, 'hiringRequestRRHH']);
-        Route::get('/hiringRequest/all/finalized', [HiringRequestController::class, 'getFinalized']);
+        
     });
+  
+    
     Route::group(['middleware' => ['can:write_hiringRequestsHR']], function () {
         Route::post('/hiringRequest/{hiringRequest}/validateHR', [HiringRequestController::class, 'reviewHR']);
         Route::post('/hiringRequest/{hiringRequest}/finalize', [HiringRequestController::class, 'markAsFinalized']);
@@ -433,4 +438,10 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
         Route::get('/totalAmountByContracts', [ReportController::class, 'totalAmountByContracts']);
         Route::get('/hiringRequest/{id}/amount/export/', [ReportController::class, 'export']);
     });
+    //Rutas catalogo
+    Route::get('/hiringRequest/all/finalized', [HiringRequestController::class, 'getFinalized']);
+    Route::get('/hiringRequest/status/all', [HiringRequestController::class, 'getAllStatus']);
+    Route::get('/faculties/{id}', [FacultyController::class, 'show']);
+    Route::get('/faculties/{id}/schools', [SchoolController::class, 'all']);
+    Route::get('/professors', [PersonController::class, 'allCandidatesProfessor']);
 });
