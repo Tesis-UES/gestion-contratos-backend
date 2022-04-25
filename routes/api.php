@@ -70,6 +70,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     // Rutas que manejan el catalogo de formatos
     Route::get('/formats', [FormatController::class, 'index']);
     Route::get('/formats/{id}', [FormatController::class, 'show']);
+    Route::get('/formats/excel/download', [FormatController::class, 'plantillaMaterias']);
     Route::group(['middleware' => ['can:write_formats']], function () {
         Route::post('/formats', [FormatController::class, 'store']);
     });

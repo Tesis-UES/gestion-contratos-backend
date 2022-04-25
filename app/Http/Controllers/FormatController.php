@@ -75,4 +75,10 @@ class FormatController extends Controller
                          'document' => $format->encoded_file], 200);
     }
 
+    public function plantillaMaterias(){
+        $formatExcel = base64_encode(\Storage::disk('formats')->get("PlantillaMaterias.xlsx"));
+        $this->RegisterAction('El usuario ha descargado el formato de plantilla de materias');
+        return response(['formatExcel'=> $formatExcel], 200);
+    }
+
 }
