@@ -578,7 +578,7 @@ class ContractController extends Controller
 
         $requestDetail->contractStatus()->attach([$fields]);
 
-        $this->registerAction('El usuario ha actualizado el status del contrato del detalle de solicitud con ID: ', $requestDetailId, 'critical');
+        $this->registerAction('El usuario ha actualizado el status del contrato del detalle de solicitud con ID: '.$requestDetailId, 'critical');
     }
 
     private function updateContractVersionHistory($requestDetail, $fileName)

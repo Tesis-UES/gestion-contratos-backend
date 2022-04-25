@@ -85,7 +85,7 @@ class HiringRequestController extends Controller
         ];
         $hiringRequest = HiringRequest::with($relations)->findOrFail($id);
 
-        if ($hiringRequest->request_status == HiringRequestStatusCode::GDC) {
+        if ($hiringRequest->request_status == HiringRequestStatusCode::GDC || $hiringRequest->request_status == HiringRequestStatusCode::FIN) {
             foreach ($hiringRequest->details as $detail) {
                 $lastStatus = $detail->contractStatus->last();
                 if ($lastStatus == null) {
@@ -166,6 +166,7 @@ class HiringRequestController extends Controller
     public function getAllHiringRequestBySchool($id, Request $request)
     {
         $hiringRequests = HiringRequest::where('school_id', '=', $id)
+            ->where('request_status', '<>', HiringRequestStatusCode::FIN)
             ->with(['school', 'contractType'])
             ->orderBy('code', 'DESC')
             ->paginate($request->query('paginate'));

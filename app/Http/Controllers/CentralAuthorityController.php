@@ -27,6 +27,7 @@ class CentralAuthorityController extends Controller
     {
         $centralAuthority = CentralAuthority::findOrFail($id);
         $centralAuthority->status = !$centralAuthority->status;
+        $centralAuthority->save();
         return response($centralAuthority, 200);
     }
 

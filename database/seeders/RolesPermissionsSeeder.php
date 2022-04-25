@@ -299,7 +299,6 @@ class RolesPermissionsSeeder extends Seeder
             'read_courses',
             'read_contractTypes',
             'read_persons',
-            'read_plans',
             'read_facultyAuth',
             'read_schoolAuth',
             'read_semesters',

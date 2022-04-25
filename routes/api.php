@@ -175,7 +175,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
         Route::post('/central-authorities', [CentralAuthorityController::class, 'store']);
         Route::put('/central-authorities/{id}', [CentralAuthorityController::class, 'update']);
         Route::delete('/central-authorities/{id}', [CentralAuthorityController::class, 'destroy']);
-        Route::get('/central-authorities/{id}/status', [CentralAuthorityController::class, 'changeStatus']);
+        Route::post('/central-authorities/{id}/status', [CentralAuthorityController::class, 'changeStatus']);
     });
     Route::group(['middleware' => ['can:read_centralAuthorities']], function () {
         Route::get('/central-authorities', [CentralAuthorityController::class, 'all']);
@@ -267,6 +267,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::group(['middleware' => ['can:write_facultyAuth']], function () {
         Route::post('/faculties/authorities', [FacultyAuthorityController::class, 'store']);
         Route::put('/faculties/authority/{id}/info', [FacultyAuthorityController::class, 'update']);
+        Route::post('/faculties/authority/{id}/status', [FacultyAuthorityController::class, 'changeStatus']);
         Route::delete('/faculties/authority/{id}/info', [FacultyAuthorityController::class, 'destroy']);
     });
     Route::group(['middleware' => ['can:read_facultyAuth']], function () {
@@ -278,7 +279,7 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     // Rutas que manejan el catalogo de autoridades de escuela
     Route::group(['middleware' => ['can:write_schoolAuth']], function () {
         Route::post('/schools/authorities', [SchoolAuthorityController::class, 'store']);
-        Route::get('/schools/authorities/{id}/status', [SchoolAuthorityController::class, 'changeStatus']);
+        Route::post('/schools/authorities/{id}/status', [SchoolAuthorityController::class, 'changeStatus']);
         Route::put('/schools/authority/{id}/info', [SchoolAuthorityController::class, 'update']);
         Route::delete('/schools/authority/{id}/info', [SchoolAuthorityController::class, 'destroy']);
     });

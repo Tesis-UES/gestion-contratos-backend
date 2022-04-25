@@ -44,6 +44,7 @@ class SchoolAuthorityController extends Controller
     {
         $schoolAuthority = SchoolAuthority::findOrFail($id);
         $schoolAuthority->status = !$schoolAuthority->status;
+        $schoolAuthority->save();
         return response($schoolAuthority, 200);
     }
 

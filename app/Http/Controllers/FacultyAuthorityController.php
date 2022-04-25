@@ -27,6 +27,14 @@ class FacultyAuthorityController extends Controller
         return response($facultyAuthoritie, 200);
     }
 
+    public function changeStatus($id)
+    {
+        $facultyAuthority = FacultyAuthority::findOrFail($id);
+        $facultyAuthority->status = !$facultyAuthority->status;
+        $facultyAuthority->save();
+        return response($facultyAuthority, 200);
+    }
+
     public function store(Request $request)
     {
         $request->validate([
