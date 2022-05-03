@@ -527,7 +527,6 @@ class ContractController extends Controller
             return response(['message' => 'La solicitud no se encuentra en generación de contratos'], 400);
         }
 
-
         return [
             'contractStatus' => $requestDetail->contractStatus,
             'contractVersions' => $requestDetail->contractVersions
