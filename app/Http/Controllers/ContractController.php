@@ -501,13 +501,15 @@ class ContractController extends Controller
 
         Storage::disk('contracts')->put($fileName['name'], \File::get($tempFile));
         $this->updateContractVersionHistory($requestDetails, $fileName);
-        $contractStatus = ContractStatus::where('code', ContractStatusCode::ELB)->first();
-        $requestDetails->contractStatus()->attach([
-            [
-                'contract_status_id' => $contractStatus->id,
-                'date'               => Carbon::now()
-            ],
-        ]);
+        if ($requestDetails->contract_file != true) {
+            $contractStatus = ContractStatus::where('code', ContractStatusCode::ELB)->first();
+            $requestDetails->contractStatus()->attach([
+                [
+                    'contract_status_id' => $contractStatus->id,
+                    'date'               => Carbon::now()
+                ],
+            ]);
+        }
         $requestDetails->update([
             'contract_file' => $fileName['name'],
             'contract_version' => $fileName['version'],
@@ -578,7 +580,7 @@ class ContractController extends Controller
 
         $requestDetail->contractStatus()->attach([$fields]);
 
-        $this->registerAction('El usuario ha actualizado el status del contrato del detalle de solicitud con ID: '.$requestDetailId, 'critical');
+        $this->registerAction('El usuario ha actualizado el status del contrato del detalle de solicitud con ID: ' . $requestDetailId, 'critical');
     }
 
     private function updateContractVersionHistory($requestDetail, $fileName)
