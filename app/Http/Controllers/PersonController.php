@@ -206,7 +206,7 @@ class PersonController extends Controller
     {
         $user = Auth::user();
         $person = Person::where('user_id', $user->id)->first();
-        if ($person) {
+        if ($person != null) {
             return response(['has_registered' => true], 200);
         }
         return response(['has_registered' => false], 200);
@@ -1223,7 +1223,7 @@ class PersonController extends Controller
             case 'SPNP':
                 $candidates = $candidates->where('is_employee', false)->where('status', 'Validado');
                 break;
-             case 'RP':
+            case 'RP':
                 $candidates;
                 break;
             default:
