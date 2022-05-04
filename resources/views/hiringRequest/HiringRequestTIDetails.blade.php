@@ -102,7 +102,7 @@
         </div>
     </header>
     <footer>
-        FIA-UES 2022
+        
     </footer>
     <main style="page-break-after: auto; margin-top:5px;">
         @php

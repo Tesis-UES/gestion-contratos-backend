@@ -15,7 +15,7 @@ class PersonSeeder extends Seeder
         $task = new PersonController;
       
         // Obtenemos employeeTypes,semesters,users
-        Semester::Create(['name' => 'Ciclo 2-2021', 'start_date' => '2021-07-13', 'end_date' => '2021-12-12', 'status' => true]);
+        Semester::Create(['name' => 'Ciclo 1-2022', 'start_date' => '2022-02-14', 'end_date' => '2022-06-10', 'status' => true]);
         $employeeTypes = EmployeeType::all();
         $semester = Semester::firstWhere('status', 1);
         //detalles de horario

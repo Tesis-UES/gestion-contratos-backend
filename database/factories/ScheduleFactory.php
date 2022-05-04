@@ -22,7 +22,8 @@ class ScheduleFactory extends Factory
     public function definition()
     {
         // get an hour H:i and sum 2 hours 
-        $sthour = $this->faker->time('H:i');
+        //$sthour = $this->faker->time('H:i');
+        $sthour = $this->faker->randomElement(['6:20', '8:05', '9:45', '11:25', '13:10','15:00','16:40','18:25']);
         $endhour = date('H:i', strtotime($sthour) + 7200);
 
         return [

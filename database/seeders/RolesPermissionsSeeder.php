@@ -28,24 +28,24 @@ class RolesPermissionsSeeder extends Seeder
         ]);
         $usuario3 = User::create([
             'name'      => 'Paola Renee Aguilar Quevedo',
-            'email'     => 'paola@ues.edu.sv',
+            'email'     => 'candidato@ues.edu.sv',
             'password'  => bcrypt('foobar'),
             'school_id' => 8,
         ]);
         $usuario4 = User::create([
             'name'      => 'Oscar Emmanuel Cordero Hernandez',
-            'email'     => 'oscar@ues.edu.sv',
+            'email'     => 'director@ues.edu.sv',
             'password'  => bcrypt('foobar'),
             'school_id' => 8,
         ]);
         $usuario5 = User::create([
             'name'      => 'Walter Baudilio Luna Peñate',
-            'email'     => 'walter@ues.edu.sv',
+            'email'     => 'asistente@ues.edu.sv',
             'password'  => bcrypt('foobar'),
         ]);
         $usuario6 = User::create([
             'name'      => 'Juan Perez sosa',
-            'email'     => 'juan@ues.edu.sv',
+            'email'     => 'financiero@ues.edu.sv',
             'password'  => bcrypt('foobar'),
         ]);
 
