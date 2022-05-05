@@ -521,7 +521,7 @@ class ContractController extends Controller
 
     public function getContractHistory($requestDetailId)
     {
-        $requestDetail = HiringRequestDetail::with(['hiringRequest', 'contractStatus', 'contractVersions'])
+        $requestDetail = HiringRequestDetail::with(['hiringRequest', 'contractStatus', 'contractVersions', 'person'])
             ->findOrFail($requestDetailId);
         if ($requestDetail->hiringRequest->request_status != HiringRequestStatusCode::GDC && $requestDetail->hiringRequest->request_status != HiringRequestStatusCode::FIN) {
             return response(['message' => 'La solicitud no se encuentra en generación de contratos'], 400);
@@ -529,7 +529,8 @@ class ContractController extends Controller
 
         return [
             'contractStatus' => $requestDetail->contractStatus,
-            'contractVersions' => $requestDetail->contractVersions
+            'contractVersions' => $requestDetail->contractVersions,
+            'person' => $requestDetail->person,
         ];
     }
 
