@@ -474,7 +474,7 @@ class HiringRequestController extends Controller
         }
         $mensajeEmail = "Se ha enviado la solicitud de contratación validada con código <b>" . $hiringRequest->code . "</b> de parte de la  <b>" . $escuela . "</b> para que esta sea recibida por secretaía de facultad y posteriormente agendada para Junta Directiva.
          <ul>
-            <li>Código: <b>" . $hiringRequest->code . "</b>li>
+            <li>Código: <b>" . $hiringRequest->code . "</b></li>
             <li>Tipo de Solicitud de Contrato:<b>" . $hiringRequest->contractType->name . " </b></li>
             <li>Modalidad: <b>" . $hiringRequest->modality . "</b></li>
         </ul>";
