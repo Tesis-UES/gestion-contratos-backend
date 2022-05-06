@@ -15,5 +15,6 @@ class Escalafon extends Model
             'code',
             'name',
            'salary',
+           'hour_price',
     ];
 }

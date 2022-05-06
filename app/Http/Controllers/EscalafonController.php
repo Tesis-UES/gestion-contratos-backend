@@ -41,12 +41,14 @@ class EscalafonController extends Controller
             'code'   => 'required|string|max:10',
             'name'   => 'required|string|max:120',
             'salary' => 'required|numeric',
+            'hour_price' => 'required|numeric',	
         ]);
 
         $newEscalafon = Escalafon::create([
             'code'   => $fields['code'],
             'name'   => $fields['name'],
             'salary' => $fields['salary'],
+            'hour_price' => $fields['hour_price'],
         ]);
         $this->RegisterAction("El usuario ha Ingresado un nuevo registro en el catalogo de Escalafones", "high");
         $emails = $this->getAdminMail();
@@ -94,6 +96,7 @@ class EscalafonController extends Controller
             'code'   => 'required|string|max:10',
             'name'   => 'required|string|max:120',
             'salary' => 'required|numeric',
+            'hour_price' => 'required|numeric',
         ]);
 
         $escalafon = Escalafon::findOrFail($id);

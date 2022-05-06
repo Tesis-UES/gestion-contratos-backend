@@ -18,6 +18,7 @@ class CreateEscalafonsTable extends Migration
             $table->string('code', 10);
             $table->string('name', 120);
             $table->float('salary');
+            $table->float('hour_price');
             $table->softDeletes();
             $table->timestamps();
         });
