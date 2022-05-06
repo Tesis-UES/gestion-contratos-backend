@@ -28,6 +28,7 @@ class CentralAuthorityController extends Controller
         $centralAuthority = CentralAuthority::findOrFail($id);
         $centralAuthority->status = !$centralAuthority->status;
         $centralAuthority->save();
+        $this->RegisterAction('El usuario ha deshabilitado al decano','medium');
         return response($centralAuthority, 200);
     }
 

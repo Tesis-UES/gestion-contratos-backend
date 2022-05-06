@@ -45,6 +45,7 @@ class SchoolAuthorityController extends Controller
         $schoolAuthority = SchoolAuthority::findOrFail($id);
         $schoolAuthority->status = !$schoolAuthority->status;
         $schoolAuthority->save();
+        $this->RegisterAction('El usuario ha deshabilitado a una autoridad de escuela','medium');
         return response($schoolAuthority, 200);
     }
 

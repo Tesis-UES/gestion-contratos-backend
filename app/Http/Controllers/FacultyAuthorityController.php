@@ -32,6 +32,7 @@ class FacultyAuthorityController extends Controller
         $facultyAuthority = FacultyAuthority::findOrFail($id);
         $facultyAuthority->status = !$facultyAuthority->status;
         $facultyAuthority->save();
+        $this->RegisterAction('El usuario ha deshabilitado a una autoridad de facultad','medium');
         return response($facultyAuthority, 200);
     }
 
