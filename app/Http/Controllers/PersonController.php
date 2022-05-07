@@ -100,7 +100,7 @@ class PersonController extends Controller
                     'isss_number'           => 'required|max:120',
                     'resident_card_number'  => 'required|string|max:120',
                     'resident_expiration_date'   => 'required|date|after:today',
-                    'nit_number'            => 'required|string|max:120',
+                    'nit_number'            => ' nullable|string|max:120',
                 ]);
             } else {
                 $request->validate([
@@ -110,7 +110,7 @@ class PersonController extends Controller
                     'isss_number'           => 'required|max:120',
                     'dui_number'            => 'required|string|max:120',
                     'dui_expiration_date'   => 'required|date|after:today',
-                    'nit_number'            => 'required|string|max:120',
+                    'nit_number'            => 'nullable|string|max:120',
                 ]);
             }
         } else {
@@ -152,10 +152,19 @@ class PersonController extends Controller
 
             if ($request->input('is_nationalized') == true) {
                 $newPerson->resident_card_text = $this->carnetToText($newPerson->resident_card_number);
-                $newPerson->nit_text = $this->nitToText($newPerson->nit_number);
+                if($newPerson->nit_number != null){
+                    $newPerson->nit_text = $this->nitToText($newPerson->nit_number);
+                }else{
+                    $newPerson->nit_text = "N/A"; 
+                }
+               
             } else {
                 $newPerson->dui_text = $this->duiToText($newPerson->dui_number);
-                $newPerson->nit_text = $this->nitToText($newPerson->nit_number);
+                if($newPerson->nit_number != null){
+                    $newPerson->nit_text = $this->nitToText($newPerson->nit_number);
+                }else{
+                    $newPerson->nit_text = "N/A"; 
+                }
             }
         }
         $newPerson->save();
@@ -250,7 +259,7 @@ class PersonController extends Controller
                     'isss_number'           => 'required|max:120',
                     'resident_card_number'  => 'required|string|max:120',
                     'resident_expiration_date'   => 'required|date|after:today',
-                    'nit_number'            => 'required|string|max:120',
+                    'nit_number'            => 'nullable|string|max:120',
                 ]);
             } else {
                 $request->validate([
@@ -260,7 +269,7 @@ class PersonController extends Controller
                     'isss_number'           => 'required|max:120',
                     'dui_number'            => 'required|string|max:120',
                     'dui_expiration_date'   => 'required|date|after:today',
-                    'nit_number'            => 'required|string|max:120',
+                    'nit_number'            => 'nullable|string|max:120',
                 ]);
             }
         } else {
@@ -297,10 +306,18 @@ class PersonController extends Controller
         if ($person->nationality == 'El Salvador') {
             if ($request->input('is_nationalized') == true) {
                 $person->resident_card_text = $this->carnetToText($person->resident_card_number);
-                $person->nit_text = $this->nitToText($person->nit_number);
+                if($person->nit_number != null){
+                    $person->nit_text = $this->nitToText($person->nit_number);
+                }else{
+                    $person->nit_text = "N/A"; 
+                }
             } else {
                 $person->dui_text = $this->duiToText($person->dui_number);
-                $person->nit_text = $this->nitToText($person->nit_number);
+                if($person->nit_number != null){
+                    $person->nit_text = $this->nitToText($person->nit_number);
+                }else{
+                    $person->nit_text = "N/A"; 
+                }
             }
         }
         $person->save();
@@ -1103,7 +1120,7 @@ class PersonController extends Controller
         if ($person->employee == null) {
             //Si no es empleado verificamos que sea nacional o extanjero
             if ($person->nationality == 'El Salvador') {
-                $archivos = ['cv', 'nit', 'banco', 'titulo'];
+                $archivos = ['cv', 'banco', 'titulo'];
                 if ($person->is_nationalized == true) {
                     array_push($archivos, 'carnet');
                 } else {
@@ -1112,6 +1129,10 @@ class PersonController extends Controller
                 if ($person->other_title == true) {
                     array_push($archivos, 'otro_titulo');
                 }
+                if($person->nit_number != null){
+                    array_push($archivos, 'nit');
+                }
+                
             } else {
                 //EXTRANJERO
                 $archivos =  ['cv', 'banco', 'titulo', 'pass'];
@@ -1123,7 +1144,7 @@ class PersonController extends Controller
             //Candidato - Trabajador
             if ($person->nationality == 'El Salvador') {
                 //Candidato - Trabajador - Nacional
-                $archivos = ['cv', 'nit', 'banco',  'titulo'];
+                $archivos = ['cv', 'banco',  'titulo'];
                 if ($person->is_nationalized == true) {
                     array_push($archivos, 'carnet');
                 } else {
@@ -1134,6 +1155,9 @@ class PersonController extends Controller
                 }
                 if (!($person->employee->faculty_id == 1)) {
                     array_push($archivos, 'permiso');
+                }
+                if($person->nit_number != null){
+                    array_push($archivos, 'nit');
                 }
             } else {
                 //Candidato - Trabajador - Internacional 

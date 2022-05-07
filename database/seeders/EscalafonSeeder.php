@@ -15,9 +15,9 @@ class EscalafonSeeder extends Seeder
     public function run()
     {
         // ESCALAFON DE DOCENTES
-        Escalafon::create(['code' => 'PU-I', 'name' => 'PROFESOR UNIVERSITARIO I', 'salary' => 1497.73 , 'hour_price'=>13.77]);
+        Escalafon::create(['code' => 'PU-I', 'name' => 'PROFESOR UNIVERSITARIO I', 'salary' => 1497.73 , 'hour_price'=>8.95]);
         Escalafon::create(['code' => 'PU-II', 'name' => 'PROFESOR UNIVERSITARIO II', 'salary' => 1843.36 , 'hour_price'=>11.01]);
-        Escalafon::create(['code' => 'PU-III', 'name' => 'PROFESOR UNIVERSITARIO III', 'salary' => 2304.20 , 'hour_price'=>8.95]);
+        Escalafon::create(['code' => 'PU-III', 'name' => 'PROFESOR UNIVERSITARIO III', 'salary' => 2304.20 , 'hour_price'=>13.77]);
 
         //ESCALAFON DE PERSONAL ADMINISTRATIVO
         Escalafon::create(['code' => 'SG-I', 'name' => 'SERVICIOS GENERALES I', 'salary' => 674 , 'hour_price'=>0.00]);

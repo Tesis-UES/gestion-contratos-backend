@@ -168,31 +168,35 @@ class PersonValidationController extends Controller
         
        
         //VERIFICAMOS NIT
-        $var = [
-            'Nombre' => 'Numero de Identificación Tributaria NIT',
-            'Estado' => '',
-            'codigo' => 'NIT'
-        ];
+       
 
-        if ($person->nit == null) {
-            $var['Estado'] = 'Sin archivo';
-            array_push($menu, $var);
-        }else{
-            if ($person->personValidations->nit) {
-                if ($person->personValidations->nit_readable && $person->personValidations->nit_name && $person->personValidations->nit_number) {
-                    $var['Estado'] = 'Validado';
-                    array_push($menu, $var);
+        if($person->nit_number !=null){
+            $var = [
+                'Nombre' => 'Numero de Identificación Tributaria NIT',
+                'Estado' => '',
+                'codigo' => 'NIT'
+            ];
+            if ($person->nit == null) {
+                $var['Estado'] = 'Sin archivo';
+                array_push($menu, $var);
+            }else{
+                if ($person->personValidations->nit) {
+                    if ($person->personValidations->nit_readable && $person->personValidations->nit_name && $person->personValidations->nit_number) {
+                        $var['Estado'] = 'Validado';
+                        array_push($menu, $var);
+                    } else {
+                        $var['Estado'] = 'Con Observaciones';
+                        array_push($menu, $var);
+                    }
                 } else {
-                    $var['Estado'] = 'Con Observaciones';
+                    $var['Estado'] = 'Pendiente';
                     array_push($menu, $var);
                 }
-            } else {
-                $var['Estado'] = 'Pendiente';
-                array_push($menu, $var);
+                
+               
             }
-            
-           
         }
+       
         
         //VERIFICAMOS Cuenta de Banco
         $var = [
