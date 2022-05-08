@@ -63,6 +63,7 @@ class CreatePeopleTable extends Migration
             $table->boolean('other_title')->default(false)->nullable();
             $table->string('other_title_name')->nullable();
             $table->string('other_title_doc')->nullable();
+            $table->string('statement')->nullable();
             $table->string('merged_docs')->nullable();
             $table->softDeletes();
             $table->timestamps();

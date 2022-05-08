@@ -69,6 +69,9 @@ class CreatePersonValidationsTable extends Migration
            $table->boolean('other_title_apostilled')->default(false)->nullable();
            $table->boolean('other_title_apostilled_readable')->default(false)->nullable();
            $table->boolean('other_title_authentic')->default(false)->nullable();
+           //declaracion jurada
+           $table->boolean('statement')->default(false)->nullable();
+           $table->boolean('statement_readable')->default(false)->nullable();
             
            $table->timestamps();
         });

@@ -391,8 +391,12 @@ class PersonController extends Controller
                 break;
 
             case 'otro_titulo':
-                $person =  $this->storeOtherTitle($request);
+                $person =  $this->storeOtherTitle($request); 
                 break;
+            
+            case 'declaracion':
+                    $person =  $this->storeStatement($request); 
+                    break;
             default:
                 # code...
                 break;
@@ -527,6 +531,20 @@ class PersonController extends Controller
         return $person;
     }
 
+    public function storeStatement(Request $request)
+    {
+        $user = Auth::user();
+        $person = Person::where('user_id', $user->id)->firstOrFail();
+        $file = $request->file('declaracion');
+        $nombre_archivo = $person->first_name . " " . $person->middle_name . " " . $person->last_name . "-DeclaracionJurada.pdf";
+        $person->statement = $nombre_archivo;
+        $person->save();
+        PersonChange::create(['person_id' => $person->id, 'change' => "Se subio y guardo el archivo que contiene la declaracion jurada"]);
+        \Storage::disk('personalFiles')->put($nombre_archivo, \File::get($file));
+        $this->RegisterAction("El usuario ha guardado el  archivo pdf que contiene su Declaracion Jurada", "medium");
+        return  $person;
+    }
+
     public function updateMenu(Request $request)
     {
 
@@ -563,8 +581,12 @@ class PersonController extends Controller
                 break;
 
             case 'otro_titulo':
-                $person =  $this->updateOtherTitle($request);
+                $person =  $this->updateOtherTitle($request);  
                 break;
+            
+            case 'declaracion':
+                    $person =  $this->updateStatement($request);  
+                    break;
             default:
                 # code...
                 break;
@@ -797,6 +819,27 @@ class PersonController extends Controller
         return $person;
     }
 
+    public function updateStatement(Request $request)
+    {
+        $user = Auth::user();
+        $person = Person::where('user_id', $user->id)->firstOrFail();
+        $file = $request->file('declaracion');
+        $nombre_archivo = $person->first_name . " " . $person->middle_name . " " . $person->last_name . "-DeclaracionJurada.pdf";
+        //Se elimina el archivo antiguo
+        \Storage::disk('personalFiles')->delete($person->statement);
+        $person->statement = $nombre_archivo;
+        $person->save();
+        PersonChange::create(['person_id' => $person->id, 'change' => "Se Actualizo el archivo que contiene la declaracion jurada"]);
+        \Storage::disk('personalFiles')->put($nombre_archivo, \File::get($file));
+        $personValidations = $person->personValidations;
+        $personValidations->update([
+            'statement_readable'      => false,
+            'statement'      => false,
+        ]);
+        $this->RegisterAction("El usuario ha actualizado el archivo pdf que contiene su declaracion jurada", "medium");
+        return $person;
+    }
+
     public function updatePermisssion(Request $request)
     {
         $user = Auth::user();
@@ -878,6 +921,9 @@ class PersonController extends Controller
             case 'otro_titulo':
                 $person =  $this->getOtherTitle();
                 break;
+            case 'declaracion':
+                    $person =  $this->getStatement();
+                    break;
             default:
                 # code...
                 break;
@@ -1046,6 +1092,20 @@ class PersonController extends Controller
         ];
     }
 
+    public function getStatement()
+    {
+        $user = Auth::user();
+        $person = Person::where('user_id', $user->id)->firstOrFail();
+        $validations = [
+            'statement_readable'      =>  $person->personValidations->statement_readable,
+        ];
+        $pdf = base64_encode(\Storage::disk('personalFiles')->get($person->statement));
+        return [
+            'pdfPermission' => $pdf,
+            'validations' => $validations
+        ];
+    }
+
     public function duiToText($dui)
     {
         $formatter = new NumeroALetras();
@@ -1120,7 +1180,7 @@ class PersonController extends Controller
         if ($person->employee == null) {
             //Si no es empleado verificamos que sea nacional o extanjero
             if ($person->nationality == 'El Salvador') {
-                $archivos = ['cv', 'banco', 'titulo'];
+                $archivos = ['cv', 'banco', 'titulo','declaracion'];
                 if ($person->is_nationalized == true) {
                     array_push($archivos, 'carnet');
                 } else {
@@ -1135,7 +1195,7 @@ class PersonController extends Controller
                 
             } else {
                 //EXTRANJERO
-                $archivos =  ['cv', 'banco', 'titulo', 'pass'];
+                $archivos =  ['cv', 'banco', 'titulo', 'pass','declaracion'];
                 if ($person->other_title == true) {
                     array_push($archivos, 'otro_titulo');
                 }
@@ -1144,7 +1204,7 @@ class PersonController extends Controller
             //Candidato - Trabajador
             if ($person->nationality == 'El Salvador') {
                 //Candidato - Trabajador - Nacional
-                $archivos = ['cv', 'banco',  'titulo'];
+                $archivos = ['cv', 'banco',  'titulo','declaracion'];
                 if ($person->is_nationalized == true) {
                     array_push($archivos, 'carnet');
                 } else {
@@ -1161,7 +1221,7 @@ class PersonController extends Controller
                 }
             } else {
                 //Candidato - Trabajador - Internacional 
-                $archivos = ['cv', 'banco',  'titulo', 'pass'];
+                $archivos = ['cv', 'banco',  'titulo', 'pass','declaracion'];
                 if (!($person->employee->faculty_id == 1)) {
                     array_push($archivos, 'permiso');
                 }
@@ -1214,6 +1274,9 @@ class PersonController extends Controller
                 case 'pass':
                     $m->addRaw(\Storage::disk('personalFiles')->get($person->passport));
                     break;
+                case 'declaracion':
+                        $m->addRaw(\Storage::disk('personalFiles')->get($person->statement));
+                        break;
 
                 default:
                     # code...

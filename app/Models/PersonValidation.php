@@ -62,5 +62,10 @@ class PersonValidation extends Model
            'other_title_apostilled_readable',
            'other_title_authentic',
 
+              'statement',
+                'statement_readable',
+
+
+
     ];
 }

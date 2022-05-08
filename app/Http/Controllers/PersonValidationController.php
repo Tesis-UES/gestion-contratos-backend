@@ -251,6 +251,34 @@ class PersonValidationController extends Controller
 
             
         }
+
+        $var = [
+            'Nombre' => 'Declaración Jurada',
+            'Estado' => '',
+            'codigo' => 'DJ'
+        ];
+
+        if ($person->statement == null) {
+            $var['Estado'] = 'Sin archivo';
+            array_push($menu, $var);
+        } else {
+
+            if ($person->personValidations->statement) {
+                if ($person->personValidations->statement_readable) {
+                    $var['Estado'] = 'Validado';
+                    array_push($menu, $var);
+                } else {
+                    $var['Estado'] = 'Con Observaciones';
+                    array_push($menu, $var);
+                }
+            } else {
+                $var['Estado'] = 'Pendiente';
+                array_push($menu, $var);
+            }
+        }
+
+
+
         $var = [
             'Nombre' => 'Titulo',
             'Estado' => '',
@@ -390,6 +418,31 @@ class PersonValidationController extends Controller
             }
         }
 
+        $var = [
+            'Nombre' => 'Declaración Jurada',
+            'Estado' => '',
+            'codigo' => 'DJ'
+        ];
+
+        if ($person->statement == null) {
+            $var['Estado'] = 'Sin archivo';
+            array_push($menu, $var);
+        } else {
+
+            if ($person->personValidations->statement) {
+                if ($person->personValidations->statement_readable) {
+                    $var['Estado'] = 'Validado';
+                    array_push($menu, $var);
+                } else {
+                    $var['Estado'] = 'Con Observaciones';
+                    array_push($menu, $var);
+                }
+            } else {
+                $var['Estado'] = 'Pendiente';
+                array_push($menu, $var);
+            }
+        }
+
       
         $var = [
             'Nombre' => 'Titulo',
@@ -485,6 +538,10 @@ class PersonValidationController extends Controller
             case 'OTRO-TITULO':
                 return $this->getOtValidation($person);
                 break;
+
+            case 'DJ':
+                    return $this->getDJValidation($person);
+                    break;
             default:
                 # code...
                 break;
@@ -654,6 +711,18 @@ class PersonValidationController extends Controller
         return ['data' => $data, 'validations' => $validations];
     }
 
+    public function getDJValidation(Person $person)
+    {
+
+        $data = [
+            'pdf'               =>  base64_encode(\Storage::disk('personalFiles')->get($person->statement)),
+        ];
+        $validations = [
+            'statement_readable'      =>  $person->personValidations->statement_readable,
+        ];
+        return ['data' => $data, 'validations' => $validations];
+    }
+
     public function validationStore(Person $person, $type, Request $request)
     {
        
@@ -728,6 +797,12 @@ class PersonValidationController extends Controller
                         $mensaje = "Se ha validado el documento que contiene su Titulo Extra que ha subido al sistema, pero este no cumple con los requerimientos, por favor verificar entrando en el sistema las Respectivas observaciones y solventarlas lo mas pronto posible";
                        } 
                     break;
+                case 'DJ':
+                        $person->personValidations->update(['statement' => true]);
+                        if (!$validado) {
+                            $mensaje = "Se ha validado el documento que contiene su declaración Jurada que ha subido al sistema, pero este no cumple con los requerimientos, por favor verificar entrando en el sistema las Respectivas observaciones y solventarlas lo mas pronto posible";
+                           } 
+                        break;
             default:
                 # code...
                 break;

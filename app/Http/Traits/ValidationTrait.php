@@ -107,33 +107,75 @@ trait ValidationTrait
         if ($person->is_nationalized == true) {
 
             if ($person->other_title == true) {
-                return $person->resident_card != null &&
+
+                if($person->nit == null){
+                    return $person->resident_card != null &&
+                    $person->curriculum != null &&
+                    $person->bank_account != null &&
+                    $person->professional_title_scan != null &&
+                    $person->other_title_doc != null &&
+                    $person->statement != null;
+                }else{
+                    return $person->resident_card != null &&
                     $person->nit != null &&
                     $person->curriculum != null &&
                     $person->bank_account != null &&
                     $person->professional_title_scan != null &&
-                    $person->other_title_doc != null;
+                    $person->other_title_doc != null &&
+                    $person->statement != null;
+                }       
             } else {
-                return $person->resident_card != null &&
+                if($person->nit == null){
+                    return $person->resident_card != null &&
+                    $person->curriculum != null &&
+                    $person->bank_account != null &&
+                    $person->professional_title_scan != null &&
+                    $person->statement != null;
+                }else{
+                    return $person->resident_card != null &&
                     $person->nit != null &&
                     $person->curriculum != null &&
                     $person->bank_account != null &&
-                    $person->professional_title_scan != null;
+                    $person->professional_title_scan != null &&
+                    $person->statement != null;
+                }
+                
             }
         } else {
             if ($person->other_title == true) {
-                return  $person->dui != null &&
+                if($person->nit == null){
+                    return  $person->dui != null &&
+                    $person->curriculum != null &&
+                    $person->bank_account != null &&
+                    $person->professional_title_scan != null &&
+                    $person->other_title_doc != null &&
+                    $person->statement != null;
+                }else{
+                    return  $person->dui != null &&
                     $person->nit != null &&
                     $person->curriculum != null &&
                     $person->bank_account != null &&
                     $person->professional_title_scan != null &&
-                    $person->other_title_doc != null;;
+                    $person->other_title_doc != null &&
+                    $person->statement != null;
+                }
+              
             } else {
-                return  $person->dui != null &&
+                if($person->nit == null){
+                    return  $person->dui != null &&
+                    $person->curriculum != null &&
+                    $person->bank_account != null &&
+                    $person->professional_title_scan != null&&
+                    $person->statement != null;
+                }else{
+                    return  $person->dui != null &&
                     $person->nit != null &&
                     $person->curriculum != null &&
                     $person->bank_account != null &&
-                    $person->professional_title_scan != null;
+                    $person->professional_title_scan != null&&
+                    $person->statement != null;
+                }
+                
             }
         }
     }
@@ -143,7 +185,24 @@ trait ValidationTrait
 
         if ($person->is_nationalized == true) {
             if ($person->other_title == true) {
-                return $person->personValidations->carnet_readable &&
+
+                if($person->nit == null){
+                    return $person->personValidations->carnet_readable &&
+                    $person->personValidations->carnet_name &&
+                    $person->personValidations->carnet_number &&
+                    $person->personValidations->carnet_unexpired &&
+                    $person->personValidations->bank_readable &&
+                    $person->personValidations->bank_number &&
+                    $person->personValidations->curriculum_readable &&
+                    $person->personValidations->title_readable &&
+                    $person->personValidations->title_mined &&
+                    $person->personValidations->other_title_readable &&
+                    $person->personValidations->other_title_apostilled &&
+                    $person->personValidations->other_title_apostilled_readable &&
+                    $person->personValidations->other_title_authentic &&
+                    $person->personValidations->statement_readable;
+                }else{
+                    return $person->personValidations->carnet_readable &&
                     $person->personValidations->carnet_name &&
                     $person->personValidations->carnet_number &&
                     $person->personValidations->carnet_unexpired &&
@@ -158,9 +217,26 @@ trait ValidationTrait
                     $person->personValidations->other_title_readable &&
                     $person->personValidations->other_title_apostilled &&
                     $person->personValidations->other_title_apostilled_readable &&
-                    $person->personValidations->other_title_authentic;
+                    $person->personValidations->other_title_authentic &&
+                    $person->personValidations->statement_readable;
+                }
+
+               
             } else {
-                return $person->personValidations->carnet_readable &&
+
+                if($person->nit == null){
+                    return $person->personValidations->carnet_readable &&
+                    $person->personValidations->carnet_name &&
+                    $person->personValidations->carnet_number &&
+                    $person->personValidations->carnet_unexpired &&
+                    $person->personValidations->bank_readable &&
+                    $person->personValidations->bank_number &&
+                    $person->personValidations->curriculum_readable &&
+                    $person->personValidations->title_readable &&
+                    $person->personValidations->title_mined &&
+                    $person->personValidations->statement_readable;
+                }else{
+                    return $person->personValidations->carnet_readable &&
                     $person->personValidations->carnet_name &&
                     $person->personValidations->carnet_number &&
                     $person->personValidations->carnet_unexpired &&
@@ -171,11 +247,34 @@ trait ValidationTrait
                     $person->personValidations->bank_number &&
                     $person->personValidations->curriculum_readable &&
                     $person->personValidations->title_readable &&
-                    $person->personValidations->title_mined;
+                    $person->personValidations->title_mined &&
+                    $person->personValidations->statement_readable;
+                }
+               
             }
         } else {
             if ($person->other_title == true) {
-                return $person->personValidations->dui_readable &&
+                if($person->nit == null){
+                    return $person->personValidations->dui_readable &&
+                    $person->personValidations->dui_name &&
+                    $person->personValidations->dui_number &&
+                    $person->personValidations->dui_profession &&
+                    $person->personValidations->dui_civil_status &&
+                    $person->personValidations->dui_birth_date &&
+                    $person->personValidations->dui_unexpired &&
+                    $person->personValidations->dui_address &&
+                    $person->personValidations->bank_readable &&
+                    $person->personValidations->bank_number &&
+                    $person->personValidations->curriculum_readable &&
+                    $person->personValidations->title_readable &&
+                    $person->personValidations->title_mined &&
+                    $person->personValidations->other_title_readable &&
+                    $person->personValidations->other_title_apostilled &&
+                    $person->personValidations->other_title_apostilled_readable &&
+                    $person->personValidations->other_title_authentic &&
+                    $person->personValidations->statement_readable;
+                }else{
+                    return $person->personValidations->dui_readable &&
                     $person->personValidations->dui_name &&
                     $person->personValidations->dui_number &&
                     $person->personValidations->dui_profession &&
@@ -194,9 +293,28 @@ trait ValidationTrait
                     $person->personValidations->other_title_readable &&
                     $person->personValidations->other_title_apostilled &&
                     $person->personValidations->other_title_apostilled_readable &&
-                    $person->personValidations->other_title_authentic;
+                    $person->personValidations->other_title_authentic &&
+                    $person->personValidations->statement_readable;
+                }
+                
             } else {
-                return $person->personValidations->dui_readable &&
+                if($person->nit == null){
+                    return $person->personValidations->dui_readable &&
+                    $person->personValidations->dui_name &&
+                    $person->personValidations->dui_number &&
+                    $person->personValidations->dui_profession &&
+                    $person->personValidations->dui_civil_status &&
+                    $person->personValidations->dui_birth_date &&
+                    $person->personValidations->dui_unexpired &&
+                    $person->personValidations->dui_address &&
+                    $person->personValidations->bank_readable &&
+                    $person->personValidations->bank_number &&
+                    $person->personValidations->curriculum_readable &&
+                    $person->personValidations->title_readable &&
+                    $person->personValidations->title_mined &&
+                    $person->personValidations->statement_readable;
+                }else{
+                    return $person->personValidations->dui_readable &&
                     $person->personValidations->dui_name &&
                     $person->personValidations->dui_number &&
                     $person->personValidations->dui_profession &&
@@ -211,7 +329,10 @@ trait ValidationTrait
                     $person->personValidations->bank_number &&
                     $person->personValidations->curriculum_readable &&
                     $person->personValidations->title_readable &&
-                    $person->personValidations->title_mined;
+                    $person->personValidations->title_mined &&
+                    $person->personValidations->statement_readable;
+                }
+               
             }
         }
     }
@@ -224,12 +345,14 @@ trait ValidationTrait
                 $person->curriculum != null &&
                 $person->bank_account != null &&
                 $person->professional_title_scan != null &&
-                $person->other_title_doc != null;
+                $person->other_title_doc != null&&
+                $person->statement != null;
         } else {
             return  $person->passport != null &&
                 $person->curriculum != null &&
                 $person->bank_account != null &&
-                $person->professional_title_scan != null;
+                $person->professional_title_scan != null&&
+                $person->statement != null;
         }
     }
 
@@ -251,7 +374,8 @@ trait ValidationTrait
                 $person->personValidations->other_title_readable &&
                 $person->personValidations->other_title_apostilled &&
                 $person->personValidations->other_title_apostilled_readable &&
-                $person->personValidations->other_title_authentic;
+                $person->personValidations->other_title_authentic &&
+                $person->personValidations->statement_readable;
         } else {
             return  $person->personValidations->passport_readable &&
                 $person->personValidations->passport_name &&
@@ -262,7 +386,8 @@ trait ValidationTrait
                 $person->personValidations->title_readable &&
                 $person->personValidations->title_apostilled &&
                 $person->personValidations->title_apostilled_readable &&
-                $person->personValidations->title_authentic;
+                $person->personValidations->title_authentic &&
+                $person->personValidations->statement_readable;
         }
     }
 
