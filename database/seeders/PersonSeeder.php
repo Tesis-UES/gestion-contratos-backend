@@ -187,6 +187,7 @@ class PersonSeeder extends Seeder
             'dui' => 'DUI.pdf',	
             'bank_account' => 'BANCO.pdf',
             'professional_title_scan' => 'TITULO.pdf',
+            'statement'                     => 'DECLARACION.pdf',
         ]);
         $personValidation = new PersonValidation([  'person_id' => $datosNacional->id,
         'dui_readable'=>true,
@@ -272,6 +273,7 @@ class PersonSeeder extends Seeder
             'bank_account' => 'BANCO.pdf',
             'professional_title_scan' => 'TITULO.pdf',
             'resident_card' => 'CARNET.pdf',
+            'statement'                     => 'DECLARACION.pdf',
         ]);
         $personValidation = new PersonValidation(['person_id' => $datosNacionalizado->id,
         'dui_readable'=>true,
@@ -354,6 +356,7 @@ class PersonSeeder extends Seeder
             'dui' => 'DUI.pdf',	
             'bank_account' => 'BANCO.pdf',
             'professional_title_scan' => 'TITULO.pdf',
+            'statement'                     => 'DECLARACION.pdf',
         ]);
         $personValidation = new PersonValidation(['person_id' => $datosNacionalUesFia->id,
         'dui_readable'=>true,
@@ -454,6 +457,7 @@ class PersonSeeder extends Seeder
             'bank_account' => 'BANCO.pdf',
             'professional_title_scan' => 'TITULO.pdf',
             'work_permission' => 'PERMISO.pdf',
+            'statement'                     => 'DECLARACION.pdf',
         ]);
 
         $personValidation = new PersonValidation(['person_id' => $datosNacionalEOtra->id,
@@ -545,6 +549,7 @@ class PersonSeeder extends Seeder
             'passport' => 'PASAPORTE.pdf',
             'bank_account' => 'BANCO.pdf',
             'professional_title_scan' => 'TITULO.pdf',
+            'statement'                     => 'DECLARACION.pdf',
             
         ]);
         $personValidation = new PersonValidation(['person_id' => $DatosInternacional->id,        'dui_readable'=>true,
@@ -616,6 +621,7 @@ class PersonSeeder extends Seeder
             'passport' => 'PASAPORTE.pdf',
             'bank_account' => 'BANCO.pdf',
             'professional_title_scan' => 'TITULO.pdf',
+            'statement'                     => 'DECLARACION.pdf',
         ]);
         $personValidation = new PersonValidation(['person_id' => $DatosInternacionalE->id,
         'dui_readable'=>true,
@@ -706,7 +712,8 @@ class PersonSeeder extends Seeder
             'passport' => 'PASAPORTE.pdf',
             'bank_account' => 'BANCO.pdf',
             'professional_title_scan' => 'TITULO.pdf',
-            'work_permission' => 'PERMISO.pdf'
+            'work_permission' => 'PERMISO.pdf',
+            'statement'                     => 'DECLARACION.pdf',
         ]);
         $personValidation = new PersonValidation(['person_id' => $DatosInternacionalEO->id,
         'dui_readable'=>true,

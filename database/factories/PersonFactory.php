@@ -53,6 +53,7 @@ class PersonFactory extends Factory
                     'bank_account'                  => 'BANCO.pdf',
                     'professional_title_scan'       => 'TITULO.pdf',
                     'resident_card'                 => 'CARNET.pdf',
+                    'statement'                     => 'DECLARACION.pdf'
                 ];
             }else{
                 return [
@@ -90,6 +91,7 @@ class PersonFactory extends Factory
                     'other_title_doc'               => 'OTRO-T.pdf',
                     'bank_account'                  => 'BANCO.pdf',
                     'professional_title_scan'       => 'TITULO.pdf',
+                    'statement'                     => 'DECLARACION.pdf'
                     
                 ];
             }
@@ -119,6 +121,7 @@ class PersonFactory extends Factory
                 'passport'                  => 'PASAPORTE.pdf',
                 'bank_account'              => 'BANCO.pdf',
                 'professional_title_scan'   => 'TITULO.pdf',
+                'statement'                     => 'DECLARACION.pdf'
             ];
         }
 

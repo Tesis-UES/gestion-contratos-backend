@@ -394,7 +394,7 @@ class PersonController extends Controller
                 $person =  $this->storeOtherTitle($request); 
                 break;
             
-            case 'declaracion':
+            case 'statement':
                     $person =  $this->storeStatement($request); 
                     break;
             default:
@@ -535,7 +535,7 @@ class PersonController extends Controller
     {
         $user = Auth::user();
         $person = Person::where('user_id', $user->id)->firstOrFail();
-        $file = $request->file('declaracion');
+        $file = $request->file('statement');
         $nombre_archivo = $person->first_name . " " . $person->middle_name . " " . $person->last_name . "-DeclaracionJurada.pdf";
         $person->statement = $nombre_archivo;
         $person->save();
@@ -584,7 +584,7 @@ class PersonController extends Controller
                 $person =  $this->updateOtherTitle($request);  
                 break;
             
-            case 'declaracion':
+            case 'statement':
                     $person =  $this->updateStatement($request);  
                     break;
             default:
@@ -637,6 +637,10 @@ class PersonController extends Controller
             case 'otro_titulo':
                 $mensaje = "El usuario " . $nombrePersona . " ha actualizado su Segundo Titulo, por favor revisar y validar dicho documento para que el candidato tenga todos sus documentos validados ";
                 break;
+            
+                case 'statement':
+                    $mensaje = "El usuario " . $nombrePersona . " ha actualizado su declaracion jurada, por favor revisar y validar dicho documento para que el candidato tenga todos sus documentos validados ";
+                    break;
             default:
                 # code...
                 break;
@@ -823,7 +827,7 @@ class PersonController extends Controller
     {
         $user = Auth::user();
         $person = Person::where('user_id', $user->id)->firstOrFail();
-        $file = $request->file('declaracion');
+        $file = $request->file('statement');
         $nombre_archivo = $person->first_name . " " . $person->middle_name . " " . $person->last_name . "-DeclaracionJurada.pdf";
         //Se elimina el archivo antiguo
         \Storage::disk('personalFiles')->delete($person->statement);
@@ -921,7 +925,7 @@ class PersonController extends Controller
             case 'otro_titulo':
                 $person =  $this->getOtherTitle();
                 break;
-            case 'declaracion':
+            case 'statement':
                     $person =  $this->getStatement();
                     break;
             default:
@@ -1180,7 +1184,7 @@ class PersonController extends Controller
         if ($person->employee == null) {
             //Si no es empleado verificamos que sea nacional o extanjero
             if ($person->nationality == 'El Salvador') {
-                $archivos = ['cv', 'banco', 'titulo','declaracion'];
+                $archivos = ['cv', 'banco', 'titulo','statement'];
                 if ($person->is_nationalized == true) {
                     array_push($archivos, 'carnet');
                 } else {
@@ -1195,7 +1199,7 @@ class PersonController extends Controller
                 
             } else {
                 //EXTRANJERO
-                $archivos =  ['cv', 'banco', 'titulo', 'pass','declaracion'];
+                $archivos =  ['cv', 'banco', 'titulo', 'pass','statement'];
                 if ($person->other_title == true) {
                     array_push($archivos, 'otro_titulo');
                 }
@@ -1204,7 +1208,7 @@ class PersonController extends Controller
             //Candidato - Trabajador
             if ($person->nationality == 'El Salvador') {
                 //Candidato - Trabajador - Nacional
-                $archivos = ['cv', 'banco',  'titulo','declaracion'];
+                $archivos = ['cv', 'banco',  'titulo','statement'];
                 if ($person->is_nationalized == true) {
                     array_push($archivos, 'carnet');
                 } else {
@@ -1221,7 +1225,7 @@ class PersonController extends Controller
                 }
             } else {
                 //Candidato - Trabajador - Internacional 
-                $archivos = ['cv', 'banco',  'titulo', 'pass','declaracion'];
+                $archivos = ['cv', 'banco',  'titulo', 'pass','statement'];
                 if (!($person->employee->faculty_id == 1)) {
                     array_push($archivos, 'permiso');
                 }
@@ -1274,7 +1278,7 @@ class PersonController extends Controller
                 case 'pass':
                     $m->addRaw(\Storage::disk('personalFiles')->get($person->passport));
                     break;
-                case 'declaracion':
+                case 'statement':
                         $m->addRaw(\Storage::disk('personalFiles')->get($person->statement));
                         break;
 
