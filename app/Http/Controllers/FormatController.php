@@ -75,6 +75,12 @@ class FormatController extends Controller
                          'document' => $format->encoded_file], 200);
     }
 
+    public function docIndex(){
+        $formats = Format::where('type', ConstantsContractType::OTRO)->get();
+        $this->RegisterAction('El usuario ha consultado el catalogo de formatos de candidato');
+        return response($formats, 200);
+    }
+
     public function plantillaMaterias(){
         $formatExcel = base64_encode(\Storage::disk('formats')->get("PlantillaMaterias.xlsx"));
         $this->RegisterAction('El usuario ha descargado el formato de plantilla de materias');

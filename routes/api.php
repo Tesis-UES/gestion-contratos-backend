@@ -71,9 +71,11 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
     Route::get('/formats', [FormatController::class, 'index']);
     Route::get('/formats/{id}', [FormatController::class, 'show']);
     Route::get('/formats/excel/download', [FormatController::class, 'plantillaMaterias']);
+    Route::get('/formats/index/candidate', [FormatController::class, 'docIndex']);
     Route::group(['middleware' => ['can:write_formats']], function () {
         Route::post('/formats', [FormatController::class, 'store']);
     });
+   
 
     // Rutas que manejan la bitacora de uso 
     Route::group(['middleware' => ['can:read_worklog']], function () {
