@@ -33,6 +33,17 @@ class EscalafonController extends Controller
         return $admin;
      }
 
+     public function getDecanoMail(){
+        $role = Role::where('name','Decano')->first();
+        $admin = User::join('model_has_roles', 'model_has_roles.model_id', '=', 'users.id')->select('users.email')->where('model_has_roles.role_id', '=', $role->id)->get()->toArray();
+        return $admin;
+     }
+
+     public function getFinancieroMail(){
+        $role = Role::where('name','Asistente Financiero')->first();
+        $admin = User::join('model_has_roles', 'model_has_roles.model_id', '=', 'users.id')->select('users.email')->where('model_has_roles.role_id', '=', $role->id)->get()->toArray();
+        return $admin;
+     }
 
     public function store(Request $request)
     {
@@ -103,21 +114,26 @@ class EscalafonController extends Controller
         $codigoAnterior = $escalafon->code;
         $nombreAnterior = $escalafon->name;
         $salarioAnterior = $escalafon->salary;
+        $valorHoraAnterior = $escalafon->hour_price;
         $escalafon->update($request->all());
         $this->RegisterAction("El usuario ha actualizado el registro del escalafon ".$nombreAnterior." en el catalogo de escalafones", "high");
         $emails = $this->getAdminMail();
+        $emailDecano = $this->getDecanoMail();
+        $emailFinanciero = $this->getFinancieroMail();
         $mensajeEmail = "Se ha actualizado el escalafón con el nombre <b>".$nombreAnterior."</b> con los siguientes datos:<br>
         <b>Datos Antiguos:</b>
         <ul>
             <li>Código: <b>".$codigoAnterior."</b> </li>
             <li>Nombre Escalafón: <b>".$nombreAnterior."</b> </li>
             <li>Salario: <b>$".number_format($salarioAnterior,2)."</b> </li>
+            <li>Valor Hora: <b>$".number_format($valorHoraAnterior,2)."</b> </li>
         </ul><br>
         <b>Datos Nuevos:</b>
         <ul>
             <li>Código: <b>".$escalafon->code."</b> </li>
             <li>Nombre Escalafón: <b>".$escalafon->name."</b> </li>
             <li>Salario: <b>$".number_format($escalafon->salary,2)."</b> </li>
+            <li>Valor Hora: <b>$".number_format($escalafon->hour_price,2)."</b> </li>
         </ul>
         ";
         
@@ -129,6 +145,27 @@ class EscalafonController extends Controller
                 $mensaje = 'No se envio el correo';
             } 
         }
+        
+        foreach ($emailDecano as $email) {
+            try {
+                Mail::to($email)->send(new ValidationDocsNotification($mensajeEmail,'escalafones'));
+                $mensaje = 'Se envio el correo con exito';
+            } catch (\Swift_TransportException $e) {
+                $mensaje = 'No se envio el correo';
+            }
+        }
+
+        foreach ($emailFinanciero as $email) {
+            try {
+                Mail::to($email)->send(new ValidationDocsNotification($mensajeEmail,'escalafones'));
+                $mensaje = 'Se envio el correo con exito';
+            } catch (\Swift_TransportException $e) {
+                $mensaje = 'No se envio el correo';
+            }
+
+        }
+
+
        
          return response([
             'escalafon' => $escalafon,
