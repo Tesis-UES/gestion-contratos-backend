@@ -1349,6 +1349,7 @@ class PersonController extends Controller
             'escalafon_code'    => $person->employee->escalafon->code,
             'escalafon_name'    => $person->employee->escalafon->name,
             'salary'            => $person->employee->escalafon->salary,
+            'hour_price'        => $person->employee->escalafon->hour_price,
             'details'           => $lastStaySchedule
         ];
         return response(['candidate' => $candidate], 200);
