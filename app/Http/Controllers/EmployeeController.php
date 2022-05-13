@@ -72,10 +72,18 @@ class EmployeeController extends Controller
 
     public function hasRegistered()
     {
-        $employee = Auth::user()->person->employee;
-        if ($employee) {
-            return response(['has_registered' => true], 200);
+        
+        if (Auth::user()->person == null){
+            return response(['has_registered' => false], 200);
+        }else{
+            $employee = Auth::user()->person->employee;
+            if ($employee) {
+                return response(['has_registered' => true], 200);
+            }else{
+                return response(['has_registered' => false], 200);
+            }
         }
-        return response(['has_registered' => false], 200);
+        
+       
     }
 }

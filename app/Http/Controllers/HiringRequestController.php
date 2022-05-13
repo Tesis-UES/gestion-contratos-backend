@@ -261,7 +261,9 @@ class HiringRequestController extends Controller
     public function listMyHiringRequests(Request $request)
     {
         $user = Auth::user();
-
+       if($user->person == null){
+        $hiringRequests = [];
+       }else{
         $hiringRequestIds = HiringRequestDetail::select('hiring_request_id')->distinct()->where('person_id', $user->person->id)->get();
         $hiringRequestIds = array_map(function ($item) {
             return $item['hiring_request_id'];
@@ -279,6 +281,8 @@ class HiringRequestController extends Controller
         $hiringRequests->makeHidden(['status', 'message', 'validated', 'comments', 'fileName']);
 
         $this->RegisterAction("El usuario ha consultado las solicitudes de  contratación que lo incluyen", "medium");
+       }
+       
         return response($hiringRequests, 200);
     }
 
