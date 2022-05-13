@@ -229,7 +229,9 @@ class PersonSeeder extends Seeder
         'other_title_readable'=>true,
         'other_title_apostilled'=>true,
         'other_title_apostilled_readable'=>true,
-        'other_title_authentic'=>true,]);
+        'other_title_authentic'=>true,
+        'statement'=>true,
+        'statement_readable'=>true,]);
         $personValidation->save();
         $r = $task->mergePersonalDoc($datosNacional->id);
 
@@ -315,7 +317,9 @@ class PersonSeeder extends Seeder
         'other_title_readable'=>true,
         'other_title_apostilled'=>true,
         'other_title_apostilled_readable'=>true,
-        'other_title_authentic'=>true,]);
+        'other_title_authentic'=>true,
+        'statement'=>true,
+        'statement_readable'=>true,]);
         $personValidation->save();
         $r = $task->mergePersonalDoc($datosNacionalizado->id);
 
@@ -398,7 +402,9 @@ class PersonSeeder extends Seeder
         'other_title_readable'=>true,
         'other_title_apostilled'=>true,
         'other_title_apostilled_readable'=>true,
-        'other_title_authentic'=>true,]);
+        'other_title_authentic'=>true,
+        'statement'=>true,
+        'statement_readable'=>true,]);
         $personValidation->save();
 
         //Ingresando datos de empleado 
@@ -500,7 +506,9 @@ class PersonSeeder extends Seeder
         'other_title_readable'=>true,
         'other_title_apostilled'=>true,
         'other_title_apostilled_readable'=>true,
-        'other_title_authentic'=>true,]);
+        'other_title_authentic'=>true,
+        'statement'=>true,
+        'statement_readable'=>true,]);
         $personValidation->save();
 
 
@@ -591,7 +599,9 @@ class PersonSeeder extends Seeder
         'other_title_readable'=>true,
         'other_title_apostilled'=>true,
         'other_title_apostilled_readable'=>true,
-        'other_title_authentic'=>true,]);
+        'other_title_authentic'=>true,
+        'statement'=>true,
+        'statement_readable'=>true,]);
         $personValidation->save();
         $r = $task->mergePersonalDoc($DatosInternacional->id);
 
@@ -663,7 +673,9 @@ class PersonSeeder extends Seeder
         'other_title_readable'=>true,
         'other_title_apostilled'=>true,
         'other_title_apostilled_readable'=>true,
-        'other_title_authentic'=>true,]);
+        'other_title_authentic'=>true,
+        'statement'=>true,
+        'statement_readable'=>true,]);
         $personValidation->save();
 
 
@@ -755,7 +767,9 @@ class PersonSeeder extends Seeder
         'other_title_readable'=>true,
         'other_title_apostilled'=>true,
         'other_title_apostilled_readable'=>true,
-        'other_title_authentic'=>true,]);
+        'other_title_authentic'=>true,
+        'statement'=>true,
+        'statement_readable'=>true,]);
         $personValidation->save();
 
         $employeeInternacionalEO = Employee::create([
