@@ -27,7 +27,7 @@ class UpdateTARequestDetails extends FormRequest
       'start_date'     => 'required|date_format:Y-m-d',
       'finish_date'    => 'required|date_format:Y-m-d|after:start_date',
       'weekly_hours'   => 'numeric|required_without:period_hours',
-      'period_hours'   => 'numeric|required_without:weekly_hours',
+      'period_hours'   => 'nullable|required_without:weekly_hours',
       'work_weeks'     => 'required|numeric|gt:1',
       'hourly_rate'    => 'required|numeric|gt:0.0',
       'person_id'      => 'required|integer|gte:1',
