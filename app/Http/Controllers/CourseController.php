@@ -42,17 +42,24 @@ class CourseController extends Controller
             'study_plan_id' => 'required'
         ]);
         School::findOrFail($id);
+        
+        $course = Course::where('school_id', $id)->where('study_plan_id',$fields['study_plan_id'])->where('code', $fields['code'])->where('name','ILIKE','%'.$fields['name'].'%')->first();
+        if ($course) {
+            return response(['message' => 'Ya existe una materia con el mismo codigo y nombre en este plan de estudio'], 422);
+        }else{
+            $newCourse = Course::create([
+                'school_id'     => $id,
+                'study_plan_id' => $fields['study_plan_id'],
+                'name'          => $fields['name'],
+                'code'          => $fields['code'],
+            ]);
+            $this->RegisterAction("El usuario ha Ingresado un nuevo registro en el catalogo de materias por escuela", "medium");
+            return response([
+                'course' => $newCourse,
+            ], 201);
+        }
 
-        $newCourse = Course::create([
-            'school_id'     => $id,
-            'study_plan_id' => $fields['study_plan_id'],
-            'name'          => $fields['name'],
-            'code'          => $fields['code'],
-        ]);
-        $this->RegisterAction("El usuario ha Ingresado un nuevo registro en el catalogo de materias por escuela", "medium");
-        return response([
-            'course' => $newCourse,
-        ], 201);
+       
     }
 
     /**
