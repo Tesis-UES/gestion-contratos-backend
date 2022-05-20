@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\GroupType;
+use App\Models\Group;
 use Illuminate\Http\Request;
 use App\Http\Traits\WorklogTrait;
 
@@ -61,9 +62,15 @@ class GroupTypeController extends Controller
     public function destroy($id)
     {
         $GroupTypes = GroupType::findOrFail($id);
+        $groups = Group::where('group_type_id', $id)->get();
+        if($groups->count()>0){
+            return response(['message' => 'No se puede eliminar el tipo de grupo porque esta asignado a uno o más grupos'], 422);
+        }else{
         $GroupTypes->delete();
         $this->RegisterAction("El usuario ha eliminado el registro del grupo de clase tipo  ".$GroupTypes->name." en el tipo de grupos de clase");
         return response(null, 204);
+        }
+
     }
 
 

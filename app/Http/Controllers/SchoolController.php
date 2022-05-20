@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Faculty;
 use App\Models\School;
+use App\Models\StudyPlan;
 use Illuminate\Http\Request;
 use App\Http\Traits\WorklogTrait;
 
@@ -93,8 +94,14 @@ class SchoolController extends Controller
     public function destroy($id)
     {
         $school = School::findOrFail($id);
-        $school->delete();
-        $this->RegisterAction("El usuario ha eliminado el registro de la escuela ".$school->name." en el catalogo de Escuelas", "medium");
-        return response(null, 204);
+        $studyPlans = StudyPlan::where('school_id', $id)->get();
+        if(count($studyPlans) > 0){
+            return response(['message' => 'No se puede eliminar la escuela porque tiene planes de estudio asociados'], 400);
+        }else{
+            $school->delete();
+            $this->RegisterAction("El usuario ha eliminado el registro de la escuela ".$school->name." en el catalogo de Escuelas", "medium");
+            return response(null, 204);
+        }
+       
     }
 }

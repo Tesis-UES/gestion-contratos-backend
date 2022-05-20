@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Faculty;
+use App\Models\School;
 use Illuminate\Http\Request;
 use App\Http\Traits\WorklogTrait;
 
@@ -79,8 +80,15 @@ class FacultyController extends Controller
     public function destroy($id)
     {
         $faculty = Faculty::findOrFail($id);
-        $faculty->delete();
-        $this->RegisterAction("El usuario ha eliminado el registro de la ".$faculty->name." en el catalogo de facultades", "medium");
-        return response(null, 204);
+        $school = School::where('faculty_id', $id)->get();
+        if ($school->count() > 0) {
+            return response(['message' => 'No se puede eliminar esta facultad porque tiene escuelas asociadas'], 422);
+        } else {
+            $faculty->delete();
+            $this->RegisterAction("El usuario ha eliminado el registro de la ".$faculty->name." en el catalogo de facultades", "medium");
+            return response(null, 204);
+        }
+
+       
     }
 }

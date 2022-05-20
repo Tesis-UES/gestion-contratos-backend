@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Traits\WorklogTrait;
 use App\Models\Activity;
+use App\Models\Position;
 use Illuminate\Http\Request;
 
 class ActivityController extends Controller
@@ -58,9 +59,15 @@ class ActivityController extends Controller
     public function destroy($id)
     {
         $activity = Activity::findOrFail($id);
-        $activity->delete();
+        $positions = $activity->positions;
+        if(count($positions) > 0) {
+            return response(['message' => 'No se puede eliminar la actividad porque tiene posiciones asociadas'], 400);
+        }else{
+            $activity->delete();
+            $this->RegisterAction('El usuario ha archivado la actividad con ID: ' . $id);
+            return response(null, 204);
+        }
 
-        $this->RegisterAction('El usuario ha archivado la actividad con ID: ' . $id);
-        return response(null, 204);
+        
     }
 }

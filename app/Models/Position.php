@@ -20,4 +20,7 @@ class Position extends Model
     {
         return $this->belongsToMany(Activity::class, 'position_activities');
     }
+
+    
+
 }

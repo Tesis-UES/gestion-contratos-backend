@@ -6,7 +6,7 @@ use App\Http\Traits\WorklogTrait;
 use App\Models\Activity;
 use App\Models\Position;
 use Illuminate\Http\Request;
-
+use DB;
 class PositionController extends Controller
 {
     use WorklogTrait;
@@ -90,9 +90,15 @@ class PositionController extends Controller
     public function destroy($id)
     {
         $position = Position::findOrFail($id);
-        $position->delete();
+        $ocd = DB::table('detail_position_activities')->where('position_id', $id)->get();
+        if(count($ocd) > 0) {
+            return response(['message' => 'No se puede eliminar el cargo por que esta ya utilizado en peticiones de contrato '], 400);
+        }else{
+            $position->delete();
 
-        $this->RegisterAction('El usuario ha archivado el cargo con ID: ' . $id);
-        return response(null, 204);
+            $this->RegisterAction('El usuario ha archivado el cargo con ID: ' . $id);
+            return response(null, 204);
+        }
+        
     }
 }
