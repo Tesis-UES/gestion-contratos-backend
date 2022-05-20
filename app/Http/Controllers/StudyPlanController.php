@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\StudyPlan;
+use App\Models\Course;
 use App\Models\School;
 use App\Http\Traits\WorklogTrait;
 use Illuminate\Http\Request;
@@ -51,7 +52,12 @@ class StudyPlanController extends Controller
     public function destroy($id)
     {
         $StudyPlan = StudyPlan::findOrFail($id);
+        $Course = Course::where('study_plan_id',$id)->get();
+        if ($Course->count() > 0) {
+            return response(['message' => 'No se puede eliminar el plan de estudio porque tiene materias asociadas'], 422);
+        } else {
         $StudyPlan->delete();
         return response(null, 204);
+        }
     }
 }

@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Models\Course;
 use App\Models\School;
+use App\Models\Group;
 use App\Http\Traits\WorklogTrait;
 use Illuminate\Http\Request;
 
@@ -101,8 +102,14 @@ class CourseController extends Controller
     public function destroy($id)
     {
         $course = Course::findOrFail($id);
-        $course->delete();
-        $this->RegisterAction("El usuario ha eliminado el registro de la materia " . $course->name . " en el catalogo de Materias", "medium");
-        return response(null, 204);
+        $Group = Group::where('course_id', $id)->get();
+        if($Group->count()>0){
+            return response(['message' => 'No se puede eliminar la materia porque esta asignada a un grupo'], 422);
+        }else{
+            $course->delete();
+            $this->RegisterAction("El usuario ha eliminado el registro de la materia " . $course->name . " en el catalogo de Materias", "medium");
+            return response(null, 204);
+        }
+       
     }
 }

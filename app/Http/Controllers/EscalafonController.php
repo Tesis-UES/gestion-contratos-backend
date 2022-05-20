@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\Escalafon;
+use App\Models\Employee;
 use Illuminate\Http\Request;
 use App\Http\Traits\WorklogTrait;
 use App\Mail\ValidationDocsNotification;
@@ -183,29 +184,37 @@ class EscalafonController extends Controller
     public function destroy($id)
     {
         $escalafon = Escalafon::findOrFail($id);
-        $codigo = $escalafon->code;
-        $nombre = $escalafon->name;
-        $salario = $escalafon->salary;
-        $escalafon->delete();
-        $this->RegisterAction("El usuario ha eliminado el registro del escalafon ".$escalafon->name." en el catalogo de Escalafones" , "high");
-        $emails = $this->getAdminMail();
-        $mensajeEmail = "Se ha eliminado el escalafón con el nombre <b>".$escalafon->name."</b> con los siguientes datos:<br>
-        <b>Datos Del escalafón eliminado:</b>
-        <ul>
-            <li>Código: <b>".$codigo."</b> </li>
-            <li>Nombre Escalafón: <b>".$nombre."</b> </li>
-            <li>Salario: <b>$".number_format($salario,2)."</b> </li>
-        </ul><br>
-     ";
-        
-        foreach ($emails as $email) {
-            try {
-                Mail::to($email)->send(new ValidationDocsNotification($mensajeEmail,'escalafones'));
-                $mensaje = 'Se envio el correo con exito';
-            } catch (\Swift_TransportException $e) {
-                $mensaje = 'No se envio el correo';
-            } 
+        $empleado = Employee::where('escalafon_id',$escalafon->id)->get();
+        if($empleado->count() > 0){
+            return response([
+                'message' => 'No se puede eliminar el escalafón ya que tiene empleados asignados',
+            ], 422);
+        }else{
+            $codigo = $escalafon->code;
+            $nombre = $escalafon->name;
+            $salario = $escalafon->salary;
+            $escalafon->delete();
+            $this->RegisterAction("El usuario ha eliminado el registro del escalafon ".$escalafon->name." en el catalogo de Escalafones" , "high");
+            $emails = $this->getAdminMail();
+            $mensajeEmail = "Se ha eliminado el escalafón con el nombre <b>".$escalafon->name."</b> con los siguientes datos:<br>
+            <b>Datos Del escalafón eliminado:</b>
+            <ul>
+                <li>Código: <b>".$codigo."</b> </li>
+                <li>Nombre Escalafón: <b>".$nombre."</b> </li>
+                <li>Salario: <b>$".number_format($salario,2)."</b> </li>
+            </ul><br>
+         ";
+            
+            foreach ($emails as $email) {
+                try {
+                    Mail::to($email)->send(new ValidationDocsNotification($mensajeEmail,'escalafones'));
+                    $mensaje = 'Se envio el correo con exito';
+                } catch (\Swift_TransportException $e) {
+                    $mensaje = 'No se envio el correo';
+                } 
+            }
+            return response(null, 204);
         }
-        return response(null, 204);
+       
     }
 }

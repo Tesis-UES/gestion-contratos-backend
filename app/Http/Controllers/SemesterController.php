@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use Illuminate\Http\Request;
 use App\Models\Semester;
+use App\Models\AcademicLoad;
 use App\Http\Traits\WorklogTrait;
 
 class SemesterController extends Controller
@@ -96,9 +97,17 @@ class SemesterController extends Controller
     public function destroy($id)
     {
         $semester = Semester::findOrFail($id);
-        $semester->delete();
-        $this->RegisterAction("El usuario ha eliminado el registro del ciclo ".$semester->name." en el catalogo de ciclos");
-        return response(null, 204);
+        $academicLoad = AcademicLoad::where('semester_id', '=', $id)->get();
+        if ($academicLoad->count() > 0) {
+            return response([
+                'message' => "No se puede eliminar el ciclo academico, ya que cuenta con registros de carga academica",
+            ], 422);
+        } else {
+            $semester->delete();
+            $this->RegisterAction("El usuario ha eliminado el registro del ciclo ".$semester->name." en el catalogo de ciclos");
+            return response(null, 204);
+        }
+        
     }
 
 

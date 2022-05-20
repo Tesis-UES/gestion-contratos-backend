@@ -4,6 +4,7 @@ namespace App\Http\Controllers;
 
 use App\Http\Traits\WorklogTrait;
 use App\Models\Bank;
+use App\Models\Person;
 use Illuminate\Http\Request;
 
 class BankController extends Controller
@@ -49,9 +50,14 @@ class BankController extends Controller
     public function destroy($id)
     {
         $bank = Bank::findOrFail($id);
-        $bank->delete();
-
-        $this->RegisterAction('El usuario ha archivado el banco con ID: ' . $id);
-        return response(null, 204);
+        $person = Person::where('bank_id', $id)->get();
+        if ($person->count() > 0) {
+            return response(['message' => 'No se puede eliminar el banco porque tiene personas asociadas'], 422);
+        } else {
+            $bank->delete();
+            $this->RegisterAction('El usuario ha archivado el banco con ID: ' . $id);
+            return response(null, 204);
+        }
+       
     }
 }
