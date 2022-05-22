@@ -53,9 +53,9 @@ class AuthController extends Controller
         $user = User::where('email', $fields['email'],)->first();
 
         if (!$user || !Hash::check($fields['password'], $user->password)) {
-            return response(['message' => 'bad credentials'], 401);
+            return response(['message' => 'Credenciales incorrectas'], 401);
         }
-        if($user->password_expiration != null && $user->password_expiration > new \DateTime()) {
+        if ($user->password_expiration != null && $user->password_expiration > new \DateTime()) {
             return response([
                 'message' => 'Su contraseña ha expirado, pongase en contacto con el administrador del sistema',
             ], 401);
@@ -68,9 +68,9 @@ class AuthController extends Controller
             'token' => $token,
         ];
 
-        if($user['school_id']) {
+        if ($user['school_id']) {
             $school = School::findorFail($user['school_id']);
-            $response = array_merge($response,['school' => $school]);
+            $response = array_merge($response, ['school' => $school]);
         }
 
         return response($response, 200);
@@ -96,7 +96,7 @@ class AuthController extends Controller
             $daybefore = new \DateTime($request->query('date_before'));
             $worklog = $worklog->whereDate('created_at', '<=', $daybefore);
         }
-        if($request->query('relevance')) {
+        if ($request->query('relevance')) {
             $relevance = $request->query('relevance');
             $worklog = $worklog->whereIn('relevance', explode(',', $relevance));
         }
@@ -167,19 +167,19 @@ class AuthController extends Controller
                     'password_expiration'   => $expirationDate,
                 ]);
                 $user->assignRole($request->role);
-                    try {
-                        Mail::to($user->email)->send(new NewUserNotification($user->email,$newPassword ));
-                        $response = [
-                            'user'      => $user,
-                            'mensaje'   => "Si se envio el correo electronico",
-                        ];
-                    } catch (\Swift_TransportException $e) {
-                        $response = [
-                            'user'      => $user,
-                            'mensaje'   => "No se ha enviado el correo electronico",
-                        ];
-                    } 
-               
+                try {
+                    Mail::to($user->email)->send(new NewUserNotification($user->email, $newPassword));
+                    $response = [
+                        'user'      => $user,
+                        'mensaje'   => "Si se envio el correo electronico",
+                    ];
+                } catch (\Swift_TransportException $e) {
+                    $response = [
+                        'user'      => $user,
+                        'mensaje'   => "No se ha enviado el correo electronico",
+                    ];
+                }
+
                 $this->RegisterAction('El administrador ha registrado al usuario ' . $user->name . ' como administrador', "medium");
                 return response($response, 201);
                 break;
@@ -194,7 +194,7 @@ class AuthController extends Controller
                 ]);
                 $user->assignRole($request->role);
                 try {
-                    Mail::to($user->email)->send(new NewUserNotification($user->email,$newPassword ));
+                    Mail::to($user->email)->send(new NewUserNotification($user->email, $newPassword));
                     $response = [
                         'user'      => $user,
                         'mensaje'   => "Si se envio el correo electronico",
@@ -204,8 +204,8 @@ class AuthController extends Controller
                         'user'      => $user,
                         'mensaje'   => "No se ha enviado el correo electronico",
                     ];
-                } 
-                
+                }
+
                 $this->RegisterAction('El administrador ha registrado al usuario ' . $user->name . ' como Profesor', "medium");
                 return response($response, 201);
                 break;
@@ -220,7 +220,7 @@ class AuthController extends Controller
                 ]);
                 $user->assignRole($request->role);
                 try {
-                    Mail::to($user->email)->send(new NewUserNotification($user->email,$newPassword ));
+                    Mail::to($user->email)->send(new NewUserNotification($user->email, $newPassword));
                     $response = [
                         'user'      => $user,
                         'mensaje'   => "Si se envio el correo electronico",
@@ -230,8 +230,8 @@ class AuthController extends Controller
                         'user'      => $user,
                         'mensaje'   => "No se ha enviado el correo electronico",
                     ];
-                } 
-                
+                }
+
                 $this->RegisterAction('El administrador ha registrado al usuario ' . $user->name . ' como Director de Escuela', "medium");
                 return response($response, 201);
                 break;
@@ -245,7 +245,7 @@ class AuthController extends Controller
                 ]);
                 $user->assignRole($request->role);
                 try {
-                    Mail::to($user->email)->send(new NewUserNotification($user->email,$newPassword));
+                    Mail::to($user->email)->send(new NewUserNotification($user->email, $newPassword));
                     $response = [
                         'user'      => $user,
                         'mensaje'   => "Si se envio el correo electronico",
@@ -255,8 +255,8 @@ class AuthController extends Controller
                         'user'      => $user,
                         'mensaje'   => "No se ha enviado el correo electronico",
                     ];
-                } 
-               
+                }
+
                 $this->RegisterAction('El administrador ha registrado al usuario ' . $user->name . ' como Asistente Administrativo', "medium");
                 return response($response, 201);
 
@@ -266,12 +266,12 @@ class AuthController extends Controller
                 $user = User::create([
                     'name'                  => $fields['name'],
                     'email'                 => $fields['email'],
-                    'password'              => bcrypt($newPassword ),
+                    'password'              => bcrypt($newPassword),
                     'password_expiration'   => $expirationDate,
                 ]);
                 $user->assignRole($request->role);
                 try {
-                    Mail::to($user->email)->send(new NewUserNotification($user->email,$newPassword ));
+                    Mail::to($user->email)->send(new NewUserNotification($user->email, $newPassword));
                     $response = [
                         'user'      => $user,
                         'mensaje'   => "Si se envio el correo electronico",
@@ -281,91 +281,91 @@ class AuthController extends Controller
                         'user'      => $user,
                         'mensaje'   => "No se ha enviado el correo electronico",
                     ];
-                } 
-                
+                }
+
                 $this->RegisterAction('El administrador ha registrado al usuario ' . $user->name . ' como Asistente Financiero', "medium");
                 return response($response, 201);
 
                 break;
 
-                case 'Recursos Humanos':
-                    $user = User::create([
-                        'name'                  => $fields['name'],
-                        'email'                 => $fields['email'],
-                        'password'              => bcrypt($newPassword ),
-                        'password_expiration'   => $expirationDate,
-                    ]);
-                    $user->assignRole($request->role);
-                    try {
-                        Mail::to($user->email)->send(new NewUserNotification($user->email,$newPassword ));
-                        $response = [
-                            'user'      => $user,
-                            'mensaje'   => "Si se envio el correo electronico",
-                        ];
-                    } catch (\Swift_TransportException $e) {
-                        $response = [
-                            'user'      => $user,
-                            'mensaje'   => "No se ha enviado el correo electronico",
-                        ];
-                    } 
-                    
-                    $this->RegisterAction('El administrador ha registrado al usuario ' . $user->name . ' como Recursos Humanos', "medium");
-                    return response($response, 201);
-    
-                    break;
+            case 'Recursos Humanos':
+                $user = User::create([
+                    'name'                  => $fields['name'],
+                    'email'                 => $fields['email'],
+                    'password'              => bcrypt($newPassword),
+                    'password_expiration'   => $expirationDate,
+                ]);
+                $user->assignRole($request->role);
+                try {
+                    Mail::to($user->email)->send(new NewUserNotification($user->email, $newPassword));
+                    $response = [
+                        'user'      => $user,
+                        'mensaje'   => "Si se envio el correo electronico",
+                    ];
+                } catch (\Swift_TransportException $e) {
+                    $response = [
+                        'user'      => $user,
+                        'mensaje'   => "No se ha enviado el correo electronico",
+                    ];
+                }
 
-                    case 'Decano':
-                        $user = User::create([
-                            'name'                  => $fields['name'],
-                            'email'                 => $fields['email'],
-                            'password'              => bcrypt($newPassword ),
-                            'password_expiration'   => $expirationDate,
-                        ]);
-                        $user->assignRole($request->role);
-                        try {
-                            Mail::to($user->email)->send(new NewUserNotification($user->email,$newPassword ));
-                            $response = [
-                                'user'      => $user,
-                                'mensaje'   => "Si se envio el correo electronico",
-                            ];
-                        } catch (\Swift_TransportException $e) {
-                            $response = [
-                                'user'      => $user,
-                                'mensaje'   => "No se ha enviado el correo electronico",
-                            ];
-                        } 
-                        
-                        $this->RegisterAction('El administrador ha registrado al usuario ' . $user->name . ' como Decano', "medium");
-                        return response($response, 201);
-        
-                        break;
-    
-                        case 'Super Administrador':
-                            $user = User::create([
-                                'name'                  => $fields['name'],
-                                'email'                 => $fields['email'],
-                                'password'              => bcrypt($newPassword ),
-                                'password_expiration'   => $expirationDate,
-                            ]);
-                            $user->assignRole($request->role);
-                            try {
-                                Mail::to($user->email)->send(new NewUserNotification($user->email,$newPassword ));
-                                $response = [
-                                    'user'      => $user,
-                                    'mensaje'   => "Si se envio el correo electronico",
-                                ];
-                            } catch (\Swift_TransportException $e) {
-                                $response = [
-                                    'user'      => $user,
-                                    'mensaje'   => "No se ha enviado el correo electronico",
-                                ];
-                            } 
-                            
-                            $this->RegisterAction('El administrador ha registrado al usuario ' . $user->name . ' como Super Administrador', "medium");
-                            return response($response, 201);
-            
-                            break;
-        
+                $this->RegisterAction('El administrador ha registrado al usuario ' . $user->name . ' como Recursos Humanos', "medium");
+                return response($response, 201);
+
+                break;
+
+            case 'Decano':
+                $user = User::create([
+                    'name'                  => $fields['name'],
+                    'email'                 => $fields['email'],
+                    'password'              => bcrypt($newPassword),
+                    'password_expiration'   => $expirationDate,
+                ]);
+                $user->assignRole($request->role);
+                try {
+                    Mail::to($user->email)->send(new NewUserNotification($user->email, $newPassword));
+                    $response = [
+                        'user'      => $user,
+                        'mensaje'   => "Si se envio el correo electronico",
+                    ];
+                } catch (\Swift_TransportException $e) {
+                    $response = [
+                        'user'      => $user,
+                        'mensaje'   => "No se ha enviado el correo electronico",
+                    ];
+                }
+
+                $this->RegisterAction('El administrador ha registrado al usuario ' . $user->name . ' como Decano', "medium");
+                return response($response, 201);
+
+                break;
+
+            case 'Super Administrador':
+                $user = User::create([
+                    'name'                  => $fields['name'],
+                    'email'                 => $fields['email'],
+                    'password'              => bcrypt($newPassword),
+                    'password_expiration'   => $expirationDate,
+                ]);
+                $user->assignRole($request->role);
+                try {
+                    Mail::to($user->email)->send(new NewUserNotification($user->email, $newPassword));
+                    $response = [
+                        'user'      => $user,
+                        'mensaje'   => "Si se envio el correo electronico",
+                    ];
+                } catch (\Swift_TransportException $e) {
+                    $response = [
+                        'user'      => $user,
+                        'mensaje'   => "No se ha enviado el correo electronico",
+                    ];
+                }
+
+                $this->RegisterAction('El administrador ha registrado al usuario ' . $user->name . ' como Super Administrador', "medium");
+                return response($response, 201);
+
+                break;
+
 
             default:
                 return response(
@@ -398,7 +398,7 @@ class AuthController extends Controller
     public function changeUserPassword($userId, Request $request)
     {
         $user = User::findOrFail($userId);
-        
+
         $newPassword = $this->generatePassword(32);
         $expirationDate = (new \DateTime())->add(new \DateInterval(env('PASSWORD_VALID_FOR', 'P7D')));
 
@@ -406,12 +406,12 @@ class AuthController extends Controller
         $user->password_expiration = $expirationDate;
         $user->save();
         try {
-            Mail::to($user->email)->send(new NewUserNotification($user->email, $newPassword ));
-            $this->RegisterAction('El administrador ha cambiado la contraseña del usuario con id'. $user->id);
-            return response(['message' => "Se ha actualizado la contraseña con exito y se ha enviado el correo"], 200);   
+            Mail::to($user->email)->send(new NewUserNotification($user->email, $newPassword));
+            $this->RegisterAction('El administrador ha cambiado la contraseña del usuario con id' . $user->id);
+            return response(['message' => "Se ha actualizado la contraseña con exito y se ha enviado el correo"], 200);
         } catch (\Swift_TransportException $e) {
-            return response(['message' => "No se ha cambiado la contraseña y enviado el correo, por favor intente denuevo o contacte con el administrador"], 200);   
-        } 
+            return response(['message' => "No se ha cambiado la contraseña y enviado el correo, por favor intente denuevo o contacte con el administrador"], 200);
+        }
     }
 
     public function updateUser(Request $request, $id)
@@ -494,45 +494,45 @@ class AuthController extends Controller
                 return response($response, 201);
 
                 break;
-                case 'Recursos Humanos':
-                    $user->update([
-                        'name'      => $fields['name'],
-                        'email'     => $fields['email'],
-                    ]);
-                    $user->syncRoles($request->role);
-                    $response = [
-                        'user' => $user,
-                    ];
-                    $this->RegisterAction('El administrador ha Actualizado al usuario ' . $user->name . ' como Recursos Humanos', "medium");
-                    return response($response, 201);
-    
-                    break;
-                    case 'Decano':
-                        $user->update([
-                            'name'      => $fields['name'],
-                            'email'     => $fields['email'],
-                        ]);
-                        $user->syncRoles($request->role);
-                        $response = [
-                            'user' => $user,
-                        ];
-                        $this->RegisterAction('El administrador ha Actualizado al usuario ' . $user->name . ' como Decano', "medium");
-                        return response($response, 201);
-        
-                        break;
-                        case 'Super Administrador':
-                            $user->update([
-                                'name'      => $fields['name'],
-                                'email'     => $fields['email'],
-                            ]);
-                            $user->syncRoles($request->role);
-                            $response = [
-                                'user' => $user,
-                            ];
-                            $this->RegisterAction('El administrador ha Actualizado al usuario ' . $user->name . ' como Super Administrador', "medium");
-                            return response($response, 201);
-            
-                            break;
+            case 'Recursos Humanos':
+                $user->update([
+                    'name'      => $fields['name'],
+                    'email'     => $fields['email'],
+                ]);
+                $user->syncRoles($request->role);
+                $response = [
+                    'user' => $user,
+                ];
+                $this->RegisterAction('El administrador ha Actualizado al usuario ' . $user->name . ' como Recursos Humanos', "medium");
+                return response($response, 201);
+
+                break;
+            case 'Decano':
+                $user->update([
+                    'name'      => $fields['name'],
+                    'email'     => $fields['email'],
+                ]);
+                $user->syncRoles($request->role);
+                $response = [
+                    'user' => $user,
+                ];
+                $this->RegisterAction('El administrador ha Actualizado al usuario ' . $user->name . ' como Decano', "medium");
+                return response($response, 201);
+
+                break;
+            case 'Super Administrador':
+                $user->update([
+                    'name'      => $fields['name'],
+                    'email'     => $fields['email'],
+                ]);
+                $user->syncRoles($request->role);
+                $response = [
+                    'user' => $user,
+                ];
+                $this->RegisterAction('El administrador ha Actualizado al usuario ' . $user->name . ' como Super Administrador', "medium");
+                return response($response, 201);
+
+                break;
 
             default:
                 return response(
