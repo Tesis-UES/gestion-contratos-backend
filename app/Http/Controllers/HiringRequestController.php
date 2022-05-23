@@ -1008,7 +1008,7 @@ class HiringRequestController extends Controller
         $agreement->no_effect = !$agreement->no_effect;  
         $agreement->save();
         $this->RegisterAction("El usuario ha actualizado el estado del acuerdo de Junta Directiva para la solicitud con id: " . $id, "high");
-        return;
+        return response($agreement, 200);;
     }
 
     public function hiringRequestRRHH()
