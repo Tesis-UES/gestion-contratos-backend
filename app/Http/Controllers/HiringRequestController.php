@@ -212,10 +212,14 @@ class HiringRequestController extends Controller
 
     public function getAllHiringRequestWithAgreement()
     {
-        $relations = ['school', 'contractType'];
+        $relations = ['school', 'contractType', 'agreement'];
         $hiringRequests = HiringRequest::with($relations)
             ->has('agreement')
             ->get();
+        foreach ($hiringRequests as $hiringRequest) {
+            $hiringRequest->agreement->makeHidden('agreed_on','approved','file_uri','code');
+        }
+        
 
         $this->registerAction('El usuario ha consultado las solicitudes de contratacion que ya tienen un acuerdo', 'medium');
 
@@ -887,7 +891,7 @@ class HiringRequestController extends Controller
             $hiringRequest->save();
             $hiringRequest->status()->attach(['status_id' => $status[0]->id]);
             $hiringRequest->status()->attach(['status_id' => $status[1]->id]);
-            $this->sendAgrementMail($hiringRequest);
+            $this->sendAgrementMail($hiringRequest,'nuevo');
         } else {
             $status = Status::where('code', [HiringRequestStatusCode::RJD])->first();
             $hiringRequest->request_status = HiringRequestStatusCode::RJD;
@@ -898,6 +902,33 @@ class HiringRequestController extends Controller
         $this->RegisterAction("El usuario ha guardado el archivo pdf que contiene el acuerdo de Junta Directiva para la solicitud con id: " . $id, "high");
         return;
     }
+
+    public function updateAgreement($id, Request $request){
+
+        $fields = $request->validate([
+            'code'      => 'required|string',
+            'approved'  => 'required|boolean',
+            'agreed_on' => 'required|date|before_or_equal:today',
+            'file'      => 'required|mimes:pdf',
+        ]);
+        $agreement = Agreement::findOrFail($id);
+        Storage::disk('agreements')->delete($agreement->file_uri);
+        $file = $request->file('file');
+        $fileName = str_replace('/', '-', 'acuerdo-' . $fields['code'] . '.pdf');
+        Storage::disk('agreements')->put($fileName, File::get($file));
+        $newAgre = Agreement::where('id', $id)->update([
+            'code'              => $fields['code'],
+            'approved'          => $fields['approved'],
+            'agreed_on'         => $fields['agreed_on'],
+            'file_uri'         => $fileName,
+        ]);
+        $hiringRequest = HiringRequest::findOrFail($agreement->hiring_request_id);
+        $this->sendAgrementMail($hiringRequest,'act');
+        $this->RegisterAction("El usuario ha actualizado el archivo pdf que contiene el acuerdo de Junta Directiva para la solicitud con id: " . $id, "high");
+        return;
+
+    }
+
 
     public function getCandidatesEmail($id)
     {
@@ -910,41 +941,55 @@ class HiringRequestController extends Controller
         return $candidates;
     }
 
-    public function sendAgrementMail(HiringRequest $hiringRequest)
+    public function sendAgrementMail(HiringRequest $hiringRequest,$opt)
     {
         $emailDirector = $this->getDirectorEmail($hiringRequest->school_id);
         $emailCadidates = $this->getCandidatesEmail($hiringRequest->id);
         $emailHR = $this->getHRmail();
         //Notificando al director
-        $mensajeEmail = "Se ha aprobado y agregado el acuerdo de Junta Directiva para la solicitud con código: " . $hiringRequest->code . "Ya puede ver el acuerdo de Junta Directiva en los detalles de la solicitud de contratación";
-        foreach ($emailDirector as $email) {
-            try {
-                Mail::to($email)->send(new ValidationDocsNotification($mensajeEmail, 'AgreementUpdate'));
-                $mensaje = 'Se envio el correo con exito';
-            } catch (\Swift_TransportException $e) {
-                $mensaje = 'No se envio el correo';
+
+        if ($opt == 'nuevo') {
+            $mensajeEmail = "Se ha aprobado y agregado el acuerdo de Junta Directiva para la solicitud con código: " . $hiringRequest->code . "Ya puede ver el acuerdo de Junta Directiva en los detalles de la solicitud de contratación";
+            foreach ($emailDirector as $email) {
+                try {
+                    Mail::to($email)->send(new ValidationDocsNotification($mensajeEmail, 'AgreementUpdate'));
+                    $mensaje = 'Se envio el correo con exito';
+                } catch (\Swift_TransportException $e) {
+                    $mensaje = 'No se envio el correo';
+                }
+            }
+            //Notificando a los candidatos
+            $mensajeEmail = "Se ha aprobado y agregado el acuerdo de Junta Directiva para la solicitud con Codigo: " . $hiringRequest->code . " . Ya puede ver el detalle de su contración y ver los paso siguientes a la generación de su contrato.";
+            foreach ($emailCadidates as $email) {
+                try {
+                    Mail::to($email)->send(new ValidationDocsNotification($mensajeEmail, 'AgreementUpdate'));
+                    $mensaje = 'Se envio el correo con exito';
+                } catch (\Swift_TransportException $e) {
+                    $mensaje = 'No se envio el correo';
+                }
+            }
+            //Notificando a HR para generar contrato
+            foreach ($emailHR as $email) {
+                $mensajeEmail = "Se ha Aprobado y Agregado el acuerdo de junta directiva para la solicitud de contratacion con código: " . $hiringRequest->code . ". Ya puede ver el detalle del acuerdo de Junta directiva y se ha habilitado la generación de los contratos para los candidatos involucrados en la solicitud de contratación";
+                try {
+                    Mail::to($email)->send(new ValidationDocsNotification($mensajeEmail, 'AgreementUpdate'));
+                    $mensaje = 'Se envio el correo con exito';
+                } catch (\Swift_TransportException $e) {
+                    $mensaje = 'No se envio el correo';
+                }
+            }
+        }else{
+            foreach ($emailHR as $email) {
+                $mensajeEmail = "Se ha Actualizado el acuerdo de junta directiva para la solicitud de contratacion con código: " . $hiringRequest->code . ". Ya puede ver el detalle del acuerdo de Junta directiva y se ha habilitado la generación de los contratos para los candidatos involucrados en la solicitud de contratación";
+                try {
+                    Mail::to($email)->send(new ValidationDocsNotification($mensajeEmail, 'AgreementUpdate'));
+                    $mensaje = 'Se envio el correo con exito';
+                } catch (\Swift_TransportException $e) {
+                    $mensaje = 'No se envio el correo';
+                }
             }
         }
-        //Notificando a los candidatos
-        $mensajeEmail = "Se ha aprobado y agregado el acuerdo de Junta Directiva para la solicitud con Codigo: " . $hiringRequest->code . " . Ya puede ver el detalle de su contración y ver los paso siguientes a la generación de su contrato.";
-        foreach ($emailCadidates as $email) {
-            try {
-                Mail::to($email)->send(new ValidationDocsNotification($mensajeEmail, 'AgreementUpdate'));
-                $mensaje = 'Se envio el correo con exito';
-            } catch (\Swift_TransportException $e) {
-                $mensaje = 'No se envio el correo';
-            }
-        }
-        //Notificando a HR para generar contrato
-        foreach ($emailHR as $email) {
-            $mensajeEmail = "Se ha Aprobado y Agregado el acuerdo de junta directiva para la solicitud de contratacion con código: " . $hiringRequest->code . ". Ya puede ver el detalle del acuerdo de Junta directiva y se ha habilitado la generación de los contratos para los candidatos involucrados en la solicitud de contratación";
-            try {
-                Mail::to($email)->send(new ValidationDocsNotification($mensajeEmail, 'AgreementUpdate'));
-                $mensaje = 'Se envio el correo con exito';
-            } catch (\Swift_TransportException $e) {
-                $mensaje = 'No se envio el correo';
-            }
-        }
+       
     }
 
     public function getAgreements($id)
@@ -956,6 +1001,14 @@ class HiringRequestController extends Controller
             "agreement" => $agreement,
             "pdf" => $pdf
         ], 200);
+    }
+
+    public function changeAgreementStatus($id){
+        $agreement = Agreement::findOrFail($id);
+        $agreement->no_effect = !$agreement->no_effect;  
+        $agreement->save();
+        $this->RegisterAction("El usuario ha actualizado el estado del acuerdo de Junta Directiva para la solicitud con id: " . $id, "high");
+        return;
     }
 
     public function hiringRequestRRHH()

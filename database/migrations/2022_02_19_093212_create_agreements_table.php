@@ -17,6 +17,7 @@ class CreateAgreementsTable extends Migration
             $table->id();
             $table->string('code')->unique();
             $table->boolean('approved');
+            $table->boolean('no_effect')->default(true);
             $table->date('agreed_on');
             $table->string('file_uri');
             $table->bigInteger('hiring_request_id')->unsigned()->nonullable();

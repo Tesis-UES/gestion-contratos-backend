@@ -15,6 +15,8 @@ class Agreement extends Model
         'agreed_on',
         'file_uri',
         'hiring_request_id',
+        'no_effect',
+
     ];
 
     public function HiringRequest()

@@ -391,6 +391,8 @@ Route::group(['middleware' => ['auth:sanctum']], function () {
 
     Route::group(['middleware' => ['can:write_agreements']], function () {
         Route::post('/hiringRequest/{id}/agreement', [HiringRequestController::class, 'addAgreement']);
+        Route::post('/hiringRequest/agreement/modification/{id}', [HiringRequestController::class, 'updateAgreement']);
+        Route::post('/hiringRequest/agreement/{id}/status', [HiringRequestController::class, 'changeAgreementStatus']);
     });
 
     //Ruta de secretaria para ver las solicitudes de contratacion enviadas para aprobacion
