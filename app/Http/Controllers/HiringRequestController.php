@@ -925,7 +925,7 @@ class HiringRequestController extends Controller
         $hiringRequest = HiringRequest::findOrFail($agreement->hiring_request_id);
         $this->sendAgrementMail($hiringRequest,'act');
         $this->RegisterAction("El usuario ha actualizado el archivo pdf que contiene el acuerdo de Junta Directiva para la solicitud con id: " . $id, "high");
-        return;
+        return response(['message' => 'El acuerdo de Junta Directiva ha sido actualizado', 'agreement' => $newAgre  ], 200);
 
     }
 
