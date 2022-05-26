@@ -27,19 +27,19 @@ class DatabaseSeeder extends Seeder
                 $this->call(SchoolSeeder::class);
                 $this->call(RolesPermissionsSeeder::class);
                 $this->call(ContractTypeSeeder::class);
-                $this->call(StudyPlanSeeder::class);
-                $this->call(CourseSeeder::class);
+               // $this->call(StudyPlanSeeder::class);
+                //$this->call(CourseSeeder::class);
                 $this->call(GroupTypeSeeder::class);
                 $this->call(EmployeeTypeSeeder::class);
                 $this->call(FormatSeeder::class);
-                $this->call(PersonSeeder::class);
-                $this->call(PositionSeeder::class);
-                $this->call(AcademicLoadSeeder::class);
+                //$this->call(PersonSeeder::class);
+                //$this->call(PositionSeeder::class);
+                //$this->call(AcademicLoadSeeder::class);
                 $this->call(StatusSeeder::class);
                 $this->call(ContractStatusSeeder::class);
-                $this->call(HrSeeder::class);
+               // $this->call(HrSeeder::class);
 
-                Group::factory(150)->create()->each(function ($group) {
+             /*    Group::factory(150)->create()->each(function ($group) {
                    
                     if ($group->group_type_id == 1 && $group->modality == 'En Linea') {
                         $group->schedule()->saveMany(Schedule::factory(5)->make());
@@ -167,6 +167,6 @@ class DatabaseSeeder extends Seeder
                         $newStaySchedule->scheduleActivities()->sync($activityIds);
                         $task = new PersonController;
                         $r = $task->mergePersonalDoc($user->person->id);
-                });
+                }); */
         }
 }
