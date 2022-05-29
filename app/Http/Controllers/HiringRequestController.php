@@ -995,7 +995,7 @@ class HiringRequestController extends Controller
     public function getAgreements($id)
     {
         $hiringRequest = HiringRequest::with('agreement')->findOrFail($id);
-        if($hiringRequest == ' '){
+        if($hiringRequest->agreement){
             return;
         }else{
         $agreement = Agreement::findOrFail($hiringRequest->agreement->id);
