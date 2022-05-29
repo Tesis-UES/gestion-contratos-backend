@@ -995,12 +995,16 @@ class HiringRequestController extends Controller
     public function getAgreements($id)
     {
         $hiringRequest = HiringRequest::with('agreement')->findOrFail($id);
+        if($hiringRequest){
+            return;
+        }else{
         $agreement = Agreement::findOrFail($hiringRequest->agreement->id);
         $pdf = base64_encode(Storage::disk('agreements')->get($agreement->file_uri));
         return response([
             "agreement" => $agreement,
             "pdf" => $pdf
         ], 200);
+      }
     }
 
     public function changeAgreementStatus($id){
